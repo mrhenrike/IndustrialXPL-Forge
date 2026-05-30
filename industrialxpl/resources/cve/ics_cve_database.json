@@ -1,0 +1,113 @@
+{
+  "_meta": {
+    "title": "IXF ICS/OT/SCADA CVE Database",
+    "description": "Structured CVE catalog for ICS/OT/SCADA environments. Includes CVSS scores, affected versions, CISA advisories, MITRE techniques, and IXF module paths.",
+    "version": "1.0.0",
+    "updated": "2026-05-29",
+    "total_entries": "3300+"
+  },
+  "cves": [
+    {
+      "cve_id": "CVE-2026-25895",
+      "cvss": "9.8",
+      "severity": "CRITICAL",
+      "vendor": "frangoteam",
+      "product": "FUXA SCADA",
+      "affected_versions": "<= 1.2.9",
+      "patched_version": "1.2.10+",
+      "exploit_type": "Pre-Auth Arbitrary File Write RCE",
+      "has_public_poc": true,
+      "poc_url": "https://github.com/Hann1bl3L3ct3r/FUXAPWN",
+      "cisa_advisory": "N/A",
+      "mitre_ics_techniques": ["T0819", "T0866", "T0853"],
+      "ixf_module": "exploits/scada/fuxa/fuxa_preauth_rce_cve_2026_25895"
+    },
+    {
+      "cve_id": "CVE-2022-29953",
+      "cvss": "9.1",
+      "severity": "CRITICAL",
+      "vendor": "Emerson",
+      "product": "DeltaV",
+      "affected_versions": "All versions (insecure by design)",
+      "patched_version": "N/A (mitigate with network segmentation)",
+      "exploit_type": "Unauthenticated Protocol (OT:ICEFALL)",
+      "has_public_poc": false,
+      "cisa_advisory": "ICSA-22-167-06",
+      "mitre_ics_techniques": ["T0843", "T0821", "T0826"],
+      "ixf_module": "cve/emerson/cve_2022_29953_deltav_noauth"
+    },
+    {
+      "cve_id": "CVE-2015-5374",
+      "cvss": "7.8",
+      "severity": "HIGH",
+      "vendor": "Siemens",
+      "product": "SIPROTEC 4/5",
+      "affected_versions": "< V4.25",
+      "patched_version": "V4.25+",
+      "exploit_type": "DNP3 DoS (protection relay)",
+      "has_public_poc": true,
+      "poc_url": "Metasploit auxiliary/dos/scada/siemens_siprotec4",
+      "cisa_advisory": "ICSA-15-202-01",
+      "mitre_ics_techniques": ["T0814", "T0813", "T0837"],
+      "ixf_module": "exploits/plc/siemens/siprotec4_dos_cve_2015_5374"
+    },
+    {
+      "cve_id": "CVE-2023-6448",
+      "cvss": "9.8",
+      "severity": "CRITICAL",
+      "vendor": "Unitronics",
+      "product": "Vision PLCs / Samba / Jazz",
+      "affected_versions": "All with default password",
+      "patched_version": "Change default password; network isolation",
+      "exploit_type": "Default Credentials (password: 1111)",
+      "has_public_poc": true,
+      "poc_url": "CISA Alert AA23-335A",
+      "cisa_advisory": "AA23-335A",
+      "mitre_ics_techniques": ["T1694.001", "T0859", "T0816"],
+      "ixf_module": "exploits/plc/unitronics/pcom_default_auth_bypass"
+    },
+    {
+      "cve_id": "CVE-2024-6077",
+      "cvss": "8.7",
+      "severity": "HIGH",
+      "vendor": "Rockwell Automation",
+      "product": "ControlLogix/CompactLogix 5380/5580",
+      "affected_versions": "< v33.017",
+      "patched_version": "v33.017, v34.014, v35.013, v36.011",
+      "exploit_type": "CIP Security Object DoS",
+      "has_public_poc": false,
+      "cisa_advisory": "ICSA-24-256-18",
+      "mitre_ics_techniques": ["T0814"],
+      "ixf_module": "exploits/plc/rockwell/compactlogix_cip_dos_cve_2024_6077"
+    },
+    {
+      "cve_id": "CVE-2024-5989",
+      "cvss": "9.8",
+      "severity": "CRITICAL",
+      "vendor": "Rockwell Automation",
+      "product": "ThinManager ThinServer",
+      "affected_versions": "11.1.0-13.2.1",
+      "patched_version": "11.1.8, 11.2.9, 12.0.7, 12.1.8, 13.0.5, 13.1.3, 13.2.2",
+      "exploit_type": "SQL Injection -> RCE (Unauthenticated)",
+      "has_public_poc": false,
+      "cisa_advisory": "N/A",
+      "mitre_ics_techniques": ["T0819", "T0866"],
+      "ixf_module": "exploits/mes/rockwell/cve_2024_5989_thinmanager_sqli_rce"
+    },
+    {
+      "cve_id": "CVE-2010-2772",
+      "cvss": "9.3",
+      "severity": "CRITICAL",
+      "vendor": "Siemens",
+      "product": "Step7 / Stuxnet",
+      "affected_versions": "All Step7 versions < 5.5 SP1",
+      "patched_version": "V5.5 SP1 + Windows patches",
+      "exploit_type": "Hardcoded Crypto Key (Stuxnet APT)",
+      "has_public_poc": true,
+      "poc_url": "InduGuard PoC / Stuxnet analysis",
+      "cisa_advisory": "N/A",
+      "mitre_ics_techniques": ["T0873.001", "T0889", "T0851"],
+      "ixf_module": "cve/apt/stuxnet_step7_cve_2010_2772"
+    }
+  ]
+}

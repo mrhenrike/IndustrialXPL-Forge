@@ -1,0 +1,33 @@
+# IndustrialXPL-Forge — Core Python dependencies (Tier 1)
+# Python-First: no Metasploit, no msfconsole, no external runtimes required.
+# Install: pip install -r requirements.txt
+# Full install: pip install -e ".[full]"
+
+# Core networking & exploitation
+requests>=2.32.4
+paramiko>=3.0
+pysnmp>=4.4.12
+scapy>=2.5.0
+
+# UI / output
+rich>=13.0
+
+# System info
+psutil>=5.9
+
+# ── OT/ICS optional (Tier 2) ──────────────────────────────────────────────
+# Install with: pip install industrialxpl[ot]
+# pymodbus>=3.5          # Modbus TCP/RTU/ASCII (required for Modbus modules)
+# asyncua>=1.0           # OPC UA client/server
+# cpppo>=4.3             # EtherNet/IP / CIP
+
+# ── Fieldbus optional (Tier 2) ────────────────────────────────────────────
+# python-can>=4.3        # CAN bus / CANopen
+
+# ── External runtimes (Tier 3 — OPTIONAL, fallback Python always available) ─
+# ruby                   # For Metasploit modules (optional, not installed here)
+# nodejs                 # For JavaScript/TypeScript exploits (optional)
+# java / javac           # For Java deserialization exploits (optional)
+# gcc / g++              # For C/C++ native exploits (optional)
+# go                     # For FrostyGoop and Go-based OT tools (optional)
+# pwsh                   # For PowerShell EWS exploitation (optional)
