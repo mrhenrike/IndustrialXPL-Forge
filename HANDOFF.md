@@ -183,3 +183,61 @@ python tools/env_doctor.py
 ### Paths importantes
 - Windows: D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge
 - Linux: /mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge
+
+## [2026-05-30 19:45] — Adicao de 20 novos modulos ICS/OT
+
+### Estado ao encerrar
+- Adicionados 12 modulos de protocol abuse (sem CVE) e 8 CVEs com PoC
+- Total de modulos: 552 (verificado via index_modules())
+- Todos os 20 modulos importam sem erros (OK=20 FAIL=0)
+
+### Arquivos modificados
+- industrialxpl/modules/exploits/protocols/modbus/modbus_replay_attack.py
+- industrialxpl/modules/exploits/protocols/modbus/modbus_unit_id_spoofing.py
+- industrialxpl/modules/exploits/protocols/modbus/modbus_fc8_diagnostic_abuse.py
+- industrialxpl/modules/exploits/protocols/s7comm/__init__.py
+- industrialxpl/modules/exploits/protocols/s7comm/s7_unauthorized_cpu_control.py
+- industrialxpl/modules/exploits/protocols/enip/__init__.py
+- industrialxpl/modules/exploits/protocols/enip/cip_unauthorized_tag_write.py
+- industrialxpl/modules/exploits/protocols/dnp3/__init__.py
+- industrialxpl/modules/exploits/protocols/dnp3/dnp3_unauthorized_control.py
+- industrialxpl/modules/exploits/protocols/bacnet/__init__.py
+- industrialxpl/modules/exploits/protocols/bacnet/bacnet_write_property_noauth.py
+- industrialxpl/modules/exploits/protocols/profinet/__init__.py
+- industrialxpl/modules/exploits/protocols/profinet/profinet_dcp_ip_spoof.py
+- industrialxpl/modules/exploits/protocols/opc_da/__init__.py
+- industrialxpl/modules/exploits/protocols/opc_da/opc_da_unauthorized_write.py
+- industrialxpl/modules/exploits/protocols/mqtt/__init__.py
+- industrialxpl/modules/exploits/protocols/mqtt/mqtt_ics_broker_injection.py
+- industrialxpl/modules/exploits/protocols/snmp/__init__.py
+- industrialxpl/modules/exploits/protocols/snmp/snmp_public_ot_device.py
+- industrialxpl/modules/exploits/protocols/omron/__init__.py
+- industrialxpl/modules/exploits/protocols/omron/fins_unauthorized_memory_write.py
+- industrialxpl/modules/cve/cve_2023_34979/__init__.py + cve_2023_34979_advantech_iview.py
+- industrialxpl/modules/cve/cve_2024_3400/__init__.py + cve_2024_3400_paloalto_globalprotect.py
+- industrialxpl/modules/cve/cve_2023_27997/__init__.py + cve_2023_27997_fortios_sslvpn.py
+- industrialxpl/modules/cve/cve_2022_0847/__init__.py + cve_2022_0847_dirty_pipe_ot.py
+- industrialxpl/modules/cve/cve_2021_34473/__init__.py + cve_2021_34473_proxyshell_ot.py
+- industrialxpl/modules/cve/cve_2021_40539/__init__.py + cve_2021_40539_zoho_manageengine_ot.py
+- industrialxpl/modules/cve/cve_2019_0708/__init__.py + cve_2019_0708_bluekeep_ot.py
+- industrialxpl/modules/cve/cve_2017_0144/__init__.py + cve_2017_0144_eternalblue_ot.py
+
+### Proximo passo imediato
+- Commit dos novos modulos com mensagem clara
+- Considerar adicionar modulos DNP3 SA v5 bypass e PROFINET DCP enumeration
+
+### Pendencias conhecidas
+- [ ] Modulos OPC UA (sem autenticacao por design)
+- [ ] Modulos HART-IP (protocolo sem auth nativo)
+- [ ] Mais CVEs Rockwell/Schneider com PoC
+
+### Ambiente necessario
+- Python >= 3.9
+- pip install -e . (projeto instalavel via pyproject.toml)
+- scapy (para profinet_dcp_ip_spoof em modo live)
+- pysnmp (para snmp_public_ot_device)
+- pywin32 (para opc_da_unauthorized_write no Windows)
+
+### Paths importantes
+- Windows: D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge
