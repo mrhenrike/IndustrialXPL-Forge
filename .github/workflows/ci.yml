@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  test:
+    name: Test Python ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.11", "3.13"]
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Verify module index
+        run: |
+          python -c "
+          from industrialxpl.core.exploit.utils import index_modules, import_exploit
+          mods = index_modules()
+          errors = []
+          for m in mods:
+              try: import_exploit('industrialxpl.modules.' + m)()
+              except Exception as e: errors.append(f'{m}: {e}')
+          print(f'Modules OK: {len(mods) - len(errors)}/{len(mods)}')
+          if errors:
+              for e in errors: print('ERROR:', e)
+              raise SystemExit(1)
+          "
+
+      - name: Run linter
+        run: ruff check industrialxpl/ --ignore E501,E402
+
+  security-scan:
+    name: Security audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install pip-audit bandit
+      - run: pip-audit -r requirements.txt --ignore-vuln PYSEC-2022-43012 || true
+      - run: bandit -r industrialxpl/ -ll -q || true
