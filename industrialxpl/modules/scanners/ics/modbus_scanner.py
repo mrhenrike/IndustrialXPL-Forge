@@ -36,13 +36,13 @@ _PROTOCOL_ID = 0x0000
 _UNIT_ID = 0x01
 
 # Function Code 43 sub-function 14 (MEI — Read Device Identification)
-_MEI_REQ = struct.pack(">HHHBBBB", _TRANSACTION, _PROTOCOL_ID, 4, _UNIT_ID, 0x2B, 0x0E, 0x01, 0x00)
+_MEI_REQ = struct.pack(">HHHBBBBB", _TRANSACTION, _PROTOCOL_ID, 4, _UNIT_ID, 0x2B, 0x0E, 0x01, 0x00)
 
 # FC1 — Read Coils (address 0, quantity 8)
-_FC1_REQ = struct.pack(">HHHBBBBB", _TRANSACTION, _PROTOCOL_ID, 6, _UNIT_ID, 0x01, 0x00, 0x00, 0x00, 0x08)
+_FC1_REQ = struct.pack(">HHHBBBBBB", _TRANSACTION, _PROTOCOL_ID, 6, _UNIT_ID, 0x01, 0x00, 0x00, 0x00, 0x08)
 
 # FC3 — Read Holding Registers (address 0, quantity 10)
-_FC3_REQ = struct.pack(">HHHBBBBB", _TRANSACTION, _PROTOCOL_ID, 6, _UNIT_ID, 0x03, 0x00, 0x00, 0x00, 0x0A)
+_FC3_REQ = struct.pack(">HHHBBBBBB", _TRANSACTION, _PROTOCOL_ID, 6, _UNIT_ID, 0x03, 0x00, 0x00, 0x00, 0x0A)
 
 
 def _modbus_query(host: str, port: int, request: bytes, timeout: int = 5) -> Optional[bytes]:

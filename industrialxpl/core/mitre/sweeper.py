@@ -213,4 +213,3 @@ class MitreTacticSweeper:
             except Exception:
                 pass
         return live
-
