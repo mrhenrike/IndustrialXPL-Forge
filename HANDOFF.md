@@ -241,3 +241,53 @@ python tools/env_doctor.py
 ### Paths importantes
 - Windows: D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge
 - Linux: /mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge
+
+
+## [2026-05-30 20:28] — Migração mrhenrike + PyPI 1.0.0 + CVE/Malware Wave 3
+
+### Estado ao encerrar
+- Repositório migrado: Uniao-Geek/IndustrialXPL-Forge -> mrhenrike/IndustrialXPL-Forge
+- pyproject.toml atualizado: name=industrialxpl-forge, urls=mrhenrike, extras=[sast]
+- Todas as referências Uniao-Geek substituídas por mrhenrike (13 arquivos)
+- Pacote publicado no PyPI: https://pypi.org/project/industrialxpl-forge/1.0.0/
+- pip install industrialxpl-forge funcional (631 módulos indexados via pip)
+- CVE Wave 3: 49 novos módulos (Rockwell, Siemens, Schneider, ABB, Omron, GE, SAP, ActiveMQ)
+- Malwares: 26 TTPs — incluindo KillDisk.c, NotPetya.cpp, EKANS.py, CosmicEnergy.py nativos
+- No-CVE Wave 2: 15 módulos (IEC61850 GOOSE, OPC UA, CC-Link, S7 clock, serial gateway)
+- Total: 631/631 módulos validados sem erros
+
+### Arquivos modificados
+- pyproject.toml (name, urls, email, extras)
+- README.md, README.pt-BR.md (refs Uniao-Geek -> mrhenrike)
+- 11 módulos .py com refs Uniao-Geek atualizadas
+- dist/industrialxpl_forge-1.0.0-py3-none-any.whl (1.2 MB)
+- dist/industrialxpl_forge-1.0.0.tar.gz (519 KB)
+
+### Commits realizados
+- aed06bf — Migrate to mrhenrike: update pyproject.toml, URLs, package name industrialxpl-forge 1.0.0
+- 9f4b6c8 — Expand CVE coverage to 631 modules: wave 3 CVEs + malware natives + no-CVE exploits
+- 0aea317 — Add comprehensive ICS malware TTP coverage (2010-2024): 26 malware modules
+
+### Próximo passo imediato
+- Testar SAST via LLM: configurar GOOGLE_AI_STUDIO_API_KEY ou OPENAI_API_KEY no env
+  Comando: set GOOGLE_AI_STUDIO_API_KEY=sua_chave_aqui
+  Então: ixf -> use assessment/sast/plc_source_analyzer -> set path industrialxpl/resources/sast_examples -> run
+
+### Pendências conhecidas
+- [ ] SAST LLM test pendente (chave de API não configurada no ambiente)
+- [ ] PyPI: enviar email de confirmação se PyPI pedir verificação de email
+- [ ] Imagem que o user tentou anexar não chegou — verificar se há metadados específicos de pyproject.toml a ajustar
+- [ ] Expandir CVE coverage com mais Level A PoCs (atualmente ~631, meta 700+)
+- [ ] Documentação bilíngue completa de todos os módulos
+
+### Ambiente necessário
+- Python 3.9+
+- pip install industrialxpl-forge (publicado no PyPI)
+- Para SAST: GOOGLE_AI_STUDIO_API_KEY ou OPENAI_API_KEY
+- Git remote: https://github.com/mrhenrike/IndustrialXPL-Forge.git
+
+### Paths importantes
+- Windows: D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge
+- PyPI: https://pypi.org/project/industrialxpl-forge/
+- GitHub: https://github.com/mrhenrike/IndustrialXPL-Forge
