@@ -39,8 +39,8 @@ _PROVIDER_CONFIG = {
         "extra_headers": {"anthropic-version": "2023-06-01"},
     },
     "gemini": {
-        "url":   "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent",
-        "model": "gemini-1.5-pro",
+        "url":   "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
+        "model": "gemini-2.5-flash",
         "auth":  None,
         "key_header": None,  # key as query param
         "format": "gemini",

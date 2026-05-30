@@ -1,0 +1,39 @@
+(* IEC 61131-3 Sequential Function Chart
+   Chemical Reactor Batch Process
+   VULNERABILITIES: Incomplete transitions, no timeout, missing safety *)
+
+INITIAL_STEP S0: LoadChemicals
+    ACTIONS:
+        N: ValveA := TRUE   // Load Chemical A
+        (* MISSING: Check tank level before loading *)
+        (* MISSING: Verify compatibility before mixing *)
+    END_ACTIONS
+END_STEP
+
+TRANSITION FROM S0 TO S1 := X_ChemA_Loaded;
+(* MISSING: Timeout for S0 - could stay here indefinitely *)
+(* MISSING: Safety check before transition *)
+
+STEP S1: HeatReactor
+    ACTIONS:
+        N: Heater := TRUE
+        N: Mixer := TRUE
+        (* UNSAFE: No temperature upper limit *)
+        (* HARDCODED max temp: 150C but safe max is 120C *)
+    END_ACTIONS
+END_STEP
+
+TRANSITION FROM S1 TO S2 := (Temperature > 140.0);
+(* DANGEROUS: Set temperature hardcoded wrong, allows runaway *)
+
+STEP S2: AddCatalyst
+    ACTIONS:
+        N: CatalystValve := TRUE
+        (* MISSING: Rate limiting for catalyst addition *)
+        (* Rapid catalyst addition can cause exothermic runaway *)
+    END_ACTIONS
+END_STEP
+
+(* MISSING: Emergency state *)
+(* MISSING: Transition to safe state on alarm *)
+(* Any Modbus write to HR[200] can force immediate transition *)

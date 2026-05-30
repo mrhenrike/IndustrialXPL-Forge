@@ -143,3 +143,43 @@ python tools/env_doctor.py
 ### Paths importantes
 - Windows: D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge
 - Linux: /mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge
+
+---
+
+## [2026-05-30 22:41] -- Implementacao malware ICS: 10 modulos APT/malware
+
+### Estado ao encerrar
+- Criados 7 modulos Python em `industrialxpl/modules/cve/malware/`:
+  - `crashoverride_industroyer.py` -- CrashOverride/Industroyer 4-payload (IEC101/104, GOOSE, Modbus), CATASTROPHIC
+  - `havex_dragonfly_opc.py` -- Havex/Dragonfly OPC DA exfiltration via DCOM, HIGH
+  - `triton_trisis_sis_attack.py` -- TRITON extended: handshake, READ_PROGRAM_SIS, WRITE_PROGRAM_SIS, HALT_SIS, CATASTROPHIC
+  - `incontroller_pipedream_suite.py` -- PIPEDREAM: TAGRUN, MOUSEHOLE, BADOMEN, DUSTTUNNEL, CATASTROPHIC
+  - `acidrain_firmware_wiper.py` -- AcidRain firmware wiper via HTTP POST, CATASTROPHIC
+  - `kamacite_spearphishing.py` -- Kamacite OT spearphishing templates (4 lures), HIGH
+  - `chernovite_ot_living_off_land.py` -- Chernovite LotL: RSLinx/CIP, S7comm/TIA, OPC UA, CRITICAL
+- Criados 3 artefatos nativos em `industrialxpl/modules/cve/malware/_native/`:
+  - `modbus_flood.c` -- C flood Modbus FC03, compilavel com gcc
+  - `s7_watchdog_bypass.cpp` -- C++ S7comm watchdog bypass para S7-300/400, compilavel com g++
+  - `frostygoop_extended.go` -- Go multi-target Modbus FC16 com goroutines e --simulate flag
+- Verificacao: `index_modules()` retorna 529 modulos sem erros
+- Todos os 7 modulos Python: simulate=True default, impact correto, importam sem erros
+
+### Proximo passo imediato
+- Testar `run simulate=True` no shell IXF: `python ixf.py`
+  - `use cve/malware/crashoverride_industroyer` -> set target -> run
+
+### Pendencias conhecidas
+- [ ] Compilar e testar modbus_flood.c em WSL: gcc -O2 -o .tmp/modbus_flood modbus_flood.c
+- [ ] Compilar s7_watchdog_bypass.cpp: g++ -O2 -std=c++11 -o .tmp/s7_wb s7_watchdog_bypass.cpp
+- [ ] Compilar frostygoop_extended.go: go build -o .tmp/frostygoop_ext frostygoop_extended.go
+- [ ] Testes end-to-end em ambiente de laboratorio OT
+
+### Ambiente necessario
+- Python 3.13+
+- IndustrialXPL-Forge instalado em modo editavel: pip install -e .
+- Go 1.21+ para compilar frostygoop_extended.go
+- gcc/g++ para modbus_flood.c e s7_watchdog_bypass.cpp
+
+### Paths importantes
+- Windows: D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge
