@@ -1,0 +1,105 @@
+# Author: André Henrique (@mrhenrike) | União Geek — https://uniaogeek.com.br/
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "industrialxpl"
+version = "1.0.0"
+description = "IndustrialXPL-Forge — The World's Largest OT/ICS/SCADA Security Assessment & Exploitation Framework. Python-First (no Metasploit required). 3800+ modules, 79 MITRE ATT&CK for ICS techniques, 3300+ CVEs, 50 vendors, 50 protocols."
+readme = { file = "README.md", content-type = "text/markdown" }
+license = { file = "LICENSE" }
+authors = [
+    { name = "André Henrique", email = "henrique.santos@uniaogeek.com.br" },
+]
+maintainers = [
+    { name = "André Henrique", email = "henrique.santos@uniaogeek.com.br" },
+]
+keywords = [
+    "security", "pentesting", "ics", "scada", "ot-security", "plc", "hmi",
+    "modbus", "s7comm", "enip", "dnp3", "bacnet", "profinet", "iec61850",
+    "opc-ua", "industrial-control-systems", "red-team", "exploit",
+    "vulnerability-scanner", "cve", "mitre-attack", "ot-ics",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Security",
+    "Topic :: System :: Networking",
+]
+requires-python = ">=3.9"
+dependencies = [
+    "requests>=2.32",
+    "paramiko>=3.0",
+    "pysnmp>=4.4",
+    "scapy>=2.5",
+    "rich>=13.0",
+    "psutil>=5.9",
+]
+
+[project.optional-dependencies]
+ot = [
+    "pymodbus>=3.5",
+    "asyncua>=1.0",
+    "cpppo>=4.3",
+]
+fieldbus = [
+    "python-can>=4.3",
+]
+mes = [
+    "requests>=2.32",
+    "paramiko>=3.0",
+]
+dev = [
+    "pytest>=7.0",
+    "ruff>=0.4",
+    "bandit>=1.7",
+    "pip-audit>=2.6",
+    "build>=1.0",
+]
+full = [
+    "pymodbus>=3.5",
+    "asyncua>=1.0",
+    "cpppo>=4.3",
+    "python-can>=4.3",
+]
+
+[project.urls]
+Homepage      = "https://github.com/Uniao-Geek/IndustrialXPL-Forge"
+Repository    = "https://github.com/Uniao-Geek/IndustrialXPL-Forge"
+Documentation = "https://github.com/Uniao-Geek/IndustrialXPL-Forge/wiki"
+"Bug Tracker" = "https://github.com/Uniao-Geek/IndustrialXPL-Forge/issues"
+Changelog     = "https://github.com/Uniao-Geek/IndustrialXPL-Forge/releases"
+
+[project.scripts]
+ixf           = "industrialxpl.__main__:main"
+industrialxpl = "industrialxpl.__main__:main"
+
+[tool.setuptools.packages.find]
+where   = ["."]
+include = ["industrialxpl*"]
+
+[tool.setuptools.package-data]
+"industrialxpl.resources" = [
+    "wordlists/**/*.txt",
+    "wordlists/*.txt",
+    "cve/*.json",
+    "compliance/*.json",
+    "risk/*.json",
+    "osint/*.json",
+    "**/*.json",
+]
+"industrialxpl.modules.cve._native" = ["*.c", "*.cpp", "*.go", "*.rb"]

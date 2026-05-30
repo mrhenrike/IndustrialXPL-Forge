@@ -1,0 +1,52 @@
+{
+  "_meta": {
+    "title": "IXF Shodan ICS/OT Dorks",
+    "description": "Shodan queries for discovering OT/ICS devices exposed to the internet.",
+    "source": "ZeronTek OT Hunt research + Shodan QuickStart Guide for ICS OT (UtilSec)",
+    "updated": "2026-05-29"
+  },
+  "protocols": {
+    "modbus": ["port:502", "modbus"],
+    "siemens_s7": ["port:102 s7", "Siemens S7", "\"S7-300\"", "\"S7-1200\""],
+    "enip_cip": ["port:44818", "ethernet/ip", "Allen-Bradley"],
+    "profinet": ["Siemens PROFINET", "port:34962"],
+    "bacnet": ["port:47808", "bacnet", "product:\"BACnet\""],
+    "dnp3": ["port:20000", "dnp3"],
+    "opc_ua": ["port:4840", "opc ua", "opcua"],
+    "iec104": ["port:2404", "IEC 104", "iec60870"],
+    "hart": ["port:5094", "HART-IP"],
+    "niagara_fox": ["port:4911", "Niagara", "Tridium"]
+  },
+  "vendors": {
+    "siemens": ["Siemens", "SIMATIC", "WinCC", "S7-300", "S7-1200", "SINEMA"],
+    "schneider": ["Schneider Electric", "Modicon", "EcoStruxure", "SCADAPack", "ClearSCADA"],
+    "rockwell": ["Allen-Bradley", "Rockwell Automation", "ControlLogix", "ThinManager"],
+    "honeywell": ["Honeywell", "Experion", "product:\"IQ4E\"", "Trend Control Systems Ltd"],
+    "ge": ["GE Digital", "Proficy", "CIMPLICITY", "iFIX"],
+    "abb": ["ABB", "AC500", "AC800M"],
+    "yokogawa": ["Yokogawa", "CENTUM", "STARDOM"],
+    "omron": ["Omron", "SYSMAC", "NJ series", "CJ2M"],
+    "mitsubishi": ["Mitsubishi", "MELSEC", "iQ-F"],
+    "beckhoff": ["Beckhoff", "TwinCAT", "port:48898"],
+    "phoenix_contact": ["Phoenix Contact", "port:1962"],
+    "moxa": ["Moxa", "NPort", "port:4800"],
+    "advantech": ["Advantech", "WebAccess", "ADAM"],
+    "unitronics": ["Unitronics", "port:20256", "Unitronics PCOM"],
+    "scadapack": ["SCADAPack", "RemoteConnect RTU", "port:17185"],
+    "tridium": ["Tridium", "Niagara", "JACE"],
+    "inhand": ["InHand", "InRouter", "industrial router"],
+    "wago": ["WAGO", "port:502 WAGO"],
+    "codesys": ["port:1200", "CODESYS", "3S Software"],
+    "fuxa": ["FUXA", "port:1881 fuxa"],
+    "weg": ["WEG", "WEG PLC"],
+    "scadabr": ["ScadaBR"]
+  },
+  "attack_surface": {
+    "icefall_targets": ["port:47808 port:102", "OT:ICEFALL"],
+    "water_treatment": ["\"water treatment\"", "\"water pump\"", "Unitronics", "port:20256"],
+    "energy_grid": ["IEC 61850", "port:2404 dnp3", "substation"],
+    "building_automation": ["BACnet", "port:47808", "Honeywell", "Johnson Controls"],
+    "oil_gas": ["\"oil\"", "\"gas\"", "\"pipeline\"", "port:502 Modbus"],
+    "internet_exposed_plc": ["port:502", "port:102", "port:44818", "port:20256"]
+  }
+}

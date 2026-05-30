@@ -1,0 +1,42 @@
+# IndustrialXPL-Forge .gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.venv/
+venv/
+env/
+
+# IXF runtime artifacts
+.tmp/
+*.log
+industrialxpl.log
+
+# Compiled native exploits (C/C++/Go binaries)
+industrialxpl/modules/cve/_native/*.exe
+industrialxpl/modules/cve/_native/*.bin
+industrialxpl/modules/cve/_native/*.out
+industrialxpl/modules/cve/_native/*.o
+
+# Reports / outputs
+*.json.report
+*.html.report
+
+# Secrets / credentials
+.env
+*.pem
+*.key
+*.p12
+*.pfx
+
+# IDE
+.cursor/
+.vscode/
+.idea/
+*.swp
