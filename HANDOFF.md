@@ -70,3 +70,76 @@ cd D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge
 python -c "from industrialxpl.interpreter import IXFInterpreter; i=IXFInterpreter(); print(i.modules.__len__(), 'modules')"
 python tools/env_doctor.py
 ```
+
+## [2026-05-29 23:45] — MSF SCADA Ports + Malware TTP + Assessment Modules
+
+### Estado ao encerrar
+- Criados 17 novos modulos Python em industrialxpl/modules/
+- 8 exploits SCADA (MSF ports): IGSS9 ListAll, IGSS9 Rename, RealWin BOF, ScadaPro CMD, CitectSCADA ODBC, Winlog Runtime, Genesis32 GenBroker, BKBCopyD BOF
+- 2 exploits PLC: GE D20 credential dump (TFTP), Rockwell CIP multi-command (STOP/CRASH/RESET_ETH)
+- 2 malware TTP replicas: Industroyer2 IEC104 RTU, TRITON/TRISIS Triconex
+- 2 scanners OSINT: OT Hunt Scanner (Honeywell/SCADAPack/Unitronics), Shodan ICS
+- 3 assessment modules: IEC 62443-3-2 Zone/Conduit, NIST SP 800-82r3, ICS Kill Chain 14 stages
+- Total indexado: 135 modulos (era 118 antes desta sessao)
+- Todos os 17 modulos passaram no import test (get_info() 17/17 OK)
+- Arquivos modificados: 17 novos .py em subdirs existentes (sem novos __init__.py necessarios)
+
+### Proximo passo imediato
+- Executar testes de integracao e simulacao dos novos modulos via ixf console
+- Adicionar novos modulos ao catalogo README.md do IXF se existir
+
+### Pendencias conhecidas
+- [ ] Testar simulate mode interativo dos assessment modules (zone_conduit_audit, control_checklist)
+- [ ] Validar CIP multi-command STOP contra lab AllenBradley se disponivel
+- [ ] Adicionar igss9_dataserver_listall e igss9_dataserver_rename ao README de modulos
+
+### Ambiente necessario
+- Python 3.13 (Windows)
+- industrialxpl instalado em modo dev (pip install -e .)
+- Nao requer containers/servicos
+
+### Paths importantes
+- Windows: D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge\
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge/
+
+## [2026-05-29 23:45] — IXF LATAM vendors + CVE batch (20 modules)
+
+### Estado ao encerrar
+- Criados 20 novos módulos no IndustrialXPL-Forge
+- Todos passam import e sao indexados por index_modules() (total: 135 modulos)
+- Arquivos modificados:
+  - industrialxpl/modules/exploits/plc/honeywell/iq4e_bacnet_pin_extract.py
+  - industrialxpl/modules/exploits/plc/schneider/scadapack_vxworks_debug_17185.py
+  - industrialxpl/modules/exploits/plc/beckhoff/twincat_ads_dos.py
+  - industrialxpl/modules/exploits/plc/koyo/directlogic_ecom_brute.py
+  - industrialxpl/modules/exploits/plc/phoenix_contact/plc_start_stop_command.py
+  - industrialxpl/modules/exploits/plc/omron/fins_plc_control.py
+  - industrialxpl/modules/exploits/engineering/moxa/mdmtool_bof_rce.py
+  - industrialxpl/modules/exploits/engineering/moxa/moxa_credentials_recovery.py
+  - industrialxpl/modules/scanners/ics/bacnet_l3_scan.py
+  - industrialxpl/modules/scanners/ics/pcom_scan.py
+  - industrialxpl/modules/cve/cve_2022_30313_honeywell_controledge.py
+  - industrialxpl/modules/cve/cve_2021_38397_honeywell_experion_pks.py
+  - industrialxpl/modules/cve/cve_2024_5989_thinmanager_sqli_rce.py
+  - industrialxpl/modules/cve/cve_2024_35783_simatic_db_os_cmd.py
+  - industrialxpl/modules/cve/cve_2023_27396_omron_cj2m_fins.py
+  - industrialxpl/modules/cve/cve_2020_8476_abb_ac500_hardcoded.py
+  - industrialxpl/modules/cve/cve_2019_13946_s7_300_profinet_dos.py
+  - industrialxpl/modules/cve/cve_2021_22681_s7_1200_hardcoded_key.py
+  - industrialxpl/modules/assessment/risk/ics_risk_scorer.py
+  - industrialxpl/modules/assessment/ir/iacs_ir_playbook.py
+
+### Proximo passo imediato
+- Nenhum pendente neste batch. Proximo: commit git e push se solicitado.
+
+### Pendencias conhecidas
+- [ ] Commit git com os 20 arquivos novos (aguardando instrucao do usuario)
+- [ ] Testes end-to-end em ambiente de laboratorio OT
+
+### Ambiente necessario
+- Python 3.13+
+- IndustrialXPL-Forge instalado em modo editavel: pip install -e .
+
+### Paths importantes
+- Windows: D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge

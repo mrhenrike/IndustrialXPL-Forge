@@ -1,10 +1,8 @@
 {
   "_meta": {
     "title": "IXF ICS/OT/SCADA CVE Database",
-    "description": "Structured CVE catalog for ICS/OT/SCADA environments. Includes CVSS scores, affected versions, CISA advisories, MITRE techniques, and IXF module paths.",
-    "version": "1.0.0",
-    "updated": "2026-05-29",
-    "total_entries": "3300+"
+    "updated": "2026-05-30",
+    "total_entries": 7
   },
   "cves": [
     {
@@ -19,7 +17,11 @@
       "has_public_poc": true,
       "poc_url": "https://github.com/Hann1bl3L3ct3r/FUXAPWN",
       "cisa_advisory": "N/A",
-      "mitre_ics_techniques": ["T0819", "T0866", "T0853"],
+      "mitre_ics_techniques": [
+        "T0819",
+        "T0866",
+        "T0853"
+      ],
       "ixf_module": "exploits/scada/fuxa/fuxa_preauth_rce_cve_2026_25895"
     },
     {
@@ -33,7 +35,11 @@
       "exploit_type": "Unauthenticated Protocol (OT:ICEFALL)",
       "has_public_poc": false,
       "cisa_advisory": "ICSA-22-167-06",
-      "mitre_ics_techniques": ["T0843", "T0821", "T0826"],
+      "mitre_ics_techniques": [
+        "T0843",
+        "T0821",
+        "T0826"
+      ],
       "ixf_module": "cve/emerson/cve_2022_29953_deltav_noauth"
     },
     {
@@ -48,7 +54,11 @@
       "has_public_poc": true,
       "poc_url": "Metasploit auxiliary/dos/scada/siemens_siprotec4",
       "cisa_advisory": "ICSA-15-202-01",
-      "mitre_ics_techniques": ["T0814", "T0813", "T0837"],
+      "mitre_ics_techniques": [
+        "T0814",
+        "T0813",
+        "T0837"
+      ],
       "ixf_module": "exploits/plc/siemens/siprotec4_dos_cve_2015_5374"
     },
     {
@@ -63,7 +73,11 @@
       "has_public_poc": true,
       "poc_url": "CISA Alert AA23-335A",
       "cisa_advisory": "AA23-335A",
-      "mitre_ics_techniques": ["T1694.001", "T0859", "T0816"],
+      "mitre_ics_techniques": [
+        "T1694.001",
+        "T0859",
+        "T0816"
+      ],
       "ixf_module": "exploits/plc/unitronics/pcom_default_auth_bypass"
     },
     {
@@ -77,7 +91,9 @@
       "exploit_type": "CIP Security Object DoS",
       "has_public_poc": false,
       "cisa_advisory": "ICSA-24-256-18",
-      "mitre_ics_techniques": ["T0814"],
+      "mitre_ics_techniques": [
+        "T0814"
+      ],
       "ixf_module": "exploits/plc/rockwell/compactlogix_cip_dos_cve_2024_6077"
     },
     {
@@ -91,7 +107,10 @@
       "exploit_type": "SQL Injection -> RCE (Unauthenticated)",
       "has_public_poc": false,
       "cisa_advisory": "N/A",
-      "mitre_ics_techniques": ["T0819", "T0866"],
+      "mitre_ics_techniques": [
+        "T0819",
+        "T0866"
+      ],
       "ixf_module": "exploits/mes/rockwell/cve_2024_5989_thinmanager_sqli_rce"
     },
     {
@@ -106,7 +125,11 @@
       "has_public_poc": true,
       "poc_url": "InduGuard PoC / Stuxnet analysis",
       "cisa_advisory": "N/A",
-      "mitre_ics_techniques": ["T0873.001", "T0889", "T0851"],
+      "mitre_ics_techniques": [
+        "T0873.001",
+        "T0889",
+        "T0851"
+      ],
       "ixf_module": "cve/apt/stuxnet_step7_cve_2010_2772"
     }
   ]
