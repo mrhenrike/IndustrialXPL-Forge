@@ -17,7 +17,7 @@ ixf
 Ou a partir do código-fonte:
 
 ```bash
-git clone https://github.com/Uniao-Geek/IndustrialXPL-Forge
+git clone https://github.com/mrhenrike/IndustrialXPL-Forge
 cd IndustrialXPL-Forge
 pip install -r requirements.txt
 python ixf.py

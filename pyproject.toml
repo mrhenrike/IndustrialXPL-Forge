@@ -1,13 +1,13 @@
-# Author: André Henrique (@mrhenrike) | União Geek — https://uniaogeek.com.br/
+# Author: André Henrique (@mrhenrike) | https://github.com/mrhenrike
 
 [build-system]
 requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "industrialxpl"
+name = "industrialxpl-forge"
 version = "1.0.0"
-description = "IndustrialXPL-Forge — The World's Largest OT/ICS/SCADA Security Assessment & Exploitation Framework. Python-First (no Metasploit required). 3800+ modules, 79 MITRE ATT&CK for ICS techniques, 3300+ CVEs, 50 vendors, 50 protocols."
+description = "IndustrialXPL-Forge (IXF) — OT/ICS/SCADA/HMI/IIoT Security Assessment & Exploitation Framework. Python-First, 631+ modules, 79 MITRE ATT&CK for ICS techniques, 26 ICS malware TTPs, 50+ vendors, 50+ protocols."
 readme = { file = "README.md", content-type = "text/markdown" }
 license = { file = "LICENSE" }
 authors = [
@@ -20,7 +20,8 @@ keywords = [
     "security", "pentesting", "ics", "scada", "ot-security", "plc", "hmi",
     "modbus", "s7comm", "enip", "dnp3", "bacnet", "profinet", "iec61850",
     "opc-ua", "industrial-control-systems", "red-team", "exploit",
-    "vulnerability-scanner", "cve", "mitre-attack", "ot-ics",
+    "vulnerability-scanner", "cve", "mitre-attack", "ot-ics", "iiot",
+    "xpl-forge", "firewall-xpl", "embed-xpl", "industrial-exploit",
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -30,6 +31,8 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "Intended Audience :: System Administrators",
     "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Natural Language :: Portuguese (Brazilian)",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.9",
@@ -39,6 +42,7 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "Topic :: Security",
     "Topic :: System :: Networking",
+    "Topic :: Scientific/Engineering",
 ]
 requires-python = ">=3.9"
 dependencies = [
@@ -63,26 +67,33 @@ mes = [
     "requests>=2.32",
     "paramiko>=3.0",
 ]
+sast = [
+    "openai>=1.0",
+    "anthropic>=0.20",
+]
 dev = [
     "pytest>=7.0",
     "ruff>=0.4",
     "bandit>=1.7",
     "pip-audit>=2.6",
     "build>=1.0",
+    "twine>=5.0",
 ]
 full = [
     "pymodbus>=3.5",
     "asyncua>=1.0",
     "cpppo>=4.3",
     "python-can>=4.3",
+    "openai>=1.0",
+    "anthropic>=0.20",
 ]
 
 [project.urls]
-Homepage      = "https://github.com/Uniao-Geek/IndustrialXPL-Forge"
-Repository    = "https://github.com/Uniao-Geek/IndustrialXPL-Forge"
-Documentation = "https://github.com/Uniao-Geek/IndustrialXPL-Forge/wiki"
-"Bug Tracker" = "https://github.com/Uniao-Geek/IndustrialXPL-Forge/issues"
-Changelog     = "https://github.com/Uniao-Geek/IndustrialXPL-Forge/releases"
+Homepage      = "https://github.com/mrhenrike/IndustrialXPL-Forge"
+Repository    = "https://github.com/mrhenrike/IndustrialXPL-Forge"
+Documentation = "https://github.com/mrhenrike/IndustrialXPL-Forge/wiki"
+"Bug Tracker" = "https://github.com/mrhenrike/IndustrialXPL-Forge/issues"
+Changelog     = "https://github.com/mrhenrike/IndustrialXPL-Forge/releases"
 
 [project.scripts]
 ixf           = "industrialxpl.__main__:main"
