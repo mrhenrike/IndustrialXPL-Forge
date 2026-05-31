@@ -3,7 +3,7 @@
 > **O Maior Framework de Assessment e Exploração de Segurança OT/ICS/SCADA do Mundo**
 > Parte da suite XPL-Forge | Autor: André Henrique ([@mrhenrike](https://github.com/mrhenrike)) | [União Geek](https://uniaogeek.com.br/)
 
-**Python-First — sem Metasploit. Sem msfconsole. Sem Ruby. Apenas Python.**
+**Python-First. Implementação pura em Python — instale e execute com um único `pip install`.**
 
 ---
 
@@ -36,7 +36,7 @@ OSINT → Descoberta → Fingerprint → Verificação de Vulnerabilidade → Ex
 ```
 
 **Funcionalidades principais:**
-- **Python-First**: toda a funcionalidade central funciona com `pip install industrialxpl` — sem Metasploit, sem Ruby, sem Java
+- **Python-First**: toda a funcionalidade central funciona com `pip install industrialxpl` — runtimes externos (C, Go, Java) são aceleradores opcionais com fallback Python embutido
 - **SafeMode por padrão**: todo módulo executa em modo simulação — imprime o payload sem enviar
 - **MITRE ATT&CK for ICS v19**: 79 técnicas mapeadas, sintaxe `ttp T0843 192.168.1.100`
 - **Cobertura de CVEs**: 3.300+ CVEs ICS/OT de CVSS 0,1 a 10,0
@@ -119,4 +119,4 @@ Sistemas OT/ICS controlam infraestruturas físicas críticas. O uso não autoriz
 
 **Autor:** André Henrique ([@mrhenrike](https://github.com/mrhenrike)) | [União Geek](https://uniaogeek.com.br/)
 
-Fontes dos módulos: EmbedXPL-Forge (irmão da suite), ISF/ICSSploit, ModBusSploit, módulos Metasploit SCADA (portados para Python), n-days-poc-benchmark, InduGuard, pesquisa ZeronTek OT Hunt, CISA ICS-CERT advisories, Vedere Labs OT:ICEFALL.
+Fontes dos módulos: EmbedXPL-Forge (irmão da suite), ISF/ICSSploit, ModBusSploit, n-days-poc-benchmark, InduGuard, pesquisa ZeronTek OT Hunt, CISA ICS-CERT advisories, Vedere Labs OT:ICEFALL, catálogo ExploitDB ICS, PoCs públicos no GitHub.

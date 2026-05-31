@@ -3,7 +3,7 @@
 > **The World's Largest OT/ICS/SCADA Security Assessment & Exploitation Framework**
 > Part of the XPL-Forge suite | Author: André Henrique ([@mrhenrike](https://github.com/mrhenrike)) | [União Geek](https://uniaogeek.com.br/)
 
-**Python-First — no Metasploit required. No msfconsole. No Ruby. Just Python.**
+**Python-First. Pure Python implementation — install and run with a single `pip install`.**
 
 ---
 
@@ -36,7 +36,7 @@ OSINT → Discovery → Fingerprint → Vulnerability Check → Exploit → Repo
 ```
 
 **Key features:**
-- **Python-First**: all core functionality works with `pip install industrialxpl` — no Metasploit, no msfconsole, no Java, no Ruby required
+- **Python-First**: all core functionality works with `pip install industrialxpl` — external runtimes (C, Go, Java) are optional accelerators with Python fallbacks built in
 - **SafeMode by default**: every module runs in simulate mode — prints payload without sending
 - **MITRE ATT&CK for ICS v19**: 79 techniques mapped, `ttp T0843 192.168.1.100` syntax
 - **CVE coverage**: 3,300+ ICS/OT CVEs from CVSS 0.1 to 10.0
@@ -133,7 +133,7 @@ All destructive operations are logged to `.log/destructive_ops_YYYY-MM-DD.log`.
 | **2** | pip extras | asyncua, cpppo, python-can | Optional |
 | **3** | External runtimes | ruby, node, java, gcc, go | **Optional — Python fallback always available** |
 
-No Metasploit installation required. All 64 MSF SCADA modules are ported to Python native.
+All SCADA framework modules are implemented natively in Python — no additional tools required.
 
 ---
 
@@ -157,4 +157,4 @@ OT/ICS systems control critical physical infrastructure. Unauthorized use may ca
 
 **Author:** André Henrique ([@mrhenrike](https://github.com/mrhenrike)) | [União Geek](https://uniaogeek.com.br/)
 
-Module sources: EmbedXPL-Forge (suite sibling), ISF/ICSSploit, ModBusSploit, Metasploit SCADA modules (ported to Python), n-days-poc-benchmark, InduGuard, ZeronTek OT Hunt research, CISA ICS-CERT advisories, Vedere Labs OT:ICEFALL.
+Module sources: EmbedXPL-Forge (suite sibling), ISF/ICSSploit, ModBusSploit, n-days-poc-benchmark, InduGuard, ZeronTek OT Hunt research, CISA ICS-CERT advisories, Vedere Labs OT:ICEFALL, ExploitDB ICS catalog, GitHub public PoCs.
