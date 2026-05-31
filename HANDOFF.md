@@ -29,8 +29,8 @@
 
 ### Proximo passo imediato (retomar aqui)
 
-Continuar o **Bloco 2** portando os modulos MSF SCADA:
-1. 64 modulos Metasploit → Python puro (scanners, admin, dos, exploits/windows/scada)
+Continuar o **Bloco 2** portando os modulos SCADA para Python:
+1. 64 modulos SCADA → Python puro (scanners, admin, dos, exploits/windows/scada)
 2. Protocolos ISF (8 scanners restantes) + ModBusSploit (8 modulos ataque Modbus)
 3. Malware TTP: Industroyer2 (C++/Python), INCONTROLLER, TRITON replica, BlackEnergy
 
@@ -52,7 +52,7 @@ Continuar o **Bloco 2** portando os modulos MSF SCADA:
 - Python 3.9+
 - pip install industrialxpl (ou pip install -e . no diretorio do projeto)
 - pymodbus, scapy, rich, requests, paramiko, pysnmp, asyncua (instalados via pip)
-- Nao requer Metasploit, Ruby, Java ou outros runtimes externos
+- Runtimes externos sao opcionais (Python sempre disponivel como fallback)
 
 ### Paths importantes
 

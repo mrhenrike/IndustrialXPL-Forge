@@ -47,7 +47,7 @@ _BANNER = r"""
                                                                               |___/
   IndustrialXPL-Forge v{version} — OT/ICS/SCADA Security Assessment Framework
   Author: André Henrique (@mrhenrike) | União Geek | https://uniaogeek.com.br/
-  Python-First: no Metasploit required. Pure Python implementation.
+  Python-First. Pure Python — install with pip install industrialxpl-forge.
   Type 'help' for commands.  simulate=True by default (safe mode).
 """.format(version=VERSION)
 

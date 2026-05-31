@@ -1,5 +1,5 @@
 # IndustrialXPL-Forge — Core Python dependencies (Tier 1)
-# Python-First: no Metasploit, no msfconsole, no external runtimes required.
+# Python-First: pure Python implementation. External runtimes optional.
 # Install: pip install -r requirements.txt
 # Full install: pip install -e ".[full]"
 
@@ -25,7 +25,6 @@ psutil>=5.9
 # python-can>=4.3        # CAN bus / CANopen
 
 # ── External runtimes (Tier 3 — OPTIONAL, fallback Python always available) ─
-# ruby                   # For Metasploit modules (optional, not installed here)
 # nodejs                 # For JavaScript/TypeScript exploits (optional)
 # java / javac           # For Java deserialization exploits (optional)
 # gcc / g++              # For C/C++ native exploits (optional)

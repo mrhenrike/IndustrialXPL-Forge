@@ -84,8 +84,7 @@ def main() -> None:
     # ── Tier 3 — external runtimes (all optional) ────────────────────────
     print("\n[Tier 3 — External runtimes (ALL OPTIONAL — Python fallback always available)]")
     tier3 = [
-        ("ruby",       "For Metasploit Ruby modules (not installed here — Python native used)"),
-        ("msfconsole", "Metasploit Framework (optional, not installed — Python fallback)"),
+        ("ruby",       "Ruby runtime — for Ruby-based exploit modules (optional, Python fallback available)"),
         ("node",       "Node.js — for JavaScript/TypeScript exploits"),
         ("java",       "Java — for Java deserialization exploits"),
         ("javac",      "Java compiler — needed to compile .java sources"),
