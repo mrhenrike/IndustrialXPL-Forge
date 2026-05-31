@@ -4,9 +4,10 @@
 # Full install: pip install -e ".[full]"
 
 # Core networking & exploitation
-requests>=2.32.4
+requests>=2.31.0,<3.0
+urllib3>=1.26.0,<3.0
 paramiko>=3.0
-pysnmp>=4.4.12
+pysnmp>=6.1
 scapy>=2.5.0
 
 # UI / output
