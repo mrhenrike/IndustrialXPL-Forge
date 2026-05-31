@@ -291,3 +291,46 @@ python tools/env_doctor.py
 - Linux: /mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge
 - PyPI: https://pypi.org/project/industrialxpl-forge/
 - GitHub: https://github.com/mrhenrike/IndustrialXPL-Forge
+
+
+## [2026-05-30 22:01] — Health check, cleanups, v1.0.9
+
+### Estado ao encerrar
+- 911 modulos validados (911/911 sem erros)
+- 150 vendors globais cobertos
+- Limpeza de duplicatas: 8 modulos duplicados removidos (canonicos mantidos em cve/vendor/)
+- 5 __init__.py criados em dirs reais que faltavam
+- pyproject.toml description atualizada para 911+ modules
+- Interpreter version atualizada para 1.0.9
+- Badges README sincronizados com contagem real
+- git history limpo (zero Co-authored-by trailers)
+- CI corrigido: Python 3.11 only, sem heavy deps
+- .git/hooks/commit-msg instalado em todos os repos
+
+### Arquivos modificados
+- industrialxpl/interpreter.py (VERSION = 1.0.9)
+- pyproject.toml (version 1.0.9, module count 911+)
+- README.md, README.pt-BR.md (badges atualizados)
+- 5 novos __init__.py em subdirs
+- 8 modulos duplicados removidos
+
+### Commits recentes
+- v1.0.9 — 919/911 modules, 151/150 vendors
+- v1.0.8 — 861 modules, 124 vendors (wave 3)
+- v1.0.7 — 803 modules, 97 vendors + banner + badges
+
+### Pendencias conhecidas
+- [ ] CI precisa de token TestPyPI se quiser testar upload em PR
+- [ ] Documentacao bilíngue dos ~700 modulos gerados por batch (apenas __info__ descritivo por agora)
+- [ ] MITRE ATT&CK for ICS coverage: atingir 100% das 103 tecnicas mapeadas
+
+### Ambiente necessario
+- Python 3.9+ | pip install industrialxpl-forge
+- GOOGLE_AI_STUDIO_API_KEY ou OPENAI_API_KEY para SAST offline
+- git hook: .git/hooks/commit-msg strips Co-authored-by automatically
+
+### Paths importantes
+- Windows: D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge
+- PyPI: https://pypi.org/project/industrialxpl-forge/
+- GitHub: https://github.com/mrhenrike/IndustrialXPL-Forge
