@@ -1,7 +1,19 @@
+![IndustrialXPL-Forge](docs/img/industrialxpl_forge-banner_16x9-en_us.png)
+
 # IndustrialXPL-Forge (IXF)
 
 > **The World's Largest OT/ICS/SCADA Security Assessment & Exploitation Framework**
 > Part of the XPL-Forge suite | Author: André Henrique ([@mrhenrike](https://github.com/mrhenrike)) | [União Geek](https://uniaogeek.com.br/)
+
+[![PyPI version](https://img.shields.io/pypi/v/industrialxpl-forge?color=red&label=PyPI)](https://pypi.org/project/industrialxpl-forge/)
+[![Python](https://img.shields.io/pypi/pyversions/industrialxpl-forge?color=blue&label=Python)](https://pypi.org/project/industrialxpl-forge/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![CI](https://img.shields.io/github/actions/workflow/status/mrhenrike/IndustrialXPL-Forge/ci.yml?branch=master&label=CI)](https://github.com/mrhenrike/IndustrialXPL-Forge/actions)
+[![Modules](https://img.shields.io/badge/Modules-803%2B-brightgreen)](https://github.com/mrhenrike/IndustrialXPL-Forge)
+[![Vendors](https://img.shields.io/badge/Vendors-97%2B-orange)](https://github.com/mrhenrike/IndustrialXPL-Forge)
+[![Protocols](https://img.shields.io/badge/Protocols-50%2B-blue)](https://github.com/mrhenrike/IndustrialXPL-Forge)
+[![MITRE ATT&CK ICS](https://img.shields.io/badge/MITRE%20ATT%26CK%20ICS-v19-red)](https://attack.mitre.org/matrices/ics/)
+[![Platform](https://img.shields.io/badge/Platform-OT%20%7C%20ICS%20%7C%20SCADA%20%7C%20IIoT-darkred)](https://github.com/mrhenrike/IndustrialXPL-Forge)
 
 **Python-First. Pure Python implementation — install and run with a single `pip install`.**
 
