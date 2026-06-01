@@ -186,7 +186,11 @@ class BaseInterpreter:
                 if not raw.strip():
                     continue
 
-                readline.write_history_file(self.history_file)
+                if _HAS_READLINE and readline is not None:
+                    try:
+                        readline.write_history_file(self.history_file)
+                    except OSError:
+                        pass
 
                 command, args, kwargs = self.parse_line(raw)
                 if not command:
