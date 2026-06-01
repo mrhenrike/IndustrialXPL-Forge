@@ -644,6 +644,106 @@ class IXFInterpreter(BaseInterpreter):
         if self.current_module:
             self.command_run("")
 
+    # ── NSE (Nmap Scripting Engine) commands ─────────────────────────────────
+
+    def command_nse(self, args: str = "", **kwargs) -> None:
+        """Manage IXF Nmap NSE scripts. Usage: nse [install|list|status] [--force]"""
+        from industrialxpl.core.nse.nse_manager import NseManager, NSE_SCRIPTS_DIR
+
+        parts = args.strip().split()
+        subcmd = parts[0].lower() if parts else "status"
+        force = "--force" in parts
+
+        if subcmd in ("status", ""):
+            NseManager.status_report()
+            nmap_bin = NseManager.find_nmap()
+            if not nmap_bin:
+                print_warning(
+                    "Nmap not installed. Install it first:\n"
+                    "  Linux:   sudo apt install nmap\n"
+                    "  macOS:   brew install nmap\n"
+                    "  Windows: https://nmap.org/download\n"
+                    f"IXF NSE scripts are at: {NSE_SCRIPTS_DIR}\n"
+                    "After installing Nmap, run: nse install"
+                )
+            else:
+                scripts_dir = NseManager.find_scripts_dir()
+                if scripts_dir:
+                    not_installed = [
+                        s.name for s in NseManager.list_ixf_scripts()
+                        if not (scripts_dir / s.name).exists()
+                    ]
+                    if not_installed:
+                        print_info("Run 'nse install' to install {} script(s).".format(
+                            len(not_installed)))
+
+        elif subcmd == "list":
+            scripts = NseManager.list_ixf_scripts()
+            scripts_dir = NseManager.find_scripts_dir()
+            rows = []
+            for s in scripts:
+                status = "installed" if (scripts_dir and (scripts_dir / s.name).exists()) else "not installed"
+                rows.append((s.name, status, f"{s.stat().st_size:,} B"))
+            if rows:
+                print_table(
+                    ["Script", "Status", "Size"],
+                    rows,
+                    title=f"IXF NSE Scripts ({len(scripts)} total) — {NSE_SCRIPTS_DIR}",
+                )
+            else:
+                print_error("No IXF NSE scripts found.")
+
+        elif subcmd == "install":
+            nmap_bin = NseManager.find_nmap()
+            if not nmap_bin:
+                print_error("Nmap is NOT installed on this system.")
+                print_warning(
+                    "Install Nmap first:\n"
+                    "  Linux:   sudo apt install nmap\n"
+                    "  macOS:   brew install nmap\n"
+                    "  Windows: https://nmap.org/download\n"
+                    f"\nIXF NSE scripts stored at: {NSE_SCRIPTS_DIR}\n"
+                    "Copy .nse files manually to your Nmap scripts dir,\n"
+                    "then run: nmap --script-updatedb"
+                )
+                return
+
+            scripts_dir = NseManager.find_scripts_dir()
+            if not scripts_dir:
+                print_error("Nmap scripts directory not found.")
+                print_info("Provide manually: python tools/nse_install.py --install --scripts-dir /path")
+                return
+
+            print_status(f"[NSE] Installing to: {scripts_dir}")
+            result = NseManager.install(scripts_dir=scripts_dir, force=force)
+
+            if result["installed"]:
+                for name in result["installed"]:
+                    print_success(f"  Installed: {name}")
+            if result["skipped"]:
+                print_info(f"  Skipped (already installed): {len(result['skipped'])} — use 'nse install --force'")
+            if result["errors"]:
+                for err in result["errors"]:
+                    print_error(f"  {err}")
+                if any("Permission" in e for e in result["errors"]):
+                    import sys as _sys
+                    if _sys.platform == "win32":
+                        print_warning("Run IXF as Administrator to install into Program Files.")
+                    else:
+                        print_warning("Run: sudo python tools/nse_install.py --install")
+
+            if result["success"] and result["installed"]:
+                print_success(f"\nInstalled {len(result['installed'])} IXF NSE script(s) to {scripts_dir}")
+                print_info("Usage: nmap --script ics-sweep -p 20-65535 <target>")
+                print_info("       nmap --script 'ics-*' <target>")
+                print_info("       nmap --script ics-default-creds -p 80,8080 <target>")
+            elif not result["installed"] and not result["errors"]:
+                print_info("All IXF NSE scripts already installed.")
+
+        else:
+            print_error(f"Unknown nse subcommand: '{subcmd}'")
+            print_info("Usage: nse [install|list|status] [--force]")
+
     # ── Stats / coverage commands ─────────────────────────────────────────────
 
     def command_stats(self, args: str = "", **kwargs) -> None:
