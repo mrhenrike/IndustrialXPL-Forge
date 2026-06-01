@@ -450,3 +450,74 @@ python tools/env_doctor.py
 ### Paths importantes
 - Windows: `D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge\docs\en-us\`
 - Linux: `/mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge/docs/en-us/`
+
+---
+
+## [2026-06-01 21:30] — Reescrita exaustiva dos 12 documentos pt-BR
+
+### Estado ao encerrar
+- Todos os 12 arquivos de documentação pt-BR reescritos com conteúdo exaustivo em Português Brasileiro
+- Todos os 36 comandos do shell documentados com sintaxe, parâmetros, exemplos de I/O e cenários de erro (incluindo novo comando `nse`)
+- Contagens de linha verificadas e todas acima das metas estabelecidas
+
+### Arquivos modificados
+- `docs/pt-br/01-instalacao.md` — 969 linhas (meta: 600+)
+- `docs/pt-br/02-inicio-rapido.md` — 1078 linhas (meta: 700+)
+- `docs/pt-br/03-referencia-shell.md` — 2527 linhas (meta: 2000+)
+- `docs/pt-br/04-sistema-modulos.md` — 1607 linhas (meta: 1000+)
+- `docs/pt-br/05-safemode-destructivemode.md` — 917 linhas (meta: 700+)
+- `docs/pt-br/06-mitre-attack-ics.md` — 977 linhas (meta: 900+)
+- `docs/pt-br/07-sast-llm.md` — 948 linhas (meta: 800+)
+- `docs/pt-br/08-protocolos-vendors.md` — 1211 linhas (meta: 1200+)
+- `docs/pt-br/09-desenvolvimento-modulos.md` — 1425 linhas (meta: 1000+)
+- `docs/pt-br/10-cli-nao-interativo.md` — 1101 linhas (meta: 500+)
+- `docs/pt-br/11-poly-exploit-runner.md` — 769 linhas (meta: 600+)
+- `docs/pt-br/12-assessment-conformidade.md` — 802 linhas (meta: 800+)
+
+### Próximo passo imediato
+- Revisar manualmente os exemplos de terminal para garantir consistência com a versão atual do código
+
+### Pendências conhecidas
+- [ ] Revisar exemplos de saída de terminal contra outputs reais do IXF v1.0.12
+- [ ] Verificar se paths de módulos nos exemplos correspondem ao índice real de 976 módulos
+
+### Paths importantes
+- Windows: `D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge\docs\pt-br\`
+- Linux: `/mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge/docs/pt-br/`
+
+## [2026-06-01 21:00] — Documentação pt-BR completa (14 arquivos)
+
+### Estado ao encerrar
+- Expandidos todos os 12 arquivos pt-BR existentes de documentação fina para versões completas
+- Criados 2 novos arquivos pt-BR: 13-catalogo-modulos.md e 14-scripts-nse.md
+- Todos os 14 arquivos com documentação completa em Português Brasileiro
+- Conteúdo cobre 36 comandos, 13 tipos __info__, 10 tipos de opção, 7 níveis de impacto, 12 táticas MITRE, 50 protocolos, 150+ vendors, 18 módulos de assessment, 26 TTPs de malware, 8 scripts NSE
+
+### Arquivos modificados/criados
+- docs/pt-br/03-referencia-shell.md (2000+ linhas — todos 36 comandos)
+- docs/pt-br/04-sistema-modulos.md (1000+ linhas — anatomia completa)
+- docs/pt-br/05-safemode-destructivemode.md (700+ linhas — 7 níveis impacto)
+- docs/pt-br/06-mitre-attack-ics.md (900+ linhas — 12 táticas cobertura)
+- docs/pt-br/07-sast-llm.md (800+ linhas — 5 providers, 4 modos)
+- docs/pt-br/08-protocolos-vendors.md (1200+ linhas — 50 protocolos, 150+ vendors)
+- docs/pt-br/09-desenvolvimento-modulos.md (1000+ linhas — dev guia completo)
+- docs/pt-br/10-cli-nao-interativo.md (500+ linhas — CI/CD, GitHub Actions)
+- docs/pt-br/11-poly-exploit-runner.md (600+ linhas — tiers, runtimes, logic bombs)
+- docs/pt-br/12-assessment-conformidade.md (800+ linhas — IEC 62443, NIST 800-82)
+- docs/pt-br/13-catalogo-modulos.md (NOVO — 1000+ linhas — catálogo completo)
+- docs/pt-br/14-scripts-nse.md (NOVO — 500+ linhas — 8 scripts NSE)
+
+### Próximo passo imediato
+- Atualizar docs/pt-br/_index.md para adicionar links para os arquivos 13 e 14 recém-criados
+
+### Pendências conhecidas
+- [ ] Atualizar docs/pt-br/_index.md com links para 13-catalogo-modulos.md e 14-scripts-nse.md
+- [ ] Verificar se os arquivos 13 e 14 precisam ser referenciados no docs/index.md principal
+
+### Ambiente necessário
+- Python 3.10+
+- IndustrialXPL-Forge v1.0.13 instalado
+
+### Paths importantes
+- Windows: D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge\docs\pt-br\
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge/docs/pt-br/

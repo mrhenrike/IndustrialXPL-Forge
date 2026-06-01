@@ -884,4 +884,33 @@ ixf > run
 
 ---
 
+---
+
+## Referência Rápida — Combinações de Modo
+
+| simulate | destructive | impact | Comportamento de run() |
+|----------|-------------|--------|----------------------|
+| True | qualquer | qualquer | Imprime simulação — nenhum pacote enviado |
+| False | False | qualquer | Executa apenas `check()` com aviso |
+| False | True | INFO/READ | Execução automática sem confirmação |
+| False | True | LOW | Execução com aviso simples |
+| False | True | MEDIUM | Aguarda Enter para confirmar |
+| False | True | HIGH | Banner laranja + string de confirmação |
+| False | True | CRITICAL | Banner vermelho + string de confirmação |
+| False | True | CATASTROPHIC | Banner vermelho + 10s espera + confirmação |
+
+## Garantias Arquiteturais do SafeMode
+
+O SafeMode é implementado em múltiplas camadas independentes para garantir que nenhum bug acidental possa enviar tráfego destrutivo:
+
+**Camada 1 — Herança da classe base:** `simulate=True` é o valor padrão em `Exploit` base.
+
+**Camada 2 — Verificação em run() de cada módulo:** Cada módulo verifica `self.simulate` explicitamente antes de qualquer código ao vivo.
+
+**Camada 3 — DestructiveGate no interpreter:** O `command_run()` do shell verifica novamente o nível de impacto e requer confirmação antes de chamar `mod.run()`.
+
+**Camada 4 — Log append-only:** Toda tentativa (confirmada ou abortada) é auditada antes da execução.
+
+---
+
 *Anterior: [Sistema de Módulos](04-sistema-modulos.md) | Próximo: [MITRE ATT&CK para ICS](06-mitre-attack-ics.md)*

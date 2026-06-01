@@ -2370,4 +2370,157 @@ ixf > nse run script_inexistente 192.168.1.100
 
 ---
 
+---
+
+## Fluxos de Trabalho Recomendados
+
+### Workflow 1 — Avaliação de Segurança Inicial
+
+Sequência recomendada para uma avaliação de segurança completa de ambiente OT desconhecido:
+
+```
+# Etapa 1: Entender o ambiente disponível
+ixf > stats
+ixf > mitre-coverage
+
+# Etapa 2: Definir alvo global para a sessão
+ixf > setg target 192.168.1.0/24
+ixf > setg simulate true
+
+# Etapa 3: Descoberta passiva
+ixf > mitre-scan discovery 192.168.1.0/24
+
+# Etapa 4: Fingerprinting por protocolo
+ixf > use scanners/ics/modbus_detect
+ixf > run  # target herdado do setg
+
+ixf > back
+ixf > use scanners/ics/s7_comm_scanner
+ixf > run
+
+ixf > back
+ixf > use scanners/ics/bacnet_scanner
+ixf > run
+
+# Etapa 5: Varredura de técnicas MITRE relevantes
+ixf > ttp-check T0843 192.168.1.0/24
+ixf > ttp-check T0836 192.168.1.0/24
+ixf > ttp-check T0859 192.168.1.0/24
+
+# Etapa 6: Assessment de conformidade
+ixf > unsetg target
+ixf > assess iec62443/zone_conduit_audit
+ixf > assess risk/ics_risk_scorer
+
+# Etapa 7: Relatórios
+ixf > report html
+ixf > mitre-report layer
+```
+
+### Workflow 2 — Teste de Detecção SIEM
+
+Para validar capacidades de detecção SIEM/IDS sem impacto:
+
+```
+# Gerar saída de simulação para criar assinaturas SIEM
+ixf > setg simulate true
+ixf > setg target 192.168.1.100
+
+# Simular ataques de malware ICS conhecidos
+ixf > use cve/malware/frostygoop_modbus_heating
+ixf > run
+# → Copiar payload hex para criar assinatura IDS
+
+ixf > back
+ixf > use cve/malware/industroyer2_iec104
+ixf > run
+# → Copiar ASDU IEC 104 para regra SIEM
+
+ixf > back
+ixf > ttp-simulate T0836 192.168.1.100
+# → Gerar todas as variantes de T0836 para detecção
+
+ixf > mitre-report html
+# → Relatório com todos os TTPs simulados
+```
+
+### Workflow 3 — Red Team Focado em Vendor
+
+```
+# Investigar vulnerabilidades específicas de um vendor
+ixf > vendors siemens
+ixf > search siemens
+
+# Executar todos os módulos Siemens em simulate
+ixf > setg target 192.168.1.50
+ixf > setg simulate true
+
+# Verificar CVEs críticos
+ixf > cve CVE-2021-22681
+ixf > show info
+ixf > run
+
+ixf > back
+ixf > cve CVE-2022-38465
+ixf > run
+
+# Executar TTP relevantes
+ixf > ttp T0843 192.168.1.50  # Program Download
+ixf > ttp T0859 192.168.1.50  # Valid Accounts
+
+# Relatório focado em Siemens
+ixf > report json
+```
+
+---
+
+## Dicas e Atalhos
+
+### Tab-completion
+
+No shell interativo, a tecla Tab completa comandos e caminhos de módulo:
+
+```
+ixf > use scanners/ics/<TAB>
+  modbus_detect
+  s7_comm_scanner
+  bacnet_scanner
+  dnp3_detect
+  opcua_scanner
+  ...
+
+ixf > ttp T08<TAB>
+  T0800  T0801  T0802  T0803  T0804  T0805
+  T0806  T0807  T0808  T0809  T0810  T0811
+  ...
+```
+
+### Histórico de comandos
+
+```
+# Setas ↑/↓ — navegar histórico
+# Ctrl+R — busca reversa no histórico
+# Ctrl+A — início da linha
+# Ctrl+E — final da linha
+```
+
+### Atalhos de sessão úteis
+
+```
+# Forçar SafeMode no início de qualquer sessão
+ixf > setg simulate true
+ixf > setg verbose false
+
+# Testar conectividade antes de executar exploits
+ixf > check   # Sempre antes de 'run' ao vivo
+
+# Voltar ao contexto global rapidamente
+ixf > back
+
+# Ver histórico de auditoria da sessão
+ixf > exec cat .log/destructive_ops_$(date +%Y-%m-%d).log 2>/dev/null || echo "Sem logs hoje"
+```
+
+---
+
 *Anterior: [Início Rápido](02-inicio-rapido.md) | Próximo: [Sistema de Módulos](04-sistema-modulos.md)*
