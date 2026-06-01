@@ -411,3 +411,42 @@ python tools/env_doctor.py
 ### Paths importantes
 - Windows: D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge\docs\en-us\
 - Linux: /mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge/docs/en-us/
+
+## [2026-06-01 18:30] — Exhaustive documentation expansion (6 files)
+
+### Estado ao encerrar
+- Reescreveu 09-module-development.md (~405 → 1,500+ linhas) com template completo, 5 exemplos anotados (CVE, Scanner, Credentials, Assessment, Malware TTP), guia de todos os 10 tipos de Option, 5 padrões de check(), guia de run(), DestructiveGate reference, decorators @mute/@multi, multi-target scanning, validação, workflow de PR, testes sem Nmap, erros comuns e gerador de templates
+- Reescreveu 10-cli-noninteractive.md (~236 → 700+ linhas) com todos os one-liners + output completo, chaining de módulos, setg, todos os comandos ttp/mitre, 10 exemplos de piping, script bash completo de assessment, 10 exemplos de Python API, GitHub Actions/Jenkins/GitLab CI, todos os exit codes, piping JSON com jq, batch scanning
+- Reescreveu 11-poly-exploit-runner.md (~248 → 800+ linhas) com tabela de runtime tiers, todos os runtimes com detecção/install/use case, malware_builder --list/--target (5 targets)/--all com output completo, simulate output de cada artefato compilado, PLC Logic Bomb (3 tipos com --simulate e --destructive output), EKANS --list/--simulate, CosmicEnergy output completo, todos os métodos da API PolyExploitRunner, formato de retorno, mecanismo de fallback Python, cross-compilation Windows
+- Reescreveu 12-assessment-compliance.md (~262 → 1,100+ linhas) com todos os 18 módulos listados, output terminal de cada um, IEC 62443 (security levels, zone model, audit completo), NIST 800-82r3 (todos os domínios de controle), risk scoring com score breakdown, ICS Kill Chain (8 stages), IR Playbook (todas as fases), OPC UA/DNP3/IEC 61850/Firewall/Network audits, 28 módulos MITRE listados, transcript completo de sessão de assessment
+- Criou 13-module-catalog.md (novo) com introdução/stats, CVE modules por vendor (150+ vendors), 50 protocolos, 31 scanners, 34 creds, 18 assessment, 26 malware TTP com ano/attribution/impact, artefatos nativos, como pesquisar, como filtrar por MITRE
+- Criou 14-nse-scripts.md (novo) com overview, nse status/list/install (output completo), quando usar --force, referência completa dos 8 NSE scripts com argumentos + exemplo com output nmap, exemplos combinados, integração com IXF, escrita de NSE customizado, troubleshooting
+
+### Arquivos modificados
+- Windows: `D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge\docs\en-us\09-module-development.md`
+- Windows: `D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge\docs\en-us\10-cli-noninteractive.md`
+- Windows: `D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge\docs\en-us\11-poly-exploit-runner.md`
+- Windows: `D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge\docs\en-us\12-assessment-compliance.md`
+- Windows: `D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge\docs\en-us\13-module-catalog.md` (novo)
+- Windows: `D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge\docs\en-us\14-nse-scripts.md` (novo)
+- Linux: `/mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge/docs/en-us/09-module-development.md`
+- Linux: `/mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge/docs/en-us/10-cli-noninteractive.md`
+- Linux: `/mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge/docs/en-us/11-poly-exploit-runner.md`
+- Linux: `/mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge/docs/en-us/12-assessment-compliance.md`
+- Linux: `/mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge/docs/en-us/13-module-catalog.md` (novo)
+- Linux: `/mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge/docs/en-us/14-nse-scripts.md` (novo)
+
+### Próximo passo imediato
+- Revisar índice de documentação (_index.md) para adicionar links para 13-module-catalog.md e 14-nse-scripts.md
+
+### Pendências conhecidas
+- [ ] Atualizar _index.md com links para docs 13 e 14
+- [ ] Validar contagem de linhas dos 6 arquivos (todos devem estar acima do target)
+
+### Ambiente necessário
+- Python 3.9+
+- IndustrialXPL-Forge instalado (pip install -e .)
+
+### Paths importantes
+- Windows: `D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge\docs\en-us\`
+- Linux: `/mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge/docs/en-us/`
