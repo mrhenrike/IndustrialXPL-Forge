@@ -334,3 +334,80 @@ python tools/env_doctor.py
 - Linux: /mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge
 - PyPI: https://pypi.org/project/industrialxpl-forge/
 - GitHub: https://github.com/mrhenrike/IndustrialXPL-Forge
+
+## [2026-06-01 21:30] — Exhaustive docs rewrite: module system + safety gate
+
+### Estado ao encerrar
+- Reescrita completa de docs/en-us/04-module-system.md (482 linhas → 2222 linhas)
+- Reescrita completa de docs/en-us/05-safemode-destructivemode.md (223 linhas → 1066 linhas)
+- Toda documentação foi derivada diretamente do código-fonte (option.py, safety.py, exploit.py, utils.py, printer.py)
+- Arquivos modificados: docs/en-us/04-module-system.md, docs/en-us/05-safemode-destructivemode.md
+
+### Próximo passo imediato
+- Revisar se docs/en-us/06-mitre-attack-ics.md precisa do mesmo tratamento de expansão
+
+### Pendências conhecidas
+- [ ] Docs 06 a 0N podem precisar de expansão similar
+- [ ] Verificar se há links de navegação (Previous/Next) corretos em todos os docs
+
+### Ambiente necessário
+- Python 3.10+
+- industrialxpl pacote instalado (pip install -e .)
+
+### Paths importantes
+- Windows: D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge\docs\en-us\
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge/docs/en-us/
+
+## [2026-06-01 21:30] — Reescrita exaustiva do shell reference (03-shell-reference.md)
+
+### Estado ao encerrar
+- Arquivo docs/en-us/03-shell-reference.md reescrito do zero com documentacao exaustiva
+- Todos os 35 comandos IXF documentados com sintaxe completa, tabelas de parametros, exemplos reais e cenarios de erro
+- Total: 3842 linhas (era 911 linhas — crescimento de 322%)
+- Subcomandos documentados: show (5), nse (4), sast (4 modos), ttp (4 flags), report (3 formatos), mitre-report (3 formatos)
+
+### Arquivos modificados
+- docs/en-us/03-shell-reference.md — reescrito completo
+
+### Commits realizados
+- Nenhum commit nesta sessao
+
+### Proximo passo imediato
+- Revisar se os exemplos de terminal ficaram consistentes com o codigo real dos modulos
+- Considerar gerar versao PT-BR da referencia de shell
+
+### Pendencias conhecidas
+- [ ] Validar exemplos contra implementacao real de modulos (modbus, s7comm, enip)
+- [ ] Adicionar secao de troubleshooting / FAQ ao shell reference
+- [ ] Documentar variaveis de ambiente suportadas (IXF_OUTPUT_DIR, IXF_DEFAULT_SIMULATE etc.)
+
+### Ambiente necessario
+- Python 3.12+
+- pymodbus >= 3.5.0
+
+### Paths importantes
+- Windows: D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge
+
+## [2026-06-01 18:30] — Rewrite docs 06, 07, 08 with exhaustive content
+
+### Estado ao encerrar
+- Reescrita completa de 3 arquivos de documentação do IndustrialXPL-Forge
+- 06-mitre-attack-ics.md: 266 → 1711 linhas (6.4x)
+- 07-sast-llm.md: 287 → 1122 linhas (3.9x)
+- 08-protocols-vendors.md: 242 → 1500 linhas (6.2x)
+- Arquivos modificados:
+  - docs/en-us/06-mitre-attack-ics.md
+  - docs/en-us/07-sast-llm.md
+  - docs/en-us/08-protocols-vendors.md
+
+### Próximo passo imediato
+- Revisar docs 09-module-development.md e posteriores para reescrita similar se necessário
+
+### Pendências conhecidas
+- [ ] Demais arquivos de doc (09+) podem precisar de expansão similar
+- [ ] HANDOFF atualizado
+
+### Paths importantes
+- Windows: D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge\docs\en-us\
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge/docs/en-us/
