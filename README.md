@@ -149,6 +149,34 @@ All SCADA framework modules are implemented natively in Python — no additional
 
 ---
 
+## Documentation
+
+Full documentation is available in both English and Brazilian Portuguese:
+
+| Language | Link |
+|----------|------|
+| English (en-US) | [docs/en-us/](docs/en-us/_index.md) |
+| Português (pt-BR) | [docs/pt-br/](docs/pt-br/_index.md) |
+
+**Quick links:**
+
+| Topic | en-US | pt-BR |
+|-------|-------|-------|
+| Installation | [01-installation](docs/en-us/01-installation.md) | [01-instalacao](docs/pt-br/01-instalacao.md) |
+| Quick Start | [02-quick-start](docs/en-us/02-quick-start.md) | [02-inicio-rapido](docs/pt-br/02-inicio-rapido.md) |
+| Shell Reference (35 commands) | [03-shell-reference](docs/en-us/03-shell-reference.md) | [03-referencia-shell](docs/pt-br/03-referencia-shell.md) |
+| Module System & Option Types | [04-module-system](docs/en-us/04-module-system.md) | [04-sistema-modulos](docs/pt-br/04-sistema-modulos.md) |
+| SafeMode / DestructiveMode | [05-safemode](docs/en-us/05-safemode-destructivemode.md) | [05-safemode](docs/pt-br/05-safemode-destructivemode.md) |
+| MITRE ATT&CK for ICS | [06-mitre](docs/en-us/06-mitre-attack-ics.md) | [06-mitre](docs/pt-br/06-mitre-attack-ics.md) |
+| SAST / LLM Analysis | [07-sast](docs/en-us/07-sast-llm.md) | [07-sast](docs/pt-br/07-sast-llm.md) |
+| Protocols & Vendors | [08-protocols](docs/en-us/08-protocols-vendors.md) | [08-protocolos](docs/pt-br/08-protocolos-vendors.md) |
+| Module Development | [09-dev](docs/en-us/09-module-development.md) | [09-desenvolvimento](docs/pt-br/09-desenvolvimento-modulos.md) |
+| CLI Non-Interactive | [10-cli](docs/en-us/10-cli-noninteractive.md) | [10-cli](docs/pt-br/10-cli-nao-interativo.md) |
+| PolyExploit Runner | [11-poly](docs/en-us/11-poly-exploit-runner.md) | [11-poly](docs/pt-br/11-poly-exploit-runner.md) |
+| Assessment & Compliance | [12-assessment](docs/en-us/12-assessment-compliance.md) | [12-assessment](docs/pt-br/12-assessment-conformidade.md) |
+
+---
+
 ## Legal Disclaimer
 
 This tool is intended for **authorized security testing, research, and educational purposes only**.
