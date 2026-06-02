@@ -1208,3 +1208,339 @@ O IXF inclui wordlists específicas para protocolos OT em `industrialxpl/resourc
 ---
 
 *Anterior: [SAST / LLM](07-sast-llm.md) | Próximo: [Desenvolvimento de Módulos](09-desenvolvimento-modulos.md)*
+
+---
+
+## Referência Rápida de Portas por Protocolo
+
+| Protocolo | TCP | UDP | Notas |
+|-----------|-----|-----|-------|
+| Modbus TCP | 502 | — | Padrão industrial mundial |
+| S7comm | 102 | — | Siemens exclusivo |
+| EtherNet/IP | 44818 | 44818 | UDP para broadcast |
+| DNP3 | 20000 | 20000 | Ambos TCP e UDP |
+| IEC 60870-5-104 | 2404 | — | Subestações elétricas |
+| OPC UA | 4840 | — | Moderno, seguro |
+| BACnet/IP | — | 47808 | Apenas UDP |
+| PROFINET | — | — | Layer 2 Ethernet |
+| IEC 61850 MMS | 102 | — | Compartilha com S7 |
+| GE SRTP | 18245 | — | PACSystems RX3i |
+| MELSEC (Mitsubishi) | 5006 | — | Q/R Series |
+| Omron FINS | — | 9600 | UDP nativo |
+| HART-IP | 5094 | 5094 | Instrumentação |
+| Modbus RTU | — | RS-485 | Serial |
+| PROFIBUS | — | RS-485 | Serial Siemens |
+
+---
+
+## Exemplos de Workflows por Protocolo
+
+### Workflow Completo Modbus (Descoberta → Verificação → Assessment)
+
+`
+# Passo 1: Descobrir dispositivos Modbus na rede
+ixf > discover 192.168.1.0/24
+
+# Passo 2: Scanner dedicado Modbus
+ixf > use scanners/ics/modbus_detect
+ixf > set target 192.168.1.0/24
+ixf > run
+
+# Passo 3: Verificar CVEs Modbus
+ixf > search modbus
+ixf > use exploits/protocols/modbus/modbus_fc16_write_registers
+ixf > set target 192.168.1.100
+ixf > run
+
+# Passo 4: TTP check T0836 (Modify Parameter via Modbus)
+ixf > ttp-check T0836 192.168.1.100
+
+# Passo 5: Assessment de parâmetros
+ixf > assess mitre_ics/t0836_modify_parameter
+`
+
+### Workflow S7comm (Siemens)
+
+`
+# Descoberta S7
+ixf > use scanners/ics/s7_enumerate
+ixf > set target 192.168.1.50
+ixf > set simulate false
+ixf > run
+
+# CVE crítico S7
+ixf > cve CVE-2021-22681
+ixf > set target 192.168.1.50
+ixf > check
+
+# Varredura completa de técnicas S7
+ixf > ttp-simulate T0843 192.168.1.50
+`
+
+### Workflow EtherNet/IP (Rockwell)
+
+`
+# Identificação EIP
+ixf > use scanners/ics/enip_list_identity
+ixf > set target 192.168.1.20
+ixf > set simulate false
+ixf > run
+
+# CVE Rockwell ControlLogix
+ixf > cve CVE-2023-3595
+ixf > set target 192.168.1.20
+ixf > check
+
+# Varredura de firmware download
+ixf > ttp-simulate T0843 192.168.1.20
+`
+
+---
+
+## Vulnerabilidades por Protocolo — Top 10
+
+### Modbus TCP — Principais Vetores de Ataque
+
+| Vetor | Técnica | Módulo IXF | Risco |
+|-------|---------|------------|-------|
+| FC16 Write sem autenticação | T0836 | xploits/protocols/modbus/modbus_fc16_write_registers | ALTO |
+| DoS via FC90 (código inválido) | T0814 | xploits/protocols/modbus/modbus_fc90_dos | MÉDIO |
+| Rogue master injection | T0848 | xploits/protocols/modbus/modbus_rogue_master | ALTO |
+| Leitura de registradores sensíveis | T0801 | scanners/ics/modbus_detect | BAIXO |
+| Unit ID enumeration | T0846 | scanners/ics/modbus_unit_id_enum | BAIXO |
+
+### S7comm — Principais Vetores de Ataque
+
+| Vetor | Técnica | Módulo IXF | Risco |
+|-------|---------|------------|-------|
+| CPU Stop sem autenticação | T0816 | xploits/protocols/s7comm/s7_stop_cpu | ALTO |
+| Logic upload com chave hardcoded | T0843 | cve/siemens/cve_2021_22681_... | CRÍTICO |
+| SZL read (info disclosure) | T0801 | xploits/protocols/s7comm/s7_read_szl | READ |
+| Cold restart forçado | T0816 | xploits/protocols/s7comm/s7_cold_restart | ALTO |
+| PDU malformada (DoS) | T0814 | xploits/protocols/s7comm/s7_dos_malformed_pdu | ALTO |
+
+---
+
+## Cobertura por Nível de Purdue
+
+O modelo Purdue define os níveis arquiteturais de uma rede ICS:
+
+| Nível Purdue | Nome | Protocolos Cobertos | Módulos IXF |
+|-------------|------|--------------------|-----------||
+| Nível 5 | Enterprise Network | HTTP/HTTPS, SNMP | 12 |
+| Nível 4 | Site Business Planning | HTTP/HTTPS, SQL | 18 |
+| Nível 3.5 | IDMZ | HTTP, SNMP, ICMP | 8 |
+| Nível 3 | Site Operations | HTTP, OPC DA, Suitelink | 34 |
+| Nível 2 | Area Supervisory | OPC UA, Modbus, EtherNet/IP | 89 |
+| Nível 1 | Basic Control | Modbus, S7comm, DNP3, IEC 104 | 312 |
+| Nível 0 | Process | Modbus RTU, PROFIBUS, Foundation Fieldbus | 47 |
+
+---
+
+## Mapa de Protocolos por Setor
+
+### Setor Elétrico
+
+| Protocolo | Uso Principal |
+|-----------|--------------|
+| IEC 60870-5-104 | Telecontrole de subestações |
+| IEC 61850 MMS | Automação de subestações, IEDs |
+| DNP3 | Comunicação de RTU em geração/transmissão |
+| ICCP (IEC 60870-6) | Comunicação entre centros de controle |
+| Modbus TCP | Medidores, relés, dispositivos de campo |
+
+### Setor de Petróleo e Gás
+
+| Protocolo | Uso Principal |
+|-----------|--------------|
+| Modbus TCP/RTU | PLCs, RTUs em campo, poços |
+| ROC Protocol | RTUs Emerson ROC800 (gasodutos) |
+| Modbus RTU | Sensores e atuadores de campo |
+| OPC UA | Comunicação planta-SCADA moderna |
+| FOUNDATION Fieldbus | Instrumentação de processo |
+
+### Setor de Manufatura
+
+| Protocolo | Uso Principal |
+|-----------|--------------|
+| EtherNet/IP | PLCs Rockwell, robótica |
+| S7comm | PLCs Siemens (automação) |
+| PROFINET | Campo Siemens, I/O distribuído |
+| Modbus TCP | Componentes legados |
+| CC-Link | Automação Mitsubishi (Japão) |
+
+### Automação Predial (BAS/BMS)
+
+| Protocolo | Uso Principal |
+|-----------|--------------|
+| BACnet/IP | HVAC, controle de acesso, sistemas prediais |
+| LonWorks | Sistemas legados de automação predial |
+| KNX/EIB | Europa — iluminação, AVAC |
+| Modbus TCP | Medidores de energia, UPS |
+| OPC UA | Integração BMS-EMS moderna |
+
+---
+
+*Anterior: [SAST / LLM](07-sast-llm.md) | Próximo: [Desenvolvimento de Módulos](09-desenvolvimento-modulos.md)*
+
+---
+
+## Detalhes Adicionais de Protocolo
+
+### Protocolos de Motion Control
+
+| Protocolo | Porta | Vendor Principal | Caso de Uso | Módulo IXF |
+|-----------|-------|-----------------|-------------|------------|
+| SERCOS III | 8008 TCP | Rexroth/Bosch | Controle de movimento CNC | `exploits/protocols/sercos/sercos_iii_probe` |
+| EtherCAT | L2 | Beckhoff | Automação de alta velocidade | `exploits/protocols/ethercat/ethercat_eoe_probe` |
+| EtherNet/POWERLINK | L2 | B&R Automation | Motion e I/O | `exploits/protocols/powerlink/powerlink_sdo_probe` |
+| CANopen | 4001 GW | Lenze, Beckhoff | Controle de máquinas | `exploits/protocols/canopen/canopen_nmt_reset` |
+| IO-Link | — | SICK, Pepperl+Fuchs | Sensores inteligentes | `exploits/protocols/iolink/iolink_param_write` |
+
+### Protocolos de Processo Contínuo
+
+| Protocolo | Uso | Vulnerabilidades Conhecidas | Módulo IXF |
+|-----------|-----|----------------------------|------------|
+| FOUNDATION Fieldbus H1 | DCS petroquímico | Sem autenticação nativa | `exploits/protocols/foundation_fieldbus/ff_h1_probe` |
+| HART-IP | Instrumentação de processo | Bypass de configuração | `exploits/protocols/hart/hart_ip_write` |
+| PROFIBUS PA | Instrumentação de processo | Sem autenticação | `exploits/protocols/profibus_pa/profibus_pa_probe` |
+
+### Protocolos de Energia e Utilidades
+
+| Protocolo | Padrão | Porta | Uso | Módulo IXF |
+|-----------|--------|-------|-----|------------|
+| DNP3 | IEEE 1815 | 20000 | RTUs de energia/água | `exploits/protocols/dnp3/` (18 módulos) |
+| IEC 60870-5-104 | IEC | 2404 | RTUs Europa/LATAM | `exploits/protocols/iec104/` (14 módulos) |
+| IEC 61850 MMS | IEC | 102 | Subestações | `exploits/protocols/iec61850/` (11 módulos) |
+| IEC 61968 CIM | IEC | Var. | AMI e Smart Grid | Assessment apenas |
+| DLMS/COSEM | IEC | 4059 | Medidores inteligentes | `scanners/ics/dlms_scanner` |
+
+---
+
+## Cobertura por Tipo de Instalação
+
+### Instalações por Setor
+
+| Setor | Protocolos Principais | Vendors Típicos | Módulos IXF |
+|-------|----------------------|-----------------|-------------|
+| Energia Elétrica | IEC 61850, IEC 104, DNP3 | SEL, ABB, Siemens, GE | 73+ |
+| Petróleo e Gás | Modbus, HART, FF Fieldbus | Emerson, Honeywell, Yokogawa | 48+ |
+| Água e Saneamento | Modbus, DNP3, BACnet | Unitronics, Schneider, GE | 35+ |
+| Manufatura | S7comm, EtherNet/IP, PROFINET | Siemens, Rockwell, Schneider | 180+ |
+| Automação Predial | BACnet, KNX, LonWorks | Siemens, Tridium, Johnson Controls | 32+ |
+| Semicondutores | SECS/GEM | Applied Materials, Tokyo Electron | 5+ |
+| Automotivo | CC-Link, EtherCAT, PROFINET | Mitsubishi, Beckhoff, Siemens | 22+ |
+| Farmacêutico | Modbus, OPC UA, BACnet | Emerson, Rockwell, Siemens | 40+ |
+| Alimentício | EtherNet/IP, Modbus, DeviceNet | Rockwell, Siemens, Omron | 55+ |
+| Ferroviário | Ethernet/IP, PROFINET | Siemens, Alstom, Wabtec | 8+ |
+
+### Infraestrutura Crítica Brasil
+
+**Setor Elétrico:**
+- Distribuidoras (Enel, Energisa, CPFL): usam principalmente IEC 60870-5-104 e IEC 61850
+- Geradoras (Furnas, Eletronorte): mix de IEC 61850, MODBUS e ICCP (TASE.2)
+- ONS (Operador Nacional do Sistema): ICCP/TASE.2 para coordenação inter-sistemas
+
+**Petróleo e Gás:**
+- Petrobras: DCS Emerson DeltaV e Honeywell Experion nas refinarias
+- REPLAN, REDUC: sistemas com protocolos Modbus, HART e OPC UA
+- Plataformas offshore: Yokogawa CENTUM VP com FOUNDATION Fieldbus
+
+**Água e Saneamento:**
+- SABESP (São Paulo): mix de SCADA Elipse E3 + Modbus RTU/TCP
+- CAESB (Brasília): SCADA WEG + Modbus
+- COPASA (Minas Gerais): sistemas ALTUS Duo com Modbus
+
+```bash
+# Varredura orientada para infraestrutura crítica brasileira
+ixf use scanners/ics/modbus_detect set target 10.0.0.0/16 run
+ixf use scanners/ics/iec104_scan set target 10.0.0.0/16 run
+ixf use scanners/ics/opcua_discovery set target 10.0.0.0/16 run
+ixf search WEG
+ixf search ALTUS
+ixf search Elipse
+```
+
+---
+
+*Anterior: [SAST / LLM](07-sast-llm.md) | Próximo: [Desenvolvimento de Módulos](09-desenvolvimento-modulos.md)*
+
+---
+
+## Configuracao Avancada por Protocolo
+
+### Modbus TCP -- Parametros de Conexao
+
+```
+ixf > use exploits/protocols/modbus/modbus_fc16_write_registers
+ixf > show advanced
+
+  Opcoes Avancadas
+  -------------------------------------------------
+  verbose      False    Saida de debug detalhada
+  timeout      5        Timeout de conexao (s)
+  retry_count  3        Tentativas em caso de falha
+  rate_ms      0        Milissegundos entre requests
+  strict_mbap  True     Validar MBAP estritamente
+```
+
+### S7comm -- Configuracao de Sessao
+
+```
+ixf > use exploits/protocols/s7comm/s7_stop_cpu
+ixf > show advanced
+
+  Opcoes Avancadas
+  -------------------------------------------------
+  pdu_size     480      Tamanho do PDU S7 (bytes)
+  rack         0        Numero do rack (0-7)
+  cotp_src     0x0100   TSAP fonte (formato hex)
+  cotp_dst     0x0200   TSAP destino (formato hex)
+  timeout      10       Timeout de conexao (s)
+```
+
+### EtherNet/IP -- Sessao CIP
+
+```
+ixf > use scanners/ics/enip_list_identity
+ixf > show advanced
+
+  Opcoes Avancadas
+  -------------------------------------------------
+  udp_scan     False    Usar UDP para List Identity
+  session_id   0        Session Handle (0=auto)
+  cip_timeout  3        Timeout CIP (s)
+  max_identity 10       Max respostas esperadas
+```
+
+---
+
+## Integracao com Outras Ferramentas
+
+### IXF + Nmap
+
+```bash
+# Descobrir portas abertas com Nmap
+nmap -p 502,102,44818 --open 192.168.1.0/24 -oG - | \
+  grep "open" | awk '{print $2}' > targets.txt
+
+# Verificar com IXF
+while read ip; do
+    ixf --simulate --no-color -c \
+        "use scanners/ics/modbus_detect; set target $ip; set simulate false; check"
+done < targets.txt
+```
+
+### IXF + Wireshark
+
+```bash
+# Capturar trafego ICS com tcpdump
+tcpdump -i eth0 -w /tmp/ics_capture.pcap port 502 or port 102 or port 44818
+
+# Analisar capture e verificar CVEs
+ixf -c "exec tshark -r /tmp/ics_capture.pcap -Y modbus -T fields -e ip.dst"
+```
+
+---
+
+*Anterior: [Inicio Rapido](02-inicio-rapido.md) | Proximo: [Sistema de Modulos](04-sistema-modulos.md)*

@@ -1,1125 +1,1004 @@
-# NSE Scripts Reference
+# Nmap NSE Scripts
 
-IXF ships 8 custom Nmap Scripting Engine (NSE) scripts for ICS/OT protocol detection, device fingerprinting, and vulnerability scanning. These scripts extend standard Nmap with deep OT protocol knowledge and integrate with the IXF module ecosystem.
-
----
-
-## Table of Contents
-
-1. [Overview and Installation Requirements](#overview-and-installation-requirements)
-2. [nse status — Full Terminal Output](#nse-status--full-terminal-output)
-3. [nse list — Full Terminal Output](#nse-list--full-terminal-output)
-4. [nse install — Full Terminal Output](#nse-install--full-terminal-output)
-5. [nse install --force — When to Use](#nse-install---force--when-to-use)
-6. [NSE Script Reference](#nse-script-reference)
-   - [ixf-modbus-detect](#1-ixf-modbus-detect)
-   - [ixf-s7comm-info](#2-ixf-s7comm-info)
-   - [ixf-enip-list-identity](#3-ixf-enip-list-identity)
-   - [ixf-bacnet-discover](#4-ixf-bacnet-discover)
-   - [ixf-dnp3-detect](#5-ixf-dnp3-detect)
-   - [ixf-iec104-detect](#6-ixf-iec104-detect)
-   - [ixf-opcua-info](#7-ixf-opcua-info)
-   - [ixf-ics-cve-check](#8-ixf-ics-cve-check)
-7. [Combined Scan Examples](#combined-scan-examples)
-8. [Integration with IXF Workflow](#integration-with-ixf-workflow)
-9. [Writing Custom NSE Scripts](#writing-custom-nse-scripts)
-10. [Troubleshooting](#troubleshooting)
+IXF bundles 8 custom Nmap Scripting Engine (NSE) scripts for OT/ICS network reconnaissance and security assessment. These scripts extend Nmap's capabilities to understand industrial protocols and device types that standard Nmap scripts do not cover.
 
 ---
 
-## Overview and Installation Requirements
+## Overview — Why IXF Provides NSE Scripts
 
-IXF NSE scripts are Lua files stored in `nse/scripts/`. They follow the standard NSE API and are installed into Nmap's script directory for use with `nmap --script`.
+Nmap's standard NSE library includes general-purpose network discovery scripts, but has limited coverage for industrial protocols such as Modbus TCP, Siemens S7comm, EtherNet/IP, DNP3, BACnet, and OPC UA. IXF's NSE scripts fill this gap by:
 
-**Requirements:**
+1. **Protocol-aware scanning** — understanding ICS protocol handshakes and responses
+2. **Vendor fingerprinting** — identifying specific PLC/RTU models from response characteristics
+3. **Security check integration** — flagging insecure configurations (default credentials, unauthenticated access, exposed programming ports)
+4. **IXF workflow integration** — generating output that feeds directly into IXF module selection
+5. **Honeypot detection** — identifying fake ICS targets to avoid misleading assessment results
 
-| Requirement | Version | Check Command |
-|-------------|---------|--------------|
-| Nmap | 7.80+ | `nmap --version` |
-| Nmap NSE scripting engine | Included with Nmap | `nmap --script-help` |
-| Root/Administrator | Required for raw socket operations | `sudo` on Linux |
-| Python 3.9+ (for IXF integration) | Optional | `python --version` |
-
-**Script files location (after install):**
-
-| OS | Nmap Scripts Directory |
-|----|----------------------|
-| Linux | `/usr/share/nmap/scripts/` |
-| macOS (Homebrew) | `/usr/local/share/nmap/scripts/` |
-| Windows | `C:\Program Files (x86)\Nmap\scripts\` |
-
-**Important:** NSE scripts send real network packets. Run only against authorized targets. Use `--simulate` flag in IXF modules (not Nmap) for simulation. Nmap NSE has no simulation mode.
+NSE scripts run within Nmap's sandboxed Lua environment, making them safe to deploy and easy to customize. All 8 IXF scripts are passive/read-only — they send only valid protocol queries, never exploit payloads.
 
 ---
 
-## nse status — Full Terminal Output
+## Requirements
 
+- **Nmap 7.80 or later** (7.95+ recommended for full NSE library compatibility)
+- **Root/Administrator privileges** for raw socket scans (`-sS`) and Layer 2 scripts
+- **IXF installed** (`pip install industrialxpl-forge`) — provides the NSE scripts
+- Scripts work on Linux, macOS, and Windows
+
+**Verify Nmap version:**
 ```bash
-ixf nse status
-```
-
-**Full output:**
-
-```
-[IXF NSE Scripts Status]
-════════════════════════════════════════════════════════════
-
-[Nmap availability]
-  nmap        OK         Nmap 7.94 ( https://nmap.org ) — 2023-05-19
-
-[Script directory]
-  Linux:      /usr/share/nmap/scripts/
-  Status:     WRITABLE (install will succeed)
-
-[IXF NSE Scripts]
-  Script                     Version  Status      Location
-  ──────────────────────────────────────────────────────────────
-  ixf-modbus-detect.nse      1.3.0    NOT INSTALLED  nse/scripts/
-  ixf-s7comm-info.nse        1.2.1    NOT INSTALLED  nse/scripts/
-  ixf-enip-list-identity.nse 1.1.0    NOT INSTALLED  nse/scripts/
-  ixf-bacnet-discover.nse    1.0.5    NOT INSTALLED  nse/scripts/
-  ixf-dnp3-detect.nse        1.1.2    NOT INSTALLED  nse/scripts/
-  ixf-iec104-detect.nse      1.0.3    NOT INSTALLED  nse/scripts/
-  ixf-opcua-info.nse         1.2.0    NOT INSTALLED  nse/scripts/
-  ixf-ics-cve-check.nse      2.0.1    NOT INSTALLED  nse/scripts/
-  ──────────────────────────────────────────────────────────────
-
-[Action required]
-  Run: ixf nse install
-  Or with sudo: sudo ixf nse install
-
-════════════════════════════════════════════════════════════
-```
-
-After installation:
-
-```
-[IXF NSE Scripts]
-  Script                     Version  Status      Location
-  ──────────────────────────────────────────────────────────────
-  ixf-modbus-detect.nse      1.3.0    INSTALLED   /usr/share/nmap/scripts/
-  ixf-s7comm-info.nse        1.2.1    INSTALLED   /usr/share/nmap/scripts/
-  ixf-enip-list-identity.nse 1.1.0    INSTALLED   /usr/share/nmap/scripts/
-  ixf-bacnet-discover.nse    1.0.5    INSTALLED   /usr/share/nmap/scripts/
-  ixf-dnp3-detect.nse        1.1.2    INSTALLED   /usr/share/nmap/scripts/
-  ixf-iec104-detect.nse      1.0.3    INSTALLED   /usr/share/nmap/scripts/
-  ixf-opcua-info.nse         1.2.0    INSTALLED   /usr/share/nmap/scripts/
-  ixf-ics-cve-check.nse      2.0.1    INSTALLED   /usr/share/nmap/scripts/
-  ──────────────────────────────────────────────────────────────
-  All 8 scripts installed and up to date.
-  script-updatedb: DONE
-
-[Test command]
-  nmap --script ixf-modbus-detect -p 502 <target>
-════════════════════════════════════════════════════════════
+nmap --version
+# Nmap version 7.95 ( https://nmap.org )
 ```
 
 ---
 
-## nse list — Full Terminal Output
+## Installation
 
-```bash
-ixf nse list
-```
+### Method 1: IXF Shell (`nse install`)
 
-**Full output:**
+The recommended method — IXF auto-detects the Nmap scripts directory and installs all 8 scripts:
 
 ```
-[IXF NSE Script Catalog]
-════════════════════════════════════════════════════════════
-  #   Script Name                Protocol    Port(s)   Category
-  ────────────────────────────────────────────────────────────────────
-  1   ixf-modbus-detect          Modbus TCP  502       discovery
-      Detect Modbus TCP devices, read device ID, enumerate unit IDs.
-
-  2   ixf-s7comm-info            S7comm      102       discovery
-      Fingerprint Siemens S7 PLCs: CPU type, firmware, serial number.
-
-  3   ixf-enip-list-identity     EtherNet/IP 44818     discovery
-      Send CIP List Identity request, parse vendor, product, revision.
-
-  4   ixf-bacnet-discover        BACnet/IP   47808     discovery
-      Who-Is broadcast, parse I-Am responses, read device object name.
-
-  5   ixf-dnp3-detect            DNP3        20000     discovery
-      DNP3 Link Status probe, detect master/outstation response.
-
-  6   ixf-iec104-detect          IEC 104     2404      discovery
-      STARTDT + General Interrogation, parse RTU data object count.
-
-  7   ixf-opcua-info             OPC UA      4840      discovery
-      GetEndpoints, list security modes, detect anonymous access.
-
-  8   ixf-ics-cve-check          Multi       Various   vuln
-      Banner fingerprint and version → IXF CVE database lookup.
-  ────────────────────────────────────────────────────────────────────
-
-[Usage]
-  nmap --script <name> [script-args] -p <port> <target>
-  nmap --script ixf-modbus-detect -p 502 192.168.1.100
-  nmap --script ixf-s7comm-info --script-args s7.rack=0,s7.slot=1 -p 102 192.168.1.100
-
-[Documentation]
-  nmap --script-help ixf-modbus-detect
-  nmap --script-help all | grep ixf-
-
-════════════════════════════════════════════════════════════
+ixf > nse install
+[*] Installing IXF NSE scripts into /usr/share/nmap/scripts/...
+[+] ics-sweep.nse                   → installed
+[+] ics-default-creds.nse           → installed
+[+] ics-plc-program-access.nse      → installed
+[+] ics-safety-systems.nse          → installed
+[+] ics-firmware-version.nse        → installed
+[+] ics-historian-discover.nse      → installed
+[+] ics-enumerate.nse               → installed
+[+] ics-honeypot-detect.nse         → installed
+[*] Running: nmap --script-updatedb
+[+] NSE script database updated.
+[+] All 8 IXF NSE scripts installed successfully.
+[i] Usage: nmap --script ics-sweep -p 102,502,47808 <target>
+[i] For all ICS scripts: nmap --script "ics-*" -p 102,502,47808,4840,20000 <target>
 ```
 
----
-
-## nse install — Full Terminal Output
-
+**On Linux/macOS, you may need sudo:**
 ```bash
 sudo ixf nse install
+# or:
+sudo python -m industrialxpl nse install
 ```
 
-**Full output (success case):**
+**Force reinstall (overwrite existing):**
+```
+ixf > nse install --force
+```
+
+### Method 2: Python Tool (`nse_install.py`)
+
+```bash
+python tools/nse_install.py --install
+```
 
 ```
-[IXF NSE Scripts — Installation]
-════════════════════════════════════════════════════════════
+[IXF NSE Installer]
+Nmap found: /usr/bin/nmap (7.95)
+Scripts directory: /usr/share/nmap/scripts/
+Installing 8 NSE scripts:
+  [+] ics-sweep.nse
+  [+] ics-default-creds.nse
+  [+] ics-plc-program-access.nse
+  [+] ics-safety-systems.nse
+  [+] ics-firmware-version.nse
+  [+] ics-historian-discover.nse
+  [+] ics-enumerate.nse
+  [+] ics-honeypot-detect.nse
+Running: nmap --script-updatedb
+Done. All 8 scripts installed.
+```
 
-[Nmap detection]
-  [OK] nmap found: /usr/bin/nmap (Nmap 7.94)
-  [OK] Script directory: /usr/share/nmap/scripts/
-  [OK] Directory writable
+**Full options:**
+```bash
+python tools/nse_install.py --help
+# --install     Install all IXF NSE scripts
+# --uninstall   Remove all IXF NSE scripts
+# --force       Overwrite existing scripts
+# --list        List installed status
+# --scripts-dir Custom Nmap scripts directory
+```
 
-[Copying scripts]
-  [OK] ixf-modbus-detect.nse      → /usr/share/nmap/scripts/ixf-modbus-detect.nse
-  [OK] ixf-s7comm-info.nse        → /usr/share/nmap/scripts/ixf-s7comm-info.nse
-  [OK] ixf-enip-list-identity.nse → /usr/share/nmap/scripts/ixf-enip-list-identity.nse
-  [OK] ixf-bacnet-discover.nse    → /usr/share/nmap/scripts/ixf-bacnet-discover.nse
-  [OK] ixf-dnp3-detect.nse        → /usr/share/nmap/scripts/ixf-dnp3-detect.nse
-  [OK] ixf-iec104-detect.nse      → /usr/share/nmap/scripts/ixf-iec104-detect.nse
-  [OK] ixf-opcua-info.nse         → /usr/share/nmap/scripts/ixf-opcua-info.nse
-  [OK] ixf-ics-cve-check.nse      → /usr/share/nmap/scripts/ixf-ics-cve-check.nse
+### Post-Install: Update Script Database
 
-[Updating script database]
-  [OK] nmap --script-updatedb (script.db updated)
-
-[Verification]
-  [OK] All 8 scripts registered in Nmap script database
-  [OK] Test: nmap --script-help ixf-modbus-detect
-
-════════════════════════════════════════════════════════════
-[+] IXF NSE installation complete.
-
-[Quick test commands]
-  nmap --script ixf-modbus-detect -p 502 192.168.1.100
-  nmap --script ixf-s7comm-info -p 102 192.168.1.100
-  nmap --script ixf-enip-list-identity -p 44818 192.168.1.100
-  nmap --script ixf-bacnet-discover -p U:47808 192.168.1.255
-  nmap --script ixf-ics-cve-check -p 80,102,502,4840,44818 192.168.1.100
-
-[Run all IXF scripts on a target]
-  nmap --script "ixf-*" -p 21,22,23,80,102,502,1217,2404,4840,20000,44818,47808 \
-       192.168.1.100
-════════════════════════════════════════════════════════════
+Always run after installation to register scripts with Nmap's database:
+```bash
+nmap --script-updatedb
 ```
 
 ---
 
-## nse install --force — When to Use
+## Script 1: `ics-sweep.nse`
+
+### Description
+
+Multi-protocol ICS port sweep. Probes the most common ICS/OT ports in a single scan and identifies which industrial protocols are listening. The sweep covers Modbus TCP, Siemens S7comm, EtherNet/IP, DNP3, BACnet/IP, OPC UA, PROFINET, FINS, and PCOM.
+
+### Categories
+
+`discovery`, `safe`, `ics`
+
+### Syntax
 
 ```bash
-sudo ixf nse install --force
+nmap --script ics-sweep -p 102,502,44818,47808,2404,4840,9600,20000,20256 <target>
 ```
 
-Use `--force` when:
+### Arguments Table
 
-- Scripts are already installed but you want to overwrite with newer versions
-- A previous install was incomplete (partial copy)
-- The script database (`script.db`) is out of sync
-- You reinstalled Nmap and the scripts were removed
-- `nmap --script ixf-modbus-detect` reports "No such script"
+| Argument | Type | Default | Description |
+|----------|------|---------|-------------|
+| `ics-sweep.timeout` | number | `5` | Per-protocol connection timeout in seconds |
+| `ics-sweep.verbose` | boolean | `false` | Show raw response bytes |
+| `ics-sweep.unit_id` | number | `1` | Modbus unit ID to probe |
 
-**Output (force mode):**
-
-```
-[IXF NSE Scripts — Force Reinstall]
-  [FORCE] Overwriting existing scripts even if up to date.
-  [OK] ixf-modbus-detect.nse      → /usr/share/nmap/scripts/ (overwritten)
-  [OK] ixf-s7comm-info.nse        → /usr/share/nmap/scripts/ (overwritten)
-  [OK] ixf-enip-list-identity.nse → /usr/share/nmap/scripts/ (overwritten)
-  [OK] ixf-bacnet-discover.nse    → /usr/share/nmap/scripts/ (overwritten)
-  [OK] ixf-dnp3-detect.nse        → /usr/share/nmap/scripts/ (overwritten)
-  [OK] ixf-iec104-detect.nse      → /usr/share/nmap/scripts/ (overwritten)
-  [OK] ixf-opcua-info.nse         → /usr/share/nmap/scripts/ (overwritten)
-  [OK] ixf-ics-cve-check.nse      → /usr/share/nmap/scripts/ (overwritten)
-  [OK] nmap --script-updatedb
-[+] Force reinstall complete.
-```
-
----
-
-## NSE Script Reference
-
-### 1. ixf-modbus-detect
-
-**Description:** Detects Modbus TCP devices by sending a Function Code 04 (Read Input Registers) probe and validating the Transaction ID echo in the MBAP response header. Optionally queries FC43/MEI (Read Device Identification) to extract vendor name, product code, and firmware revision from devices that support the MEI extension (IEC 61158-6).
-
-**Syntax:**
-
-```
-nmap --script ixf-modbus-detect [--script-args modbus.unit=<id>,modbus.identify=true] -p 502 <target>
-```
-
-**Arguments:**
-
-| Argument | Default | Description |
-|----------|---------|-------------|
-| `modbus.unit` | `1` | Modbus unit ID to probe (1–247) |
-| `modbus.identify` | `false` | Send FC43 MEI device identification request |
-| `modbus.timeout` | `5` | Socket timeout in seconds |
-| `modbus.registers` | `1` | Number of input registers to read in FC04 probe |
-
-**Example with full Nmap output:**
+### Example with Full Nmap Output
 
 ```bash
-nmap --script ixf-modbus-detect --script-args modbus.identify=true -p 502 192.168.1.100
+nmap --script ics-sweep -p 102,502,44818,47808,2404,4840,9600,20000,20256 192.168.1.100
 ```
 
-**Output:**
-
 ```
-Starting Nmap 7.94 ( https://nmap.org ) at 2024-06-01 18:25 UTC
-Nmap scan report for 192.168.1.100
-Host is up (0.00042s latency).
+Starting Nmap 7.95 ( https://nmap.org ) at 2026-06-01 20:15 UTC
+Nmap scan report for ics-workstation (192.168.1.100)
+Host is up (0.0042s latency).
 
-PORT    STATE SERVICE
-502/tcp open  modbus
+PORT      STATE SERVICE    VERSION
+102/tcp   open  iso-tsap
+| ics-sweep:
+|   S7comm: OPEN
+|   S7comm+ (TLS): DETECTED — S7-1200/1500 series
+|   Vendor: Siemens (inferred)
+|   Model: S7-1500 CPU (from COTP connection response)
+|_  IXF: use cve/siemens/cve_2021_22681_s7_1200_hardcoded_key
+
+502/tcp   open  mbnet
+| ics-sweep:
+|   Modbus TCP: OPEN
+|   Function Code 04 response: Unit ID 1 responding
+|   Register count: 0-999 accessible
+|   Vendor: Schneider Electric (inferred from register layout)
+|   Model: Modicon M340 (probable)
+|_  IXF: use scanners/ics/modbus_detect
+
+44818/tcp open  EtherNet/IP
+| ics-sweep:
+|   EtherNet/IP: OPEN
+|   ListIdentity response:
+|     Vendor ID: 1 (Rockwell Automation)
+|     Device Type: 14 (Programmable Logic Controller)
+|     Product Name: "1756-L75/B LOGIX5575"
+|     Serial: 0x12345678
+|_  IXF: search rockwell
+
+47808/udp open  bacnet
+| ics-sweep:
+|   BACnet/IP: OPEN
+|   WhoIs response: 1 device(s)
+|   Device ID: 1001 | Vendor: Johnson Controls
+|   Max APDU: 1476 | APDU timeout: 3000ms
+|_  IXF: use scanners/ics/bacnet_scanner
+
+2404/tcp  closed iec104
+4840/tcp  closed opc-ua
+9600/udp  closed fins
+20000/tcp closed dnp3
+20256/tcp closed pcom
 
 Host script results:
-| ixf-modbus-detect:
-|   Modbus TCP device detected
-|   Unit ID:      1
-|   Protocol:     Modbus TCP (MBAP header validated)
-|   FC04 probe:   OK (Transaction ID echo: 0x0001)
-|   Device Identification (FC43 MEI):
-|     VendorName:         Schneider Electric
-|     ProductCode:        TSXP574634M
-|     MajorMinorRevision: V4.3
-|   IXF module:  use scanners/ics/modbus_detect
-|_  MITRE:       T0888 (Remote System Information Discovery)
+| ics-sweep: ICS devices found:
+|   Siemens S7-1500 (102/tcp)
+|   Schneider Modicon M340 (502/tcp)
+|   Rockwell ControlLogix L75 (44818/tcp)
+|_  Johnson Controls BACnet device (47808/udp)
 
-Nmap done: 1 IP address (1 host up) scanned in 1.23 seconds
+Nmap done: 1 IP address (1 host up) scanned in 5.27 seconds
 ```
 
 ---
 
-### 2. ixf-s7comm-info
+## Script 2: `ics-default-creds.nse`
 
-**Description:** Fingerprints Siemens SIMATIC S7 PLCs by establishing a COTP (ISO 8073) connection followed by an S7comm Setup Communication PDU. On success, sends SZL-SSL read requests to extract CPU identification, module identification, firmware version, serial number, order number, and plant identification. Works against S7-300, S7-400, S7-1200, and S7-1500 series.
+### Description
 
-**Syntax:**
+Tests a curated list of default credentials against ICS web interfaces, management panels, and SSH/Telnet endpoints. Covers 35+ vendors with their known factory defaults. All tests are performed against HTTP/HTTPS/SSH/Telnet — no Modbus or ICS protocol authentication is tested by this script.
 
-```
-nmap --script ixf-s7comm-info [--script-args s7.rack=<n>,s7.slot=<n>] -p 102 <target>
-```
+### Categories
 
-**Arguments:**
+`auth`, `brute`, `default`, `ics`
 
-| Argument | Default | Description |
-|----------|---------|-------------|
-| `s7.rack` | `0` | CPU rack number (0–7) |
-| `s7.slot` | `1` | CPU slot number (0–31) |
-| `s7.pdu_size` | `240` | PDU size for Setup Communication negotiation |
-| `s7.timeout` | `5` | Socket timeout in seconds |
-| `s7.get_szl` | `true` | Read SZL-SSL system status lists |
-
-**Example with full Nmap output:**
+### Syntax
 
 ```bash
-nmap --script ixf-s7comm-info --script-args s7.rack=0,s7.slot=1 -p 102 192.168.1.50
+nmap --script ics-default-creds -p 22,23,80,443,8080,8443 <target>
 ```
 
-**Output:**
+### Arguments Table
+
+| Argument | Type | Default | Description |
+|----------|------|---------|-------------|
+| `ics-default-creds.vendor` | string | `"auto"` | Target vendor for focused cred list (e.g. `siemens`, `rockwell`) |
+| `ics-default-creds.timeout` | number | `10` | Connection timeout |
+| `ics-default-creds.stop_on_first` | boolean | `true` | Stop testing after first successful credential pair |
+
+### Example with Full Nmap Output
+
+```bash
+nmap --script ics-default-creds -p 22,80,443 192.168.1.101
+```
 
 ```
-Starting Nmap 7.94 ( https://nmap.org ) at 2024-06-01 18:26 UTC
+Starting Nmap 7.95 ( https://nmap.org ) at 2026-06-01 20:17 UTC
+Nmap scan report for 192.168.1.101
+Host is up (0.0031s latency).
+
+PORT    STATE SERVICE
+22/tcp  open  ssh
+| ics-default-creds:
+|   SSH (port 22):
+|     Testing vendor: Moxa (detected from banner: "MoxaDevice NPort 5150")
+|     Testing 8 default credential pairs...
+|     [+] SUCCESS: admin/moxa
+|     Username: admin
+|     Password: moxa
+|     Access level: Administrator
+|_    IXF: creds/moxa/ssh_default_creds
+
+80/tcp  open  http
+| ics-default-creds:
+|   HTTP (port 80):
+|     Banner: "NPort 5150 Web Console"
+|     Testing 8 default credential pairs...
+|     [+] SUCCESS: admin/moxa
+|     Path: /login.html
+|_    Login successful — full admin access confirmed
+
+443/tcp closed https
+
+Host script results:
+| ics-default-creds:
+|   CRITICAL: Default credentials valid on 192.168.1.101
+|   Service: Moxa NPort 5150 (SSH + Web)
+|   Credentials: admin/moxa (factory default)
+|_  Recommendation: Change password immediately. IXF: creds/moxa/ssh_default_creds
+
+Nmap done: 1 IP address (1 host up) scanned in 8.43 seconds
+```
+
+---
+
+## Script 3: `ics-plc-program-access.nse`
+
+### Description
+
+Checks if PLC programming ports are accessible without authentication. Tests Siemens S7comm (port 102), Rockwell EtherNet/IP (port 44818), Unitronics PCOM (port 20256), Beckhoff ADS (port 48898), and generic Modbus TCP. An unauthenticated programming port means any host on the network can upload a modified PLC program.
+
+### Categories
+
+`vuln`, `discovery`, `ics`
+
+### Syntax
+
+```bash
+nmap --script ics-plc-program-access -p 102,44818,20256,48898,502 <target>
+```
+
+### Arguments Table
+
+| Argument | Type | Default | Description |
+|----------|------|---------|-------------|
+| `ics-plc-program-access.timeout` | number | `10` | Connection timeout |
+| `ics-plc-program-access.test_write` | boolean | `false` | Attempt a harmless write test (increases accuracy, may generate alarms) |
+
+### Example with Full Nmap Output
+
+```bash
+nmap --script ics-plc-program-access -p 102,44818,20256,502 192.168.1.50
+```
+
+```
+Starting Nmap 7.95 ( https://nmap.org ) at 2026-06-01 20:19 UTC
 Nmap scan report for 192.168.1.50
-Host is up (0.00031s latency).
+Host is up (0.0027s latency).
+
+PORT      STATE SERVICE
+102/tcp   open  iso-tsap
+| ics-plc-program-access:
+|   S7comm: OPEN and UNAUTHENTICATED
+|   Connection: COTP + S7comm handshake succeeded without credentials
+|   CPU State: RUN (via SZL read — S7 System Status List access)
+|   PLC Program: Downloadable without authentication
+|   Block count: 47 OB/FB/FC/DB blocks accessible
+|   VULNERABILITY: T0843 (Program Download) — any host can overwrite PLC program
+|_  CVE: CVE-2021-22681 (if S7-1200/1500) | Severity: CRITICAL
+
+44818/tcp open  EtherNet/IP
+| ics-plc-program-access:
+|   EtherNet/IP: OPEN
+|   CIP GetAttributeAll succeeded without authentication
+|   Programming: Requires FactoryTalk credentials (auth enforced)
+|_  Status: PROTECTED (authentication required for program download)
+
+20256/tcp closed pcom
+502/tcp   open  mbnet
+| ics-plc-program-access:
+|   Modbus TCP: OPEN — NO AUTHENTICATION (by protocol design)
+|   All holding registers accessible: FC01/02/03/04 (read) + FC05/06/15/16 (write)
+|   NOTE: Modbus TCP has no authentication mechanism — any host can read/write
+|_  IXF: exploits/protocols/modbus/modbus_write_single_register
+
+Host script results:
+| ics-plc-program-access:
+|   CRITICAL: S7comm unauthenticated program access on port 102
+|   HIGH: Modbus TCP unauthenticated register access on port 502
+|_  Run: ixf ttp T0843 192.168.1.50
+
+Nmap done: 1 IP address (1 host up) scanned in 6.18 seconds
+```
+
+---
+
+## Script 4: `ics-safety-systems.nse`
+
+### Description
+
+Detects Safety Instrumented System (SIS) interfaces on the network. Identifies Triconex, HIMA, Pilz, and other safety PLC endpoints. Reports potential exposure — safety systems should typically be air-gapped or at minimum on separate isolated networks.
+
+### Categories
+
+`discovery`, `vuln`, `ics`
+
+### Syntax
+
+```bash
+nmap --script ics-safety-systems -p 1502,7700,7701,2404,44818,1962 <target_range>
+```
+
+### Arguments Table
+
+| Argument | Type | Default | Description |
+|----------|------|---------|-------------|
+| `ics-safety-systems.timeout` | number | `8` | Connection timeout |
+| `ics-safety-systems.strict` | boolean | `false` | Require confirmed safety system (default: flag likely candidates) |
+
+### Example with Full Nmap Output
+
+```bash
+nmap --script ics-safety-systems -p 1502,7700,44818,2404 192.168.1.0/24
+```
+
+```
+Starting Nmap 7.95 ( https://nmap.org ) at 2026-06-01 20:22 UTC
+Nmap scan report for 192.168.1.75
+Host is up (0.0022s latency).
+
+PORT      STATE SERVICE
+1502/tcp  open  unknown
+| ics-safety-systems:
+|   Port 1502 (Triconex TriStation): OPEN
+|   Banner: Triconex TSAA protocol response detected
+|   Vendor: Schneider Electric (Triconex)
+|   Product: Triconex Safety System (likely model 3008)
+|   CRITICAL: Safety system interface network-accessible
+|   NOTE: TRITON/TRISIS malware targeted this exact interface (2017)
+|   MITRE: T0838 (Modify Alarm Settings), T0829 (Loss of Protection)
+|_  IXF: cve/malware/triton_trisis_safety_bypass (simulate only)
+
+44818/tcp open  EtherNet/IP
+| ics-safety-systems:
+|   EtherNet/IP: CIP Safety device detected
+|   Product: "GuardLogix 5570" (Rockwell Safety PLC)
+|   Safety level: PLe/SIL3 (per device datasheet)
+|   MEDIUM: Safety PLC EtherNet/IP accessible — verify network isolation
+|_  IXF: exploits/protocols/ethernet_ip_cip_safety/
+
+Host script results:
+| ics-safety-systems:
+|   CRITICAL: Triconex safety system exposed on network (192.168.1.75:1502)
+|   MEDIUM: Rockwell GuardLogix safety PLC exposed (192.168.1.75:44818)
+|_  Recommendation: Safety systems should be isolated (see IEC 61511, IEC 62443)
+
+Nmap done: 256 IP addresses scanned in 23.14 seconds (7 hosts up)
+```
+
+---
+
+## Script 5: `ics-firmware-version.nse`
+
+### Description
+
+Extracts firmware version information from OT devices using protocol-specific queries. Supports Modbus FC43 (Device Identification), S7comm SZL System Status List, EtherNet/IP GetAttributeAll, BACnet ReadProperty, and OPC UA GetServerInfo. Firmware version is used to determine patch status and applicable CVEs.
+
+### Categories
+
+`discovery`, `safe`, `ics`
+
+### Syntax
+
+```bash
+nmap --script ics-firmware-version -p 102,502,44818,47808,4840 <target>
+```
+
+### Arguments Table
+
+| Argument | Type | Default | Description |
+|----------|------|---------|-------------|
+| `ics-firmware-version.timeout` | number | `10` | Connection timeout |
+| `ics-firmware-version.check_cve` | boolean | `true` | Map firmware version to known CVEs |
+
+### Example with Full Nmap Output
+
+```bash
+nmap --script ics-firmware-version -p 102,502,44818 192.168.1.100
+```
+
+```
+Starting Nmap 7.95 ( https://nmap.org ) at 2026-06-01 20:25 UTC
+Nmap scan report for 192.168.1.100
+Host is up (0.0029s latency).
+
+PORT      STATE SERVICE
+102/tcp   open  iso-tsap
+| ics-firmware-version:
+|   Protocol: Siemens S7comm
+|   SZL Query: CPU Identification (0x001C)
+|   Manufacturer: Siemens AG
+|   Product Name: CPU 1516-3 PN/DP
+|   Copyright: Siemens AG
+|   Module Type: CPU 1516-3 PN/DP
+|   Firmware Version: V2.8.3
+|   Hardware Version: 1
+|   CPUType: CPU 1516-3 PN/DP
+|   Known CVEs for this firmware version:
+|     CVE-2021-22681 (CVSS 9.8): Hardcoded TLS key — ALL firmware versions affected
+|     CVE-2022-38465 (CVSS 9.8): S7comm global private key — ALL firmware versions
+|     Status: No patch available for CVE-2021-22681 (requires hardware replacement)
+|_  IXF: cve CVE-2021-22681
+
+502/tcp   open  mbnet
+| ics-firmware-version:
+|   Protocol: Modbus TCP FC43 MEI (Device Identification)
+|   Object ID 0x01 (Vendor Name): Schneider Electric
+|   Object ID 0x02 (Product Code): BMXP342020H
+|   Object ID 0x03 (Major/Minor Rev): V3.30 / V3.30
+|   Object ID 0x04 (Vendor URL): www.schneider-electric.com
+|   Object ID 0x05 (Product Name): Modicon M340 CPU
+|   Object ID 0x06 (Model Name): BMXP342020H
+|   Firmware: V3.30
+|   Known CVEs:
+|     CVE-2022-24323 (CVSS 7.5): Malformed Modbus request DoS — V3.20 and below
+|     Status: V3.30 — check patch bulletin SEVD-2022-116-01
+|_  IXF: cve CVE-2022-24323
+
+44818/tcp open  EtherNet/IP
+| ics-firmware-version:
+|   Protocol: EtherNet/IP / CIP GetAttributeAll
+|   Vendor: Rockwell Automation / Allen-Bradley
+|   Product: 1756-L75/B LOGIX5575
+|   Revision: 33.011
+|   Firmware: 33.011
+|   Serial: 0x12AB34CD
+|   Known CVEs:
+|     CVE-2022-1161 (CVSS 10.0): Modified firmware upload — V33 and below
+|     CVE-2023-3595 (CVSS 9.8): RCE via EtherNet/IP — V33 and below
+|_  IXF: cve CVE-2022-1161
+
+Nmap done: 1 IP address (1 host up) scanned in 7.91 seconds
+```
+
+---
+
+## Script 6: `ics-historian-discover.nse`
+
+### Description
+
+Discovers industrial historian databases on the network. Checks for OSIsoft PI Server, AVEVA Historian, GE Proficy Historian, Honeywell PHD, and generic SQL-based historians. Historians contain time-series production data and are high-value targets for industrial espionage.
+
+### Categories
+
+`discovery`, `safe`, `ics`
+
+### Syntax
+
+```bash
+nmap --script ics-historian-discover -p 5450,5457,5461,5480,1433,5432 <target>
+```
+
+### Arguments Table
+
+| Argument | Type | Default | Description |
+|----------|------|---------|-------------|
+| `ics-historian-discover.timeout` | number | `10` | Connection timeout |
+| `ics-historian-discover.try_auth` | boolean | `false` | Attempt anonymous/default authentication |
+
+### Example with Full Nmap Output
+
+```bash
+nmap --script ics-historian-discover -p 5450,5457,1433 192.168.1.0/24
+```
+
+```
+Starting Nmap 7.95 ( https://nmap.org ) at 2026-06-01 20:28 UTC
+
+Nmap scan report for historian01.plant.local (192.168.1.200)
+Host is up (0.0018s latency).
+
+PORT     STATE SERVICE
+5450/tcp open  unknown
+| ics-historian-discover:
+|   OSIsoft PI Server detected (port 5450)
+|   PI Data Archive version: 2023 (3.4.430.462)
+|   PI Server name: HISTORIAN01
+|   Server ID: {A1B2C3D4-E5F6-7890-ABCD-EF1234567890}
+|   Authentication: Mapped/Explicit (Windows + PI user)
+|   Default user 'piadmin': Attempting login...
+|   [!] piadmin login allowed (default configuration)
+|   Tag count: 47,832 process tags accessible
+|   Oldest data: 2019-01-01 (7+ years of process data)
+|   CRITICAL: piadmin with default/blank password provides full PI access
+|_  IXF: creds/osisoft/pi_server_default_creds | CVE: CVE-2021-26382
+
+1433/tcp open  ms-sql-s
+| ics-historian-discover:
+|   Microsoft SQL Server: Proficy Historian (GE Digital)
+|   Version: SQL Server 2019 (15.00.4198.2)
+|   Instance: HISTORIAN
+|   Databases: [proficy_historian, proficy_system, master, model]
+|   Authentication: SQL + Windows
+|   [i] No anonymous access; default SA account not tested
+|_  IXF: cve/ge/cimplicity_default_creds
+
+Nmap done: 256 IP addresses scanned in 31.22 seconds (3 historians found)
+```
+
+---
+
+## Script 7: `ics-enumerate.nse`
+
+### Description
+
+Comprehensive ICS device metadata enumeration. For each open ICS port, extracts all available device information including vendor, model, firmware version, serial number, station name, configured IP settings, and installed modules. Combines multiple protocol queries into a single rich output.
+
+### Categories
+
+`discovery`, `safe`, `ics`
+
+### Syntax
+
+```bash
+nmap --script ics-enumerate -p 102,502,44818,47808,4840,9600 <target>
+```
+
+### Arguments Table
+
+| Argument | Type | Default | Description |
+|----------|------|---------|-------------|
+| `ics-enumerate.timeout` | number | `15` | Connection timeout (longer for full enumeration) |
+| `ics-enumerate.deep` | boolean | `false` | Perform deeper enumeration (may generate more network traffic) |
+| `ics-enumerate.save` | string | `""` | Save output to file path |
+
+### Example with Full Nmap Output
+
+```bash
+nmap --script ics-enumerate -p 102,502,44818 192.168.1.100
+```
+
+```
+Starting Nmap 7.95 ( https://nmap.org ) at 2026-06-01 20:31 UTC
+Nmap scan report for 192.168.1.100
+Host is up (0.0031s latency).
+
+PORT      STATE SERVICE
+102/tcp   open  iso-tsap
+| ics-enumerate:
+|   Siemens S7comm Enumeration
+|   ─────────────────────────────────────────────────────────────
+|   COTP Connection: Success (Slot 1, Rack 0)
+|   S7comm Session: Established (PDU Type 1, max PDU 480 bytes)
+|   SZL 0x001C: CPU Identification
+|     Manufacturer:     Siemens AG
+|     Product Name:     CPU 1516-3 PN/DP
+|     Module Type:      CPU 1516-3 PN/DP
+|     Firmware:         V2.8.3
+|     Hardware Version: 1
+|   SZL 0x0011: Module Identification
+|     Order Number:     6ES7 516-3AN01-0AB0
+|     Serial Number:    S C-C7UP57512014
+|     Hardware Version: 1
+|   SZL 0x0131: Communication
+|     Max sessions:     128
+|     Max PDU:          65536
+|     Max tags:         8192
+|   CPU Mode: RUN
+|   CPU State: 0x08 (RUN)
+|   System time: 2026-06-01 20:31:44 (UTC)
+|   Station Name: "SIEMENS-S7-1516"
+|   Project Name: "PlantControl_v3.2"
+|   Plant designation: "Building A, Level 2"
+|_  Security: S7comm+ TLS detected — check CVE-2021-22681
+
+502/tcp   open  mbnet
+| ics-enumerate:
+|   Modbus TCP Enumeration
+|   ─────────────────────────────────────────────────────────────
+|   FC04 Read Input Registers (Unit 1):
+|     Registers 0-19: [1842, 2731, 0, 4095, 1023, 512, 0, 0, ...]
+|   FC43 MEI Device Identification:
+|     Vendor:       Schneider Electric
+|     Product Code: BMXP342020H
+|     Revision:     V3.30
+|     Vendor URL:   www.schneider-electric.com
+|     Product Name: Modicon M340 CPU
+|   FC01 Coil Read (Unit 1): 32 coils, 8 active
+|   Unit IDs responding: 1 (primary)
+|   Station Name: (not available via Modbus)
+|_  IP Config: Target=192.168.1.100 Port=502 UnitID=1
+
+44818/tcp open  EtherNet/IP
+| ics-enumerate:
+|   EtherNet/IP / CIP Enumeration
+|   ─────────────────────────────────────────────────────────────
+|   ListIdentity response:
+|     Vendor ID:      1 (Rockwell Automation / Allen-Bradley)
+|     Device Type:    14 (Programmable Logic Controller)
+|     Product Code:   65 (ControlLogix)
+|     Revision:       33.11
+|     Status:         0x0030 (Owned, Configured, RUN mode)
+|     Serial Number:  0x12AB34CD
+|     Product Name:   "1756-L75/B LOGIX5575"
+|   GetAttributeAll (Class 0x01, Instance 0x01):
+|     Revision:       33.011
+|     Max instance:   1
+|     Number of instances: 1
+|   Chassis Information (UCMM):
+|     Slots:  10
+|     Slot 0: 1756-L75/B (ControlLogix CPU)
+|     Slot 1: 1756-ENBT/A (EtherNet/IP scanner)
+|     Slot 2: 1756-IB32/A (32-point discrete input)
+|     Slot 3: 1756-OB32/A (32-point discrete output)
+|_  Tags: 156 controller tags accessible (no authentication required)
+
+Nmap done: 1 IP address (1 host up) scanned in 12.34 seconds
+```
+
+---
+
+## Script 8: `ics-honeypot-detect.nse`
+
+### Description
+
+Analyzes ICS protocol responses to detect honeypots and deception technologies. Real OT devices have consistent timing characteristics, specific quirks in protocol responses, and expected error behaviors. Honeypots often have slightly wrong behaviors that this script flags.
+
+The detection is heuristic and not 100% reliable, but significantly reduces false positive results in ICS security assessments.
+
+### Categories
+
+`discovery`, `safe`, `ics`
+
+### Syntax
+
+```bash
+nmap --script ics-honeypot-detect -p 102,502,44818,47808,4840 <target>
+```
+
+### Arguments Table
+
+| Argument | Type | Default | Description |
+|----------|------|---------|-------------|
+| `ics-honeypot-detect.timeout` | number | `10` | Connection timeout |
+| `ics-honeypot-detect.iterations` | number | `3` | Number of timing test iterations |
+| `ics-honeypot-detect.threshold` | number | `80` | Confidence threshold (0-100) for honeypot determination |
+
+### Example with Full Nmap Output
+
+```bash
+nmap --script ics-honeypot-detect -p 102,502 192.168.1.100
+```
+
+**Real device (not a honeypot):**
+
+```
+Starting Nmap 7.95 ( https://nmap.org ) at 2026-06-01 20:34 UTC
+Nmap scan report for 192.168.1.100
 
 PORT    STATE SERVICE
 102/tcp open  iso-tsap
+| ics-honeypot-detect:
+|   S7comm analysis:
+|   Timing consistency (3 iterations):
+|     Response 1: 4.2ms
+|     Response 2: 4.1ms
+|     Response 3: 4.3ms
+|     Variance: 0.1ms (LOW — consistent with real hardware)
+|   Protocol behavior:
+|     COTP error codes: Correct (per RFC 905)
+|     PDU length: Correct (480 bytes max — S7-1516 spec)
+|     SZL response: Authentic hardware fingerprint
+|     Unknown function handling: Correct error code returned
+|   Conclusion: REAL DEVICE (confidence 92%)
+|_  IXF: Target appears genuine — proceed with assessment
 
-Host script results:
-| ixf-s7comm-info:
-|   Siemens S7 PLC detected
-|   COTP Connection:  OK (CC TPDU received)
-|   S7 Setup Comm:    OK (PDU size negotiated: 240 bytes)
-|   SZL-SSL Results:
-|     Module Identification:
-|       Order number:     6ES7 215-1AG40-0XB0
-|       Hardware version: V03
-|       Firmware version: V4.4.0
-|     CPU Identification:
-|       Module type name: CPU 1215C DC/DC/DC
-|       Serial number:    S C-X6BH70523
-|       CPU type:         SIMATIC S7-1200
-|     Plant Identification:
-|       Plant ID:         (not set)
-|       Module name:      PLC_1
-|     Rack/Slot:          0 / 1
-|   IXF module:  use cve/siemens/cve_2021_22681_s7_1200_hardcoded_key
-|_  MITRE:       T0888, T0843
+502/tcp open  mbnet
+| ics-honeypot-detect:
+|   Modbus TCP analysis:
+|   Timing: 2.1ms ± 0.2ms (LOW variance — real hardware)
+|   Function code 0x41 (invalid): Correct error 0x01 (ILLEGAL FUNCTION)
+|   Exception code: 0x04 (correct behavior for undefined FC)
+|_  Conclusion: REAL DEVICE (confidence 88%)
 
-Nmap done: 1 IP address (1 host up) scanned in 2.14 seconds
+Nmap done: 1 IP address (1 host up) scanned in 9.82 seconds
 ```
 
----
-
-### 3. ixf-enip-list-identity
-
-**Description:** Sends a CIP (Common Industrial Protocol) List Identity request as a UDP broadcast or directed TCP packet to discover EtherNet/IP compatible devices. Parses the List Identity response to extract vendor ID, device type, product code, revision, serial number, product name, and current device state. Vendor IDs are mapped to the ODVA vendor registry for human-readable names.
-
-**Syntax:**
+**Honeypot detection:**
 
 ```
-nmap --script ixf-enip-list-identity [--script-args enip.broadcast=false] -p 44818 <target>
-```
-
-**Arguments:**
-
-| Argument | Default | Description |
-|----------|---------|-------------|
-| `enip.broadcast` | `false` | Send to broadcast address (useful for subnet discovery) |
-| `enip.timeout` | `3` | Response timeout in seconds |
-| `enip.list_services` | `false` | Also send List Services request |
-
-**Example with full Nmap output:**
-
-```bash
-nmap --script ixf-enip-list-identity -p 44818 192.168.1.200
-```
-
-**Output:**
-
-```
-Starting Nmap 7.94 ( https://nmap.org ) at 2024-06-01 18:27 UTC
-Nmap scan report for 192.168.1.200
-Host is up (0.00051s latency).
-
-PORT      STATE SERVICE
-44818/tcp open  EtherNet/IP-2
-
-Host script results:
-| ixf-enip-list-identity:
-|   EtherNet/IP CIP device detected
-|   Vendor:       Rockwell Automation/Allen-Bradley (Vendor ID: 0x0001)
-|   Device Type:  Programmable Logic Controller
-|   Product Code: 0x006E (Logix 5340)
-|   Revision:     32.011
-|   Serial Number: 0x64A3F821
-|   Product Name: "1756-L81ES/B LOGIX5381S"
-|   State:        Running (0x03)
-|   CIP Services: Connected Messaging, Unconnected Messaging
-|   IXF module:  use cve/rockwell/cve_2021_27478_logix_hardcoded
-|_  MITRE:       T0888
-
-Nmap done: 1 IP address (1 host up) scanned in 0.89 seconds
-```
-
----
-
-### 4. ixf-bacnet-discover
-
-**Description:** Sends BACnet Who-Is broadcast requests and parses I-Am responses to discover BACnet/IP devices on the network. For each discovered device, optionally reads the Device object properties: Object_Name, Vendor_Name, Model_Name, Firmware_Revision, Application_Software_Version, and Description. Supports directed broadcast for subnet scanning and unicast for directed probes.
-
-**Syntax:**
-
-```
-nmap --script ixf-bacnet-discover [--script-args bacnet.read_properties=true] -p U:47808 <target>
-```
-
-**Arguments:**
-
-| Argument | Default | Description |
-|----------|---------|-------------|
-| `bacnet.read_properties` | `false` | Read device object properties after discovery |
-| `bacnet.low_limit` | `0` | Instance range low limit for Who-Is |
-| `bacnet.high_limit` | `4194302` | Instance range high limit for Who-Is |
-| `bacnet.timeout` | `3` | Response collection timeout in seconds |
-
-**Example with full Nmap output:**
-
-```bash
-nmap --script ixf-bacnet-discover --script-args bacnet.read_properties=true -p U:47808 192.168.1.255
-```
-
-**Output:**
-
-```
-Starting Nmap 7.94 ( https://nmap.org ) at 2024-06-01 18:28 UTC
-
-Host script results:
-| ixf-bacnet-discover:
-|   BACnet/IP devices discovered: 3
-|
-|   Device 1 — 192.168.1.150:47808
-|     Object Identifier: Device 12345
-|     Object Name:        "AHU-01-Controller"
-|     Vendor Name:        "Johnson Controls"
-|     Model Name:         "Metasys NCE25-3001-0"
-|     Firmware Revision:  "9.0.2"
-|     Application Version: "9.0"
-|     Description:        "Air Handling Unit 01"
-|
-|   Device 2 — 192.168.1.151:47808
-|     Object Identifier: Device 22100
-|     Object Name:        "VAV-Box-Floor-3"
-|     Vendor Name:        "Siemens Building Technologies"
-|     Model Name:         "PXC36-E.D"
-|     Firmware Revision:  "4.5.1"
-|     Application Version: "4.5"
-|
-|   Device 3 — 192.168.1.152:47808
-|     Object Identifier: Device 54321
-|     Object Name:        "Chiller-Plant-Controller"
-|     Vendor Name:        "Schneider Electric"
-|     Model Name:         "SmartX AS-P"
-|     Firmware Revision:  "2.3.0"
-|
-|   IXF module:  use scanners/ics/bacnet_scanner
-|_  MITRE:       T0888
-
-Nmap done: 1 IP address (1 host up) scanned in 3.45 seconds
-```
-
----
-
-### 5. ixf-dnp3-detect
-
-**Description:** Detects DNP3 outstations (RTUs and IEDs) by sending a DNP3 Link Status request frame. Validates the Data Link Layer response to confirm DNP3 compliance. Optionally sends a Data Link Reset, reads Class 0 data via Application Layer Integrity Poll, and reports the number of data objects returned. Parses the response for data link source address.
-
-**Syntax:**
-
-```
-nmap --script ixf-dnp3-detect [--script-args dnp3.master=1,dnp3.slave=10] -p 20000 <target>
-```
-
-**Arguments:**
-
-| Argument | Default | Description |
-|----------|---------|-------------|
-| `dnp3.master` | `1` | DNP3 master address (this scanner) |
-| `dnp3.slave` | `10` | DNP3 slave/outstation address to probe |
-| `dnp3.integrity_poll` | `false` | Send Class 0 integrity poll after detection |
-| `dnp3.timeout` | `5` | Response timeout in seconds |
-
-**Example with full Nmap output:**
-
-```bash
-nmap --script ixf-dnp3-detect --script-args dnp3.integrity_poll=true -p 20000 192.168.1.75
-```
-
-**Output:**
-
-```
-Starting Nmap 7.94 ( https://nmap.org ) at 2024-06-01 18:29 UTC
-Nmap scan report for 192.168.1.75
-Host is up (0.00028s latency).
-
-PORT      STATE SERVICE
-20000/tcp open  dnp
-
-Host script results:
-| ixf-dnp3-detect:
-|   DNP3 device detected
-|   Data Link Response:  OK (Link Status response received)
-|   Source Address:      10 (outstation/RTU)
-|   Destination Address: 1  (master/SCADA)
-|   Confirmed:           Yes (link confirmation enabled)
-|   Class 0 Integrity Poll:
-|     Object Group 1:    32 binary inputs
-|     Object Group 30:   8 analog inputs
-|     Object Group 40:   4 analog outputs (status)
-|     Total objects:     44
-|   IXF module:  use scanners/ics/dnp3_scanner
-|   Relevant CVEs: CVE-2019-10979 (Triangle Microworks DNP3 master overflow)
-|_  MITRE:       T0888
-
-Nmap done: 1 IP address (1 host up) scanned in 1.87 seconds
-```
-
----
-
-### 6. ixf-iec104-detect
-
-**Description:** Detects IEC 60870-5-104 RTUs by sending a STARTDT_ACT (Start Data Transfer Activation) U-frame and waiting for STARTDT_CON (Confirmation). On confirmed session, optionally sends a General Interrogation command (C_IC_NA_1, TypeID=100) and counts the ASDU (Application Service Data Unit) responses to estimate the number of information objects (circuit breakers, measurements, setpoints). Sends STOPDT_ACT to cleanly close the session.
-
-**Syntax:**
-
-```
-nmap --script ixf-iec104-detect [--script-args iec104.interrogate=true] -p 2404 <target>
-```
-
-**Arguments:**
-
-| Argument | Default | Description |
-|----------|---------|-------------|
-| `iec104.interrogate` | `false` | Send General Interrogation after STARTDT |
-| `iec104.common_address` | `1` | Common Address of ASDU (station address) |
-| `iec104.timeout` | `5` | Response timeout in seconds |
-| `iec104.k` | `12` | Maximum number of unacknowledged ASDUs (k parameter) |
-| `iec104.w` | `8` | Receive window (w parameter) |
-
-**Example with full Nmap output:**
-
-```bash
-nmap --script ixf-iec104-detect --script-args iec104.interrogate=true -p 2404 192.168.1.30
-```
-
-**Output:**
-
-```
-Starting Nmap 7.94 ( https://nmap.org ) at 2024-06-01 18:30 UTC
-Nmap scan report for 192.168.1.30
-Host is up (0.00041s latency).
-
-PORT     STATE SERVICE
-2404/tcp open  iec-104
-
-Host script results:
-| ixf-iec104-detect:
-|   IEC 60870-5-104 device detected
-|   STARTDT:         OK (STARTDT_CON received — session established)
-|   k parameter:     12 (max unacknowledged ASDUs)
-|   w parameter:     8  (receive window)
-|   General Interrogation (COT=6):
-|     TypeID 1  (M_SP_NA_1 — Single Point):  64 objects
-|     TypeID 13 (M_ME_NC_1 — Float):         24 objects
-|     TypeID 30 (M_SP_TB_1 — Single+Time):   12 objects
-|     TypeID 45 (C_SC_NA_1 — Control):       8  objects (writable!)
-|     Total ASDUs: 108 objects
-|   STOPDT:          OK (session cleanly closed)
-|
-|   WARNING: 8 control objects (TypeID 45) are accessible without authentication.
-|            An attacker could send C_SC_NA_1 EXEC to control circuit breakers.
-|
-|   IXF module:  use exploits/protocols/iec104/iec104_single_command
-|   Relevant CVEs: CVE-2022-37300 (Schneider IEC 104 auth bypass)
-|_  MITRE:       T0855 (Unauthorized Command Message), T0888
-
-Nmap done: 1 IP address (1 host up) scanned in 2.34 seconds
-```
-
----
-
-### 7. ixf-opcua-info
-
-**Description:** Connects to an OPC UA server's discovery endpoint and calls `GetEndpoints` to enumerate all available endpoints, security modes, and security policies. Reports whether anonymous access or `SecurityMode=None` endpoints are available. Optionally attempts to browse the OPC UA namespace without authentication to test for unauthenticated access. Maps security mode enum values to human-readable strings (None, Sign, SignAndEncrypt).
-
-**Syntax:**
-
-```
-nmap --script ixf-opcua-info [--script-args opcua.browse=true,opcua.anon_test=true] -p 4840 <target>
-```
-
-**Arguments:**
-
-| Argument | Default | Description |
-|----------|---------|-------------|
-| `opcua.browse` | `false` | Attempt anonymous namespace browse |
-| `opcua.anon_test` | `true` | Test for anonymous session creation |
-| `opcua.timeout` | `5` | Connection timeout in seconds |
-| `opcua.max_endpoints` | `10` | Maximum endpoints to enumerate |
-
-**Example with full Nmap output:**
-
-```bash
-nmap --script ixf-opcua-info --script-args opcua.anon_test=true,opcua.browse=true -p 4840 192.168.1.120
-```
-
-**Output:**
-
-```
-Starting Nmap 7.94 ( https://nmap.org ) at 2024-06-01 18:31 UTC
-Nmap scan report for 192.168.1.120
-Host is up (0.00038s latency).
-
-PORT     STATE SERVICE
-4840/tcp open  opcua-tcp
-
-Host script results:
-| ixf-opcua-info:
-|   OPC UA server detected
-|   Server URI:    urn:KEPServerEX
-|   Product Name:  KEPServerEX/6
-|   Manufacturer:  PTC Inc.
-|
-|   Endpoints (3 found):
-|     1. opc.tcp://192.168.1.120:4840/
-|        Security Mode:   None
-|        Security Policy: http://opcfoundation.org/UA/SecurityPolicy#None
-|        Token Types:     Anonymous, UserName
-|        RISK: SecurityMode=None endpoint exposed (no encryption/signing)
-|
-|     2. opc.tcp://192.168.1.120:4840/
-|        Security Mode:   Sign
-|        Security Policy: http://opcfoundation.org/UA/SecurityPolicy#Basic256Sha256
-|        Token Types:     Certificate
-|
-|     3. opc.tcp://192.168.1.120:4840/
-|        Security Mode:   SignAndEncrypt
-|        Security Policy: http://opcfoundation.org/UA/SecurityPolicy#Aes256_Sha256_RsaPss
-|        Token Types:     Certificate
-|
-|   Anonymous access test:
-|     Session created:    YES (anonymous session opened without credentials)
-|     RISK: Server accepts anonymous sessions — unauthenticated read/write possible
-|
-|   Namespace browse (anonymous):
-|     Objects/            (namespace 0)
-|     |- Server/          (standard OPC UA server node)
-|     |- Kepware/         (vendor namespace — tag database root)
-|        |- Channel1/Device1/ (16 tags visible without auth)
-|        |- Channel2/Device2/ (8 tags visible without auth)
-|
-|   Relevant CVEs: CVE-2023-27321 (OPC UA .NET Classic overflow)
-|   IXF module:  use exploits/protocols/opcua/opcua_anonymous_browse
-|_  MITRE:       T0888, T0843 (Program Upload)
-
-Nmap done: 1 IP address (1 host up) scanned in 3.87 seconds
-```
-
----
-
-### 8. ixf-ics-cve-check
-
-**Description:** Multi-protocol banner grabber and version fingerprinter that matches collected banners, HTTP headers, firmware strings, and S7 SZL data against the IXF CVE database (all 612 CVE modules). Reports matching CVEs with CVSS scores, IXF module paths, and exploitation status. Covers HTTP/HTTPS (web HMI), FTP, Telnet, SSH, S7comm (SZL firmware), Modbus FC43 MEI, EtherNet/IP List Identity, and OPC UA GetEndpoints.
-
-**Syntax:**
-
-```
-nmap --script ixf-ics-cve-check [--script-args cvechecks.max_cves=20] -p <ports> <target>
-```
-
-**Arguments:**
-
-| Argument | Default | Description |
-|----------|---------|-------------|
-| `cvechecks.max_cves` | `10` | Maximum CVEs to report per host |
-| `cvechecks.http_banner` | `true` | Grab HTTP banner from web ports |
-| `cvechecks.ftp_banner` | `true` | Grab FTP banner |
-| `cvechecks.s7_szl` | `true` | Grab S7 firmware via SZL-SSL |
-| `cvechecks.enip_identity` | `true` | Grab EtherNet/IP product identity |
-| `cvechecks.modbus_mei` | `true` | Grab Modbus MEI device ID |
-| `cvechecks.severity_filter` | `MEDIUM` | Minimum severity to report (INFO/LOW/MEDIUM/HIGH/CRITICAL) |
-
-**Example with full Nmap output:**
-
-```bash
-nmap --script ixf-ics-cve-check -p 21,22,80,102,443,502,4840,44818 192.168.1.100
-```
-
-**Output:**
-
-```
-Starting Nmap 7.94 ( https://nmap.org ) at 2024-06-01 18:32 UTC
-Nmap scan report for 192.168.1.100
-Host is up (0.00044s latency).
-
-PORT      STATE SERVICE
-21/tcp    open  ftp
-22/tcp    open  ssh
-80/tcp    open  http
-102/tcp   open  iso-tsap
-443/tcp   open  https
-502/tcp   open  modbus
-4840/tcp  open  opcua-tcp
-44818/tcp open  EtherNet/IP-2
-
-Host script results:
-| ixf-ics-cve-check:
-|   IXF CVE Check — 192.168.1.100
-|   ─────────────────────────────────────────────────────────
-|
-|   [Port 80 — HTTP banner]
-|   Banner: "Siemens SIMATIC HMI KTP700 — V14.0 SP1 Update 5"
-|   Matched CVEs:
-|     CVE-2018-4832   CVSS 7.5  HIGH      WinCC path traversal
-|                     IXF: use cve/siemens/cve_2018_4832_wincc_path_traversal
-|     CVE-2019-13945  CVSS 9.8  CRITICAL  SCALANCE auth bypass (check firmware ver)
-|                     IXF: use cve/siemens/cve_2019_13945_scalance_auth_bypass
-|
-|   [Port 102 — S7comm SZL]
-|   Module: 6ES7 215-1AG40-0XB0  Firmware: V4.2.0
-|   Matched CVEs:
-|     CVE-2021-22681  CVSS 10.0 CRITICAL  S7-1200 hardcoded crypto key
-|                     IXF: use cve/siemens/cve_2021_22681_s7_1200_hardcoded_key
-|                     NOTE: Firmware V4.2 is in affected range (< V4.5)
-|
-|   [Port 502 — Modbus MEI]
-|   VendorName: Siemens AG   ProductCode: ET200SP
-|   Matched CVEs:
-|     CVE-2020-7580   CVSS 7.5  HIGH      SIMATIC NET DoS via Modbus
-|                     IXF: use cve/siemens/cve_2020_7580_simatic_net_dos
-|
-|   [Port 44818 — EtherNet/IP]
-|   No EtherNet/IP response (device may not support CIP)
-|
-|   [Port 4840 — OPC UA]
-|   Server: KEPServerEX 6.11.718.0
-|   Matched CVEs:
-|     CVE-2022-2848   CVSS 9.8  CRITICAL  KEPServerEX RCE via LLMNR
-|                     IXF: use cve/kepware/cve_2022_2848_kepserver_rce
-|
-|   ─────────────────────────────────────────────────────────
-|   Summary: 4 CVEs matched (1 CRITICAL CVSS 10.0, 2 CRITICAL, 1 HIGH)
-|   Highest severity: CRITICAL (CVE-2021-22681, CVSS 10.0)
-|
-|   [IXF remediation workflow]
-|     ixf use cve/siemens/cve_2021_22681_s7_1200_hardcoded_key set target 192.168.1.100 run
-|     ixf use cve/kepware/cve_2022_2848_kepserver_rce set target 192.168.1.100 run
-|_
-Nmap done: 1 IP address (1 host up) scanned in 8.23 seconds
+Starting Nmap 7.95 ( https://nmap.org ) at 2026-06-01 20:35 UTC
+Nmap scan report for 192.168.1.250  <-- suspected honeypot
+
+PORT    STATE SERVICE
+502/tcp open  mbnet
+| ics-honeypot-detect:
+|   Modbus TCP analysis:
+|   Timing (3 iterations):
+|     Response 1: 2.1ms
+|     Response 2: 145.3ms   <-- ANOMALY: latency spike suggests software emulation
+|     Response 3: 3.0ms
+|     Variance: 70+ ms (HIGH — inconsistent with real hardware)
+|   Protocol behavior:
+|     Function code 0x42 (invalid): ACCEPTED with generic response (WRONG)
+|       Real Modbus devices return exception 0x01 for invalid FC
+|       This response suggests incomplete protocol emulation
+|     Unit ID 255 (broadcast): Full response received (UNUSUAL)
+|       Real devices typically ignore broadcast unit ID
+|     FC43 MEI response: Generic vendor string "Modbus Device" (SUSPICIOUS)
+|       Real devices return specific vendor names
+|   Indicators:
+|     [!] High timing variance (software emulation signature)
+|     [!] Invalid FC accepted without error (incomplete emulation)
+|     [!] Generic vendor name in MEI response
+|   Conclusion: PROBABLE HONEYPOT (confidence 91%)
+|   [!] Verify before proceeding — results may not reflect real infrastructure
+|_  Honeypot frameworks: Conpot, GridPot, S4x Industrial Honeypot
+
+Nmap done: 1 IP address (1 host up) scanned in 12.41 seconds
 ```
 
 ---
 
 ## Combined Scan Examples
 
-### Full ICS protocol sweep on a single host
+### 1. Full OT Reconnaissance
 
 ```bash
-sudo nmap --script "ixf-modbus-detect,ixf-s7comm-info,ixf-enip-list-identity,ixf-opcua-info" \
-  --script-args modbus.identify=true,opcua.anon_test=true \
-  -p 102,502,4840,44818 192.168.1.100 -sV -O
+nmap --script "ics-sweep,ics-enumerate,ics-firmware-version" \
+     -p 102,502,44818,47808,2404,4840,9600,20000,20256 \
+     -sV --open \
+     192.168.1.0/24
 ```
 
-**Expected output structure:**
-
-```
-Nmap scan report for 192.168.1.100
-PORT      STATE SERVICE       VERSION
-102/tcp   open  iso-tsap      Siemens S7comm
-502/tcp   open  modbus        Modbus TCP
-4840/tcp  open  opcua-tcp     OPC UA
-44818/tcp open  EtherNet/IP-2 Allen-Bradley EtherNet/IP
-
-Host script results:
-| ixf-modbus-detect:     [Schneider PLC — VendorName, ProductCode, Revision]
-| ixf-s7comm-info:       [S7-1200 — order number, firmware, serial]
-| ixf-enip-list-identity:[Rockwell Logix — vendor, product, revision]
-| ixf-opcua-info:        [KEPServerEX — endpoints, SecurityMode=None RISK]
-```
-
----
-
-### CVE check across an entire subnet
+### 2. Vulnerability-Focused Scan
 
 ```bash
-sudo nmap --script ixf-ics-cve-check \
-  --script-args cvechecks.severity_filter=HIGH,cvechecks.max_cves=5 \
-  -p 21,80,102,502,4840,44818 192.168.1.0/24 --open -T3
+nmap --script "ics-default-creds,ics-plc-program-access,ics-safety-systems" \
+     -p 22,23,80,443,102,44818,20256,1502 \
+     192.168.1.0/24
 ```
 
----
-
-### BACnet discovery on building automation VLAN
+### 3. Historian Discovery Sweep
 
 ```bash
-sudo nmap --script ixf-bacnet-discover \
-  --script-args bacnet.read_properties=true \
-  -p U:47808 192.168.50.0/24 -sU -T3
+nmap --script "ics-historian-discover" \
+     -p 5450,5457,5461,1433,5432,3306,5480 \
+     192.168.0.0/16
 ```
 
----
-
-### DNP3 survey across OT SCADA subnet
+### 4. Safety System Alert Scan
 
 ```bash
-sudo nmap --script ixf-dnp3-detect \
-  --script-args dnp3.integrity_poll=true,dnp3.slave=10 \
-  -p 20000 10.0.1.0/24 -T2
+nmap --script "ics-safety-systems" \
+     -p 1502,7700,7701,44818,2404 \
+     192.168.1.0/24
 ```
 
----
-
-### Complete OT asset discovery — all IXF scripts
+### 5. Pre-Assessment Honeypot Filter
 
 ```bash
-sudo nmap --script "ixf-*" \
-  --script-args modbus.identify=true,opcua.anon_test=true,bacnet.read_properties=true,\
-dnp3.integrity_poll=true,iec104.interrogate=true,cvechecks.severity_filter=MEDIUM \
-  -p 21,22,23,80,102,443,502,1217,2404,4840,5094,20000,44818 \
-  -p U:47808 \
-  192.168.1.0/24 --open -sV -sU -T3 \
-  -oN .tmp/ot_nmap_$(date +%Y%m%d).txt \
-  -oX .tmp/ot_nmap_$(date +%Y%m%d).xml \
-  -oJ .tmp/ot_nmap_$(date +%Y%m%d).json
+# Always run this first to filter honeypots from the target list
+nmap --script "ics-honeypot-detect,ics-sweep" \
+     -p 102,502,44818,4840 \
+     192.168.1.0/24 \
+     | grep -E "REAL DEVICE|PROBABLE HONEYPOT|HOST:" > honeypot_check.txt
 ```
 
 ---
 
 ## Integration with IXF Workflow
 
-NSE scripts and IXF modules are designed to work together. Use Nmap for initial discovery, then IXF for detailed exploitation simulation:
-
-### Step 1: Discover with Nmap NSE
+NSE scripts and IXF work together as a complete assessment pipeline:
 
 ```bash
-sudo nmap --script "ixf-modbus-detect,ixf-s7comm-info,ixf-ics-cve-check" \
-  -p 102,502 192.168.1.0/24 --open \
-  -oX .tmp/discovery.xml
-```
+# Step 1: Run NSE scripts to discover ICS devices
+nmap --script "ics-sweep,ics-firmware-version,ics-enumerate" \
+     -p 102,502,44818,47808 \
+     192.168.1.0/24 \
+     -oX ics_scan.xml
 
-### Step 2: Parse Nmap XML output
+# Step 2: Open IXF and use findings to target modules
+ixf
 
-```python
-"""Parse Nmap XML output and run IXF modules on discovered hosts."""
-import xml.etree.ElementTree as ET
-import subprocess
+# Step 3: Load modules based on discovered vendors
+ixf > cve CVE-2021-22681    # Siemens S7 found by ics-enumerate
+ixf > set target 192.168.1.100
+ixf > check
 
-tree = ET.parse(".tmp/discovery.xml")
-root = tree.getroot()
+# Step 4: Run TTP sweep for discovered protocols
+ixf > ttp T0812 192.168.1.0/24   # Default credentials (from ics-default-creds)
+ixf > ttp T0843 192.168.1.100    # Program download (from ics-plc-program-access)
 
-for host in root.findall("host"):
-    addr = host.find("address[@addrtype='ipv4']")
-    if addr is None:
-        continue
-    ip = addr.get("addr")
-
-    # Check for Modbus port
-    modbus_port = host.find(".//port[@portid='502']")
-    if modbus_port and modbus_port.find("state[@state='open']") is not None:
-        print(f"[+] Modbus on {ip}:502 — running IXF scanner")
-        subprocess.run([
-            "ixf", "use", "scanners/ics/modbus_detect",
-            "set", "target", ip,
-            "run"
-        ])
-
-    # Check for S7 port
-    s7_port = host.find(".//port[@portid='102']")
-    if s7_port and s7_port.find("state[@state='open']") is not None:
-        print(f"[+] S7comm on {ip}:102 — running IXF S7 scanner")
-        subprocess.run([
-            "ixf", "use", "scanners/ics/s7_comm_scanner",
-            "set", "target", ip,
-            "run"
-        ])
-```
-
-### Step 3: Load matched CVE modules
-
-```bash
-# From NSE CVE check output, run matched modules in IXF
-ixf use cve/siemens/cve_2021_22681_s7_1200_hardcoded_key set target 192.168.1.100 run
-ixf use cve/kepware/cve_2022_2848_kepserver_rce set target 192.168.1.100 run
-```
-
-### Step 4: Generate combined report
-
-```bash
-ixf report json
-ixf mitre-coverage
+# Step 5: Generate combined report
+ixf > report html
+ixf > mitre-report layer
 ```
 
 ---
 
-## Writing Custom NSE Scripts
+## Writing Custom ICS NSE Scripts
 
-Custom NSE scripts for IXF must follow the standard Nmap NSE API. Store them in `nse/scripts/custom/` and install manually.
-
-### Minimal NSE script template
+### Minimal Template
 
 ```lua
--- ixf-custom-protocol-detect.nse
--- Custom IXF NSE script for <protocol> detection.
---
--- Usage:
---   nmap --script ixf-custom-protocol-detect -p <port> <target>
---
--- @output
--- PORT      STATE SERVICE
--- NNNN/tcp  open  <service>
--- | ixf-custom-protocol-detect:
--- |   <protocol> device detected
--- |_  ...
+-- ics-custom-example.nse
+-- Custom ICS NSE script template
+-- Author: Your Name
 
-local nmap    = require "nmap"
-local stdnse  = require "stdnse"
+local nmap = require "nmap"
 local shortport = require "shortport"
+local stdnse = require "stdnse"
 
--- NSE metadata
 description = [[
-Detects <protocol> devices by sending a probe and validating the response.
-Part of IXF (IndustrialXPL-Forge) NSE script collection.
+Custom ICS protocol scanner. Example template.
 ]]
 
--- Categorize as discovery (passive identification, no exploitation)
-categories = {"discovery", "safe"}
+---
+-- @usage
+-- nmap --script ics-custom-example -p 502 <target>
+-- @output
+-- PORT    STATE SERVICE
+-- 502/tcp open  mbnet
+-- | ics-custom-example:
+-- |   Found: Modbus device
+-- |_  Vendor: Generic
 
--- Port filter: run only on specified TCP port
-portrule = shortport.port_or_service(<port_number>, "<service_name>", "tcp")
+author = "Your Name"
+license = "Same as Nmap -- See https://nmap.org/book/man-legal.html"
+categories = {"discovery", "safe", "ics"}
 
--- Script arguments (access via stdnse.get_script_args)
-local arg_timeout = stdnse.get_script_args("custom.timeout") or 5
-local arg_verbose = stdnse.get_script_args("custom.verbose") or false
+-- Only run against port 502 when it's open
+portrule = shortport.port_or_service(502, "mbnet", "tcp")
 
--- Main action function
 action = function(host, port)
-    local output = stdnse.output_table()
-
-    -- Open socket
     local socket = nmap.new_socket()
-    socket:set_timeout(arg_timeout * 1000)
+    socket:set_timeout(stdnse.get_script_args(SCRIPT_NAME..".timeout", 5000))
 
     local status, err = socket:connect(host.ip, port.number)
     if not status then
-        stdnse.debug1("Connection failed: %s", err)
-        return nil
+        return "Connection failed: " .. (err or "unknown")
     end
 
-    -- Build probe (modify for your protocol)
-    local probe = "\x00\x01\x00\x00\x00\x06\x01\x04\x00\x00\x00\x01"
-
-    -- Send probe
-    status, err = socket:send(probe)
-    if not status then
+    -- Send Modbus FC04 Read Input Registers
+    local request = "\x00\x01\x00\x00\x00\x06\x01\x04\x00\x00\x00\x0A"
+    local send_ok, send_err = socket:send(request)
+    if not send_ok then
         socket:close()
-        return nil
+        return "Send failed"
     end
 
-    -- Receive response
-    local response
-    status, response = socket:receive_bytes(16)
+    local recv_ok, response = socket:receive()
     socket:close()
 
-    if not status or not response then
-        return nil
+    if recv_ok and #response >= 3 then
+        return "Modbus device responded (FC04): " .. #response .. " bytes"
+    else
+        return "No Modbus response"
     end
-
-    -- Validate response (customize validation logic)
-    if #response >= 6 and response:sub(1, 2) == "\x00\x01" then
-        output["Protocol detected"] = "YES"
-        output["Response length"]   = #response .. " bytes"
-        output["IXF module"]        = "use scanners/ics/<module>"
-        output["MITRE"]             = "T0888"
-        return output
-    end
-
-    return nil
 end
 ```
 
-### NSE script metadata standards
-
-| Field | Requirement | Example |
-|-------|------------|---------|
-| `description` | Required | Multi-line description of what the script does |
-| `categories` | Required | `{"discovery", "safe"}` for passive, `{"vuln"}` for CVE checks |
-| `portrule` | Required | Use `shortport.port_or_service()` for TCP, `shortport.udp_port()` for UDP |
-| `author` | Recommended | `"Andre Henrique (mrhenrike)"` |
-| `license` | Recommended | `"Same as Nmap -- See https://nmap.org/book/man-legal.html"` |
-
-### Installing custom scripts
+### Install and Test Custom Script
 
 ```bash
-# Copy to nmap scripts directory
-sudo cp nse/scripts/custom/ixf-custom-protocol-detect.nse /usr/share/nmap/scripts/
-
-# Update script database
-sudo nmap --script-updatedb
-
-# Test
-nmap --script ixf-custom-protocol-detect -p <port> 127.0.0.1
+cp ics-custom-example.nse /usr/share/nmap/scripts/
+nmap --script-updatedb
+nmap --script ics-custom-example -p 502 192.168.1.100
 ```
 
 ---
 
-## Troubleshooting
+## Troubleshooting Permissions
 
-### "No such script: ixf-modbus-detect"
-
-**Cause:** Scripts not installed or `script-updatedb` not run.
-
-**Fix:**
+### Linux — Permission Denied for Raw Sockets
 
 ```bash
-sudo ixf nse install
-# or manually:
-sudo cp nse/scripts/*.nse /usr/share/nmap/scripts/
-sudo nmap --script-updatedb
+# Scripts requiring raw sockets (Layer 2, PROFINET) need root:
+sudo nmap --script ics-sweep 192.168.1.0/24
+
+# Or run as root (less recommended):
+su -
+nmap --script ics-sweep 192.168.1.0/24
+```
+
+### Windows — Administrator Required
+
+```cmd
+# Run as Administrator in elevated Command Prompt or PowerShell
+nmap --script ics-sweep 192.168.1.0/24
+```
+
+### Script Database Not Updated
+
+If scripts are not found after installation:
+```bash
+# Manually update the NSE database
+nmap --script-updatedb
+# Should show: NSE: Loaded X scripts for scanning.
+```
+
+### Scripts Directory Not Found
+
+```bash
+# Find nmap scripts directory
+nmap --script ics-sweep --datadir /path/to/nmap/data 192.168.1.1
+
+# Or find manually
+find / -name "*.nse" -maxdepth 10 2>/dev/null | head -5
+# /usr/share/nmap/scripts/http-title.nse
+# → Scripts dir: /usr/share/nmap/scripts/
+```
+
+### Script Syntax Errors
+
+```bash
+# Debug a script with verbose output
+nmap --script ics-sweep --script-trace -p 502 192.168.1.100
+
+# Lint a custom script
+nmap --script-help ics-sweep
 ```
 
 ---
 
-### Permission denied (NSE can't open raw socket)
+## After Install: Running `nmap --script-updatedb`
 
-**Cause:** Nmap requires root/administrator for raw socket operations (SYN scan, OS detection, UDP scan).
-
-**Fix:**
+Always run after adding new scripts:
 
 ```bash
-# Linux — run with sudo
-sudo nmap --script ixf-modbus-detect -p 502 192.168.1.100
-
-# Linux — allow nmap to use raw sockets without sudo (setcap)
-sudo setcap cap_net_raw,cap_net_admin+eip $(which nmap)
+nmap --script-updatedb
 ```
 
----
+Expected output:
+```
+Starting Nmap 7.95 ( https://nmap.org ) at 2026-06-01 20:45 UTC
+NSE: Updating rule database.
+NSE: Script Database updated successfully.
+```
 
-### Script output shows no results (script ran but found nothing)
-
-**Cause:** Target is not running the expected protocol on the specified port, or firewall is blocking.
-
-**Diagnosis:**
-
+Verify IXF scripts are registered:
 ```bash
-# Check port is open first
-nmap -p 502 192.168.1.100
-
-# Enable verbose NSE output
-nmap --script ixf-modbus-detect -p 502 192.168.1.100 --script-trace -v
+nmap --script-help ics-sweep
+nmap --script-help ics-default-creds
+nmap --script-help ics-plc-program-access
+nmap --script-help ics-safety-systems
+nmap --script-help ics-firmware-version
+nmap --script-help ics-historian-discover
+nmap --script-help ics-enumerate
+nmap --script-help ics-honeypot-detect
 ```
 
----
-
-### "script-updatedb: failed" error
-
-**Cause:** No write permission to Nmap scripts directory.
-
-**Fix:**
-
-```bash
-sudo nmap --script-updatedb
-# or on macOS with Homebrew:
-sudo chmod -R a+r /usr/local/share/nmap/scripts/
-sudo nmap --script-updatedb
-```
+Each should show the script's description and usage. If any returns an error, re-run `nse install` or check the scripts directory permissions.
 
 ---
 
-### UDP scripts not discovering BACnet devices
-
-**Cause:** UDP scan requires `-sU` flag and usually requires root. Broadcast probes need the correct broadcast address.
-
-**Fix:**
-
-```bash
-# UDP scan with broadcast
-sudo nmap -sU --script ixf-bacnet-discover -p U:47808 192.168.1.255
-
-# If broadcast is blocked, use directed unicast
-sudo nmap -sU --script ixf-bacnet-discover -p U:47808 192.168.1.150
-```
-
----
-
-### NSE script says "safe" but I'm worried about impact
-
-**Explanation:** `categories = {"discovery", "safe"}` means the script only performs read-only probes. It does not write data, modify device state, or trigger any process changes. However:
-
-- Any network packet sent to a poorly implemented ICS device may cause unexpected behavior.
-- Always obtain written authorization before scanning any industrial control system.
-- Use IXF module `simulate=True` (the default) for zero-impact simulation.
-- Use NSE scripts only in authorized environments with known-safe devices or lab setups.
-
----
-
-*Previous: [Module Catalog](13-module-catalog.md) | Back to [Index](_index.md)*
+*Previous: [Module Catalog](13-module-catalog.md)*

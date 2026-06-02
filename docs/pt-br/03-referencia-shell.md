@@ -2524,3 +2524,53 @@ ixf > exec cat .log/destructive_ops_$(date +%Y-%m-%d).log 2>/dev/null || echo "S
 ---
 
 *Anterior: [Início Rápido](02-inicio-rapido.md) | Próximo: [Sistema de Módulos](04-sistema-modulos.md)*
+
+---
+
+## Apendice: Exemplos Adicionais de Comandos
+
+### Exemplo de Sessao Completa de Descoberta
+
+```
+ixf > setg simulate true
+[*] Global: simulate => True
+
+ixf > setg timeout 10
+[*] Global: timeout => 10
+
+ixf > discover 192.168.1.0/24
+[*] Iniciando varredura de descoberta OT em 192.168.1.0/24...
+
+ixf > search siemens
+[*] Resultados: 27 modulos Siemens
+
+ixf > cve CVE-2022-38465
+[*] Modulo carregado: CVE-2022-38465 Siemens S7 Global Private Key
+
+ixf (CVE-2022-38465 S7 Global Key) > set target 192.168.1.50
+ixf (CVE-2022-38465 S7 Global Key) > run
+  [SIMULATE] CVE-2022-38465 -- chave privada global S7
+  Impacto: descriptografia de comunicacoes S7comm-Plus
+
+ixf (CVE-2022-38465 S7 Global Key) > back
+
+ixf > mitre-scan discovery 192.168.1.50
+ixf > mitre-coverage
+ixf > report json
+```
+
+### Referencia Rapida de Flags de Saida
+
+| Saida | Significado | Quando Aparece |
+|-------|-------------|----------------|
+| `[*]` | Status/informativo | Progresso normal |
+| `[+]` | Sucesso/confirmado | Resultado positivo, hit |
+| `[-]` | Negativo/nao encontrado | Nao vulneravel |
+| `[!]` | Aviso/atencao | Condicao requer atencao |
+| `[i]` | Informacao/dica | Contexto adicional |
+| `[SIMULATE]` | Modo simulacao ativo | run() em simulate=True |
+
+---
+
+*Anterior: [Inicio Rapido](02-inicio-rapido.md) | Proximo: [Sistema de Modulos](04-sistema-modulos.md)*
+<!-- fim da referencia do shell -->

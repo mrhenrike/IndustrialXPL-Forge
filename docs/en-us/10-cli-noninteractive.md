@@ -1,24 +1,6 @@
 # CLI Non-Interactive Mode
 
-IXF can be used without the interactive shell by passing commands directly on the command line. Commands are processed sequentially then the process exits. This enables scripting, automation, CI/CD integration, and repeatable one-liner penetration testing workflows.
-
----
-
-## Table of Contents
-
-1. [Basic Syntax](#basic-syntax)
-2. [One-Liner Patterns with Full Output](#one-liner-patterns-with-full-output)
-3. [Multiple Module Chaining](#multiple-module-chaining)
-4. [setg in Non-Interactive Mode](#setg-in-non-interactive-mode)
-5. [ALL ttp Command Variations](#all-ttp-command-variations)
-6. [ALL mitre Commands](#all-mitre-commands)
-7. [Shell Piping — 10 Examples](#shell-piping---10-examples)
-8. [Bash Script for Full OT Assessment](#bash-script-for-full-ot-assessment)
-9. [Python API — 10 Code Examples](#python-api---10-code-examples)
-10. [CI/CD Integration](#cicd-integration)
-11. [Exit Codes](#exit-codes)
-12. [JSON Output Piping with jq](#json-output-piping-with-jq)
-13. [Batch File Scanning with file:// Targets](#batch-file-scanning-with-file-targets)
+IXF can be used without the interactive shell, passing commands directly on the command line. This enables scripting, CI/CD pipelines, automation, scheduled security scans, and one-liner penetration testing workflows — all without requiring a human to drive the interactive shell.
 
 ---
 
@@ -26,1393 +8,1108 @@ IXF can be used without the interactive shell by passing commands directly on th
 
 ```bash
 ixf <command> [args...]
+ixf <command1> <arg1> <command2> <arg2> ...
 ```
 
-Multiple commands are separated by spaces. The shell processes them left-to-right sequentially, then exits. Commands requiring options use `set <option> <value>` between `use` and `run`.
+Commands are separated by spaces and processed sequentially. The IXF shell initializes, runs all commands in order, and exits. Module context is preserved across commands in the same invocation (i.e., after `use`, subsequent `set` and `run` commands target that module).
 
+**Installation check:**
 ```bash
-# Single command
-ixf stats
+ixf --version
+# IndustrialXPL-Forge v1.0.13
 
-# Chained commands (processed sequentially)
-ixf use scanners/ics/modbus_detect set target 192.168.1.100 run
-
-# Multiple independent commands
-ixf search siemens
-ixf stats
-ixf vendors siemens
+ixf --help
+# Shows non-interactive syntax help
 ```
 
 ---
 
-## One-Liner Patterns with Full Output
+## 20 One-Liner Examples with Full Output
 
-### Search and exit
+### 1. Module Statistics
 
 ```bash
-ixf search modbus
+ixf stats
 ```
 
-**Output:**
-
 ```
-[*] Indexing modules…
+[*] Indexing modules...
 [+] 976 modules indexed.
-
-Search results for: modbus
-──────────────────────────────────────────────────────────────────────────────
-  use scanners/ics/modbus_detect                       [INFO]   Modbus TCP Device Scanner
-  use scanners/ics/modbus_range_scanner                [INFO]   Modbus Register Range Scanner
-  use exploits/protocols/modbus/modbus_replay_attack   [HIGH]   Modbus TCP Replay Attack
-  use exploits/protocols/modbus/modbus_write_coil      [HIGH]   Modbus Unauthorized Coil Write
-  use exploits/protocols/modbus/modbus_flood_dos       [HIGH]   Modbus TCP Flood DoS
-  use cve/malware/frostygoop_modbus_heating            [CRITICAL] FrostyGoop Modbus Heating Attack
-  use cve/schneider/cve_2022_37300_modbus_auth_bypass  [CRITICAL] CVE-2022-37300 Modbus Auth Bypass
-  use assessment/protocols/modbus_security_audit       [INFO]   Modbus Protocol Security Audit
-──────────────────────────────────────────────────────────────────────────────
-8 result(s) found.
+[i] IXF Module Statistics — IndustrialXPL-Forge v1.0.13
+  Total: 976 | Vendors: 150 | Protocols: 50 | MITRE: 74/90 (82%)
+  cve: 486 | exploits: 159 | creds: 34 | scanners: 31 | assessment: 18
 ```
 
----
+### 2. Search by CVE
 
 ```bash
 ixf search CVE-2021-22681
 ```
 
-**Output:**
-
 ```
-[*] Indexing modules…
+[*] Indexing modules...
 [+] 976 modules indexed.
-
-Search results for: CVE-2021-22681
-──────────────────────────────────────────────────────────────────────────────
-  use cve/siemens/cve_2021_22681_s7_1200_hardcoded_key   [CRITICAL] CVE-2021-22681 Siemens S7-1200 Hardcoded Crypto Key
-──────────────────────────────────────────────────────────────────────────────
-1 result(s) found.
+[*] Search results for: CVE-2021-22681
+  use cve/siemens/cve_2021_22681_s7_1200_hardcoded_key  CRITICAL
+[*] 1 result(s) found.
 ```
 
----
-
-```bash
-ixf search default_creds
-```
-
-**Output:**
-
-```
-[*] Indexing modules…
-[+] 976 modules indexed.
-
-Search results for: default_creds
-──────────────────────────────────────────────────────────────────────────────
-  use creds/siemens/ssh_default_creds                 [HIGH]   Siemens SSH Default Credentials
-  use creds/siemens/web_default_creds                 [HIGH]   Siemens Web Default Credentials
-  use creds/rockwell/logix_default_creds              [HIGH]   Rockwell Logix Default Credentials
-  use creds/schneider/web_default_creds               [HIGH]   Schneider Web Default Credentials
-  use creds/ge/cimplicity_default_creds               [HIGH]   GE Cimplicity Default Credentials
-  use creds/honeywell/experion_default_creds          [HIGH]   Honeywell Experion Default Credentials
-  use creds/generic/web_default_creds                 [HIGH]   Generic Web Default Credentials
-  use creds/generic/ftp_default_creds                 [MEDIUM] Generic FTP Default Credentials
-  [... 26 more results ...]
-──────────────────────────────────────────────────────────────────────────────
-34 result(s) found.
-```
-
----
-
-### Load a module, set options, and run
+### 3. Load and Simulate a Module
 
 ```bash
 ixf use scanners/ics/modbus_detect set target 192.168.1.100 run
 ```
 
-**Output:**
-
 ```
-[*] Indexing modules…
+[*] Indexing modules...
 [+] 976 modules indexed.
-[*] Module loaded: Modbus TCP Device Scanner
+[*] Module loaded: Modbus TCP Device Detect
 [*] target => 192.168.1.100
 
   [SIMULATE MODE — no packets sent]
-  ─────────────────────────────────────────────────────────────────────
   [i] What would happen:
-
-      Modbus TCP Device Detection
-
-      Step 1: TCP connect to 192.168.1.100:502
-      Step 2: Send FC04 probe (Read Input Registers)
-              Payload (hex): 000100000006010400000001
-      Step 3: Validate Transaction ID echo in 6-byte MBAP response
-      Step 4: If identify=True, send FC43/MEI (Object IDs 0x00-0x02)
-              Extract: VendorName, ProductCode, MajorMinorRevision
-      Impact: Device fingerprinted — vendor, model, firmware revision known
-
-  [i] MITRE ATT&CK for ICS: T0888 (Remote System Information Discovery), T0802 (Automated Collection)
-  ─────────────────────────────────────────────────────────────────────
-  [i] Run with simulate=False and destructive=True to execute live
-      (authorized lab environments only)
+      Phase 1 [TCP Connect]: TCP to 192.168.1.100:502
+      Phase 2 [FC04 Probe]:  Modbus FC04 Read Input Registers (Unit=1)
+      Phase 3 [Fingerprint]: Analyze response for device type
+  [i] Payload (hex): 00 01 00 00 00 06 01 04 00 00 00 0A
+  [i] MITRE: T0846 (Remote System Discovery)
 ```
 
----
-
-### Check only (no exploit, just connectivity probe)
+### 4. Check Only (Read-Only Probe)
 
 ```bash
 ixf use scanners/ics/modbus_detect set target 192.168.1.100 check
 ```
 
-**Output:**
-
 ```
-[*] Indexing modules…
-[+] 976 modules indexed.
-[*] Module loaded: Modbus TCP Device Scanner
+[*] Module loaded: Modbus TCP Device Detect
 [*] target => 192.168.1.100
-[*] Running check()...
-[+] check() => True
+[*] Checking 192.168.1.100:502...
+[+] VULNERABLE — Modbus device detected
+[+] Device: Schneider Electric Modicon M340 (inferred)
 ```
 
-Or if unreachable:
-
-```
-[*] check() => False
-```
-
----
-
-### Show module info
-
-```bash
-ixf use cve/siemens/cve_2021_22681_s7_1200_hardcoded_key info
-```
-
-**Output:**
-
-```
-[*] Indexing modules…
-[+] 976 modules indexed.
-[*] Module loaded: CVE-2021-22681 Siemens S7-1200 Hardcoded Crypto Key
-
-  Module Information
-  ─────────────────────────────────────────────────────────────────────
-  Name:              CVE-2021-22681 Siemens S7-1200 Hardcoded Crypto Key
-  CVE:               CVE-2021-22681
-  CVSS:              10.0
-  Severity:          CRITICAL
-  Impact:            CRITICAL
-  Type:              Hardcoded Credentials
-  Devices:           Siemens SIMATIC S7-1200, S7-1500
-  Authors:           Andre Henrique (mrhenrike)
-  MITRE Techniques:  T0859, T0813
-  MITRE Tactics:     Credential Access, Impair Process Control
-  References:
-    https://www.cisa.gov/uscert/ics/advisories/icsa-21-194-07
-    https://nvd.nist.gov/vuln/detail/CVE-2021-22681
-  ─────────────────────────────────────────────────────────────────────
-
-  Options
-  ─────────────────────────────────────────────────────────────────────
-  Name         Value       Description
-  target                   Target Siemens S7-1200/1500 IP
-  port         102         S7comm port (default: 102)
-  rack         0           S7 CPU rack number
-  slot         1           S7 CPU slot number
-  simulate     True        Simulate mode (default: True)
-  destructive  False       Enable live exploitation
-  ─────────────────────────────────────────────────────────────────────
-```
-
----
-
-### Stats
-
-```bash
-ixf stats
-```
-
-**Output:**
-
-```
-[*] Indexing modules…
-[+] 976 modules indexed.
-
-  IXF Statistics
-  ─────────────────────────────────────────────────────────────────────
-  Total modules:         976
-    CVE exploits:        612
-    Protocol exploits:   89
-    PLC exploits:        44
-    SCADA exploits:      38
-    Scanners:            31
-    Credential modules:  34
-    Malware TTPs:        26
-    APT TTPs:            14
-    Assessment modules:  88
-
-  Coverage by severity:
-    CATASTROPHIC:  8
-    CRITICAL:      287
-    HIGH:          341
-    MEDIUM:        198
-    LOW:           87
-    INFO:          55
-
-  Vendors covered:       150+
-  Protocols covered:     50
-  MITRE ICS techniques:  82 of 85 (96.5%)
-  ─────────────────────────────────────────────────────────────────────
-```
-
----
-
-### Vendors and protocols
-
-```bash
-ixf vendors siemens
-```
-
-**Output:**
-
-```
-[*] Indexing modules…
-[+] 976 modules indexed.
-
-  Siemens ICS/OT Modules
-  ─────────────────────────────────────────────────────────────────────
-  Module                                              Severity   CVE
-  cve/siemens/cve_2021_22681_s7_1200_hardcoded_key   CRITICAL   CVE-2021-22681
-  cve/siemens/cve_2019_13945_scalance_auth_bypass     CRITICAL   CVE-2019-13945
-  cve/siemens/cve_2018_4832_wincc_path_traversal      HIGH       CVE-2018-4832
-  cve/siemens/cve_2019_19300_siprotec4_dos            HIGH       CVE-2019-19300
-  cve/siemens/cve_2022_38465_tia_portal_priv_esc      HIGH       CVE-2022-38465
-  cve/siemens/cve_2023_44317_scalance_rce             CRITICAL   CVE-2023-44317
-  [... 61 more ...]
-  ─────────────────────────────────────────────────────────────────────
-  67 modules for Siemens
-```
-
----
-
-```bash
-ixf protocols
-```
-
-**Output:**
-
-```
-[*] Indexing modules…
-[+] 976 modules indexed.
-
-  Supported ICS/OT Protocols
-  ─────────────────────────────────────────────────────────────────────
-  Protocol         Port(s)           Modules   Category
-  Modbus TCP       502               34        SCADA/PLC
-  S7comm           102               28        Siemens PLC
-  EtherNet/IP      44818, 2222       22        Rockwell/AB PLC
-  DNP3             20000             18        RTU/SCADA
-  IEC 60870-5-104  2404              16        RTU/SCADA (IEC)
-  OPC UA           4840              14        SCADA middleware
-  BACnet/IP        47808             12        Building automation
-  IEC 61850        102, 61850        10        Substation automation
-  PROFINET         34964             9         Siemens field bus
-  MQTT             1883, 8883        8         IoT/SCADA messaging
-  CODESYS          1217              7         Multi-vendor PLC runtime
-  EtherCAT         —                 6         Field bus
-  CC-Link          5006              5         Mitsubishi PLC
-  HART             —                 5         Field instruments
-  FOUNDATION FBus  —                 4         Field instruments
-  [... 35 more protocols ...]
-  ─────────────────────────────────────────────────────────────────────
-  50 protocols covered
-```
-
----
-
-```bash
-ixf coverage
-```
-
-**Output:**
-
-```
-[*] Indexing modules…
-[+] 976 modules indexed.
-
-  IXF Coverage Summary
-  ─────────────────────────────────────────────────────────────────────
-  Vendors:    150+  (Siemens, Schneider, Rockwell, GE, Honeywell, ABB, Moxa, ...)
-  Protocols:  50    (Modbus, S7comm, DNP3, IEC 104, OPC UA, BACnet, ...)
-  CVEs:       612   (spanning 2005–2024)
-  MITRE ICS:  82/85 techniques covered (96.5%)
-  Malware:    26    (Stuxnet, Industroyer, TRITON, FrostyGoop, CosmicEnergy, ...)
-  ─────────────────────────────────────────────────────────────────────
-```
-
----
-
-### Generate report
-
-```bash
-ixf report json
-```
-
-**Output:**
-
-```
-[*] Indexing modules…
-[+] 976 modules indexed.
-[*] Generating JSON report...
-[+] Report saved: .tmp/ixf_report_20240601_182500.json
-[i] Report contains: 976 modules, 612 CVEs, 50 protocols, 150+ vendors
-```
-
----
-
-```bash
-ixf report html
-```
-
-**Output:**
-
-```
-[*] Generating HTML report...
-[+] Report saved: .tmp/ixf_report_20240601_182501.html
-[i] Open in browser: file:///path/to/IndustrialXPL-Forge/.tmp/ixf_report_20240601_182501.html
-```
-
----
-
-## Multiple Module Chaining
-
-Run multiple modules back-to-back against the same target in a single command:
-
-```bash
-ixf use scanners/ics/modbus_detect set target 192.168.1.100 run \
-    use scanners/ics/s7_comm_scanner set target 192.168.1.100 run \
-    use scanners/ics/bacnet_scanner set target 192.168.1.100 run \
-    use scanners/ics/dnp3_scanner set target 192.168.1.100 run
-```
-
-**Output:**
-
-```
-[*] Indexing modules…
-[+] 976 modules indexed.
-[*] Module loaded: Modbus TCP Device Scanner
-[*] target => 192.168.1.100
-  [SIMULATE MODE — no packets sent]
-  [i] What would happen: Send FC04 probe to 192.168.1.100:502...
-  [i] MITRE ATT&CK for ICS: T0888
-
-[*] Module loaded: Siemens S7comm Scanner
-[*] target => 192.168.1.100
-  [SIMULATE MODE — no packets sent]
-  [i] What would happen: Send COTP+S7 Setup probe to 192.168.1.100:102...
-  [i] MITRE ATT&CK for ICS: T0888
-
-[*] Module loaded: BACnet/IP Scanner
-[*] target => 192.168.1.100
-  [SIMULATE MODE — no packets sent]
-  [i] What would happen: Send Who-Is broadcast to 192.168.1.100:47808...
-  [i] MITRE ATT&CK for ICS: T0888
-
-[*] Module loaded: DNP3 Scanner
-[*] target => 192.168.1.100
-  [SIMULATE MODE — no packets sent]
-  [i] What would happen: Send DNP3 Link Status probe to 192.168.1.100:20000...
-  [i] MITRE ATT&CK for ICS: T0888
-```
-
----
-
-**Chain with different options per module:**
-
-```bash
-ixf \
-  use cve/siemens/cve_2021_22681_s7_1200_hardcoded_key set target 10.0.0.5 set port 102 run \
-  use cve/schneider/cve_2022_37300_modbus_auth_bypass set target 10.0.0.6 set port 502 run \
-  use creds/ge/cimplicity_default_creds set target 10.0.0.7 set port 80 run
-```
-
----
-
-## setg in Non-Interactive Mode
-
-`setg` sets a global option that persists across all subsequent module loads in the session:
-
-```bash
-ixf setg target 192.168.1.100 \
-    use scanners/ics/modbus_detect run \
-    use scanners/ics/s7_comm_scanner run \
-    use scanners/ics/bacnet_scanner run
-```
-
-**Output:**
-
-```
-[*] Indexing modules…
-[+] 976 modules indexed.
-[*] Global option set: target = 192.168.1.100
-
-[*] Module loaded: Modbus TCP Device Scanner
-[*] target => 192.168.1.100 (global)
-  [SIMULATE MODE — no packets sent]
-  ...
-
-[*] Module loaded: Siemens S7comm Scanner
-[*] target => 192.168.1.100 (global)
-  [SIMULATE MODE — no packets sent]
-  ...
-
-[*] Module loaded: BACnet/IP Scanner
-[*] target => 192.168.1.100 (global)
-  [SIMULATE MODE — no packets sent]
-  ...
-```
-
-**Multiple global options:**
-
-```bash
-ixf setg target 192.168.1.100 setg simulate False setg destructive True \
-    use scanners/ics/modbus_detect run
-```
-
-**Note:** `setg simulate False` and `setg destructive True` will enable live traffic. Only use in authorized, isolated lab environments.
-
----
-
-## ALL ttp Command Variations
-
-### Run a specific technique (simulate mode)
-
-```bash
-ixf ttp T0843 192.168.1.100
-```
-
-**Output:**
-
-```
-[*] Indexing modules…
-[+] 976 modules indexed.
-[*] Running technique T0843 (Program Upload) against 192.168.1.100
-
-  Technique: T0843 — Program Upload
-  Tactic:    Collection
-  ──────────────────────────────────────────────────────────────────
-  Module 1/3: assessment/mitre_ics/t0843_program_upload
-  [SIMULATE MODE]
-    Stage 1: Discovery — enumerate S7comm/EIP/Modbus PLCs on network
-    Stage 2: Access — connect to PLC programming interface
-    Stage 3: Upload — request complete PLC ladder logic program
-    Stage 4: Analysis — identify safety bypass and backdoor opportunities
-  ──────────────────────────────────────────────────────────────────
-  T0843 assessment complete. 1 modules executed.
-```
-
----
-
-### Run technique against specific port
-
-```bash
-ixf ttp T0855 192.168.1.100 --port 502
-```
-
----
-
-### List all techniques for a tactic
-
-```bash
-ixf ttp-list --tactic discovery
-```
-
-**Output:**
-
-```
-[*] MITRE ATT&CK for ICS — Discovery Techniques
-  ──────────────────────────────────────────────────────────────────
-  Technique   Name                                    IXF Modules
-  T0802       Automated Collection                    3
-  T0840       Network Connection Enumeration           4
-  T0842       Network Sniffing                         2
-  T0846       Remote System Discovery                  5
-  T0888       Remote System Information Discovery      8
-  T0887       Wireless Sniffing                        2
-  ──────────────────────────────────────────────────────────────────
-  6 techniques, 24 modules
-```
-
----
-
-### List all techniques for all tactics
-
-```bash
-ixf ttp-list
-```
-
-**Output (truncated):**
-
-```
-[*] MITRE ATT&CK for ICS — All Techniques
-  Tactic                    Technique   Name
-  Initial Access            T0817       Drive-by Compromise
-  Initial Access            T0819       Exploit Public-Facing Application
-  Initial Access            T0822       External Remote Services
-  ...
-  Execution                 T0807       Command-Line Interface
-  Execution                 T0821       Modify Controller Tasking
-  ...
-  [82 techniques total]
-```
-
----
-
-### Run all techniques for a tactic
-
-```bash
-ixf ttp-sweep --tactic "Initial Access" --target 192.168.1.100
-```
-
-**Output:**
-
-```
-[*] Sweeping tactic: Initial Access (8 techniques)
-[*] Running T0817 against 192.168.1.100...
-  [SIMULATE] T0817: Drive-by Compromise — watering hole on ICS vendor portal
-[*] Running T0819 against 192.168.1.100...
-  [SIMULATE] T0819: Exploit Public-Facing Application — internet-exposed HMI
-[*] Running T0822 against 192.168.1.100...
-  [SIMULATE] T0822: External Remote Services — VPN/RDP without MFA
-[... 5 more techniques ...]
-[+] Tactic sweep complete: 8/8 techniques assessed.
-```
-
----
-
-### Check a specific technique (read-only probe)
-
-```bash
-ixf ttp-check T0843 192.168.1.100
-```
-
-**Output:**
-
-```
-[*] Checking T0843 (Program Upload) connectivity against 192.168.1.100
-[*] Probing S7comm (TCP/102)... OPEN
-[*] Probing EtherNet/IP (TCP/44818)... CLOSED
-[*] Probing Modbus TCP (TCP/502)... CLOSED
-[i] T0843: S7comm port accessible — PLC program upload may be possible
-```
-
----
-
-### Run full TTP coverage (all techniques, simulate)
-
-```bash
-ixf ttp-all --target 192.168.1.100 --simulate
-```
-
-**Output (truncated):**
-
-```
-[*] Running full MITRE ICS TTP coverage (82 techniques)
-[*] T0800 Activate Firmware Update Mode...        [SIM] OK
-[*] T0801 Monitor Process State...                [SIM] OK
-[*] T0802 Automated Collection...                 [SIM] OK
-[... 79 more ...]
-[+] Full TTP sweep complete: 82/82 techniques simulated.
-[+] Report: .tmp/ttp_all_20240601_182500.json
-```
-
----
-
-## ALL mitre Commands
-
-### Show MITRE coverage
+### 5. MITRE Coverage Report
 
 ```bash
 ixf mitre-coverage
 ```
 
-**Output:**
-
 ```
-[*] Indexing modules…
-[+] 976 modules indexed.
-
+[*] Indexing modules...
   MITRE ATT&CK for ICS Coverage
-  ──────────────────────────────────────────────────────────────────
-  Tactic                    Total  Covered  %
-  Initial Access            9      9        100%
-  Execution                 12     11       91.7%
-  Persistence               8      8        100%
-  Privilege Escalation      5      5        100%
-  Evasion                   6      6        100%
-  Discovery                 6      6        100%
-  Lateral Movement          5      5        100%
-  Collection                7      7        100%
-  Command and Control       8      7        87.5%
-  Inhibit Response Function 14     13       92.9%
-  Impair Process Control    10     10       100%
-  Impact                    14     13       92.9%
-  ──────────────────────────────────────────────────────────────────
-  Overall: 82/85 techniques (96.5%)
-
-  Uncovered techniques:
-    T0880.001  Modify Alarm Settings — Subtech 1
-    T0863      User Execution (manual interaction required)
-    T0865      Spearphishing Attachment (email delivery, not applicable)
+  Initial Access (TA0108):           9/9   (100%)
+  Execution (TA0104):                8/9   (88%)
+  ...
+  TOTAL: 74/90 (82%)
 ```
 
----
+### 6. List MITRE Techniques for a Tactic
 
-### Export ATT&CK Navigator layer
+```bash
+ixf mitre-list discovery
+```
+
+```
+  MITRE ATT&CK for ICS — Discovery Techniques (TA0102)
+  T0840  Network Connection Enumeration   2 modules
+  T0842  Network Sniffing                 3 modules
+  T0846  Remote System Discovery          8 modules
+  ...
+```
+
+### 7. TTP Sweep in Simulate Mode
+
+```bash
+ixf ttp T0843 192.168.1.100
+```
+
+```
+[*] TTP T0843 (Program Download) — 5 modules — simulate=True
+[*] Running module 1/5: cve/siemens/cve_2021_22681_s7_1200_hardcoded_key
+  [SIMULATE] CVE-2021-22681 ...
+[*] Running module 2/5: cve/siemens/cve_2022_38465_s7_global_key
+  [SIMULATE] CVE-2022-38465 ...
+[+] T0843 sweep complete: 5 modules (simulate)
+```
+
+### 8. Vendors List Filtered
+
+```bash
+ixf vendors japan
+```
+
+```
+  Vendors (7 results — japan)
+  Omron             12 CVE | 3 Cred
+  Mitsubishi         8 CVE | 1 Cred
+  Yokogawa           5 CVE | 1 Cred
+  ...
+```
+
+### 9. Protocols List
+
+```bash
+ixf protocols
+```
+
+```
+  Protocol Coverage (50 protocols)
+  MODBUS TCP         502/TCP    18 modules
+  Siemens S7comm     102/TCP     8 modules
+  ...
+```
+
+### 10. Generate JSON Report
+
+```bash
+ixf use scanners/ics/modbus_detect set target 192.168.1.100 run report json
+```
+
+```
+[*] Module loaded, target set, run complete
+[+] Report saved: ixf_report_20260601_153045.json
+```
+
+### 11. CVE Load and Show Info
+
+```bash
+ixf cve CVE-2023-6448 show info
+```
+
+```
+[*] Module loaded: CVE-2023-6448 Unitronics UniStream PLC
+  name         : CVE-2023-6448 Unitronics UniStream PLC
+  cvss         : 9.8
+  impact       : CRITICAL
+  mitre        : T0812, T0859
+```
+
+### 12. Assessment Module Run
+
+```bash
+ixf assess risk/ics_risk_scorer
+```
+
+```
+[*] Loading assessment/risk/ics_risk_scorer...
+  ICS Risk Score Methodology
+  Network exposure:    30%    Internet-facing: CRITICAL
+  Authentication:      25%    No Modbus auth: HIGH
+  ...
+  Composite Score: 8.7/10 (CRITICAL)
+```
+
+### 13. TTP List for a Tactic
+
+```bash
+ixf ttp-list --tactic evasion
+```
+
+```
+  TTP Index — Evasion (TA0103)
+  T0838  Modify Alarm Settings    2 modules
+  T0844  Program Organization     1 module
+  T0849  Masquerading             1 module
+  T0851  Rootkit                  2 modules
+  T0856  Spoof Reporting          2 modules
+  T0858  Change Credential        4 modules
+  T0872  Indicator Removal        1 module
+  T0874  Hooking                  1 module
+```
+
+### 14. MITRE Navigator Layer Export
 
 ```bash
 ixf mitre-report layer
 ```
 
-**Output:**
-
 ```
-[*] Generating MITRE ATT&CK Navigator layer...
-[+] Layer saved: .tmp/ixf_navigator_layer_20240601.json
-[i] Import at: https://mitre-attack.github.io/attack-navigator/
-[i] Select: Enterprise ATT&CK → ICS Matrix → Upload layer file
+[+] ATT&CK Navigator layer saved: ixf_mitre_layer_20260601_154200.json
+[i] Open at: https://mitre-attack.github.io/attack-navigator/
 ```
 
----
-
-### Show all modules for a specific technique
+### 15. NSE Install
 
 ```bash
-ixf mitre-list T0836
+ixf nse install
 ```
 
-**Output:**
-
 ```
-[*] MITRE T0836 — Modify Parameter
-  Tactic: Impair Process Control
-  ──────────────────────────────────────────────────────────────────
-  IXF Modules implementing T0836:
-    cve/malware/frostygoop_modbus_heating          CRITICAL
-    cve/malware/triton_safety_bypass               CATASTROPHIC
-    exploits/protocols/modbus/modbus_write_coil    HIGH
-    exploits/protocols/s7comm/s7_db_write          HIGH
-    assessment/mitre_ics/t0836_modify_parameter    INFO
-  ──────────────────────────────────────────────────────────────────
-  5 modules cover T0836
+[*] Installing IXF NSE scripts...
+[+] ics-sweep.nse → installed
+[+] ics-default-creds.nse → installed
+...
+[+] All 8 IXF NSE scripts installed.
 ```
 
----
-
-### Run a specific technique module
+### 16. LLM Status Check
 
 ```bash
-ixf mitre run T0836 --target 192.168.1.100
+ixf llm-status
 ```
 
-**Output:**
-
 ```
-[*] Running all T0836 modules against 192.168.1.100 (simulate mode)
-[*] Module 1/5: frostygoop_modbus_heating
-  [SIMULATE] FrostyGoop: FC16 writes to register 0x0000 → setpoint = 0
-[*] Module 2/5: triton_safety_bypass
-  [SIMULATE] TRITON: SIS setpoint override → shutdown threshold raised to 9999
-[... 3 more ...]
+  LLM Provider Status
+  gemini     configured    gemini-2.5-flash
+  openai     not configured
+  ...
+  Active: gemini
 ```
 
----
-
-### Show MITRE technique detail
+### 17. SAST Analysis One-Liner
 
 ```bash
-ixf mitre-info T0843
+ixf sast /opt/plc_projects/water_treatment/ --mode sast
 ```
 
-**Output:**
-
 ```
-  T0843 — Program Upload
-  ──────────────────────────────────────────────────────────────────
-  Tactic:       Collection
-  Description:  Adversaries may attempt to upload a program from a PLC
-                to gather information about configurations and programming.
-  Platforms:    Field Controller/RTU/PLC/IED, Engineering Workstation
-  CISA Ref:     https://attack.mitre.org/techniques/T0843/
-
-  Real-world use:
-    - TRITON/TRISIS: uploaded SIS program to understand Schneider safety logic
-    - Industroyer: uploaded IEC 104 station programs to modify RTU logic
-    - Dragonfly/Energetic Bear: uploaded HMI screens from historian
-
-  IXF Modules: 3
-    assessment/mitre_ics/t0843_program_upload
-    cve/siemens/cve_2021_22681_s7_1200_hardcoded_key
-    exploits/protocols/s7comm/s7_program_download
-  ──────────────────────────────────────────────────────────────────
+[*] Analyzing water_treatment/ (5 files, 245 lines)...
+[*] Provider: gemini | Sanitized: 2 credentials, 1 IP
+[*] Sending to LLM...
+  SAST REPORT: 1 CRITICAL | 2 HIGH | 1 MEDIUM | 1 LOW
+  FINDING [CRITICAL]: Unvalidated Chlorine Dosing Setpoint (line 48)
+  ...
+[+] Report saved: .tmp/sast_results/water_treatment_20260601.md
 ```
 
----
-
-## Shell Piping — 10 Examples
-
-### 1. List all Siemens modules (grep use lines)
+### 18. Multiple Modules with Global Target
 
 ```bash
-ixf search siemens | grep "use cve"
+ixf setg target 10.0.0.100 use scanners/ics/modbus_detect run use scanners/ics/s7_comm_scanner run
 ```
 
-**Output:**
-
 ```
-  use cve/siemens/cve_2021_22681_s7_1200_hardcoded_key   [CRITICAL]
-  use cve/siemens/cve_2019_13945_scalance_auth_bypass     [CRITICAL]
-  use cve/siemens/cve_2022_38465_tia_portal_priv_esc      [HIGH]
-  [... more ...]
+[*] Global: target => 10.0.0.100
+[*] Module loaded: Modbus TCP Device Detect
+  [SIMULATE] Modbus scan on 10.0.0.100:502...
+[*] Module loaded: Siemens S7 Scanner
+  [SIMULATE] S7comm scan on 10.0.0.100:102...
 ```
 
----
-
-### 2. Count total CVE modules
+### 19. TTP Check (Read-Only Sweep)
 
 ```bash
-ixf search CVE | wc -l
+ixf ttp-check T0859 192.168.1.100
 ```
 
-**Output:**
-
 ```
-614
+[*] T0859 (Valid Accounts) check-only on 192.168.1.100...
+  creds/siemens/ssh_default_creds     → POTENTIAL (port 22 open)
+  creds/siemens/telnet_default_creds  → NOT VULNERABLE (port 23 closed)
+  ...
 ```
 
-(includes header/footer lines — subtract 4 for module count)
-
----
-
-### 3. Save search results to file
+### 20. Full MITRE HTML Report After Sweep
 
 ```bash
-ixf search modbus > /tmp/modbus_modules.txt
-cat /tmp/modbus_modules.txt
+ixf mitre-all 192.168.1.100 report html mitre-report layer
+```
+
+```
+[*] Full MITRE sweep on 192.168.1.100 (simulate)...
+[+] MITRE sweep complete: 74 techniques
+[+] Report saved: ixf_report_20260601_161200.html
+[+] Navigator layer saved: ixf_mitre_layer_20260601_161215.json
 ```
 
 ---
 
-### 4. Filter CRITICAL modules only
+## Multiple Module Chaining in One Command
+
+Chain as many commands as needed. Each `use` loads a new module; `set`, `check`, and `run` operate on the currently loaded module:
+
+```bash
+# Three modules, all in sequence, single invocation
+ixf \
+  use scanners/ics/modbus_detect \
+  set target 192.168.1.100 \
+  run \
+  use scanners/ics/s7_comm_scanner \
+  set target 192.168.1.100 \
+  run \
+  use cve/siemens/cve_2021_22681_s7_1200_hardcoded_key \
+  set target 192.168.1.100 \
+  run \
+  report json
+```
+
+```
+[*] Indexing 976 modules...
+[*] Module loaded: Modbus TCP Device Detect
+[*] target => 192.168.1.100
+  [SIMULATE] Modbus scan...
+[*] Module loaded: Siemens S7 Scanner
+[*] target => 192.168.1.100
+  [SIMULATE] S7comm scan...
+[*] Module loaded: CVE-2021-22681 Siemens S7-1200/1500 PLC
+[*] target => 192.168.1.100
+  [SIMULATE] CVE-2021-22681 exploit chain...
+[+] Report saved: ixf_report_20260601_154500.json
+```
+
+---
+
+## All TTP and MITRE Command Variations
+
+```bash
+# Execute a single technique
+ixf ttp T0843 192.168.1.100
+
+# Execute with rate limiting (500ms between modules)
+ixf ttp T0843 192.168.1.100 --rate-limit 500
+
+# Stop on first confirmed hit
+ixf ttp T0843 192.168.1.100 --stop-on-first
+
+# Save output to file
+ixf ttp T0843 192.168.1.100 --output /tmp/t0843_results.json
+
+# Read-only check (no exploit)
+ixf ttp-check T0843 192.168.1.100
+
+# Force simulate for a technique
+ixf ttp-simulate T0843 192.168.1.100
+
+# List all TTPs
+ixf ttp-list
+
+# List TTPs by tactic
+ixf ttp-list --tactic discovery
+ixf ttp-list --tactic impact
+ixf ttp-list --tactic "initial-access"
+
+# MITRE scan — tactic sweep
+ixf mitre-scan discovery 192.168.1.0/24
+ixf mitre-scan initial-access 192.168.1.100
+ixf mitre-scan impact 192.168.1.100
+ixf mitre-scan collection 192.168.1.100
+
+# MITRE scan — single technique
+ixf mitre-scan T0843 192.168.1.100
+ixf mitre-scan T0836 192.168.1.100
+
+# MITRE scan — TA-ID
+ixf mitre-scan TA0102 192.168.1.0/24
+
+# Full MITRE sweep
+ixf mitre-all 192.168.1.100
+
+# Coverage
+ixf mitre-coverage
+ixf coverage
+
+# Reports
+ixf mitre-report layer
+ixf mitre-report json
+ixf mitre-report html
+
+# Specific technique module list
+ixf mitre T0843
+ixf mitre T0836
+ixf mitre T0819
+
+# Technique list by tactic
+ixf mitre-list
+ixf mitre-list discovery
+ixf mitre-list evasion
+ixf mitre-list "impair-process-control"
+```
+
+---
+
+## Shell Piping — 15 Examples with grep, jq, awk
+
+IXF output can be piped to standard shell tools for filtering, parsing, and integration with other tooling.
+
+### 1. Filter for CRITICAL findings
 
 ```bash
 ixf search siemens | grep CRITICAL
 ```
 
-**Output:**
-
 ```
-  use cve/siemens/cve_2021_22681_s7_1200_hardcoded_key   [CRITICAL]
-  use cve/siemens/cve_2019_13945_scalance_auth_bypass     [CRITICAL]
-  use cve/siemens/cve_2023_44317_scalance_rce             [CRITICAL]
+│ use cve/siemens/cve_2021_22681_s7_1200_hardcoded_key   CRITICAL CVE-2021-22681  │
+│ use cve/siemens/cve_2022_38465_s7_global_key            CRITICAL CVE-2022-38465  │
+│ use cve/siemens/cve_2023_44317_simatic_pcs_rce          CRITICAL CVE-2023-44317  │
 ```
 
----
-
-### 5. Extract module paths for scripting
+### 2. Count modules for a vendor
 
 ```bash
-ixf search default_creds | grep "use creds" | awk '{print $2}'
+ixf vendors siemens | grep -c "CVE\|N/A"
+# 27
 ```
 
-**Output:**
-
-```
-creds/siemens/ssh_default_creds
-creds/siemens/web_default_creds
-creds/rockwell/logix_default_creds
-creds/schneider/web_default_creds
-[...]
-```
-
----
-
-### 6. Run all credential modules via xargs
+### 3. Extract module paths from search results
 
 ```bash
-ixf search default_creds | grep "use creds" | awk '{print $2}' | \
-  while read mod; do
-    ixf use "$mod" set target 192.168.1.100 run 2>&1 | grep -E "SIMULATE|SUCCESS|ERROR"
-  done
+ixf search modbus | grep "^    use " | awk '{print $2}'
 ```
 
----
+```
+exploits/protocols/modbus/modbus_write_single_register
+exploits/protocols/modbus/modbus_flood_dos
+exploits/protocols/modbus/modbus_read_coils
+...
+```
 
-### 7. JSON report piped to jq for severity filter
+### 4. Save JSON report and parse with jq
 
 ```bash
-ixf report json 2>/dev/null
-cat .tmp/ixf_report_*.json | jq '.modules[] | select(.severity == "CRITICAL") | .name'
+ixf use scanners/ics/modbus_detect set target 192.168.1.100 run report json
+cat ixf_report_*.json | jq '.events[] | select(.result == "VULNERABLE")'
 ```
 
-**Output:**
-
+```json
+{
+  "module": "scanners/ics/modbus_detect",
+  "target": "192.168.1.100",
+  "result": "VULNERABLE",
+  "impact": "READ",
+  "timestamp": "2026-06-01T20:15:43Z"
+}
 ```
-"CVE-2021-22681 Siemens S7-1200 Hardcoded Crypto Key"
-"CVE-2022-29965 Emerson ROC800 Hardcoded Credentials"
-"CVE-2019-13945 Scalance Authentication Bypass"
-[...]
-```
 
----
-
-### 8. Count modules per vendor
+### 5. Extract CVE IDs from stats
 
 ```bash
-for vendor in siemens schneider rockwell ge honeywell abb moxa; do
-  count=$(ixf search "$vendor" 2>/dev/null | grep -c "use cve")
-  echo "$vendor: $count CVE modules"
-done
+ixf search CVE-2021 | grep "CVE-2021" | awk '{print $NF}'
 ```
 
-**Output:**
-
-```
-siemens: 67
-schneider: 48
-rockwell: 39
-ge: 28
-honeywell: 22
-abb: 18
-moxa: 15
-```
-
----
-
-### 9. Pipe MITRE coverage to grep for gaps
+### 6. Filter protocols by port
 
 ```bash
-ixf mitre-coverage | grep "0%\|uncovered\|Uncovered"
+ixf protocols | grep "502"
 ```
 
-**Output:**
-
 ```
-  Uncovered techniques:
-    T0880.001  Modify Alarm Settings — Subtech 1
-    T0863      User Execution
-    T0865      Spearphishing Attachment
+MODBUS TCP         502/TCP    18 modules
+PROFIsafe          502/TCP     1 module
 ```
 
----
-
-### 10. Chain with tee for live output + log file
+### 7. Monitor MITRE coverage changes
 
 ```bash
-ixf use scanners/ics/modbus_detect set target 192.168.1.100 run 2>&1 | \
-  tee .tmp/scan_$(date +%Y%m%d_%H%M%S).log
+ixf mitre-coverage | grep "TOTAL"
+# TOTAL: 74/90 (82%)
+```
+
+### 8. Extract all vendor names
+
+```bash
+ixf vendors | awk '/^  [A-Z]/{print $1, $2}'
+```
+
+### 9. Parse SAST report for critical findings
+
+```bash
+ixf sast /opt/plc.st 2>&1 | grep "SEVERITY: CRITICAL"
+# FINDING [SEVERITY: CRITICAL]: Unvalidated Chlorine Dosing Setpoint
+```
+
+### 10. Save MITRE layer and check size
+
+```bash
+ixf mitre-report layer
+ls -la ixf_mitre_layer_*.json
+wc -l ixf_mitre_layer_*.json
+```
+
+### 11. JSON report findings count with jq
+
+```bash
+ixf use scanners/ics/modbus_detect set target 192.168.1.0/24 run report json
+jq '.events | length' ixf_report_*.json
+# 14
+```
+
+### 12. Filter TTP list by module count
+
+```bash
+ixf ttp-list | awk '$3 >= 5 {print $0}'
+# Shows techniques with 5+ modules
+```
+
+### 13. Combine multiple subnet scans
+
+```bash
+for subnet in 192.168.1.0/24 10.0.0.0/24 172.16.0.0/24; do
+    echo "=== Scanning $subnet ===" 
+    ixf use scanners/ics/modbus_detect set target $subnet check 2>&1
+done | grep -E "VULNERABLE|NOT VULNERABLE"
+```
+
+### 14. Extract module paths from ttp output
+
+```bash
+ixf ttp T0843 192.168.1.100 2>&1 | grep "Running module" | sed 's/.*: //'
+```
+
+```
+cve/siemens/cve_2021_22681_s7_1200_hardcoded_key
+cve/siemens/cve_2022_38465_s7_global_key
+cve/rockwell/cve_2022_1161_controllogix_modified_fw
+exploits/protocols/s7comm/s7_unauthorized_cpu_control
+assessment/mitre_ics/t0843_program_upload
+```
+
+### 15. Automated vendor check with filtered output
+
+```bash
+ixf vendors | grep -E "(Siemens|Rockwell|Schneider|Honeywell)" | awk '{print $1, $2, $NF}'
 ```
 
 ---
 
-## Bash Script for Full OT Assessment
+## Bash Assessment Script (Complete, 100+ Lines)
+
+A complete ICS security assessment script using IXF in non-interactive mode:
 
 ```bash
 #!/usr/bin/env bash
-# IXF Full OT Assessment Script
-# Usage: ./ot_assessment.sh <TARGET_IP> [NETWORK_CIDR]
-# Example: ./ot_assessment.sh 192.168.1.100 192.168.1.0/24
-#
-# Runs in simulate mode by default. All traffic is simulated.
-# Set LIVE_MODE=1 only in authorized, isolated lab environments.
+# ixf_assessment.sh — Automated ICS Security Assessment
+# Usage: ./ixf_assessment.sh <target_ip> [output_dir]
+# Requires: ixf installed (pip install industrialxpl-forge)
+# Author: Andre Henrique (@mrhenrike) | União Geek
 
 set -euo pipefail
 
-TARGET="${1:?Usage: $0 <TARGET_IP> [NETWORK_CIDR]}"
-NETWORK="${2:-${TARGET%.*}.0/24}"
-TIMESTAMP="$(date +%Y%m%d_%H%M%S)"
-REPORT_DIR=".tmp/assessment_${TIMESTAMP}"
-LIVE_MODE="${LIVE_MODE:-0}"
+TARGET="${1:?Usage: $0 <target_ip> [output_dir]}"
+OUTPUT_DIR="${2:-.tmp/assessment_$(date +%Y%m%d_%H%M%S)}"
+LOGFILE="$OUTPUT_DIR/assessment.log"
 
-mkdir -p "$REPORT_DIR"
+# Setup
+mkdir -p "$OUTPUT_DIR"
+echo "=== IXF ICS Security Assessment ===" | tee "$LOGFILE"
+echo "Target: $TARGET" | tee -a "$LOGFILE"
+echo "Started: $(date -u +%Y-%m-%dT%H:%M:%SZ)" | tee -a "$LOGFILE"
+echo "" | tee -a "$LOGFILE"
 
-echo "════════════════════════════════════════════════════════════"
-echo " IXF OT Security Assessment"
-echo " Target:  $TARGET"
-echo " Network: $NETWORK"
-echo " Mode:    $([ "$LIVE_MODE" = "1" ] && echo "LIVE — AUTHORIZED LAB ONLY" || echo "SIMULATE")"
-echo " Report:  $REPORT_DIR/"
-echo "════════════════════════════════════════════════════════════"
-echo ""
+# Check IXF is available
+if ! command -v ixf &>/dev/null; then
+    echo "ERROR: ixf not found. Install: pip install industrialxpl-forge" >&2
+    exit 1
+fi
 
-# Helper: run ixf command and log output
-run_ixf() {
-  local label="$1"; shift
-  echo "━━━ $label ━━━"
-  ixf "$@" 2>&1 | tee "$REPORT_DIR/${label// /_}.txt"
-  echo ""
-}
+echo "[Phase 1] Module Index" | tee -a "$LOGFILE"
+ixf stats 2>&1 | tee -a "$LOGFILE"
+echo "" | tee -a "$LOGFILE"
 
-# ── Phase 1: Protocol Discovery ──────────────────────────────────
-echo "▶ Phase 1: Protocol Discovery"
-run_ixf "modbus_scan"    use scanners/ics/modbus_detect    set target "$TARGET" run
-run_ixf "s7_scan"        use scanners/ics/s7_comm_scanner  set target "$TARGET" run
-run_ixf "bacnet_scan"    use scanners/ics/bacnet_scanner   set target "$TARGET" run
-run_ixf "dnp3_scan"      use scanners/ics/dnp3_scanner     set target "$TARGET" run
-run_ixf "enip_scan"      use scanners/ics/enip_scanner     set target "$TARGET" run
-run_ixf "opcua_scan"     use scanners/ics/opcua_scanner    set target "$TARGET" run
-run_ixf "iec104_scan"    use scanners/ics/iec104_scanner   set target "$TARGET" run
-run_ixf "codesys_scan"   use scanners/ics/codesys_scanner  set target "$TARGET" run
+echo "[Phase 2] Protocol Discovery (Modbus)" | tee -a "$LOGFILE"
+ixf use scanners/ics/modbus_detect \
+    set target "$TARGET" \
+    check 2>&1 | tee -a "$LOGFILE"
+echo "" | tee -a "$LOGFILE"
 
-# ── Phase 2: Credential Assessment ───────────────────────────────
-echo "▶ Phase 2: Default Credential Testing"
-run_ixf "creds_web"      use creds/generic/web_default_creds  set target "$TARGET" run
-run_ixf "creds_ftp"      use creds/generic/ftp_default_creds  set target "$TARGET" run
-run_ixf "creds_telnet"   use creds/generic/telnet_default_creds set target "$TARGET" run
-run_ixf "creds_ssh"      use creds/generic/ssh_default_creds  set target "$TARGET" run
+echo "[Phase 3] Protocol Discovery (S7comm)" | tee -a "$LOGFILE"
+ixf use scanners/ics/s7_comm_scanner \
+    set target "$TARGET" \
+    check 2>&1 | tee -a "$LOGFILE"
+echo "" | tee -a "$LOGFILE"
 
-# ── Phase 3: CVE Scanning ────────────────────────────────────────
-echo "▶ Phase 3: CVE Vulnerability Checks (check() only)"
-run_ixf "check_s7_key"   use cve/siemens/cve_2021_22681_s7_1200_hardcoded_key \
-                         set target "$TARGET" check
-run_ixf "check_roc800"   use cve/emerson/cve_2022_29965_roc800_hardcoded \
-                         set target "$TARGET" check
-run_ixf "check_logix"    use cve/rockwell/cve_2021_27478_logix_hardcoded \
-                         set target "$TARGET" check
+echo "[Phase 4] MITRE Discovery Sweep (Simulate)" | tee -a "$LOGFILE"
+ixf mitre-scan discovery "$TARGET" 2>&1 | tee -a "$LOGFILE"
+echo "" | tee -a "$LOGFILE"
 
-# ── Phase 4: MITRE ATT&CK Assessment ─────────────────────────────
-echo "▶ Phase 4: MITRE ATT&CK for ICS Assessment"
-run_ixf "mitre_T0843"    ttp T0843 "$TARGET"
-run_ixf "mitre_T0836"    ttp T0836 "$TARGET"
-run_ixf "mitre_T0855"    ttp T0855 "$TARGET"
-run_ixf "mitre_T0859"    ttp T0859 "$TARGET"
-run_ixf "mitre_T0888"    ttp T0888 "$TARGET"
+echo "[Phase 5] TTP T0846 — Remote System Discovery" | tee -a "$LOGFILE"
+ixf ttp T0846 "$TARGET" 2>&1 | tee -a "$LOGFILE"
+echo "" | tee -a "$LOGFILE"
 
-# ── Phase 5: Compliance Assessment ───────────────────────────────
-echo "▶ Phase 5: Compliance Assessment"
-run_ixf "iec62443"       assess iec62443/zone_conduit_audit
-run_ixf "nist_800_82"    assess nist_sp800_82/control_checklist
-run_ixf "risk_score"     assess risk/ics_risk_scorer
-run_ixf "kill_chain"     assess threat_intel/ics_kill_chain
-run_ixf "ir_playbook"    assess ir/iacs_ir_playbook
+echo "[Phase 6] TTP T0812 — Default Credentials Check" | tee -a "$LOGFILE"
+ixf ttp-check T0812 "$TARGET" 2>&1 | tee -a "$LOGFILE"
+echo "" | tee -a "$LOGFILE"
 
-# ── Phase 6: Protocol Security Audits ────────────────────────────
-echo "▶ Phase 6: Protocol Security Audits"
-run_ixf "opcua_audit"    use assessment/protocols/opcua_security_audit \
-                         set target "$TARGET" run
-run_ixf "dnp3_audit"     assess protocols/dnp3_security_audit
-run_ixf "iec61850_audit" assess protocols/iec61850_security_audit
+echo "[Phase 7] TTP T0819 — Exploit Public-Facing Application (Simulate)" | tee -a "$LOGFILE"
+ixf ttp T0819 "$TARGET" 2>&1 | tee -a "$LOGFILE"
+echo "" | tee -a "$LOGFILE"
 
-# ── Phase 7: Network Assessment ──────────────────────────────────
-echo "▶ Phase 7: Network Security Assessment"
-run_ixf "fw_audit"       assess network/ics_firewall_audit
-run_ixf "net_assess"     assess network/industrial_network_assessment
+echo "[Phase 8] IEC 62443 Zone/Conduit Assessment" | tee -a "$LOGFILE"
+ixf assess iec62443/zone_conduit_audit 2>&1 | tee -a "$LOGFILE"
+echo "" | tee -a "$LOGFILE"
 
-# ── Phase 8: MITRE Coverage ──────────────────────────────────────
-echo "▶ Phase 8: MITRE Coverage Report"
-run_ixf "mitre_coverage" mitre-coverage
+echo "[Phase 9] NIST SP 800-82r3 Checklist" | tee -a "$LOGFILE"
+ixf assess nist_sp800_82/control_checklist 2>&1 | tee -a "$LOGFILE"
+echo "" | tee -a "$LOGFILE"
 
-# ── Phase 9: Generate Reports ────────────────────────────────────
-echo "▶ Phase 9: Generating Reports"
-ixf report json 2>&1 | tee "$REPORT_DIR/report_json.txt"
-ixf report html 2>&1 | tee "$REPORT_DIR/report_html.txt"
-run_ixf "navigator_layer" mitre-report layer
+echo "[Phase 10] MITRE Coverage" | tee -a "$LOGFILE"
+ixf mitre-coverage 2>&1 | tee -a "$LOGFILE"
+echo "" | tee -a "$LOGFILE"
 
-# ── Summary ───────────────────────────────────────────────────────
-echo ""
-echo "════════════════════════════════════════════════════════════"
-echo " Assessment Complete"
-echo " Results: $REPORT_DIR/"
-echo " Files:   $(ls "$REPORT_DIR" | wc -l) output files"
-echo "════════════════════════════════════════════════════════════"
+echo "[Phase 11] Generate Reports" | tee -a "$LOGFILE"
+ixf report json 2>&1 | tee -a "$LOGFILE"
+ixf report html 2>&1 | tee -a "$LOGFILE"
+ixf mitre-report layer 2>&1 | tee -a "$LOGFILE"
+
+# Move generated reports to output dir
+mv ixf_report_*.json "$OUTPUT_DIR/" 2>/dev/null || true
+mv ixf_report_*.html "$OUTPUT_DIR/" 2>/dev/null || true
+mv ixf_mitre_*.json "$OUTPUT_DIR/" 2>/dev/null || true
+
+echo "" | tee -a "$LOGFILE"
+echo "=== Assessment Complete ===" | tee -a "$LOGFILE"
+echo "Finished: $(date -u +%Y-%m-%dT%H:%M:%SZ)" | tee -a "$LOGFILE"
+echo "Output directory: $OUTPUT_DIR" | tee -a "$LOGFILE"
+echo "Files:" | tee -a "$LOGFILE"
+ls -la "$OUTPUT_DIR/" | tee -a "$LOGFILE"
+
+# Summary: count findings
+VULNERABLE_COUNT=$(grep -c "VULNERABLE\|POTENTIAL\|CRITICAL\|HIGH" "$LOGFILE" || true)
+echo "" | tee -a "$LOGFILE"
+echo "Findings requiring attention: $VULNERABLE_COUNT" | tee -a "$LOGFILE"
 ```
 
 **Usage:**
-
 ```bash
-chmod +x ot_assessment.sh
-./ot_assessment.sh 192.168.1.100
-./ot_assessment.sh 192.168.1.100 192.168.1.0/24
+chmod +x ixf_assessment.sh
+./ixf_assessment.sh 192.168.1.100
+./ixf_assessment.sh 192.168.1.100 /reports/q2-2026/
 ```
 
 ---
 
-## Python API — 10 Code Examples
+## Python API — 15 Code Examples
 
-### Example 1: Load and run a module in simulate mode
-
-```python
-from industrialxpl.core.exploit.utils import import_exploit
-
-cls = import_exploit("industrialxpl.modules.scanners.ics.modbus_detect")
-mod = cls()
-mod.target = "192.168.1.100"
-mod.port = 502
-mod.simulate = True  # Default — explicit for clarity
-
-mod.run()  # Prints simulation block
-```
-
----
-
-### Example 2: Run check() (read-only probe)
+### 1. Run a module programmatically
 
 ```python
-from industrialxpl.core.exploit.utils import import_exploit
-
-cls = import_exploit("industrialxpl.modules.scanners.ics.modbus_detect")
-mod = cls()
-mod.target = "192.168.1.100"
-mod.port = 502
-
-is_modbus = mod.check()
-print("Modbus detected:", is_modbus)  # True / False
-```
-
----
-
-### Example 3: Run live mode (authorized labs only)
-
-```python
-from industrialxpl.core.exploit.utils import import_exploit
-
-cls = import_exploit("industrialxpl.modules.scanners.ics.modbus_detect")
-mod = cls()
-mod.target = "192.168.1.100"
-mod.port = 502
-mod.simulate = False     # Disable simulation
-mod.destructive = True   # Enable live traffic
-
-mod.run()
-```
-
----
-
-### Example 4: Enumerate all modules
-
-```python
-from industrialxpl.core.exploit.utils import index_modules, import_exploit
-
-modules = index_modules()
-print(f"Total: {len(modules)} modules")
-
-for mod_path in modules[:10]:  # First 10
-    cls = import_exploit("industrialxpl.modules." + mod_path)
-    info = cls().get_info()
-    print(f"  {info['name']} — {info['cve']} — {info['severity']}")
-```
-
----
-
-### Example 5: Filter modules by severity
-
-```python
-from industrialxpl.core.exploit.utils import index_modules, import_exploit
-
-modules = index_modules()
-critical = []
-
-for mod_path in modules:
-    try:
-        cls = import_exploit("industrialxpl.modules." + mod_path)
-        info = cls().get_info()
-        if info.get("severity") in ("CRITICAL", "CATASTROPHIC"):
-            critical.append(info)
-    except Exception:
-        continue
-
-print(f"CRITICAL/CATASTROPHIC modules: {len(critical)}")
-for info in critical[:5]:
-    print(f"  {info['cve']}: {info['name']}")
-```
-
----
-
-### Example 6: Scan a list of targets
-
-```python
-from industrialxpl.core.exploit.utils import import_exploit
-
-targets = ["192.168.1.100", "192.168.1.101", "192.168.1.102", "10.0.0.5"]
-
-cls = import_exploit("industrialxpl.modules.scanners.ics.modbus_detect")
-
-results = []
-for ip in targets:
-    mod = cls()
-    mod.target = ip
-    mod.port = 502
-    found = mod.check()
-    results.append((ip, found))
-    print(f"  {ip}: {'Modbus UP' if found else 'no response'}")
-
-modbus_hosts = [ip for ip, found in results if found]
-print(f"\nModbus devices: {modbus_hosts}")
-```
-
----
-
-### Example 7: Programmatic TTP sweep
-
-```python
+import subprocess
 import sys
-sys.path.insert(0, "/path/to/IndustrialXPL-Forge")
 
-from industrialxpl.core.mitre.sweeper import MitreTacticSweeper
+def run_ixf(*args: str) -> str:
+    """Run IXF with given arguments and return output."""
+    result = subprocess.run(
+        ["ixf"] + list(args),
+        capture_output=True,
+        text=True,
+        timeout=120,
+    )
+    return result.stdout + result.stderr
 
-sweeper = MitreTacticSweeper()
-
-# Sweep a single technique
-results = sweeper.sweep_technique(
-    technique_id="T0843",
-    target="192.168.1.100",
-    simulate=True,
-    stop_on_first=False,
+# Simulate a module
+output = run_ixf(
+    "use", "scanners/ics/modbus_detect",
+    "set", "target", "192.168.1.100",
+    "run",
 )
-for r in results:
-    print(f"  {r['module']}: {r['result']}")
+print(output)
 ```
 
----
-
-### Example 8: Sweep a full tactic
+### 2. Parse MITRE coverage
 
 ```python
-from industrialxpl.core.mitre.sweeper import MitreTacticSweeper
+import re
 
-sweeper = MitreTacticSweeper()
-
-# Sweep all Discovery techniques
-results = sweeper.sweep_tactic(
-    tactic="Discovery",
-    target="192.168.1.100",
-    simulate=True,
-)
-
-print(f"Techniques swept: {len(results)}")
-for r in results:
-    print(f"  [{r['technique']}] {r['module']}: {r['status']}")
+output = run_ixf("mitre-coverage")
+total_match = re.search(r"TOTAL\s+(\d+)/(\d+)\s+\((\d+)%\)", output)
+if total_match:
+    covered, total, pct = total_match.groups()
+    print(f"MITRE coverage: {covered}/{total} ({pct}%)")
 ```
 
----
+### 3. Search modules by keyword
 
-### Example 9: Export JSON report programmatically
+```python
+def search_modules(keyword: str) -> list[str]:
+    output = run_ixf("search", keyword)
+    paths = []
+    for line in output.splitlines():
+        if "use " in line:
+            match = re.search(r"use\s+(\S+)", line)
+            if match:
+                paths.append(match.group(1))
+    return paths
+
+siemens_modules = search_modules("siemens")
+print(f"Found {len(siemens_modules)} Siemens modules")
+```
+
+### 4. Run TTP sweep and parse results
+
+```python
+def run_ttp(tid: str, target: str) -> dict:
+    output = run_ixf("ttp", tid, target)
+    return {
+        "technique": tid,
+        "target": target,
+        "output": output,
+        "simulated": "[SIMULATE" in output,
+        "modules_run": output.count("Running module"),
+    }
+
+result = run_ttp("T0843", "192.168.1.100")
+print(f"Ran {result['modules_run']} modules for {result['technique']}")
+```
+
+### 5. Generate report and read JSON
 
 ```python
 import json
-from industrialxpl.core.exploit.utils import index_modules, import_exploit
+import glob
 
-modules = index_modules()
-report = {"modules": [], "stats": {}}
-
-for mod_path in modules:
-    try:
-        cls = import_exploit("industrialxpl.modules." + mod_path)
-        info = cls().get_info()
-        report["modules"].append({
-            "path":    mod_path,
-            "name":    info.get("name"),
-            "cve":     info.get("cve"),
-            "cvss":    info.get("cvss"),
-            "severity": info.get("severity"),
-            "mitre":   info.get("mitre_techniques"),
-        })
-    except Exception:
-        continue
-
-report["stats"]["total"] = len(report["modules"])
-report["stats"]["critical"] = sum(
-    1 for m in report["modules"]
-    if m["severity"] in ("CRITICAL", "CATASTROPHIC")
+# Run assessment
+run_ixf(
+    "use", "scanners/ics/modbus_detect",
+    "set", "target", "192.168.1.0/24",
+    "run",
+    "report", "json",
 )
 
-with open(".tmp/ixf_api_report.json", "w") as f:
-    json.dump(report, f, indent=2)
-
-print(f"Report: {len(report['modules'])} modules written to .tmp/ixf_api_report.json")
+# Parse most recent report
+reports = sorted(glob.glob("ixf_report_*.json"))
+if reports:
+    with open(reports[-1]) as f:
+        report = json.load(f)
+    print(f"Session events: {len(report.get('events', []))}")
 ```
 
----
-
-### Example 10: Concurrent multi-host scan
+### 6. Multi-target scan
 
 ```python
-import concurrent.futures
-from industrialxpl.core.exploit.utils import import_exploit
+targets = ["192.168.1.100", "192.168.1.101", "10.0.0.50"]
 
-def probe_host(ip: str, module_path: str, port: int) -> dict:
-    """Probe one host with one module. Returns result dict."""
-    try:
-        cls = import_exploit("industrialxpl.modules." + module_path)
-        mod = cls()
-        mod.target = ip
-        mod.port = port
-        result = mod.check()
-        return {"ip": ip, "module": module_path, "found": result}
-    except Exception as e:
-        return {"ip": ip, "module": module_path, "found": False, "error": str(e)}
+for target in targets:
+    output = run_ixf(
+        "use", "scanners/ics/modbus_detect",
+        "set", "target", target,
+        "check",
+    )
+    status = "VULNERABLE" if "VULNERABLE" in output else "NOT VULNERABLE"
+    print(f"{target}: {status}")
+```
 
-# Build work items: (ip, module, port) tuples
-targets = [f"192.168.1.{i}" for i in range(1, 50)]
-work = [(ip, "scanners.ics.modbus_detect", 502) for ip in targets]
+### 7. SAST analysis with LLM
 
-results = []
-with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
-    futures = [executor.submit(probe_host, ip, mod, port) for ip, mod, port in work]
-    for future in concurrent.futures.as_completed(futures):
-        r = future.result()
-        results.append(r)
-        if r["found"]:
-            print(f"[+] Modbus found: {r['ip']}")
+```python
+import os
 
-found = [r for r in results if r["found"]]
-print(f"\nScan complete: {len(found)}/{len(targets)} Modbus devices found")
+# Configure API key via environment (never hardcode)
+env = os.environ.copy()
+env["GOOGLE_AI_STUDIO_API_KEY"] = os.environ["GEMINI_KEY"]
+
+result = subprocess.run(
+    ["ixf", "sast", "/opt/plc_projects/", "--mode", "sast"],
+    capture_output=True, text=True, env=env, timeout=300,
+)
+print(result.stdout)
+```
+
+### 8. Automated daily scan with scheduling
+
+```python
+import schedule
+import time
+
+def daily_scan():
+    """Run daily ICS reconnaissance scan."""
+    output = run_ixf("mitre-scan", "discovery", "192.168.1.0/24")
+    # Parse and alert on new findings
+    if "VULNERABLE" in output or "POTENTIAL" in output:
+        alert_security_team(output)
+    # Generate report
+    run_ixf("report", "json")
+
+schedule.every().day.at("02:00").do(daily_scan)
+while True:
+    schedule.run_pending()
+    time.sleep(60)
+```
+
+### 9. Load module and get options as dict
+
+```python
+def get_module_options(module_path: str) -> dict:
+    output = run_ixf("use", module_path, "show", "options")
+    options = {}
+    for line in output.splitlines():
+        # Parse table rows: | option | value | required | description |
+        parts = [p.strip() for p in line.split("|") if p.strip()]
+        if len(parts) >= 3 and parts[0] not in ("Option", "-"):
+            options[parts[0]] = {
+                "value": parts[1],
+                "required": parts[2].lower() == "yes",
+            }
+    return options
+
+opts = get_module_options("scanners/ics/modbus_detect")
+print(opts)
+# {"target": {"value": "", "required": True}, "port": {"value": "502", ...}}
+```
+
+### 10. Vendor enumeration
+
+```python
+def get_vendor_list() -> list[str]:
+    output = run_ixf("vendors")
+    vendors = []
+    for line in output.splitlines():
+        # Lines starting with vendor names
+        match = re.match(r"\s{2}(\w[\w\s\/]+?)\s{2,}", line)
+        if match:
+            vendors.append(match.group(1).strip())
+    return vendors
+
+vendors = get_vendor_list()
+print(f"Total vendors: {len(vendors)}")
+```
+
+### 11. Check if target has Modbus and return bool
+
+```python
+def has_modbus(target: str) -> bool:
+    output = run_ixf(
+        "use", "scanners/ics/modbus_detect",
+        "set", "target", target,
+        "check",
+    )
+    return "[+] VULNERABLE" in output or "Modbus device detected" in output
+
+if has_modbus("192.168.1.100"):
+    print("Target has Modbus — checking for CVEs...")
+    print(run_ixf("search", "modbus"))
+```
+
+### 12. TTP coverage report as dict
+
+```python
+def get_ttp_coverage() -> dict:
+    output = run_ixf("mitre-coverage")
+    tactics = {}
+    pattern = re.compile(r"(\w[\w\s]+\(TA\d+\))\s+:\s+(\d+)/(\d+)\s+\((\d+)%\)")
+    for match in pattern.finditer(output):
+        name, covered, total, pct = match.groups()
+        tactics[name] = {"covered": int(covered), "total": int(total), "pct": int(pct)}
+    return tactics
+
+coverage = get_ttp_coverage()
+for tactic, data in coverage.items():
+    if data["pct"] < 80:
+        print(f"LOW COVERAGE: {tactic} ({data['pct']}%)")
+```
+
+### 13. Batch CVE check
+
+```python
+cve_list = [
+    "CVE-2021-22681",
+    "CVE-2022-38465",
+    "CVE-2023-6448",
+    "CVE-2022-29965",
+]
+
+for cve in cve_list:
+    output = run_ixf("search", cve)
+    found = cve in output
+    print(f"{cve}: {'COVERED' if found else 'NOT COVERED'}")
+```
+
+### 14. Assessment module execution
+
+```python
+assessments = [
+    "iec62443/zone_conduit_audit",
+    "nist_sp800_82/control_checklist",
+    "risk/ics_risk_scorer",
+    "threat_intel/ics_kill_chain",
+]
+
+for assess_module in assessments:
+    print(f"\n=== {assess_module} ===")
+    output = run_ixf("assess", assess_module)
+    print(output)
+```
+
+### 15. Full assessment pipeline with output
+
+```python
+from pathlib import Path
+from datetime import datetime
+
+def full_assessment(target: str, output_dir: str = ".tmp/assessment") -> Path:
+    """Run full ICS assessment and save results."""
+    out = Path(output_dir)
+    out.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+    phases = [
+        # (phase_name, ixf_args)
+        ("discovery_modbus", ["use", "scanners/ics/modbus_detect", "set", "target", target, "check"]),
+        ("discovery_s7", ["use", "scanners/ics/s7_comm_scanner", "set", "target", target, "check"]),
+        ("mitre_discovery", ["mitre-scan", "discovery", target]),
+        ("ttp_t0846", ["ttp", "T0846", target]),
+        ("ttp_t0812", ["ttp-check", "T0812", target]),
+        ("assess_iec62443", ["assess", "iec62443/zone_conduit_audit"]),
+        ("assess_nist", ["assess", "nist_sp800_82/control_checklist"]),
+        ("coverage", ["mitre-coverage"]),
+    ]
+
+    all_output = []
+    for phase_name, args in phases:
+        print(f"[*] Running: {phase_name}")
+        out_text = run_ixf(*args)
+        all_output.append(f"=== {phase_name} ===\n{out_text}\n")
+
+    # Write full log
+    log_path = out / f"assessment_{target.replace('.', '_')}_{timestamp}.log"
+    log_path.write_text("\n".join(all_output))
+
+    # Generate reports
+    run_ixf("report", "json")
+    run_ixf("mitre-report", "layer")
+
+    print(f"[+] Assessment complete. Output: {log_path}")
+    return log_path
+
+full_assessment("192.168.1.100", "/reports/assessment_q2/")
 ```
 
 ---
 
-## CI/CD Integration
-
-### GitHub Actions
+## GitHub Actions Workflow (Complete)
 
 ```yaml
-# .github/workflows/ixf-validation.yml
-name: IXF Module Validation
+# .github/workflows/ics_security_scan.yml
+name: ICS Security Assessment
 
 on:
-  push:
-    branches: [main, develop]
-  pull_request:
-    branches: [main]
+  schedule:
+    - cron: "0 2 * * 1"  # Every Monday at 02:00 UTC
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Target IP or CIDR"
+        required: true
+        default: "192.168.1.100"
 
 jobs:
-  validate-modules:
+  ics-scan:
+    name: ICS Security Scan
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
+    timeout-minutes: 30
 
-      - uses: actions/setup-python@v5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.13"
 
       - name: Install IXF
-        run: pip install -e ".[dev]"
+        run: pip install industrialxpl-forge
 
-      - name: Validate all modules
+      - name: Verify IXF Installation
         run: |
-          python -c "
-          from industrialxpl.core.exploit.utils import index_modules, import_exploit
-          import sys
-
-          mods = index_modules()
-          print(f'Indexing {len(mods)} modules...')
-
-          errs = []
-          for m in mods:
-              try:
-                  cls = import_exploit('industrialxpl.modules.' + m)
-                  obj = cls()
-                  info = obj.get_info()
-                  required = ['name','description','authors','references','devices',
-                              'impact','exploit_type','source_poc','cve','cvss',
-                              'severity','mitre_techniques','mitre_tactics']
-                  missing = [k for k in required if k not in info]
-                  if missing:
-                      errs.append((m, 'Missing: ' + ', '.join(missing)))
-              except Exception as e:
-                  errs.append((m, str(e)))
-
-          print(f'{len(mods)} modules | {len(errs)} errors')
-          if errs:
-              for m, e in errs:
-                  print(f'  ERR {m}: {e}')
-              sys.exit(1)
-          else:
-              print('All modules valid.')
-          "
-
-      - name: Run simulate mode on key modules
-        run: |
-          ixf use scanners/ics/modbus_detect set target 127.0.0.1 run
-          ixf use assessment/iec62443/zone_conduit_audit run
+          ixf stats
           ixf mitre-coverage
 
-      - name: Assert module count
+      - name: Run MITRE Coverage Check
         run: |
-          python -c "
-          from industrialxpl.core.exploit.utils import index_modules
-          mods = index_modules()
-          assert len(mods) >= 900, f'Expected 900+ modules, got {len(mods)}'
-          print(f'Module count OK: {len(mods)}')
-          "
+          ixf mitre-coverage > coverage_report.txt
+          cat coverage_report.txt
 
-      - name: Generate coverage report
+      - name: Run Discovery Sweep (Simulate)
+        env:
+          TARGET: ${{ github.event.inputs.target || '192.168.1.100' }}
         run: |
-          ixf mitre-coverage
-          ixf report json
+          ixf use scanners/ics/modbus_detect set target "$TARGET" run > modbus_scan.txt || true
+          ixf mitre-scan discovery "$TARGET" > discovery_scan.txt || true
+
+      - name: Run Assessment Modules
+        run: |
+          ixf assess iec62443/zone_conduit_audit > iec62443_report.txt
+          ixf assess nist_sp800_82/control_checklist > nist_report.txt
+          ixf assess risk/ics_risk_scorer > risk_report.txt
+
+      - name: Generate Reports
+        env:
+          TARGET: ${{ github.event.inputs.target || '192.168.1.100' }}
+        run: |
+          ixf use scanners/ics/modbus_detect set target "$TARGET" run report json
           ixf mitre-report layer
+          ixf mitre-report html
 
-      - name: Upload artifacts
+      - name: Upload Assessment Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ixf-reports
-          path: .tmp/
+          name: ics-assessment-${{ github.run_number }}
+          path: |
+            ixf_report_*.json
+            ixf_report_*.html
+            ixf_mitre_*.json
+            coverage_report.txt
+            *_report.txt
+          retention-days: 30
+
+      - name: Check for Critical Findings
+        run: |
+          if grep -q "CRITICAL\|CATASTROPHIC" modbus_scan.txt discovery_scan.txt 2>/dev/null; then
+            echo "::warning::Critical findings detected in ICS scan"
+          fi
+          echo "ICS assessment complete."
 ```
 
 ---
 
-### Jenkins Pipeline
+## Jenkins Pipeline (Complete)
 
 ```groovy
-// Jenkinsfile
+// Jenkinsfile — ICS Security Assessment Pipeline
 pipeline {
-    agent { label 'linux' }
+    agent {
+        docker {
+            image 'python:3.13-slim'
+            args '-u root'
+        }
+    }
+
+    parameters {
+        string(name: 'TARGET', defaultValue: '192.168.1.100', description: 'Target IP or CIDR')
+        choice(name: 'SCAN_DEPTH', choices: ['simulate', 'check', 'full'], description: 'Scan depth')
+    }
 
     environment {
-        TARGET = '192.168.1.100'
-        SIMULATE = 'true'
+        GOOGLE_AI_STUDIO_API_KEY = credentials('gemini-api-key')
     }
 
     stages {
-        stage('Setup') {
+        stage('Install IXF') {
             steps {
-                sh 'pip install -e .[dev]'
-            }
-        }
-
-        stage('Module Validation') {
-            steps {
-                sh '''
-                python -c "
-                from industrialxpl.core.exploit.utils import index_modules, import_exploit
-                mods = index_modules()
-                errs = []
-                for m in mods:
-                    try: import_exploit('industrialxpl.modules.' + m)()
-                    except Exception as e: errs.append((m, str(e)))
-                print(f'{len(mods)} modules | {len(errs)} errors')
-                if errs:
-                    for m,e in errs: print(f'ERR {m}: {e}')
-                    exit(1)
-                "
-                '''
+                sh 'pip install industrialxpl-forge'
+                sh 'ixf stats'
             }
         }
 
         stage('Protocol Discovery') {
             steps {
-                sh "ixf use scanners/ics/modbus_detect set target ${TARGET} run"
-                sh "ixf use scanners/ics/s7_comm_scanner set target ${TARGET} run"
-                sh "ixf use scanners/ics/bacnet_scanner set target ${TARGET} run"
+                sh """
+                    ixf use scanners/ics/modbus_detect \
+                        set target ${params.TARGET} \
+                        check > modbus_check.txt || true
+                    cat modbus_check.txt
+                """
             }
         }
 
-        stage('MITRE Coverage') {
+        stage('MITRE Sweep') {
             steps {
-                sh 'ixf mitre-coverage'
-                sh 'ixf mitre-report layer'
+                sh "ixf mitre-scan discovery ${params.TARGET} > mitre_discovery.txt"
+                sh "ixf mitre-coverage"
+            }
+        }
+
+        stage('TTP Analysis') {
+            parallel {
+                stage('T0843 - Program Download') {
+                    steps { sh "ixf ttp T0843 ${params.TARGET}" }
+                }
+                stage('T0812 - Default Credentials') {
+                    steps { sh "ixf ttp-check T0812 ${params.TARGET}" }
+                }
+                stage('T0846 - Remote Discovery') {
+                    steps { sh "ixf ttp T0846 ${params.TARGET}" }
+                }
             }
         }
 
@@ -1424,23 +1121,24 @@ pipeline {
             }
         }
 
-        stage('Report') {
+        stage('Generate Reports') {
             steps {
                 sh 'ixf report json'
                 sh 'ixf report html'
-                archiveArtifacts artifacts: '.tmp/*.json,.tmp/*.html', fingerprint: true
+                sh 'ixf mitre-report layer'
             }
         }
     }
 
     post {
         always {
-            junit '.tmp/test_results.xml'
+            archiveArtifacts artifacts: 'ixf_report_*.json, ixf_report_*.html, ixf_mitre_*.json, *.txt'
         }
         failure {
-            mail to: 'security@company.com',
-                 subject: "IXF Validation Failed: ${currentBuild.fullDisplayName}",
-                 body: "Build failed. Check: ${env.BUILD_URL}"
+            echo 'ICS assessment pipeline failed'
+        }
+        success {
+            echo 'ICS assessment complete'
         }
     }
 }
@@ -1448,226 +1146,192 @@ pipeline {
 
 ---
 
-### GitLab CI
+## GitLab CI (Complete)
 
 ```yaml
-# .gitlab-ci.yml
+# .gitlab-ci.yml — ICS Security Assessment
 stages:
-  - validate
+  - setup
   - scan
+  - assess
   - report
 
 variables:
   TARGET: "192.168.1.100"
-  SIMULATE: "true"
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
 
-default:
-  image: python:3.11-slim
-  before_script:
-    - pip install -e ".[dev]" --quiet
+cache:
+  key: ixf-pip
+  paths:
+    - .cache/pip
 
-validate-modules:
-  stage: validate
+install-ixf:
+  stage: setup
+  image: python:3.13-slim
   script:
-    - |
-      python -c "
-      from industrialxpl.core.exploit.utils import index_modules, import_exploit
-      import sys
-      mods = index_modules()
-      errs = []
-      for m in mods:
-          try: import_exploit('industrialxpl.modules.' + m)()
-          except Exception as e: errs.append((m, str(e)))
-      print(f'{len(mods)} modules | {len(errs)} errors')
-      if errs:
-          for m,e in errs: print(f'ERR {m}: {e}')
-          sys.exit(1)
-      "
-  artifacts:
-    reports:
-      junit: .tmp/module_validation.xml
-
-protocol-discovery:
-  stage: scan
-  script:
-    - ixf use scanners/ics/modbus_detect set target $TARGET run
-    - ixf use scanners/ics/s7_comm_scanner set target $TARGET run
-    - ixf use scanners/ics/bacnet_scanner set target $TARGET run
-
-mitre-assessment:
-  stage: scan
-  script:
+    - pip install industrialxpl-forge
+    - ixf stats
     - ixf mitre-coverage
-    - ixf ttp T0843 $TARGET
-    - ixf ttp T0836 $TARGET
-    - ixf assess iec62443/zone_conduit_audit
-    - ixf assess nist_sp800_82/control_checklist
+  artifacts:
+    paths:
+      - coverage_output.txt
 
-generate-report:
-  stage: report
+protocol-scan:
+  stage: scan
+  image: python:3.13-slim
   script:
+    - pip install industrialxpl-forge
+    - ixf use scanners/ics/modbus_detect set target $TARGET check || true
+    - ixf use scanners/ics/s7_comm_scanner set target $TARGET check || true
+    - ixf mitre-scan discovery $TARGET > discovery_report.txt
+  artifacts:
+    paths:
+      - discovery_report.txt
+    expire_in: 1 week
+
+ttp-analysis:
+  stage: scan
+  image: python:3.13-slim
+  parallel:
+    matrix:
+      - TTP_ID: T0843
+      - TTP_ID: T0812
+      - TTP_ID: T0846
+      - TTP_ID: T0819
+  script:
+    - pip install industrialxpl-forge
+    - ixf ttp $TTP_ID $TARGET > ttp_${TTP_ID}_results.txt
+  artifacts:
+    paths:
+      - ttp_*.txt
+
+compliance-assess:
+  stage: assess
+  image: python:3.13-slim
+  script:
+    - pip install industrialxpl-forge
+    - ixf assess iec62443/zone_conduit_audit > iec62443.txt
+    - ixf assess nist_sp800_82/control_checklist > nist_report.txt
+    - ixf assess risk/ics_risk_scorer > risk_score.txt
+  artifacts:
+    paths:
+      - iec62443.txt
+      - nist_report.txt
+      - risk_score.txt
+
+generate-reports:
+  stage: report
+  image: python:3.13-slim
+  script:
+    - pip install industrialxpl-forge
     - ixf report json
     - ixf report html
     - ixf mitre-report layer
+    - ixf mitre-report html
   artifacts:
     paths:
-      - .tmp/*.json
-      - .tmp/*.html
-    expire_in: 30 days
+      - ixf_report_*.json
+      - ixf_report_*.html
+      - ixf_mitre_*.json
+    expire_in: 4 weeks
+```
+
+---
+
+## Docker Usage
+
+```bash
+# Run IXF in Docker
+docker run --rm python:3.13-slim bash -c \
+    "pip install industrialxpl-forge -q && ixf stats"
+
+# With target network access
+docker run --rm --network host python:3.13-slim bash -c \
+    "pip install industrialxpl-forge -q && \
+     ixf use scanners/ics/modbus_detect set target 192.168.1.100 run"
+
+# Dockerfile for custom IXF image
+cat > Dockerfile << 'EOF'
+FROM python:3.13-slim
+RUN pip install industrialxpl-forge
+WORKDIR /assessment
+ENTRYPOINT ["ixf"]
+EOF
+
+docker build -t ixf:latest .
+
+# Run assessment
+docker run --rm -v $(pwd)/reports:/assessment ixf:latest \
+    use scanners/ics/modbus_detect \
+    set target 192.168.1.100 \
+    run \
+    report json
+
+# Interactive shell
+docker run -it --rm ixf:latest
 ```
 
 ---
 
 ## Exit Codes
 
-| Code | Name | When It Occurs | Example Trigger |
-|------|------|---------------|-----------------|
-| `0` | Success | All commands completed successfully | `ixf stats` |
-| `1` | General error | Import failure, missing Python dependency | `pip` package not installed |
-| `2` | Module validation error | `__info__` missing required keys, import syntax error | Broken module file |
-| `3` | Target not reachable | `check()` returns False in non-simulate mode when strict | `ixf use mod check` with offline target |
-| `4` | Configuration error | Invalid option value (bad IP format, port out of range) | `set port 99999` |
-| `5` | Module not found | `use <path>` does not match any indexed module | Typo in module path |
-| `10` | Simulate mode active | Live mode command rejected (simulate=True) | Attempting live run with `simulate=True` |
-| `42` | Destructive gate | Live exploit requires `destructive=True` not set | `run` without `set destructive True` |
-| `127` | ixf not found | `ixf` binary not in PATH | pip install not complete |
-| `130` | User interrupt | Ctrl+C during execution | Manual keyboard interrupt |
+| Exit Code | Meaning | When |
+|-----------|---------|------|
+| `0` | Success | All commands executed without error |
+| `1` | General error | Unhandled exception, invalid command |
+| `2` | Module not found | `use` or `cve` command with unknown module |
+| `3` | Validation error | Required option not set, invalid value |
+| `4` | Connection error | check/run failed due to network unreachable |
+| `5` | LLM error | SAST command with no configured provider |
+| `6` | Permission error | NSE install without sudo/admin |
+| `10` | Aborted | DestructiveGate confirmation rejected |
 
-**Using exit codes in scripts:**
-
+**Check exit code in bash:**
 ```bash
 ixf use scanners/ics/modbus_detect set target 192.168.1.100 check
 EXIT_CODE=$?
 
 case $EXIT_CODE in
-  0)  echo "Check completed successfully" ;;
-  3)  echo "Target not reachable — check network connectivity" ;;
-  5)  echo "Module not found — check path" ;;
-  *)  echo "Unexpected exit code: $EXIT_CODE" ;;
+    0) echo "Success" ;;
+    2) echo "Module not found" ;;
+    4) echo "Connection failed — target unreachable" ;;
+    *) echo "Error: $EXIT_CODE" ;;
 esac
 ```
 
 ---
 
-## JSON Output Piping with jq
-
-Generate a JSON report then query it with `jq`:
-
-```bash
-# Generate report
-ixf report json
-
-# Find the report file
-REPORT=$(ls -t .tmp/ixf_report_*.json | head -1)
-
-# List all CRITICAL modules
-jq '.modules[] | select(.severity == "CRITICAL") | {name, cve, cvss}' "$REPORT"
-
-# Count by severity
-jq '.modules | group_by(.severity) | map({severity: .[0].severity, count: length})' "$REPORT"
-
-# List all modules for a specific MITRE technique
-jq '.modules[] | select(.mitre_techniques | contains(["T0836"])) | .name' "$REPORT"
-
-# List all CVEs with CVSS >= 9.0
-jq '.modules[] | select(.cvss != "N/A" and (.cvss | tonumber) >= 9.0) | {name, cve, cvss}' "$REPORT"
-
-# Export vendor list
-jq '.modules[].devices | .[]' "$REPORT" | sort -u
-
-# Count by exploit_type
-jq '[.modules[].exploit_type] | group_by(.) | map({type: .[0], count: length}) | sort_by(-.count)' "$REPORT"
-```
-
-**Sample jq output (severity count):**
-
-```json
-[
-  {"severity": "HIGH",        "count": 341},
-  {"severity": "CRITICAL",    "count": 287},
-  {"severity": "MEDIUM",      "count": 198},
-  {"severity": "LOW",         "count": 87},
-  {"severity": "INFO",        "count": 55},
-  {"severity": "CATASTROPHIC","count": 8}
-]
-```
-
----
-
-## Batch File Scanning with file:// Targets
-
-Run modules against a list of targets stored in a file:
-
-```bash
-# Create targets file (one IP per line)
-cat > .tmp/targets.txt << 'EOF'
-192.168.1.100
-192.168.1.101
-192.168.1.102
-10.0.0.5
-10.0.0.6
-EOF
-
-# Run a module against each target
-while IFS= read -r ip; do
-  echo "=== Testing $ip ==="
-  ixf use scanners/ics/modbus_detect set target "$ip" check
-done < .tmp/targets.txt
-```
-
-**Using file:// in Python API:**
+## JSON Output Parsing Examples
 
 ```python
-from pathlib import Path
-from industrialxpl.core.exploit.utils import import_exploit
-
-# Load targets
-targets = Path(".tmp/targets.txt").read_text().strip().splitlines()
-targets = [t.strip() for t in targets if t.strip() and not t.startswith("#")]
-
-cls = import_exploit("industrialxpl.modules.scanners.ics.modbus_detect")
-
-print(f"Scanning {len(targets)} targets...")
-results = []
-for ip in targets:
-    mod = cls()
-    mod.target = ip
-    found = mod.check()
-    results.append({"ip": ip, "modbus": found})
-    status = "[+]" if found else "[-]"
-    print(f"  {status} {ip}: {'Modbus UP' if found else 'no response'}")
-
-# Save results
 import json
-Path(".tmp/batch_results.json").write_text(json.dumps(results, indent=2))
-print(f"\nResults saved to .tmp/batch_results.json")
-```
+import glob
 
-**Multi-protocol batch scan script:**
+# Find latest JSON report
+reports = sorted(glob.glob("ixf_report_*.json"))
+if not reports:
+    print("No reports found. Run: ixf report json")
+    exit(1)
 
-```bash
-#!/usr/bin/env bash
-# Multi-protocol batch scan from file
-# Usage: ./batch_scan.sh targets.txt
+with open(reports[-1]) as f:
+    report = json.load(f)
 
-TARGETS_FILE="${1:-.tmp/targets.txt}"
-PROTOCOLS=("modbus_detect:502" "s7_comm_scanner:102" "bacnet_scanner:47808" "dnp3_scanner:20000")
+# Top-level structure
+print(f"Session ID: {report.get('session_id')}")
+print(f"Started: {report.get('started_at')}")
+print(f"Target: {report.get('target')}")
+print(f"Events: {len(report.get('events', []))}")
 
-while IFS= read -r ip; do
-  [[ -z "$ip" || "$ip" == \#* ]] && continue
-  echo ""
-  echo "━━━ Target: $ip ━━━"
-  for proto_port in "${PROTOCOLS[@]}"; do
-    proto="${proto_port%%:*}"
-    port="${proto_port##*:}"
-    result=$(ixf use "scanners/ics/$proto" set target "$ip" check 2>&1)
-    if echo "$result" | grep -q "True"; then
-      echo "  [+] $proto (port $port): OPEN"
-    else
-      echo "  [-] $proto (port $port): closed"
-    fi
-  done
-done < "$TARGETS_FILE"
+# Filter events by type
+vulnerable = [e for e in report.get("events", []) if e.get("result") == "VULNERABLE"]
+simulated = [e for e in report.get("events", []) if e.get("simulated", True)]
+
+print(f"Vulnerable: {len(vulnerable)}")
+print(f"Simulated: {len(simulated)}")
+
+# Most severe findings
+for event in sorted(report.get("events", []), key=lambda e: e.get("cvss", 0), reverse=True)[:5]:
+    print(f"{event.get('module')} — CVSS: {event.get('cvss', 'N/A')} — {event.get('result')}")
 ```
 
 ---

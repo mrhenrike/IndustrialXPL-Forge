@@ -945,3 +945,178 @@ ixf > sast /opt/plc/projeto/comunicacao/ --mode sast  # Comunicação
 ---
 
 *Anterior: [MITRE ATT&CK para ICS](06-mitre-attack-ics.md) | Próximo: [Protocolos e Vendors](08-protocolos-vendors.md)*
+
+---
+
+## Apendice: Saida Completa show options para Modulos SAST
+
+```
+ixf > use assessment/sast/plc_code_llm_review
+[*] Modulo carregado: PLC Code LLM Review (SAST)
+[*] CVE: N/A | Impacto: INFO
+
+ixf (PLC Code LLM Review) > show options
+
+  Opcoes -- PLC Code LLM Review
+  +------------------+-----------+----------+----------------------------------------+
+  | Opcao            | Valor     | Obrig.   | Descricao                              |
+  |------------------+-----------+----------+----------------------------------------|
+  | file_path        |           | sim      | Caminho para arquivo ou diretorio PLC  |
+  | mode             | sast      | nao      | sast, reverse, diff, exploit-gen       |
+  | diff_file        |           | nao      | Segundo arquivo (modo diff)            |
+  | output_format    | markdown  | nao      | markdown, json, html                   |
+  | provider         |           | nao      | openai, anthropic, gemini, deepseek    |
+  | simulate         | True      | nao      | Modo simulacao (padrao: True)          |
+  | destructive      | False     | nao      | N/A para SAST                          |
+  +------------------+-----------+----------+----------------------------------------+
+
+ixf (PLC Code LLM Review) > set file_path /opt/plc/water_treatment.st
+ixf (PLC Code LLM Review) > set mode sast
+ixf (PLC Code LLM Review) > run
+[*] Analisando: water_treatment.st (245 linhas)
+[*] Provider: gemini | Sanitizado: 2 credenciais
+[*] Enviando para LLM...
+```
+
+---
+
+## LLM Security Considerations
+
+### Como o IXF Protege Dados Sensiveis
+
+Antes de enviar codigo PLC para o LLM, o IXF realiza sanitizacao automatica:
+
+1. **Credenciais detectadas** sao substituidas por `[REDACTED]`
+2. **IPs internos** (192.168.x.x, 10.x.x.x, 172.16-31.x.x) substituidos por `[PRIVATE_IP]`
+3. **IPs publicos** substituidos por `[PUBLIC_IP]`
+4. **Hostnames internos** (.local, .internal) substituidos por `[INTERNAL_HOST]`
+5. **Tokens JWT** substituidos por `[JWT_TOKEN]`
+6. **Chaves de API** substituidas por `[API_KEY]`
+
+### Modo Offline (sem LLM)
+
+Para ambientes sem acesso a internet ou em redes air-gapped, use o modo de analise de padroes:
+
+```
+ixf > sast /opt/plc/code.st --offline
+[*] Modo offline -- analise de padroes sem LLM
+[*] Verificando: setpoints sem validacao, credenciais hardcoded,
+                 portas de servico abertas, logica de safety ausente
+[+] 3 padroes suspeitos detectados (analise limitada sem LLM)
+```
+
+---
+
+## Comparativo de Providers LLM para SAST PLC
+
+| Provider | Velocidade | Custo | Janela de Contexto | Melhor para |
+|----------|------------|-------|-------------------|-------------|
+| OpenAI GPT-4o | Media | $$ | 128K tokens | Analise complexa, exploit-gen |
+| Anthropic Claude | Media | $$$ | 200K tokens | Relatorios longos, codigo grande |
+| Google Gemini Flash | Rapida | $ | 128K tokens | Alto volume, prototipagem rapida |
+| DeepSeek Chat | Rapida | $ | 64K tokens | Analise economica, codigo simples |
+| Grok (xAI) | Media | $$ | 131K tokens | Contexto recente, CVEs novos |
+
+---
+
+*Anterior: [MITRE ATT&CK para ICS](06-mitre-attack-ics.md) | Proximo: [Protocolos e Vendors](08-protocolos-vendors.md)*
+
+---
+
+## Fluxo Completo de Análise SAST
+
+### Fluxo de Trabalho Recomendado
+
+```
+1. Configurar provedor LLM
+   ↓
+2. Coletar código-fonte PLC/RTU
+   ↓
+3. Executar análise SAST (sast --mode sast)
+   ↓
+4. Revisar achados por severidade (CRÍTICO → ALTO → MÉDIO)
+   ↓
+5. Executar análise diff em commits recentes (sast --mode diff)
+   ↓
+6. Gerar relatório para equipe de segurança
+   ↓
+7. Implementar remediações priorizadas
+   ↓
+8. Re-executar SAST para validar correções
+```
+
+### Integração com Pipeline CI/CD
+
+```yaml
+# Exemplo de integração em pipeline CI/CD
+# .github/workflows/plc-sast.yml
+name: PLC Code SAST
+
+on:
+  push:
+    paths:
+      - '**.st'
+      - '**.scl'
+      - '**.l5x'
+      - '**.l5k'
+      - '**.acd'
+
+jobs:
+  plc-sast:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install IXF
+        run: pip install industrialxpl-forge
+
+      - name: Run PLC SAST
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          ixf sast . --mode sast --output sast_results/
+
+      - name: Check for Critical Findings
+        run: |
+          CRITICAL=$(grep -r "CRÍTICO\|CRITICAL" sast_results/ | wc -l)
+          if [ "$CRITICAL" -gt 0 ]; then
+            echo "::error::$CRITICAL achados críticos detectados no código PLC"
+            cat sast_results/*.md
+            exit 1
+          fi
+```
+
+### Comparação de Provedores LLM para SAST ICS
+
+| Provedor | Melhor Para | Limitação | Custo Estimado por Análise |
+|----------|-------------|-----------|---------------------------|
+| OpenAI GPT-4o | Análise abrangente, boa compreensão de ICS | Contexto 128K | ~$0.02-0.10 |
+| Anthropic Claude | Análise de segurança detalhada, raciocínio profundo | Contexto 200K | ~$0.02-0.15 |
+| Google Gemini | Projetos grandes, contexto muito longo | Menos específico em ICS | ~$0.01-0.05 |
+| DeepSeek | Custo-benefício, bom para código | Contexto menor | ~$0.001-0.01 |
+| Grok | Análise rápida, boa em código C/C++/ST | Menos detalhado em ICS | ~$0.005-0.05 |
+
+### Melhores Práticas de Sanitização
+
+Sempre verifique o que está sendo enviado ao LLM usando `--verbose`:
+
+```bash
+ixf sast projeto_plc/ --mode sast --verbose 2>&1 | head -100
+```
+
+**O que NUNCA deve aparecer na saída verbose:**
+- IPs reais de produção (substituídos por `[IP_REDACTED]`)
+- Senhas (substituídas por `[PASSWORD_REDACTED]`)
+- Chaves de API (substituídas por `[API_KEY_REDACTED]`)
+- Strings de conexão completas (substituídas por `[CONN_STRING_REDACTED]`)
+
+**Verificação de sanitização:**
+```bash
+# Após executar com --verbose, verificar se não há dados sensíveis
+ixf sast codigo.st --mode sast --verbose 2>&1 | grep -i "password\|secret\|api_key\|192\.\|10\." | head -20
+# Deve retornar apenas versões sanitizadas [REDACTED]
+```
+
+---
+
+*Anterior: [MITRE ATT&CK for ICS](06-mitre-attack-ics.md) | Próximo: [Protocolos e Vendors](08-protocolos-vendors.md)*
