@@ -41,7 +41,7 @@ Portuguese (Brazilian) documentation: [../pt-br/](_index.md)
 
 | Metric | Value |
 |--------|-------|
-| Total modules | 976+ |
+| Total modules | 972+ |
 | CVE modules | 814 |
 | CVE IDs covered | 3,300+ |
 | Vendors covered | 150+ |
