@@ -48,7 +48,7 @@ O IndustrialXPL-Forge (IXF) é um framework Python modular para assessment de se
 
 | Métrica | Valor |
 |---------|-------|
-| Total de módulos | 976+ |
+| Total de módulos | 972+ |
 | Módulos CVE | 3.300+ |
 | Vendors cobertos | 150+ |
 | Protocolos cobertos | 50+ |
