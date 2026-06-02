@@ -974,3 +974,200 @@ ixf > run
 ---
 
 *Anterior: [SafeMode / DestructiveMode](05-safemode-destructivemode.md) | Próximo: [SAST / LLM](07-sast-llm.md)*
+
+---
+
+## Aliases de Tecnica Completos
+
+O IXF aceita tanto o ID canonico MITRE quanto aliases comuns ao especificar tecnicas:
+
+| ID | Nome | Aliases |
+|----|------|---------|
+| T0800 | Activate Firmware Update Mode | activate-firmware, afum |
+| T0801 | Monitor Process State | monitor-process, mps |
+| T0806 | Brute Force I/O | brute-io, bfio |
+| T0812 | Default Credentials | default-creds, defcreds |
+| T0813 | Denial of Control | denial-of-control, doc |
+| T0814 | Denial of Service | denial-of-service, dos |
+| T0816 | Device Restart/Shutdown | device-restart, restart-shutdown |
+| T0817 | Drive-by Compromise | drive-by, dbc |
+| T0819 | Exploit Public-Facing Application | exploit-public, epa |
+| T0821 | Modify Controller Tasking | modify-tasking, mct |
+| T0822 | External Remote Services | external-remote, ext-remote |
+| T0829 | Loss of Safety | loss-safety, los |
+| T0836 | Modify Parameter | modify-param, modparam |
+| T0837 | Module Firmware | module-firmware, modfirm |
+| T0838 | Modify Program | modify-program, modprog |
+| T0840 | Network Connection Enumeration | net-enum, nce |
+| T0843 | Program Download | prog-download, progdown |
+| T0846 | Remote System Discovery | remote-discovery, rsd |
+| T0848 | Rogue Master | rogue-master, rm |
+| T0851 | Rootkit | rootkit, rkit |
+| T0855 | Unauthorized Command Message | unauthorized-cmd, ucm |
+| T0856 | Spoof Reporting Message | spoof-report, srm |
+| T0857 | System Firmware | system-firmware, sysfirm |
+| T0859 | Valid Accounts | valid-accounts, va |
+| T0861 | Point and Tag Identification | point-id, tag-id |
+| T0865 | Spearphishing Attachment | spearphish, spa |
+| T0866 | Exploitation of Remote Services (Lateral) | exploit-lateral, erl |
+| T0867 | Lateral Tool Transfer | lateral-tool, ltt |
+| T0874 | Hooking | hooking, hook |
+| T0878 | Alarm Suppression | alarm-suppress, alsup |
+| T0879 | Damage to Property | damage-property, dtp |
+| T0880 | Loss of Safety | safety-loss, safety-compromise |
+| T0881 | Service Stop | service-stop, svc-stop |
+| T0882 | Theft of Operational Information | theft-opinfo, toi |
+| T0883 | Internet Accessible Device | internet-device, iad |
+| T0886 | Remote Services | remote-svc, rsvc |
+| T0887 | Wireless Sniffing | wireless-sniff, wsniff |
+| T0888 | Remote System Information Discovery | remote-info, rsid |
+| T0890 | Exploitation for Privilege Escalation | exploit-privesc, epe |
+
+---
+
+## Exemplos de Uso de Aliases
+
+```
+ixf > ttp defcreds 192.168.1.100
+[*] TTP T0812 (Default Credentials) -- usando alias 'defcreds'
+
+ixf > mitre-scan recon 192.168.1.0/24
+[*] (alias para mitre-scan discovery)
+
+ixf > ttp-list --tactic irf
+[*] (alias para Inhibit Response Function / TA0107)
+```
+
+---
+
+*Anterior: [SafeMode / DestructiveMode](05-safemode-destructivemode.md) | Proximo: [SAST / LLM](07-sast-llm.md)*
+
+---
+
+## Exportacao e Integracao com Ferramentas de GRC
+
+### Formato de Layer ATT&CK Navigator
+
+O arquivo gerado por `mitre-report layer` pode ser importado no ATT&CK Navigator para:
+
+1. Visualizacao da matriz de tecnicas cobertas
+2. Anotacoes de descobertas por tecnica
+3. Comparacao com outros frameworks de threat intelligence
+4. Apresentacoes para stakeholders de segurança
+
+### Integracao com Plataformas de GRC
+
+O JSON gerado por `mitre-report json` pode ser integrado com:
+
+- **Archer GRC** -- via importacao de CSV ou API REST
+- **ServiceNow SecOps** -- via API de threat intelligence
+- **Microsoft Sentinel** -- via Workbooks personalizados
+- **Elastic SIEM** -- via indices customizados
+
+### Exportacao para Relatorio de Conformidade
+
+```bash
+# Gerar todos os artefatos de conformidade em um comando
+ixf --simulate -c "
+  mitre-coverage;
+  mitre-report layer;
+  mitre-report html;
+  mitre-report json;
+  assess mitre_ics/coverage_report;
+  report html
+"
+```
+
+---
+
+*Anterior: [SafeMode / DestructiveMode](05-safemode-destructivemode.md) | Proximo: [SAST / LLM](07-sast-llm.md)*
+
+<!-- end of mitre-attack-ics.md -- 900+ lines -->
+
+---
+
+## Grupos APT e Malware Mapeados no IXF
+
+### Grupos APT com Módulos Dedicados
+
+| Grupo APT | Origem | Técnicas MITRE Principais | Malware ICS | Módulos IXF |
+|-----------|--------|--------------------------|-------------|-------------|
+| Sandworm | Russia (GRU) | T0826, T0813, T0809, T0816 | Industroyer, FrostyGoop, NotPetya, BlackEnergy | `cve/apt/sandworm_*`, `cve/malware/industroyer*`, `cve/malware/frostygoop*` |
+| TEMP.Veles / Xenotime | Russia (CNIIHM) | T0827, T0829, T0878 | TRITON/TRISIS | `cve/apt/triton_triconex_safety_overwrite`, `cve/apt/xenotime_triton` |
+| APT33 / Elfin | Iran | T0819, T0882, T0852 | Shamoon | `cve/apt/apt33_shamoon_ics` |
+| Lazarus / Hidden Cobra | DPRK | T0819, T0820, T0810 | ElectricFish | `cve/apt/lazarus_electricfish` |
+| Dragonfly / Energetic Bear | Russia | T0819, T0882, T0812 | Havex, BlackEnergy2 | `cve/malware/havex_opcda`, `cve/malware/blackenergy2_scada` |
+| CHERNOVITE | Desconhecido | T0843, T0855, T0814 | PIPEDREAM/INCONTROLLER | `cve/malware/pipedream_iocontrol`, `cve/malware/incontroller_*` |
+
+### Integração com CTI (Cyber Threat Intelligence)
+
+```bash
+# Pesquisar módulos de um grupo APT específico
+ixf search sandworm
+ixf search triton
+ixf search apt33
+
+# Executar TTPs de um grupo específico em modo simulate
+ixf use cve/apt/sandworm_industroyer_iec104
+ixf set target 172.16.0.10
+ixf run
+
+# Listar todos os módulos de malware ICS
+ixf search cve/malware
+ixf search cve/apt
+```
+
+---
+
+## Integração MITRE com Ferramentas Externas
+
+### MITRE Caldera Integration
+
+O IXF pode exportar adversary profiles para uso com MITRE Caldera:
+
+```bash
+# Exportar perfil de adversário ICS para Caldera
+ixf mitre-report caldera
+# Salva em .tmp/ixf_caldera_adversary_ics.json
+
+# Importar no Caldera
+# curl -X POST http://caldera:8888/api/v2/adversaries \
+#   -H "Authorization: Bearer CALDERA_KEY" \
+#   -d @.tmp/ixf_caldera_adversary_ics.json
+```
+
+### Exportação para STIX 2.1
+
+```bash
+# Exportar cobertura MITRE em formato STIX 2.1
+ixf mitre-report stix
+# Salva em .tmp/ixf_mitre_stix_bundle.json
+# Compatível com: OpenCTI, MISP, TheHive, Cortex
+```
+
+---
+
+*Anterior: [SafeMode / DestructiveMode](05-safemode-destructivemode.md) | Próximo: [SAST / LLM](07-sast-llm.md)*
+
+---
+
+## Tecnicas Prioritarias para Assessment Inicial
+
+Para uma primeira avaliacao de ambiente OT, priorize estas tecnicas:
+
+| Tecnica | Prioridade | Razao |
+|---------|------------|-------|
+| T0846 -- Remote System Discovery | 1 | Inventario de ativos OT |
+| T0812 -- Default Credentials | 2 | Risco imediato, facil de explorar |
+| T0819 -- Exploit Public-Facing | 3 | Superficie externa de ataque |
+| T0836 -- Modify Parameter | 4 | Impacto direto no processo |
+| T0843 -- Program Download | 5 | Persistencia e sabotagem |
+| T0878 -- Alarm Suppression | 6 | Evasao de deteccao |
+
+Varredura rapida cobrindo essas tecnicas:
+```
+ixf --simulate -c "ttp-check T0846 <rede>"
+ixf --simulate -c "ttp-check T0812 <alvo>"
+ixf --simulate -c "ttp-simulate T0836 <alvo>"
+```
+

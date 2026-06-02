@@ -9,7 +9,7 @@
 [![Python](https://img.shields.io/pypi/pyversions/industrialxpl-forge?color=blue&label=Python)](https://pypi.org/project/industrialxpl-forge/)
 [![Licença: MIT](https://img.shields.io/badge/Licen%C3%A7a-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![CI](https://img.shields.io/github/actions/workflow/status/mrhenrike/IndustrialXPL-Forge/ci.yml?branch=master&label=CI)](https://github.com/mrhenrike/IndustrialXPL-Forge/actions)
-[![Módulos](https://img.shields.io/badge/M%C3%B3dulos-911%2B-brightgreen)](https://github.com/mrhenrike/IndustrialXPL-Forge)
+[![Módulos](https://img.shields.io/badge/M%C3%B3dulos-975%2B-brightgreen)](https://github.com/mrhenrike/IndustrialXPL-Forge)
 [![Vendors](https://img.shields.io/badge/Vendors-150%2B-orange)](https://github.com/mrhenrike/IndustrialXPL-Forge)
 [![Protocolos](https://img.shields.io/badge/Protocolos-50%2B-blue)](https://github.com/mrhenrike/IndustrialXPL-Forge)
 [![MITRE ATT&CK ICS](https://img.shields.io/badge/MITRE%20ATT%26CK%20ICS-v19-red)](https://attack.mitre.org/matrices/ics/)

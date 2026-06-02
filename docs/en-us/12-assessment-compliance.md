@@ -1,351 +1,316 @@
 # Assessment & Compliance
 
-IXF includes 18 dedicated assessment modules covering IEC 62443, NIST SP 800-82r3, risk scoring, ICS Kill Chain, IR playbooks, protocol security audits, and network assessments. Additionally, 28 MITRE ATT&CK for ICS technique-specific assessment modules are available under `assessment/mitre_ics/`. All assessment modules run in simulate mode by default and never modify target state.
+IXF includes 18 assessment modules covering IEC 62443, NIST SP 800-82r3, MITRE ATT&CK for ICS coverage, risk scoring, threat intelligence (ICS Kill Chain), incident response playbooks, protocol security audits, and network assessment — all with detailed checklists and actionable guidance.
 
 ---
 
-## Table of Contents
+## All 18 Assessment Modules
 
-1. [Running Assessment Modules](#running-assessment-modules)
-2. [All 18 Assessment Modules Listed](#all-18-assessment-modules-listed)
-3. [IEC 62443 — Zone and Conduit Audit](#iec-62443--zone-and-conduit-audit)
-4. [NIST SP 800-82r3 — ICS Security Checklist](#nist-sp-800-82r3--ics-security-checklist)
-5. [Risk Scoring — Full Output with Score Breakdown](#risk-scoring--full-output-with-score-breakdown)
-6. [ICS Kill Chain — All 8 Stages](#ics-kill-chain--all-8-stages)
-7. [IR Playbook — All Phases with Actions](#ir-playbook--all-phases-with-actions)
-8. [OPC UA Security Audit — Full Output](#opc-ua-security-audit--full-output)
-9. [DNP3 Security Audit — Full Output](#dnp3-security-audit--full-output)
-10. [IEC 61850 Security Audit — Full Output](#iec-61850-security-audit--full-output)
-11. [ICS Firewall Audit — Full Output](#ics-firewall-audit--full-output)
-12. [Industrial Network Assessment — Full Output](#industrial-network-assessment--full-output)
-13. [All 28 MITRE Technique Assessment Modules](#all-28-mitre-technique-assessment-modules)
-14. [Complete Assessment Session — Full Terminal Transcript](#complete-assessment-session--full-terminal-transcript)
+| Module Path | Category | Description | Impact |
+|-------------|----------|-------------|--------|
+| `assessment/iec62443/zone_conduit_audit` | Framework | IEC 62443-3-3 zone and conduit compliance audit | INFO |
+| `assessment/nist_sp800_82/control_checklist` | Framework | NIST SP 800-82r3 ICS security control checklist | INFO |
+| `assessment/risk/ics_risk_scorer` | Risk | Composite ICS risk score based on 5 weighted factors | INFO |
+| `assessment/threat_intel/ics_kill_chain` | Threat | ICS kill chain 8-phase analysis | INFO |
+| `assessment/ir/iacs_ir_playbook` | IR | 5-phase ICS incident response playbook | INFO |
+| `assessment/protocols/opcua_security_audit` | Protocol | OPC UA security configuration audit (IEC 62541) | INFO |
+| `assessment/protocols/dnp3_security_audit` | Protocol | DNP3 SAv5 security authentication audit | INFO |
+| `assessment/protocols/iec61850_security_audit` | Protocol | IEC 61850 / IEC 62351 security audit | INFO |
+| `assessment/network/ics_firewall_audit` | Network | ICS network firewall rule set audit | INFO |
+| `assessment/network/industrial_network_assessment` | Network | Full industrial network security assessment | INFO |
+| `assessment/mitre_ics/coverage_report` | MITRE | MITRE ATT&CK for ICS coverage report | INFO |
+| `assessment/mitre_ics/full_mitre_sweep` | MITRE | Full MITRE technique sweep (simulation) | INFO |
+| `assessment/mitre_ics/t0801_monitor_process_state` | MITRE TTP | T0801 Monitor Process State simulation | INFO |
+| `assessment/mitre_ics/t0806_brute_force_io` | MITRE TTP | T0806 Brute Force I/O simulation | INFO |
+| `assessment/mitre_ics/t0807_remote_services` | MITRE TTP | T0807 Command-Line Interface | INFO |
+| `assessment/mitre_ics/t0820_exploitation_remote` | MITRE TTP | T0820 Exploitation of Remote Services | INFO |
+| `assessment/sast/plc_source_analyzer` | SAST | PLC source code analysis wrapper (calls SAST engine) | INFO |
+| `assessment/mitre_ics/t0836_modify_parameter` | MITRE TTP | T0836 Modify Parameter assessment | INFO |
 
 ---
 
 ## Running Assessment Modules
 
-Assessment modules are loaded using the `assess` shortcut or the standard `use` → `set` → `run` workflow.
+Use the `assess` command to load and immediately execute:
 
-```bash
-# Shortcut: assess
-ixf > assess iec62443/zone_conduit_audit
+```
+ixf > assess <module_path>
+```
 
-# Standard workflow
+Or use the standard `use` → `set target` → `run` workflow:
+
+```
 ixf > use assessment/iec62443/zone_conduit_audit
 ixf > set target 192.168.1.0/24
 ixf > run
-
-# Non-interactive (CLI)
-ixf assess iec62443/zone_conduit_audit
-ixf assess nist_sp800_82/control_checklist
-ixf assess risk/ics_risk_scorer
 ```
-
-**Assessment modules do not require a target.** They provide methodology, checklists, and structured analysis that apply to any ICS environment. When a `target` is set, the `check()` method probes connectivity for enhanced context.
-
----
-
-## All 18 Assessment Modules Listed
-
-| # | Module Path | Category | Description |
-|---|------------|----------|-------------|
-| 1 | `assessment/iec62443/zone_conduit_audit` | Compliance | IEC 62443 Zone and Conduit boundary audit |
-| 2 | `assessment/iec62443/security_level_assessment` | Compliance | IEC 62443 Security Level (SL1-SL4) determination |
-| 3 | `assessment/iec62443/foundational_requirements` | Compliance | IEC 62443-3-3 Foundational Requirements checklist |
-| 4 | `assessment/nist_sp800_82/control_checklist` | Compliance | NIST SP 800-82r3 ICS control family checklist |
-| 5 | `assessment/nist_sp800_82/network_architecture` | Compliance | NIST 800-82r3 network architecture review |
-| 6 | `assessment/risk/ics_risk_scorer` | Risk | ICS risk scoring methodology with weighted factors |
-| 7 | `assessment/risk/consequence_analysis` | Risk | Physical consequence analysis (SIL-based) |
-| 8 | `assessment/threat_intel/ics_kill_chain` | Threat Intel | ICS Cyber Kill Chain — all 8 stages |
-| 9 | `assessment/threat_intel/apt_ics_actors` | Threat Intel | Known APT groups targeting ICS/OT (Sandworm, APT33, Lazarus...) |
-| 10 | `assessment/ir/iacs_ir_playbook` | Incident Response | ICS/OT IR playbook — all phases |
-| 11 | `assessment/ir/recovery_guidance` | Incident Response | PLC and historian recovery procedures |
-| 12 | `assessment/protocols/opcua_security_audit` | Protocol | OPC UA server security assessment |
-| 13 | `assessment/protocols/dnp3_security_audit` | Protocol | DNP3 Secure Authentication v5 assessment |
-| 14 | `assessment/protocols/iec61850_security_audit` | Protocol | IEC 61850 substation security assessment |
-| 15 | `assessment/protocols/modbus_security_audit` | Protocol | Modbus TCP security and authentication assessment |
-| 16 | `assessment/protocols/ethernetip_security_audit` | Protocol | EtherNet/IP CIP security assessment |
-| 17 | `assessment/network/ics_firewall_audit` | Network | ICS/OT firewall and segmentation audit |
-| 18 | `assessment/network/industrial_network_assessment` | Network | Industrial network infrastructure assessment |
 
 ---
 
 ## IEC 62443 — Zone and Conduit Audit
 
-### IEC 62443 Security Levels Explained
+### Security Levels (SL1–SL4)
 
-| Level | Code | Definition | Threat Actor |
-|-------|------|-----------|-------------|
-| SL 1 | `SL1` | Protection against unintentional or coincidental violation | Untrained insider, random malware |
-| SL 2 | `SL2` | Protection against intentional violation using simple means | Low-skill attacker, script kiddie |
-| SL 3 | `SL3` | Protection against intentional violation using sophisticated means | Skilled attacker, organized crime |
-| SL 4 | `SL4` | Protection against intentional violation by state-sponsored means | Nation-state APT, Sandworm-level |
+IEC 62443-3-3 defines four Security Levels based on attacker capability and required protection:
 
-**IEC 62443 Zone Model:**
+| Level | Definition | Attacker Profile | Example Requirements |
+|-------|-----------|-----------------|---------------------|
+| **SL 1** | Protection against unintentional or coincidental violation | Casual, no specific skill | Basic access control, no anonymous access |
+| **SL 2** | Protection against intentional violation using simple means | Motivated attacker, basic ICS knowledge | Authentication, encrypted management, event logging |
+| **SL 3** | Protection against intentional violation using sophisticated means | Skilled attacker with ICS expertise | MFA, strict zone segmentation, anomaly detection |
+| **SL 4** | Protection against intentional violation using state-sponsored means | Nation-state, unlimited resources | Air gap, supply chain controls, hardware security modules |
 
-```
-  ┌──────────────────────────────────────────────────────┐
-  │  Enterprise Zone (Level 4-5 — IT)                   │
-  │  ERP, email, internet, business systems             │
-  └─────────────────┬────────────────────────────────────┘
-                    │  Demilitarized Zone (DMZ)
-                    │  Firewall L2 ↔ L3
-  ┌─────────────────▼────────────────────────────────────┐
-  │  Site Operations Zone (Level 3)                     │
-  │  Historian, Scheduling, HMI supervisory             │
-  └─────────────────┬────────────────────────────────────┘
-                    │  Firewall L2 ↔ L3 (strict)
-  ┌─────────────────▼────────────────────────────────────┐
-  │  Control Zone (Level 2)                             │
-  │  SCADA servers, Engineering workstations, HMIs      │
-  └─────────────────┬────────────────────────────────────┘
-                    │  Conduit (protocol-filtered)
-  ┌─────────────────▼────────────────────────────────────┐
-  │  Field Device Zone (Level 1)                        │
-  │  PLCs, RTUs, DCS controllers                        │
-  └─────────────────┬────────────────────────────────────┘
-                    │  Field bus / process bus
-  ┌─────────────────▼────────────────────────────────────┐
-  │  Field Network (Level 0)                            │
-  │  Sensors, actuators, instruments, field devices     │
-  └──────────────────────────────────────────────────────┘
-```
+Most critical infrastructure should target **SL 2 as minimum** and **SL 3 for safety systems**.
 
-### Full Terminal Output
+### Zone/Conduit Model
+
+The IEC 62443 zone/conduit model divides the network into security zones and conduits:
+
+- **Zone:** A grouping of logical or physical assets that share the same security requirements
+- **Conduit:** A communication path between zones (with controls)
+- **Purdue Model Zones:** Level 4 (Enterprise) → Level 3 (Operations) → Level 2 (Control) → Level 1 (Field Devices)
+
+### Full Audit Output
 
 ```
 ixf > assess iec62443/zone_conduit_audit
 [*] Loading assessment/iec62443/zone_conduit_audit...
 [*] Running IEC 62443 Zone and Conduit Audit...
 
-  IEC 62443 Zone and Conduit Security Audit
   ══════════════════════════════════════════════════════════════════════
-  Standard: ISA/IEC 62443-3-3 (System Security Requirements and SLs)
+  IEC 62443 Zone and Conduit Compliance Audit
+  Framework: IEC 62443-2-1, IEC 62443-3-3 | Target SL: 2 (baseline)
   ══════════════════════════════════════════════════════════════════════
 
-  [Zone Architecture — SR 5.1]
+  [Zone Model]
   ──────────────────────────────────────────────────────────────────────
-  Check                               Result    Priority  Notes
-  IT/OT zone separation               MANUAL    HIGH      Verify Level 3→2 firewall rules
-  Protocol whitelisting (Purdue)      MANUAL    HIGH      Only OT protocols in ICS zone
-  Remote access authentication        MANUAL    HIGH      VPN MFA required for OT zones
-  Jump server / DMZ presence          MANUAL    HIGH      Historian in DMZ, not directly in OT
-  Zone/conduit documentation          MANUAL    MEDIUM    Zones defined in approved security plan
-  Redundant control path              MANUAL    MEDIUM    Primary/secondary network separation
-  Level-0 to Level-2 isolation        MANUAL    HIGH      No direct IT→PLC connectivity
-  Wireless network isolation          MANUAL    HIGH      OT wireless on separate SSID/VLAN
+  Purdue Level 4 (Enterprise Network — Business)
+    Zone:    Corporate network — ERP, email, internet access
+    Target:  No direct OT access | Separate from Level 3
 
-  [Conduit Controls — SR 5.2]
+  Purdue Level 3 (Operations/Site Network — MES/Historian)
+    Zone:    Site operations — historians, engineering workstations
+    Target:  DMZ between Level 4 and Level 2 | No direct PLC access
+
+  Purdue Level 2 (Control Network — SCADA/HMI)
+    Zone:    SCADA servers, HMI stations, control room
+    Target:  Isolated — only approved traffic to Level 1
+
+  Purdue Level 1 (Field Control Network — PLCs/RTUs)
+    Zone:    PLCs, RTUs, field controllers
+    Target:  Minimal external connectivity; serial preferred
+
+  Purdue Level 0 (Process — Physical Sensors/Actuators)
+    Zone:    Field instruments — temperature, pressure, valves
+    Target:  No IP connectivity at this level
+
   ──────────────────────────────────────────────────────────────────────
-  Check                               Result    Priority  Notes
-  Conduit data flow documentation     MANUAL    MEDIUM    Permitted flows documented
-  Protocol filtering on conduits      MANUAL    HIGH      DPI for OT protocols at conduit
-  Conduit monitoring                  MANUAL    HIGH      Anomaly detection on conduit traffic
-  Unidirectional gateway use          MANUAL    MEDIUM    Consider data diodes for L3→L2
-
-  [Security Level Targets]
+  IEC 62443-3-3 Control Requirements (SL2 Baseline)
   ──────────────────────────────────────────────────────────────────────
-  Zone                    Recommended SL  Rationale
-  Enterprise (L4-L5)      SL 2            Standard IT controls
-  Site Operations (L3)    SL 2            Historian + scheduling — medium risk
-  Control Zone (L2)       SL 3            SCADA/HMI — sophisticated adversaries possible
-  Field Device Zone (L1)  SL 2            PLCs/RTUs — vendor constraints may limit SL3
-  Safety System (SIS)     SL 3–SL 4       Safety systems require highest protection
-
+  Requirement                              Status    SL2 Reference
+  SR 1.1: Human user identification       REVIEW    Unique accounts per user, no shared
+  SR 1.2: Software process identification REVIEW    Service accounts documented
+  SR 1.3: Use control enforcement          REVIEW    RBAC implemented per zone
+  SR 1.4: Identifier management           REVIEW    Account lifecycle process exists
+  SR 1.5: Authenticator management        REVIEW    Password policy + rotation
+  SR 1.6: Wireless access management      REVIEW    No unauthorized wireless in OT zones
+  SR 2.1: Authorization enforcement       REVIEW    Need-to-know access model
+  SR 3.3: Security functionality check    REVIEW    Startup integrity check
+  SR 3.4: Software and info integrity     REVIEW    File integrity monitoring on HMIs
+  SR 3.5: Input validation                REVIEW    PLC programs validate all inputs
+  SR 3.6: Deterministic output            REVIEW    No state machine bypass possible
+  SR 4.1: Info confidentiality            REVIEW    OPC UA with security mode=Basic256
+  SR 4.2: Use of cryptography             REVIEW    No cleartext management protocols
+  SR 5.1: Network segmentation            REVIEW    Purdue model zones implemented
+  SR 5.2: Zone boundary protection        REVIEW    Firewall between all Purdue levels
+  SR 5.3: General purpose person-to-person comm REVIEW  No general internet in OT zones
+  SR 5.4: Application partitioning        REVIEW    OT apps on dedicated systems
+  SR 7.1: DoS protection                  REVIEW    Rate limiting on OT network interfaces
+  SR 7.2: Resource management             REVIEW    PLC scan cycle monitored
+  SR 7.3: Control system backup           REVIEW    PLC program backup documented
+  SR 7.4: Control system recovery         REVIEW    Recovery time <4h objective
+  SR 7.5: Emergency power                 REVIEW    UPS on critical control systems
+  SR 7.6: Network and security config mgmt REVIEW   Config management system
+  SR 7.7: Least functionality             REVIEW    Unused ports/services disabled
+  ──────────────────────────────────────────────────────────────────────
+  [i] Status REVIEW = requires manual verification in the target environment
+  [i] Reference: ISA/IEC 62443 standards suite
+  [i] Assessment tool: https://www.isa.org/store/isa-62443
   ══════════════════════════════════════════════════════════════════════
-  [i] IEC 62443-3-3: Security Level target SL2 baseline requirements
-  [i] SL3 required for critical infrastructure (energy, water, oil & gas)
-  [i] Reference: https://www.isa.org/standards-publications/isa-standards/isa-62443
-
-  [Foundational Requirements Summary — IEC 62443-3-3]
-  ──────────────────────────────────────────────────────────────────────
-  FR 1  Identification and Authentication Control (IAC)    7 requirements
-  FR 2  Use Control (UC)                                   8 requirements
-  FR 3  System Integrity (SI)                              6 requirements
-  FR 4  Data Confidentiality (DC)                          4 requirements
-  FR 5  Restricted Data Flow (RDF)                         5 requirements
-  FR 6  Timely Response to Events (TRE)                    5 requirements
-  FR 7  Resource Availability (RA)                         5 requirements
-  ──────────────────────────────────────────────────────────────────────
-  Total: 40 System Requirements (SR) across 7 Foundational Requirements
 ```
 
 ---
 
 ## NIST SP 800-82r3 — ICS Security Checklist
 
-### All Control Domains
-
-NIST SP 800-82r3 (Guide to OT Security, Rev. 3, 2023) organizes ICS security controls by NIST SP 800-53r5 control families adapted for OT environments.
+### All 8 Control Domains with Full Checklist Output
 
 ```
 ixf > assess nist_sp800_82/control_checklist
 [*] Running NIST SP 800-82r3 Industrial Control System Security Checklist...
 
-  NIST SP 800-82r3 — OT Security Control Checklist
   ══════════════════════════════════════════════════════════════════════
-  Publication: NIST SP 800-82 Rev. 3 (September 2023)
-  Scope: Industrial Control Systems (ICS) including SCADA, DCS, PLC
+  NIST SP 800-82 Rev. 3 — ICS Security Control Checklist
+  Reference: https://csrc.nist.gov/publications/detail/sp/800-82/rev-3/final
   ══════════════════════════════════════════════════════════════════════
 
-  [AC — Access Control]
+  Domain 1: Access Control (AC)
   ──────────────────────────────────────────────────────────────────────
-  Control    Check                                    Priority  Notes
-  AC-2       Account Management                        HIGH      Verify OT account lifecycle — no shared accounts
-  AC-3       Access Enforcement                        HIGH      Deny-by-default in OT network
-  AC-6       Least Privilege                           HIGH      Operators cannot modify PLC logic
-  AC-7       Unsuccessful Logon Attempts               MEDIUM    Lockout after 5 failed attempts
-  AC-17      Remote Access                             CRITICAL  MFA for ALL remote OT access
-  AC-18      Wireless Access                           HIGH      WPA3-Enterprise for OT wireless
-  AC-20      External Information System Connections   HIGH      Third-party remote access controlled
+  AC-2  Account Management           REVIEW   ICS accounts documented, reviewed quarterly
+  AC-3  Access Enforcement            REVIEW   RBAC enforced on all OT systems
+  AC-6  Least Privilege               REVIEW   Operator accounts cannot modify PLC programs
+  AC-7  Unsuccessful Logon Attempts   REVIEW   Lockout after 5 failed attempts
+  AC-17 Remote Access                 REVIEW   VPN + MFA for all OT remote access
+  AC-18 Wireless Access               REVIEW   Wireless prohibited in OT zones or isolated
+  AC-19 Access Control for Mobile     REVIEW   No mobile devices in control rooms
+  AC-20 Use of External Systems       REVIEW   No direct external system connectivity
 
-  [AU — Audit and Accountability]
+  Domain 2: Audit and Accountability (AU)
   ──────────────────────────────────────────────────────────────────────
-  Control    Check                                    Priority  Notes
-  AU-2       Audit Events                              HIGH      PLC connect, program change, alarm
-  AU-3       Content of Audit Records                  HIGH      Include: who, what, when, where
-  AU-6       Audit Review                              HIGH      OT logs reviewed — not just collected
-  AU-9       Protection of Audit Information           MEDIUM    Logs write-protected, forwarded to SIEM
-  AU-12      Audit Record Generation                   HIGH      All OT systems generate logs
+  AU-2  Event Logging                 REVIEW   All OT events logged (logins, program changes)
+  AU-3  Content of Audit Records      REVIEW   Records include who, what, when, where
+  AU-6  Audit Review Analysis         REVIEW   OT logs reviewed (automated SIEM preferred)
+  AU-9  Protection of Audit Info      REVIEW   Logs write-protected, sent to central SIEM
+  AU-12 Audit Record Generation       REVIEW   PLC audit events logged (not all PLCs support)
 
-  [CM — Configuration Management]
+  Domain 3: Configuration Management (CM)
   ──────────────────────────────────────────────────────────────────────
-  Control    Check                                    Priority  Notes
-  CM-2       Baseline Configuration                    HIGH      Known-good PLC program hashes stored
-  CM-6       Configuration Settings                    HIGH      Disable unused protocols and ports
-  CM-7       Least Functionality                       CRITICAL  Remove Telnet, HTTP, unused services
-  CM-8       Information System Inventory              MEDIUM    All OT assets inventoried (Purdue level)
-  CM-10      Software Usage Restrictions               HIGH      No unauthorized software on HMIs
+  CM-2  Baseline Configuration        REVIEW   PLC program baseline documented and stored
+  CM-6  Configuration Settings        REVIEW   Hardened configs for all OT systems
+  CM-7  Least Functionality           REVIEW   Unused protocols/ports disabled
+  CM-8  Component Inventory           REVIEW   OT asset inventory current and complete
+  CM-10 Software Usage Restrictions   REVIEW   Only approved software on OT systems
+  CM-11 User-Installed Software       REVIEW   Users cannot install unapproved software
 
-  [IA — Identification and Authentication]
+  Domain 4: Incident Response (IR)
   ──────────────────────────────────────────────────────────────────────
-  Control    Check                                    Priority  Notes
-  IA-2       Identification and Authentication (Users) HIGH      No anonymous OT access
-  IA-3       Device Authentication                     HIGH      Mutual auth for HMI-PLC communications
-  IA-5       Authenticator Management                  HIGH      Rotate default credentials immediately
-  IA-8       Authentication (Non-Org Users)            MEDIUM    Third-party contractors: time-limited accounts
+  IR-1  Incident Response Policy      REVIEW   OT-specific IR policy documented
+  IR-4  Incident Handling             REVIEW   ICS IR procedures tested annually (tabletop)
+  IR-5  Incident Monitoring           REVIEW   OT network monitored for anomalies (SIEM/IDS)
+  IR-6  Incident Reporting            REVIEW   CISA/ICS-CERT notification procedure defined
+  IR-8  Incident Response Plan        REVIEW   IR plan includes OT-specific scenarios
 
-  [IR — Incident Response]
+  Domain 5: Risk Assessment (RA)
   ──────────────────────────────────────────────────────────────────────
-  Control    Check                                    Priority  Notes
-  IR-3       Incident Response Testing                 HIGH      OT-specific IR exercises annually
-  IR-4       Incident Handling                         CRITICAL  OT-specific IR procedure documented
-  IR-6       Incident Reporting                        HIGH      CISA reporting within 72 hours (CI)
-  IR-8       Incident Response Plan                    HIGH      ICS-specific plan, not just IT plan
-  IR-10      Integrated IR Planning                    MEDIUM    Safety and cyber IR coordinated
+  RA-3  Risk Assessment               REVIEW   Annual ICS-specific risk assessment
+  RA-5  Vulnerability Scanning        REVIEW   Passive OT vulnerability scanning (no active)
+  RA-9  Criticality Analysis          REVIEW   BES/CIP criticality determined
 
-  [MA — Maintenance]
+  Domain 6: System and Communications Protection (SC)
   ──────────────────────────────────────────────────────────────────────
-  Control    Check                                    Priority  Notes
-  MA-2       Controlled Maintenance                    HIGH      PLC maintenance logged with work orders
-  MA-3       Maintenance Tools                         HIGH      Scan maintenance laptops before OT use
-  MA-4       Remote Maintenance                        CRITICAL  Jump server required for all remote maint
-  MA-6       Timely Maintenance                        MEDIUM    Patch cycle defined for ICS components
+  SC-7  Boundary Protection           REVIEW   Firewalls between all network zones
+  SC-8  Transmission Confidentiality  REVIEW   Encrypted management protocols (SSH, HTTPS)
+  SC-10 Network Disconnect            REVIEW   Idle sessions timeout (< 15 min for HMI)
+  SC-12 Cryptographic Key Mgmt        REVIEW   PKI for OPC UA certificates managed
+  SC-17 Public Key Certificates       REVIEW   Self-signed certs replaced with org CA
+  SC-28 Protection of Data at Rest    REVIEW   HMI workstation drives encrypted
+  SC-29 Heterogeneity                 REVIEW   Diversity in OT components/vendors
 
-  [MP — Media Protection]
+  Domain 7: System and Information Integrity (SI)
   ──────────────────────────────────────────────────────────────────────
-  Control    Check                                    Priority  Notes
-  MP-2       Media Access                              MEDIUM    USB/removable media controlled in OT
-  MP-7       Media Use                                 HIGH      USB whitelist enforced (device control)
-  MP-8       Media Sanitization                        MEDIUM    Secure erase before media reuse
+  SI-2  Flaw Remediation              REVIEW   OT patch management process (vendor-approved)
+  SI-3  Malicious Code Protection     REVIEW   AV on Windows HMIs (ICS-aware, whitelist)
+  SI-7  Software Integrity            REVIEW   PLC program integrity verified (hashes)
+  SI-10 Information Input Validation  REVIEW   PLC programs validate all operator inputs
 
-  [RA — Risk Assessment]
+  Domain 8: Program Management (PM)
   ──────────────────────────────────────────────────────────────────────
-  Control    Check                                    Priority  Notes
-  RA-3       Risk Assessment                           HIGH      Annual OT-specific risk assessment
-  RA-5       Vulnerability Scanning                    HIGH      ICS-safe vulnerability scanning
-  RA-9       Criticality Analysis                      HIGH      Safety-critical assets identified
-
-  [SC — System and Communications Protection]
-  ──────────────────────────────────────────────────────────────────────
-  Control    Check                                    Priority  Notes
-  SC-7       Boundary Protection                       CRITICAL  OT network segmentation enforced
-  SC-8       Transmission Integrity                    HIGH      Protocol integrity where supported
-  SC-10      Network Disconnect                        MEDIUM    Idle session timeout on HMIs
-  SC-23      Session Authenticity                      HIGH      No protocol replay attacks possible
-  SC-28      Protection at Rest                        MEDIUM    Encrypt sensitive historian data
-
-  [SI — System and Information Integrity]
-  ──────────────────────────────────────────────────────────────────────
-  Control    Check                                    Priority  Notes
-  SI-2       Flaw Remediation                          HIGH      ICS patch management program exists
-  SI-3       Malicious Code Protection                 HIGH      AV/EDR on HMIs (OT-safe vendor)
-  SI-4       Information System Monitoring             HIGH      OT traffic baseline + anomaly detect
-  SI-7       Software, Firmware, Integrity             CRITICAL  PLC firmware integrity verified
-  SI-10      Information Input Validation              MEDIUM    HMI input validation against injection
+  PM-1  Information Security Program  REVIEW   OT security program formally documented
+  PM-6  Information Security Measures REVIEW   OT security metrics tracked and reported
+  PM-14 Testing Training Monitoring   REVIEW   OT security exercises conducted annually
+  PM-16 Threat Awareness Program      REVIEW   ICS threat intelligence received and used
 
   ══════════════════════════════════════════════════════════════════════
-  [i] Reference: https://csrc.nist.gov/publications/detail/sp/800-82/rev-3/final
-  [i] Map to IEC 62443: NIST 800-53r5 ↔ ISA/IEC 62443-2-1 (Security Program)
+  [i] All items marked REVIEW require manual verification
+  [i] Reference: NIST SP 800-82 Rev. 3 (May 2023)
+  [i] ICS-CERT: https://www.cisa.gov/ics
+  ══════════════════════════════════════════════════════════════════════
 ```
 
 ---
 
-## Risk Scoring — Full Output with Score Breakdown
+## Risk Scorer — Full Output with Score Calculation
 
 ```
 ixf > assess risk/ics_risk_scorer
-[*] ICS Risk Scoring Assessment...
-
-  ICS Risk Scoring Methodology
-  ══════════════════════════════════════════════════════════════════════
-  Framework: CISA ICS Risk Assessment + IEC 62443 Security Level baseline
-  Scoring:   Weighted factor model (0–100 scale, higher = higher risk)
-  ══════════════════════════════════════════════════════════════════════
-
-  [Risk Factor Assessment]
-  ──────────────────────────────────────────────────────────────────────
-  Factor                   Weight  Score  Weighted  Assessment
-  ─────────────────────────────────────────────────────────────────────
-  Network exposure           30%    90     27.0     Internet-facing ICS assets: CRITICAL
-  Authentication strength    25%    80     20.0     No auth on Modbus/DNP3: HIGH
-  Safety system separation   25%    75     18.75    SIS on same network as SCADA: HIGH
-  Patch level                15%    70     10.5     Firmware > 3 years unpatched: HIGH
-  Logging and monitoring      5%    40     2.0      No OT-specific SOC/SIEM: MEDIUM
-  ─────────────────────────────────────────────────────────────────────
-  TOTAL RISK SCORE:                        78.25 / 100
-
-  [Score Interpretation]
-  ──────────────────────────────────────────────────────────────────────
-  Score Range   Level       Recommended Action
-  0–25          LOW         Maintain current controls, annual review
-  26–50         MEDIUM      Remediation plan within 6 months
-  51–75         HIGH        Remediation plan within 90 days, executive notification
-  76–90         CRITICAL    Immediate remediation, CISO and operations leadership
-  91–100        CATASTROPHIC Immediate shutdown consideration, emergency response
-
-  Current score 78.25 → CRITICAL: Immediate remediation required.
-
-  [Top Risk Findings]
-  ──────────────────────────────────────────────────────────────────────
-  Rank  Finding                                          Impact    Effort
-  1     Internet-exposed ICS services (Shodan-visible)   CRITICAL  HIGH
-  2     Modbus/DNP3 without authentication               CRITICAL  MEDIUM
-  3     SIS on same network segment as SCADA             CRITICAL  HIGH
-  4     PLC firmware unpatched for 3+ years              HIGH      MEDIUM
-  5     No OT-specific anomaly detection (NDR/SOC)       HIGH      HIGH
-  6     Default credentials on field devices             HIGH      LOW
-  7     Flat OT network (no micro-segmentation)          HIGH      HIGH
-  8     No PLC program integrity baseline                MEDIUM    LOW
-  9     USB removable media not controlled               MEDIUM    LOW
-  10    No OT-specific incident response procedure       MEDIUM    LOW
-
-  [Remediation Priority Matrix]
-  ──────────────────────────────────────────────────────────────────────
-  Priority  Action                                       Timeline
-  CRITICAL  Remove internet exposure (firewall rule)     Immediate
-  CRITICAL  Isolate SIS network from SCADA              Immediate (downtime required)
-  HIGH      Deploy jump server for remote OT access      30 days
-  HIGH      Change all default credentials               30 days
-  HIGH      Enable OT network monitoring (NDR)           60 days
-  MEDIUM    ICS patch management program                 90 days
-  MEDIUM    PLC program hash baseline                    60 days
-  LOW       USB device control policy                    90 days
+[*] ICS Risk Scoring...
 
   ══════════════════════════════════════════════════════════════════════
-  [i] CISA ICS-CERT scoring: https://www.cisa.gov/ics-cert
-  [i] Run with target set to score a specific host's connectivity risk
+  ICS Risk Score — Composite Methodology
+  Reference: CISA ICS Risk Assessment Methodology
+  ══════════════════════════════════════════════════════════════════════
+
+  Factor 1: Network Exposure (30% weight)
+  ──────────────────────────────────────────────────────────────────────
+  Question: Is the ICS/SCADA directly accessible from the internet or DMZ?
+  Indicators:
+    CRITICAL (score 10.0): ICS ports (502, 102, 44818, 4840) internet-facing
+    HIGH     (score 7.5):  ICS in DMZ with insufficient controls
+    MEDIUM   (score 5.0):  ICS behind firewall but remote access without MFA
+    LOW      (score 2.5):  Air-gapped or strict network segmentation
+  Assessment: Set target to internet-facing IP or 'none' for air-gapped
+  Default assumption for methodology: HIGH (7.5) — typical enterprise OT
+
+  Factor 2: Authentication Strength (25% weight)
+  ──────────────────────────────────────────────────────────────────────
+  Question: Is authentication required for all OT system access?
+  Indicators:
+    CRITICAL (10.0): Modbus/DNP3 — no authentication by design; all access open
+    HIGH      (7.5): Default credentials unchanged; shared passwords
+    MEDIUM    (5.0): Unique passwords but no MFA; basic auth only
+    LOW       (2.5): MFA enforced for all remote access; certificate-based auth
+  Assessment: HIGH (7.5) — Modbus unauthenticated, SSH default creds present
+
+  Factor 3: Safety System Separation (25% weight)
+  ──────────────────────────────────────────────────────────────────────
+  Question: Are Safety Instrumented Systems (SIS) isolated from control network?
+  Indicators:
+    CRITICAL (10.0): SIS on same VLAN as basic process control or internet
+    HIGH      (7.5): SIS has OT network access (should be one-way/air-gapped)
+    MEDIUM    (5.0): SIS behind firewall but on OT network
+    LOW       (2.5): SIS fully isolated — independent power, network, HMI
+  Assessment: HIGH (7.5) — SIS on same OT network as SCADA
+
+  Factor 4: Patch Level (15% weight)
+  ──────────────────────────────────────────────────────────────────────
+  Question: How current is OT firmware and software?
+  Indicators:
+    CRITICAL (10.0): Firmware > 5 years old; no patch process; EOL systems
+    HIGH      (7.5): Firmware 2-5 years old; irregular patching
+    MEDIUM    (5.0): Firmware < 2 years old; semi-annual patching
+    LOW       (2.5): Current firmware; monthly patching window; vendor alerts
+  Assessment: HIGH (7.5) — firmware typically 3+ years; long change windows
+
+  Factor 5: Logging and Monitoring (5% weight)
+  ──────────────────────────────────────────────────────────────────────
+  Question: Is OT network traffic monitored for anomalies?
+  Indicators:
+    CRITICAL (10.0): No logging; no monitoring; no SIEM
+    HIGH      (7.5): Syslog only; no OT-specific anomaly detection
+    MEDIUM    (5.0): OT-aware IDS (Claroty, Nozomi, Dragos) without fine-tuning
+    LOW       (2.5): OT-aware IDS + SOC with OT expertise + regular review
+  Assessment: MEDIUM (5.0) — Syslog to SIEM; no OT-specific IDS
+
+  ──────────────────────────────────────────────────────────────────────
+  Score Calculation
+  ──────────────────────────────────────────────────────────────────────
+  Factor                         Score  Weight   Weighted
+  Network Exposure               7.5    30%      2.25
+  Authentication Strength        7.5    25%      1.875
+  Safety System Separation       7.5    25%      1.875
+  Patch Level                    7.5    15%      1.125
+  Logging and Monitoring         5.0     5%      0.25
+  ──────────────────────────────────────────────────────────────────────
+  COMPOSITE RISK SCORE: 7.375 / 10.0
+  RISK LEVEL: HIGH (7.0-8.9) — Significant risk requiring immediate action
+
+  Priority Recommendations:
+  1. [CRITICAL ACTION] Implement Modbus/ICS authentication (DMZ + authentication proxy)
+  2. [CRITICAL ACTION] Segment SIS from SCADA on separate network with one-way gateway
+  3. [HIGH ACTION]     Deploy OT-aware IDS/NDR (Claroty, Nozomi Networks, Dragos)
+  4. [HIGH ACTION]     Establish OT patching program with vendor-approved schedule
+  5. [MEDIUM ACTION]   Enable MFA for all remote OT access
+  ══════════════════════════════════════════════════════════════════════
 ```
 
 ---
@@ -354,226 +319,184 @@ ixf > assess risk/ics_risk_scorer
 
 ```
 ixf > assess threat_intel/ics_kill_chain
-[*] ICS Kill Chain Analysis...
-
-  ICS Cyber Kill Chain — Incident Response Framework
-  ══════════════════════════════════════════════════════════════════════
-  Reference: Dragos ICS Incident Response Framework
-             CISA Advisory AA22-103A (INCONTROLLER/PIPEDREAM)
-             SANS ICS515 — ICS Active Defense and Incident Response
-  ══════════════════════════════════════════════════════════════════════
-
-  Stage 1: Target Identification
-  ──────────────────────────────────────────────────────────────────────
-  Description: Adversary identifies targets through open-source intelligence,
-               Shodan searches, ICS vendor advisories, and supply chain research.
-  Techniques:  OSINT (vendor docs, P&IDs, permits), Shodan/Censys searches,
-               ICS honeypots, strategic intelligence from prior intrusions.
-  MITRE:       T0840 (Network Connection Enumeration), T0888 (Remote System Info)
-  Indicators:  Shodan scans to ICS ports, scanning from unusual geographies,
-               vendor portal enumeration, job posting scraping for technology stack.
-  Defenders:   Monitor Shodan for your assets. Use CISA CHIRP. Reduce internet exposure.
-
-  Stage 2: Initial Access
-  ──────────────────────────────────────────────────────────────────────
-  Description: Adversary gains entry into enterprise or OT environment.
-  Techniques:  Spearphishing (T0865), VPN abuse (T0822), IT→OT pivot via historian,
-               supply chain compromise (T0862), watering hole (T0817),
-               exploit public-facing application (T0819, e.g., Citect RCE).
-  MITRE:       T0817, T0819, T0822, T0862, T0865
-  Indicators:  Phishing emails targeting OT engineers, VPN login anomalies,
-               new remote access from unexpected countries, supply chain update anomalies.
-  Real-world:  Industroyer — initial access via phishing to energy utility.
-               Colonial Pipeline — VPN credentials from dark web.
-               SolarWinds Orion — supply chain, reached OT via IT integration.
-
-  Stage 3: Establish Persistence
-  ──────────────────────────────────────────────────────────────────────
-  Description: Adversary installs backdoors and maintains long-term access.
-  Techniques:  PLC backdoor rung injection (T0839), historian compromise,
-               web shell on SCADA server, legitimate remote access tools (T0822),
-               scheduled tasks, boot persistence on HMI workstations.
-  MITRE:       T0839 (Module Firmware), T0843 (Program Upload), T0822
-  Indicators:  Unexpected PLC program modifications, new scheduled tasks on HMIs,
-               historian database queries from non-engineering IPs.
-  Real-world:  FrostyGoop — persistent Modbus client installed on compromised host.
-               TRITON — staged on historian VM with persistence via cron.
-
-  Stage 4: Discovery
-  ──────────────────────────────────────────────────────────────────────
-  Description: Adversary maps the OT environment to understand the process.
-  Techniques:  Modbus scan (T0888), S7 enumeration, tag read (T0802),
-               P&ID review, historian database query, HMI screenshot collection,
-               network topology mapping, engineering station access.
-  MITRE:       T0802 (Automated Collection), T0840, T0888
-  Indicators:  FC03/FC04 broadcast scans, S7 SZL reads from unexpected hosts,
-               bulk historian tag downloads, HMI process screenshots exfiltrated.
-  Real-world:  Sandworm: enumerated Ukrainian power grid topology via ICS protocols.
-               APT33: read historian to understand Saudi Aramco process parameters.
-
-  Stage 5: Lateral Movement
-  ──────────────────────────────────────────────────────────────────────
-  Description: Adversary moves from initial foothold to OT-adjacent systems.
-  Techniques:  Engineering workstation compromise (T0886), jump server bypass,
-               RDP to HMI from IT network, USB propagation (Stuxnet technique),
-               S7comm remote session from engineering workstation.
-  MITRE:       T0812 (Default Credentials), T0866 (Exploitation of Remote Services),
-               T0886 (Remote Services)
-  Indicators:  RDP from IT workstations to OT systems, USB media insertion on HMIs,
-               new S7comm sessions from non-engineering-station IPs.
-  Real-world:  Stuxnet — USB propagation into air-gapped Natanz centrifuge network.
-               NotPetya — WMIC/EternalBlue lateral movement reached HMI workstations.
-
-  Stage 6: Privilege Escalation
-  ──────────────────────────────────────────────────────────────────────
-  Description: Adversary obtains engineering software and PLC administrator access.
-  Techniques:  Engineering software credential theft (T0859), PLC admin access via
-               default credentials (T0812), HMI privilege escalation via CVE,
-               Kerberoasting on OT Windows domain, bypass of PLC write protection.
-  MITRE:       T0812, T0859 (Valid Accounts)
-  Indicators:  New TIA Portal / RSLogix license activations, PLC write-protect
-               switch state changes, engineering password spray attempts.
-  Real-world:  TRITON — obtained Schneider SIS engineering credentials to deploy
-               implant directly to safety controllers.
-
-  Stage 7: Condition (Pre-Attack Preparation)
-  ──────────────────────────────────────────────────────────────────────
-  Description: Adversary modifies setpoints, suppresses alarms, and stages
-               the environment for maximum impact without triggering early detection.
-  Techniques:  Setpoint modification (T0836), alarm suppression (T0880),
-               sensor spoofing (T0856), PLC logic injection (T0857),
-               safety system bypass (T0878).
-  MITRE:       T0836, T0856, T0878, T0880
-  Indicators:  PLC setpoint changes outside maintenance windows, alarm
-               acknowledgements without operator action, process historian
-               showing values outside normal operating bands.
-  Real-world:  FrostyGoop — continuously wrote 0x0000 setpoints to prevent
-               operator recovery. TRITON — raised SIS trip limits before attack.
-
-  Stage 8: Execute ICS Attack
-  ──────────────────────────────────────────────────────────────────────
-  Description: Adversary delivers the final payload to cause physical consequence.
-  Techniques:  Modbus write (T0855), IEC 104 EXEC command (T0855),
-               firmware flash (T0839), MBR wipe of engineering station (T0809),
-               PLC logic bomb activation (T0857), device restart/bricking (T0816).
-  MITRE:       T0809 (Data Destruction), T0814 (Denial of Control),
-               T0816 (Device Restart/Shutdown), T0855 (Unauthorized Command)
-  Indicators:  Unexpected FC16 writes, IEC 104 EXEC commands outside maintenance,
-               mass device restart events, safety system trip on all channels.
-  Real-world:  Industroyer — IEC 104 EXEC commands opened all substation breakers.
-               FrostyGoop — FC16 writes killed 600 apartments heating in -10°C.
-               CosmicEnergy — circuit breaker manipulation via LIGHTWORK module.
+[*] Running ICS Kill Chain Assessment...
 
   ══════════════════════════════════════════════════════════════════════
-  [i] Reference: https://www.dragos.com/ics-incident-response/
-  [i] Reference: https://www.cisa.gov/uscert/ics/advisories/aa22-103a
-  [i] Reference: https://attack.mitre.org/matrices/ics/
+  ICS Kill Chain (Dragos / Assante-Lee 2015)
+  Reference: https://dragos.com/resource/ics-kill-chain/
+  ══════════════════════════════════════════════════════════════════════
+
+  Stage 1: Recon
+  ──────────────────────────────────────────────────────────────────────
+  Description: External reconnaissance of exposed OT assets and targeting
+  Attacker Actions:
+    - OSINT on utility/industrial company (LinkedIn, job postings)
+    - Shodan/Censys scan for internet-facing OT ports (502, 102, 4840, etc.)
+    - ICS-CERT advisory review for unpatched vulnerabilities
+    - Social engineering for employee information
+    - Vendor supply chain mapping
+  IXF Coverage: scanners/ics/*, discover command, cve-scan workflow
+  MITRE ICS: T0883 (Internet Accessible Device), T0808 (Control Device Identification)
+  Defensive: Remove OT assets from internet; implement network scanning alerts
+
+  Stage 2: Weaponization
+  ──────────────────────────────────────────────────────────────────────
+  Description: Development or acquisition of ICS-specific attack capability
+  Attacker Actions:
+    - Develop or purchase ICS protocol exploits (Modbus, DNP3, S7comm)
+    - Acquire OT malware (Industroyer, Triton framework components)
+    - Develop custom payload for specific vendor/device
+    - Build or acquire supply chain injection capability
+    - Prepare spear-phishing documents with ICS themes
+  IXF Coverage: cve/* modules, exploits/protocols/* (simulate), malware TTP replicas
+  MITRE ICS: T0854 (Spearphishing), T0862 (Supply Chain Compromise)
+  Defensive: Threat intelligence sharing; vendor security partnerships
+
+  Stage 3: Delivery
+  ──────────────────────────────────────────────────────────────────────
+  Description: Delivery of weaponized payload to target environment
+  Attacker Actions:
+    - Spearphishing email to engineering/operations staff
+    - Compromised VPN credentials for remote access (T0822)
+    - Supply chain compromise (vendor update, hardware implant)
+    - USB/removable media (T0847) — especially in air-gapped environments
+    - Watering hole attack on ICS vendor/conference websites
+  IXF Coverage: assessment/threat_intel/ics_kill_chain; ttp T0854
+  MITRE ICS: T0822 (External Remote Services), T0847 (Replication via Removable Media)
+  Defensive: Email filtering; MFA for VPN; USB policy enforcement; supply chain vetting
+
+  Stage 4: Exploitation
+  ──────────────────────────────────────────────────────────────────────
+  Description: Exploit vulnerabilities to gain initial IT/OT foothold
+  Attacker Actions:
+    - Exploit unpatched vulnerability in internet-facing system (T0819)
+    - Leverage exposed OPC DA/UA endpoint for initial access
+    - Use default or brute-forced credentials (T0812, T0859)
+    - Exploit OT-specific CVE (Siemens S7, Rockwell ControlLogix, etc.)
+  IXF Coverage: cve/* (350+ CVE modules), creds/*, exploits/protocols/*
+  MITRE ICS: T0819 (Exploit Public-Facing), T0812 (Default Credentials)
+  Defensive: Patch management; remove default credentials; network monitoring
+
+  Stage 5: Installation (Lateral Movement to OT)
+  ──────────────────────────────────────────────────────────────────────
+  Description: Move from IT environment into OT/ICS network
+  Attacker Actions:
+    - Move from compromised IT workstation to engineering workstation
+    - Exploit Purdue Level 3→2 segmentation gaps
+    - Use legitimate remote access tools (MSTSC, RDP to HMI)
+    - Install persistence on OT jump server/historian
+    - Abuse OPC DA tunnel between Level 3 and Level 2
+  IXF Coverage: assessment/network/ics_firewall_audit; ttp T0843
+  MITRE ICS: T0820 (Exploitation Remote Services), T0867 (Lateral Tool Transfer)
+  Defensive: Strict firewall rules; monitor lateral movement; OT jump server logging
+
+  Stage 6: C2 Installation (OT Command and Control)
+  ──────────────────────────────────────────────────────────────────────
+  Description: Establish persistent OT-side command and control
+  Attacker Actions:
+    - Deploy Industroyer-style C2 module on OT server
+    - Establish covert channel via ICMP tunneling through firewall
+    - Use legitimate ICS protocol (OPC UA, Modbus) as C2 carrier
+    - Install rootkit on HMI workstation (T0851)
+    - Establish scheduled task for persistence on OT workstation
+  IXF Coverage: cve/malware/* (Industroyer modules), ttp T0851, T0869
+  MITRE ICS: T0884 (Connection Proxy), T0885 (Commonly Used Port), T0851 (Rootkit)
+  Defensive: Application whitelisting on HMIs; outbound OT traffic monitoring
+
+  Stage 7: Execution (ICS Payload Delivery)
+  ──────────────────────────────────────────────────────────────────────
+  Description: Delivery of ICS-specific attack payload to field devices
+  Attacker Actions:
+    - Use Industroyer/CrashOverride IEC 104 module to send TRIP commands
+    - Upload modified PLC program (T0843) to overwrite safety logic
+    - Use FrostyGoop-style Modbus attack to modify setpoints
+    - Disable safety systems via Triton/TRISIS-style attack
+    - Trigger PLC logic bomb (pre-planted in earlier phase)
+    - Use EKANS-style process killer to disable HMI/historian first
+  IXF Coverage: cve/malware/* (all malware modules), exploits/protocols/*
+  MITRE ICS: T0836 (Modify Parameter), T0855 (Unauthorized Command), T0838, T0836
+  Defensive: OT anomaly detection; PLC logic integrity monitoring; safety system isolation
+
+  Stage 8: Impact
+  ──────────────────────────────────────────────────────────────────────
+  Description: Achieve physical disruption, damage, or sustained control
+  Attacker Actions:
+    - Trigger physical process disruption (power outage, heating failure, water contamination)
+    - Cause physical equipment damage (centrifuge destruction — Stuxnet model)
+    - Wipe SCADA workstations (KillDisk) to delay recovery
+    - Suppress alarms to extend impact duration (T0838, T0878)
+    - Deny view to operators — spoof sensor readings (T0832, T0856)
+  IXF Coverage: cve/malware/*, assessment modules, full TTP sweep
+  MITRE ICS: T0837 (Loss of Safety), T0879 (Damage to Property), T0826-T0829 (Loss of...)
+  Defensive: Segmentation; backup/recovery; independent safety monitoring; incident response
+
+  ══════════════════════════════════════════════════════════════════════
 ```
 
 ---
 
-## IR Playbook — All Phases with Actions
+## IR Playbook — All 5 Phases
 
 ```
 ixf > assess ir/iacs_ir_playbook
-[*] ICS/OT Incident Response Playbook...
-
-  ICS/OT Incident Response Playbook
-  ══════════════════════════════════════════════════════════════════════
-  Framework: NIST SP 800-61r2 + ICS-specific adaptations
-             CISA IACS Cyber Incident Response guidance
-             Dragos ICS Incident Response Playbook
-  ══════════════════════════════════════════════════════════════════════
-
-  Phase 1: DETECTION
-  ──────────────────────────────────────────────────────────────────────
-  Priority     Action                                        Owner
-  IMMEDIATE    Monitor OT network for Modbus FC anomalies    SOC/ICS analyst
-  IMMEDIATE    Check for unexpected PLC program changes       OT engineer
-  IMMEDIATE    Review historian for out-of-band tag writes    Process engineer
-  IMMEDIATE    Check for unexpected remote access sessions    IT/OT security
-  IMMEDIATE    Review active alarm states — suppression?      Operations
-  HIGH         Correlate OT events with IT security alerts    SIEM analyst
-  HIGH         Check for HMI process screenshot exfiltration  DLP/SIEM
-  HIGH         Verify engineering workstation integrity        IT security
-  HIGH         Check field device logs (S7, Modbus, DNP3)     OT engineer
-  Indicators:  Unexplained setpoint changes, mass alarm silence,
-               bulk FC03 reads from non-engineering IPs, PLC CPU errors.
-
-  Phase 2: CONTAINMENT
-  ──────────────────────────────────────────────────────────────────────
-  Priority     Action                                        Owner        Timeline
-  IMMEDIATE    Isolate compromised network segment            Network ops   <1 hour
-  IMMEDIATE    Block confirmed attacker IP at perimeter       IT security   <30 min
-  IMMEDIATE    Disable compromised user accounts              IT/OT admin   <30 min
-  HIGH         Enable manual control mode for affected PLCs   Operations    <2 hours
-  HIGH         Verify safety system is operating correctly    Safety Eng    <1 hour
-  HIGH         Disconnect affected engineering workstations   IT security   <1 hour
-  HIGH         Revoke active VPN/remote sessions              IT security   <30 min
-  MEDIUM       Alert control room operators to manual mode    Operations    <2 hours
-  MEDIUM       Notify management and legal                    CISO/Legal    <4 hours
-  MEDIUM       Notify CISA/relevant regulatory body           CISO          <24 hours
-  Caution:     Do NOT power off PLCs without operations approval.
-               Always coordinate with process engineers before isolation.
-               Consider safety impact of containment actions.
-
-  Phase 3: EVIDENCE PRESERVATION
-  ──────────────────────────────────────────────────────────────────────
-  Priority     Action                                        Owner        Timeline
-  IMMEDIATE    Upload and hash PLC programs (before restore)  OT engineer   <2 hours
-  IMMEDIATE    Capture historian data (before overwrite)      OT engineer   <2 hours
-  HIGH         Image engineering workstation disks            Forensics     <4 hours
-  HIGH         Preserve firewall and switch logs              Network ops   <2 hours
-  HIGH         Preserve SIEM/SOC logs (extend retention)      SOC analyst   <2 hours
-  HIGH         Photograph physical device states              OT engineer   <2 hours
-  HIGH         Document all observable indicators             Incident lead <4 hours
-  MEDIUM       Capture network traffic (if not already pcap)  Network ops   <2 hours
-  MEDIUM       Preserve memory dumps from compromised hosts   Forensics     <4 hours
-
-  Phase 4: ERADICATION AND RECOVERY
-  ──────────────────────────────────────────────────────────────────────
-  Priority     Action                                        Owner        Timeline
-  CRITICAL     Compare PLC program to known-good backup hash  OT engineer   <4 hours
-  CRITICAL     Restore PLC programs from verified backup      OT engineer   <4 hours
-  CRITICAL     Reset all OT credentials (rotate all)          IT/OT admin   <4 hours
-  HIGH         Rebuild compromised engineering workstations   IT support    <8 hours
-  HIGH         Patch exploited vulnerabilities (if known)     IT/OT eng    <1 week
-  HIGH         Verify historian integrity vs backup           OT engineer   <8 hours
-  MEDIUM       Reset network switch configurations            Network ops   <8 hours
-  MEDIUM       Verify all remote access paths (deactivate)    IT security   <8 hours
-  MEDIUM       Deploy enhanced monitoring (temporary NDR)     SOC analyst   <24 hours
-
-  Phase 5: POST-INCIDENT ACTIVITIES
-  ──────────────────────────────────────────────────────────────────────
-  Priority     Action                                        Owner        Timeline
-  HIGH         Update firewall rules based on attack path     Network ops   <1 week
-  HIGH         Review and revoke unnecessary OT credentials   IT/OT admin   <1 week
-  HIGH         Complete ICS-specific incident report          Incident lead <2 weeks
-  HIGH         Notify affected parties / regulatory bodies    Legal/CISO   <1 week
-  MEDIUM       Conduct IR tabletop with operations team       CISO         <1 month
-  MEDIUM       Update ICS IR procedures based on lessons      Incident lead <1 month
-  MEDIUM       Brief ICS vendor(s) on vulnerability           OT engineer   <2 weeks
-  LOW          Share indicators with ISAC (sector-specific)   CISO         <1 month
-  LOW          Update threat model with new TTPs observed      Security arch <1 month
-
-  [Sector-Specific Guidance]
-  ──────────────────────────────────────────────────────────────────────
-  Energy Sector:    Protect protection relays and EMS/SCADA first.
-                    IEC 61850 GOOSE suppression can cause cascading failures.
-                    Coordinate with grid operator before any system isolation.
-
-  Water/Wastewater: Protect dosing controls (chlorine, chemical feed) above all.
-                    Isolation may impact public health — coordinate with authority.
-
-  Oil and Gas:      Protect RTUs, pipeline compressor controllers, LACT units.
-                    Pressure safety: verify SIS independence before isolation.
-
-  Manufacturing:    Protect PLCs, MES, historian, robot controllers.
-                    Coordinate downtime windows — unplanned stops have cost impact.
+[*] Running ICS Incident Response Playbook...
 
   ══════════════════════════════════════════════════════════════════════
-  [i] Reference: https://www.cisa.gov/sites/default/files/publications/CISA_MS-ISAC_Ransomware_Guide.pdf
-  [i] Reference: https://www.dragos.com/ics-incident-response/
+  IACS Incident Response Playbook (NIST 800-61 + ICS CERT)
+  ══════════════════════════════════════════════════════════════════════
+
+  Phase 1: Preparation
+    Actions:
+      - Establish OT-specific IR team (operations, IT security, vendor support contacts)
+      - Pre-position forensic tools (Wireshark, network tap, USB forensic kits)
+      - Document baseline PLC programs and firmware checksums
+      - Establish out-of-band communication (satellite phone, radio if needed)
+      - Pre-define escalation path: CISO → CISA ICS-CERT → FBI Cyber Division
+      - Conduct quarterly tabletop exercises with OT scenario (e.g., ransomware on HMI)
+
+  Phase 2: Detection and Analysis
+    Actions:
+      - Identify anomalies in OT network traffic (protocol deviation, unusual timing)
+      - Collect PLC audit logs (program download events, CPU mode changes)
+      - Compare current PLC program hash to baseline (detect logic modifications)
+      - Capture network traffic for forensic analysis (full packet capture, 7-day retention)
+      - Correlate OT events with IT security events (EDR, SIEM)
+      - Classify incident severity: Information Event | Operational Disruption | Safety Event
+      - IXF: Run mitre-scan discovery on affected segments to map attacker techniques
+
+  Phase 3: Containment
+    Actions:
+      - Isolate affected OT segments (physically disconnect compromised controllers if safe)
+      - Switch to manual operations where possible (prevent further automated damage)
+      - Preserve forensic evidence BEFORE remediation (memory dumps, disk images)
+      - Block attacker C2 channels (DNS sinkholes, firewall blocks on identified IPs)
+      - Notify operations manager: do NOT shut down process without safety review
+      - Activate out-of-band monitoring (bypass compromised SCADA for visibility)
+      - Physical inspection of field devices if CATASTROPHIC impact suspected
+
+  Phase 4: Eradication and Recovery
+    Actions:
+      - Restore PLC programs from verified offline backup
+      - Reset all credentials (PLC, HMI, historian, VPN, OT admin accounts)
+      - Rebuild compromised HMI/SCADA workstations from known-good images
+      - Apply all available patches and firmware updates (vendor-approved)
+      - Verify physical process parameters before restoring automated control
+      - Conduct independent safety review before startup (SIS functional test)
+      - Staged restoration: field devices → controllers → SCADA → integration
+      - Document root cause and attack timeline
+
+  Phase 5: Post-Incident Activity
+    Actions:
+      - Complete incident report (CISA ICS-CERT notification within 1 hour of discovery)
+      - Lessons learned meeting within 2 weeks
+      - Update OT asset inventory based on findings
+      - Implement detection improvements (new SIEM rules, IDS signatures)
+      - Conduct vendor notification if supply chain suspected
+      - Executive brief with board/C-suite if operational impact significant
+      - Update IR playbook with lessons learned
+      - IXF: Document MITRE techniques used; update mitre-report layer for SOC
+
+  ══════════════════════════════════════════════════════════════════════
 ```
 
 ---
@@ -581,68 +504,34 @@ ixf > assess ir/iacs_ir_playbook
 ## OPC UA Security Audit — Full Output
 
 ```
-ixf > use assessment/protocols/opcua_security_audit
-ixf > set target 192.168.1.100
-ixf > run
-
-  OPC UA Server Security Assessment — 192.168.1.100:4840
-  ══════════════════════════════════════════════════════════════════════
-  Protocol:  OPC Unified Architecture (OPC UA)
-  Reference: OPC Foundation Security Model Part 2
-             IEC 62541 (OPC UA specification)
-  ══════════════════════════════════════════════════════════════════════
-
-  [Authentication and Encryption — OPC UA Security Mode]
-  ──────────────────────────────────────────────────────────────────────
-  Check                              Result    Priority  Notes
-  SecurityMode=None endpoints        MANUAL    CRITICAL  Check if server exposes None-mode endpoint
-  Anonymous user identity            MANUAL    CRITICAL  Test: opc.tcp://host:4840 with no token
-  Certificate validation (client)    MANUAL    HIGH      Verify server rejects untrusted certs
-  Certificate expiry check           MANUAL    HIGH      Server cert must not be expired or self-signed
-  Message security policy            MANUAL    HIGH      Must be Basic256Sha256 or Aes256_Sha256_RsaPss
-  Endpoint encryption                MANUAL    HIGH      SignAndEncrypt required for prod environments
-  Password in UserToken              MANUAL    HIGH      UserNameIdentityToken: passwords hashed?
-  X.509 certificate authentication   MANUAL    MEDIUM    Prefer cert-based auth over username/password
-
-  [Access Control — OPC UA Role Model]
-  ──────────────────────────────────────────────────────────────────────
-  Check                              Result    Priority  Notes
-  Anonymous browse restriction       MANUAL    HIGH      Browse namespace only with auth
-  Write without authentication       MANUAL    CRITICAL  Test: unauthenticated variable write
-  Role-based access control          MANUAL    HIGH      OPC UA 1.05 WellKnownRole implemented
-  Method call authorization          MANUAL    HIGH      Method calls require Operator role+
-  Subscription to sensitive tags     MANUAL    MEDIUM    Limit who can subscribe to process values
-  History read authorization         MANUAL    MEDIUM    Historian access requires separate role
-
-  [Discovery and Information Disclosure]
-  ──────────────────────────────────────────────────────────────────────
-  Check                              Result    Priority  Notes
-  Discovery endpoint exposure        MANUAL    MEDIUM    Restrict GetEndpoints to authorized clients
-  Server namespace information       MANUAL    LOW       Namespace URIs reveal vendor/product
-  Server diagnostic data             MANUAL    MEDIUM    Disable ServerDiagnostics in production
-  Application name disclosure        MANUAL    LOW       Application name may reveal software stack
-
-  [Transport and Network]
-  ──────────────────────────────────────────────────────────────────────
-  Check                              Result    Priority  Notes
-  OPC UA over WebSocket (OPC UA/WS)  MANUAL    HIGH      Verify TLS required for WS transport
-  Session timeout configuration      MANUAL    MEDIUM    Short session timeout (< 30 minutes)
-  Secure channel lifetime            MANUAL    MEDIUM    Renew secure channel before expiry
-  DOS protection (session limit)     MANUAL    MEDIUM    Max concurrent sessions configured
-
-  [Known OPC UA Vulnerabilities]
-  ──────────────────────────────────────────────────────────────────────
-  CVE               CVSS  Check
-  CVE-2023-27321    9.8   OPC UA .NET Classic stack heap overflow
-  CVE-2022-2476     7.5   OPC UA open62541 infinite loop DoS
-  CVE-2021-40142    7.5   OPC UA .NET Standard NULL dereference
-  CVE-2019-13555    9.1   Unified Automation OPC UA C++ stack RCE
-  ──────────────────────────────────────────────────────────────────────
-  [i] Run ixf search OPC-UA to see available exploit modules
+ixf > assess protocols/opcua_security_audit
+[*] Loading assessment/protocols/opcua_security_audit...
 
   ══════════════════════════════════════════════════════════════════════
-  [i] Reference: https://opcfoundation.org/developer-tools/specifications-unified-architecture/part-2-security-model/
-  [i] Tool: Wireshark OPC UA dissector, UAExpert (OPC Foundation client)
+  OPC UA Security Audit (IEC 62541 / OPC Foundation)
+  ══════════════════════════════════════════════════════════════════════
+
+  [OPC UA Security Architecture Checks]
+  ──────────────────────────────────────────────────────────────────────
+  Check                                        Status    Notes
+  SecurityMode=None prohibited                  REVIEW   Check all endpoints
+  SecurityMode=Sign enforced (minimum)          REVIEW   Requires valid certificates
+  SecurityMode=SignAndEncrypt preferred          REVIEW   For sensitive process data
+  Certificate validation (trust list)           REVIEW   No self-signed in production
+  Anonymous user policy disabled                REVIEW   Require username+password at min
+  Certificate-based authentication preferred    REVIEW   Better than username+password
+  UserToken: X509 certificate (not just username) REVIEW Implement PKI for OPC UA clients
+  Session timeout configured                    REVIEW   Idle sessions expire (< 1 hour)
+  Audit event logging (SecurityAuditEvent)      REVIEW   AuditEventType logged to SIEM
+  OPC UA reverse connect (server-initiates)     REVIEW   Avoid if possible (C2 risk)
+  OPC UA Pub/Sub authentication                 REVIEW   UADP with signing enabled
+  Firewall restricts port 4840                  REVIEW   Only approved OPC UA clients
+  ──────────────────────────────────────────────────────────────────────
+  Reference: OPC UA Security Part 2 (IEC 62541-2)
+  Test commands:
+    nmap -sV -p 4840 --script opcua-info <target>
+    python -m opcua.tools.cmd discover opc.tcp://<target>:4840
+  ══════════════════════════════════════════════════════════════════════
 ```
 
 ---
@@ -651,49 +540,33 @@ ixf > run
 
 ```
 ixf > assess protocols/dnp3_security_audit
-
-  DNP3 Secure Authentication v5 Assessment
-  ══════════════════════════════════════════════════════════════════════
-  Protocol:  DNP3 (Distributed Network Protocol 3) — ANSI/IEEE Std 1815-2012
-  Reference: IEC 62351-5 (Security for DNP3 over TCP/IP)
-             IEEE Std 1815-2012 DNP3 specification
-  ══════════════════════════════════════════════════════════════════════
-
-  [DNP3 Secure Authentication (SAv5)]
-  ──────────────────────────────────────────────────────────────────────
-  Check                              Result    Priority  Notes
-  SAv5 challenge-response enabled    MANUAL    CRITICAL  Per IEC 62351-5 requirement
-  Replay protection (seq numbers)    MANUAL    CRITICAL  Unique session keys prevent replay
-  Application seq number validation  MANUAL    HIGH      Application layer seq enforced
-  HMAC algorithm                     MANUAL    HIGH      Must be HMAC-SHA-256 (not MD5)
-  Key change interval                MANUAL    HIGH      Session keys rotated < 15 min
-  Unauthorized control commands      MANUAL    CRITICAL  Test control without valid SAv5
-  User role-based authorization      MANUAL    HIGH      SAv6 user roles: Viewer/Operator/Engineer
-
-  [DNP3 Data Link and Application Layer]
-  ──────────────────────────────────────────────────────────────────────
-  Check                              Result    Priority  Notes
-  Data link CRC validation           MANUAL    MEDIUM    CRC errors detect frame tampering
-  Application layer timeout          MANUAL    MEDIUM    Enforce response timeout for controls
-  Broadcast message acceptance       MANUAL    HIGH      Disable broadcast control acceptance
-  Direct operate without confirm     MANUAL    HIGH      Require confirm for critical controls
-  Unsolicited response flooding      MANUAL    MEDIUM    Rate-limit unsolicited responses
-  Time synchronization (IIN bit 4)   MANUAL    LOW       RTU requests time sync when needed
-
-  [DNP3 Known Vulnerabilities]
-  ──────────────────────────────────────────────────────────────────────
-  CVE               CVSS  Check
-  CVE-2019-10979    9.8   Triangle Microworks DNP3 master stack overflow
-  CVE-2022-1385     8.1   Schneider EcoStruxure DNP3 auth bypass
-  CVE-2021-33012    8.6   Wireshark DNP3 dissector crash (DoS)
-  ──────────────────────────────────────────────────────────────────────
-  [i] ICS-ALERT-14-281-01B: DNP3 implementations without authentication
-  [i] Run ixf search DNP3 to see available exploit modules
+[*] Loading assessment/protocols/dnp3_security_audit...
 
   ══════════════════════════════════════════════════════════════════════
-  [i] Reference: https://ieeexplore.ieee.org/document/6327898 (IEEE 1815-2012)
-  [i] Reference: https://ics-cert.us-cert.gov/alerts/ICS-ALERT-14-281-01B
-  [i] Tool: ixf use exploits/protocols/dnp3/dnp3_auth_bypass for test modules
+  DNP3 Security Authentication v5 (SAv5) Audit
+  Reference: IEEE 1815 Annex D (DNP3 Security Authentication)
+  ══════════════════════════════════════════════════════════════════════
+
+  [DNP3 Protocol Security Checks]
+  ──────────────────────────────────────────────────────────────────────
+  Check                                        Status    Notes
+  DNP3 without SAv5 in use                     REVIEW   DNP3 has NO auth by default
+  SAv5 enabled on master and outstation        REVIEW   Both endpoints must support SAv5
+  Pre-shared key management (Update Key)       REVIEW   Keys rotated per NIST 800-133
+  HMAC algorithm: SHA-256 (not SHA-1)          REVIEW   SHA-1 deprecated in SAv5
+  Challenge-response replay protection         REVIEW   Timestamps + sequence numbers
+  Critical ASDU authentication enforced        REVIEW   All DIRECT OPERATE commands auth'd
+  Aggressive mode configured (performance)     REVIEW   For trusted links only
+  Port 20000 access restricted                 REVIEW   Firewall permits only masters
+  DNP3 secure authentication in SCADA          REVIEW   HMI/master supports SAv5
+  Routable DNP3 (TCP) preferred over serial    REVIEW   Serial harder to intercept
+  ──────────────────────────────────────────────────────────────────────
+  Key Facts:
+  - DNP3 without SAv5 has NO authentication — any device on the network can send commands
+  - CosmicEnergy (2023) exploited unauthenticated DNP3 for grid switching
+  - SAv5 provides HMAC-based message authentication; requires key pre-provisioning
+  Reference: IEEE 1815, NERC CIP-005, NERC CIP-007
+  ══════════════════════════════════════════════════════════════════════
 ```
 
 ---
@@ -702,61 +575,39 @@ ixf > assess protocols/dnp3_security_audit
 
 ```
 ixf > assess protocols/iec61850_security_audit
-
-  IEC 61850 Substation Automation Security Assessment
-  ══════════════════════════════════════════════════════════════════════
-  Protocol:  IEC 61850 — Communication Networks and Systems in Substations
-  Reference: IEC 62351-6 (Security for IEC 61850)
-             IEC 62351-8 (RBAC for power systems management)
-  ══════════════════════════════════════════════════════════════════════
-
-  [GOOSE — Generic Object Oriented Substation Events]
-  ──────────────────────────────────────────────────────────────────────
-  Check                              Result    Priority  Notes
-  GOOSE authentication (62351-6)     MANUAL    CRITICAL  HMAC-SHA-256 on all GOOSE frames
-  GOOSE multicast spoofing           MANUAL    CRITICAL  Unsigned GOOSE can be replayed/spoofed
-  GOOSE replay attack protection     MANUAL    CRITICAL  StNum + SqNum must be validated
-  GOOSE subscription authorization   MANUAL    HIGH      IEDs filter by AppID + VLAN
-  GOOSE VLANs (IEC 61850-8-1)       MANUAL    HIGH      Process bus VLAN isolated from corp
-
-  [MMS — Manufacturing Message Specification]
-  ──────────────────────────────────────────────────────────────────────
-  Check                              Result    Priority  Notes
-  MMS authentication                 MANUAL    CRITICAL  ISO 9506: Association required
-  TLS for MMS-over-TCP               MANUAL    HIGH      IEC 62351-3: TLS 1.2+ for MMS
-  Certificate-based MMS auth        MANUAL    HIGH      Replace password with cert auth
-  MMS write authorization            MANUAL    CRITICAL  RBAC enforced for control writes
-  Anonymous MMS browse               MANUAL    HIGH      IED namespace not world-readable
-  MMS logging                        MANUAL    MEDIUM    All MMS writes logged to SIEM
-
-  [SAMPLED VALUES — SV]
-  ──────────────────────────────────────────────────────────────────────
-  Check                              Result    Priority  Notes
-  SV integrity protection            MANUAL    HIGH      IEC 62351-6 HMAC for SV frames
-  SV replay detection                MANUAL    HIGH      SmpCnt validation prevents replay
-  Process bus segmentation           MANUAL    HIGH      SV traffic isolated to process bus
-
-  [IED and Station Network]
-  ──────────────────────────────────────────────────────────────────────
-  Check                              Result    Priority  Notes
-  Station bus / bay bus / process bus MANUAL   HIGH      Three-level network hierarchy enforced
-  IED firmware integrity             MANUAL    HIGH      Firmware hash verification before deploy
-  Configuration file signing (SCD)   MANUAL    HIGH      SCL file signed before distribution
-  SCL configuration access control   MANUAL    MEDIUM    SCD/CID files write-protected
-
-  [Known IEC 61850 Vulnerabilities]
-  ──────────────────────────────────────────────────────────────────────
-  CVE               CVSS  Check
-  CVE-2021-26266    9.8   ABB MMS server buffer overflow
-  CVE-2019-13556    9.1   Siemens SICAM A8000 MMS auth bypass
-  CVE-2018-10963    7.5   Siemens SINAUT spectrum GOOSE injection
-  ──────────────────────────────────────────────────────────────────────
-  [i] Industroyer/Crashoverride used IEC 61850 MMS for substation attack (2016)
-  [i] Run ixf search IEC-61850 to see available exploit modules
+[*] Loading assessment/protocols/iec61850_security_audit...
 
   ══════════════════════════════════════════════════════════════════════
-  [i] Reference: https://www.iec.ch/iec61850
-  [i] Reference: IEC 62351-6: Security for IEC 61850 profile
+  IEC 61850 Security Audit (IEC 62351 Extensions)
+  ══════════════════════════════════════════════════════════════════════
+
+  [GOOSE Security (IEC 62351-6)]
+  ──────────────────────────────────────────────────────────────────────
+  Check                                        Status    Notes
+  GOOSE authentication (HMAC-SHA256)           REVIEW   IEC 62351-6 GOOSE auth
+  GOOSE multicast VLAN isolation               REVIEW   Switch-level filtering
+  GOOSE StNum replay protection                REVIEW   Monitor StNum sequence
+  GOOSE publisher authentication               REVIEW   Source IED authenticated
+  Rogue GOOSE detection                        REVIEW   Network tap + IDS rule
+
+  [MMS Security (IEC 62351-3/4)]
+  ──────────────────────────────────────────────────────────────────────
+  Check                                        Status    Notes
+  MMS over TLS (IEC 62351-3)                   REVIEW   Port 102 with TLS negotiation
+  Client certificate authentication            REVIEW   X.509 certs for MMS clients
+  RBAC for MMS (IEC 62351-8)                   REVIEW   Role-Based Access Control
+  MMS read restriction                         REVIEW   Non-operator restricted from reads
+  MMS write restriction                        REVIEW   Only authorized engineering clients
+
+  [Station Bus]
+  ──────────────────────────────────────────────────────────────────────
+  SCL file (SCD/CID) access control           REVIEW   IED config files protected
+  IED management access                        REVIEW   SSH with cert auth; no Telnet
+  Sampled Values (SVs) authentication          REVIEW   IEC 62351-6 SV auth
+  Station bus VLAN isolation                   REVIEW   Separate VLAN from process bus
+  ──────────────────────────────────────────────────────────────────────
+  Reference: IEC 61850 / IEC 62351 | NERC CIP for substations
+  ══════════════════════════════════════════════════════════════════════
 ```
 
 ---
@@ -765,62 +616,45 @@ ixf > assess protocols/iec61850_security_audit
 
 ```
 ixf > assess network/ics_firewall_audit
-
-  ICS/OT Firewall and Network Segmentation Audit
-  ══════════════════════════════════════════════════════════════════════
-  Framework: NIST SP 800-82r3 (SC-7), IEC 62443-3-3 (SR 5.1, SR 5.2)
-             CISA ICS Recommended Practices
-  ══════════════════════════════════════════════════════════════════════
-
-  [IT/OT Boundary Firewall]
-  ──────────────────────────────────────────────────────────────────────
-  Check                   Result    Priority  Remediation
-  IT/OT segmentation      MANUAL    CRITICAL  Verify stateful firewall at Purdue L3→L2
-  Default deny policy     MANUAL    CRITICAL  All traffic denied by default, explicit allow
-  Protocol whitelisting   MANUAL    HIGH      Only industrial protocols (Modbus, S7, DNP3) in OT
-  Source IP restrictions  MANUAL    HIGH      Only engineering workstation IPs reach PLCs
-  Internet to OT block    MANUAL    CRITICAL  No direct internet to OT systems
-  Historian DMZ placement MANUAL    HIGH      Historian in DMZ, not directly in OT network
-  Remote access VPN       MANUAL    CRITICAL  VPN MFA for all OT remote access
-  Jump server enforcement MANUAL    HIGH      All remote sessions via jump server
-  Firewall logging        MANUAL    HIGH      All firewall events logged to SIEM
-
-  [OT Internal Segmentation]
-  ──────────────────────────────────────────────────────────────────────
-  Check                   Result    Priority  Notes
-  SCADA/HMI isolation     MANUAL    HIGH      SCADA on separate VLAN from PLCs
-  Safety system isolation MANUAL    CRITICAL  SIS on dedicated isolated network
-  Engineering VLAN        MANUAL    HIGH      Engineering workstations on dedicated VLAN
-  Inter-PLC communication MANUAL    MEDIUM    PLC-to-PLC traffic controlled and logged
-  Wireless OT network     MANUAL    HIGH      OT wireless SSID isolated (WPA3-Enterprise)
-
-  [Protocol-Specific Rules]
-  ──────────────────────────────────────────────────────────────────────
-  Protocol        Port    Rule Required                     Notes
-  Modbus TCP      502     Only EWS and SCADA → PLCs         Block port 502 on IT
-  S7comm          102     Only TIA Portal hosts → S7 PLCs   Block from internet
-  EtherNet/IP     44818   Only RSLogix hosts → AB PLCs      Block on perimeter
-  DNP3            20000   SCADA → RTUs only                 No direct internet
-  IEC 104         2404    SCADA/EMS → RTUs only             Critical: EXEC controls
-  OPC UA          4840    SCADA-only → OPC servers          TLS required
-  BACnet/IP       47808   BAS controllers only              Isolate from OT
-  Telnet          23      BLOCK everywhere in OT            Replace with SSH
-  HTTP            80      Block on HMI/PLC interfaces       HTTPS only if needed
-
-  [Firewall Rule Review Indicators]
-  ──────────────────────────────────────────────────────────────────────
-  Finding                          Risk       Recommendation
-  "ANY ANY" rules in OT segment    CRITICAL   Enumerate and replace with explicit rules
-  Bi-directional Modbus rules      HIGH       OT→IT Modbus traffic unnecessary
-  No logging on allow rules        HIGH       Log all permitted OT traffic
-  Overlapping allow rules          MEDIUM     Audit and deduplicate
-  Expired rules (>2 years)         MEDIUM     Review and remove stale rules
-  No change control on rules       MEDIUM     Implement firewall change management
+[*] Running ICS Firewall Audit...
 
   ══════════════════════════════════════════════════════════════════════
-  [i] CISA: https://www.cisa.gov/uscert/ics/recommended-practices
-  [i] NSA/CISA: Stop Bad Practices guide for ICS
-  [i] Tool: Review firewall ACLs manually or with firewall analysis tool
+  ICS Network Firewall Audit
+  Reference: NIST SP 800-82 Rev. 3, IEC 62443
+  ══════════════════════════════════════════════════════════════════════
+
+  [Firewall Rules — Inbound to OT Network]
+  ──────────────────────────────────────────────────────────────────────
+  Rule Check                                   Verdict   Notes
+  Block all from Internet to OT               REVIEW    No OT ports directly internet-facing
+  Block Modbus (502) from IT                   REVIEW    IT should not access OT Modbus
+  Block S7comm (102) from IT                   REVIEW    Only engineering workstations
+  Block EtherNet/IP (44818) from IT            REVIEW    Only approved SCADA clients
+  Block DNP3 (20000) from untrusted masters    REVIEW    Master whitelist enforced
+  Block OPC UA (4840) from internet            REVIEW    Never internet-exposed
+  Block telnet (23) completely                 REVIEW    No Telnet in OT zones
+  Block SNMP public (161) from IT/internet     REVIEW    SNMP community = private/SNMPv3
+  Allow historian read from Level 3→Level 2    REVIEW    One-way data flow preferred
+  Allow engineering WS (specific IP) to PLCs  REVIEW    Source IP whitelist only
+  Block RDP (3389) to OT from all             REVIEW    Use OT jump server instead
+  Log ALL denied traffic                       REVIEW    Firewall deny = alert to SIEM
+
+  [North-South Rules (OT to Internet)]
+  ──────────────────────────────────────────────────────────────────────
+  Rule Check                                   Verdict   Notes
+  Block outbound from PLCs/RTUs                REVIEW    Field devices should not egress
+  Block outbound from SCADA to internet        REVIEW    SCADA has no legitimate internet need
+  Allow SIEM log forwarding (syslog/514)       REVIEW    Outbound syslog to central SIEM
+  Allow NTP (123) to approved NTP servers      REVIEW    OT NTP server preferred
+  Block SMB (445) outbound from OT             REVIEW    NotPetya spread prevention
+  Block DNS from OT to internet                REVIEW    Use internal DNS resolver only
+
+  [Anomalous Protocol Checks]
+  ──────────────────────────────────────────────────────────────────────
+  ICMP restricted (no ICMP flood)              REVIEW    Echo request/reply limited
+  GRE tunnels blocked                          REVIEW    C2 tunnel prevention
+  HTTP/HTTPS from PLCs/RTUs blocked            REVIEW    No cloud connectivity from field
+  ══════════════════════════════════════════════════════════════════════
 ```
 
 ---
@@ -829,278 +663,373 @@ ixf > assess network/ics_firewall_audit
 
 ```
 ixf > assess network/industrial_network_assessment
-
-  Industrial Network Infrastructure Assessment
-  ══════════════════════════════════════════════════════════════════════
-  Framework: NIST SP 800-82r3, IEC 62443-3-3, ISA-99
-             SANS ICS Network Security Architecture guidelines
-  ══════════════════════════════════════════════════════════════════════
-
-  [Network Architecture]
-  ──────────────────────────────────────────────────────────────────────
-  Check                    Result    Priority  Notes
-  Purdue model compliance  MANUAL    HIGH      Network matches Purdue/ISA-99 hierarchy
-  Flat network topology    MANUAL    CRITICAL  Detect flat network — enables east-west pivot
-  Network diagrams current MANUAL    MEDIUM    Network diagrams updated < 6 months ago
-  Asset inventory          MANUAL    HIGH      All OT assets in inventory (Purdue level noted)
-  IP address management    MANUAL    MEDIUM    Static IPs for critical OT devices
-
-  [Network Devices]
-  ──────────────────────────────────────────────────────────────────────
-  Check                    Result    Priority  Notes
-  Unmanaged switches       MANUAL    HIGH      No unmanaged switches in OT — no visibility
-  Switch firmware patches  MANUAL    HIGH      Switch firmware patched within 1 year
-  Port security            MANUAL    HIGH      MAC address filtering on OT switch ports
-  SNMP community strings   MANUAL    HIGH      Check: not "public" or "private"
-  SNMP version             MANUAL    HIGH      SNMPv3 with auth/priv (no v1/v2c in OT)
-  Telnet/HTTP management   MANUAL    CRITICAL  Disable insecure management on all switches
-  SSH for switch access    MANUAL    HIGH      SSHv2 with key auth for switch management
-  VLANs configured         MANUAL    HIGH      Separate VLANs: OT, engineering, safety, mgmt
-  Spanning tree attacks    MANUAL    MEDIUM    BPDU Guard on access ports
-
-  [Routing and WAN]
-  ──────────────────────────────────────────────────────────────────────
-  Check                    Result    Priority  Notes
-  Routing protocol auth    MANUAL    HIGH      OSPF/BGP MD5/SHA authentication
-  Static routes for OT     MANUAL    MEDIUM    Prefer static routes in OT (no dynamic routing)
-  WAN encryption           MANUAL    HIGH      MPLS VPN or IPSec for OT WAN links
-  Remote site OT access    MANUAL    HIGH      Jump server at each remote OT site
-
-  [Monitoring and Visibility]
-  ──────────────────────────────────────────────────────────────────────
-  Check                    Result    Priority  Notes
-  OT network monitoring    MANUAL    HIGH      NDR deployed (Dragos, Claroty, Nozomi, etc.)
-  ICS traffic baseline     MANUAL    HIGH      Normal Modbus/S7 communication pattern known
-  Anomaly alerting         MANUAL    HIGH      Alerts on new ICS devices or protocols
-  SIEM OT log ingestion    MANUAL    HIGH      OT device logs forwarded to SIEM
-  SPAN/TAP for monitoring  MANUAL    MEDIUM    Passive monitoring preferred for ICS traffic
-  OT SOC coverage          MANUAL    HIGH      24x7 monitoring or escalation to OT-capable team
-
-  [Wireless Networks]
-  ──────────────────────────────────────────────────────────────────────
-  Check                    Result    Priority  Notes
-  OT wireless isolation    MANUAL    HIGH      Dedicated SSID, VLAN-isolated from IT
-  WPA3-Enterprise required MANUAL    HIGH      WPA2-Personal not acceptable for OT
-  Rogue AP detection       MANUAL    HIGH      WIDS configured for OT wireless zone
-  Bluetooth/Zigbee audit   MANUAL    MEDIUM    Field device wireless protocols audited
+[*] Running Industrial Network Assessment...
 
   ══════════════════════════════════════════════════════════════════════
-  [i] Reference: https://www.sans.org/reading-room/whitepapers/ICS/ics-network-architecture-38424
-  [i] Tool: Nmap OT discovery (see IXF NSE scripts), Claroty/Nozomi for NDR
+  Industrial Network Security Assessment
+  ══════════════════════════════════════════════════════════════════════
+
+  [Network Architecture Review]
+  ──────────────────────────────────────────────────────────────────────
+  Check                                        Status    Score
+  Purdue model implemented                     REVIEW    Architecture documented?
+  IT/OT network separation                     REVIEW    Physical or VLAN separation?
+  DMZ between IT and OT                        REVIEW    Historian/jump server in DMZ?
+  OT VLAN per process area                     REVIEW    Production/safety/management VLANs?
+  Unmanaged switches in OT                     REVIEW    All switches managed + VLAN capable?
+  Wireless networks in OT zones                REVIEW    Industrial wireless with WPA3?
+  OT network monitoring/NDR                    REVIEW    Claroty/Nozomi/Dragos deployed?
+  OT asset inventory                           REVIEW    Automated discovery in use?
+
+  [Protocol Security]
+  ──────────────────────────────────────────────────────────────────────
+  Check                                        Status
+  Clear-text OT protocols (Modbus, DNP3)       REVIEW   Accept inherent risk with compensating controls
+  Encrypted OT protocols (OPC UA TLS)          REVIEW   Prefer encrypted where supported
+  Legacy protocols (Telnet, FTP on OT devices) REVIEW   Replace or isolate
+  Protocol-aware firewall rules                REVIEW   DPI for OT protocols (not just ports)
+
+  [Remote Access]
+  ──────────────────────────────────────────────────────────────────────
+  Check                                        Status
+  VPN for all remote OT access                 REVIEW   No direct RDP/SSH from internet
+  MFA enforced for OT VPN                      REVIEW   Hardware token or authenticator app
+  Jump server / bastion for OT access          REVIEW   All sessions via recorded jump server
+  Vendor remote access policy                  REVIEW   Time-limited, monitored, MFA required
+  Session recording (privileged access)        REVIEW   CyberArk/BeyondTrust PAM logging
+
+  [Resilience]
+  ──────────────────────────────────────────────────────────────────────
+  Check                                        Status
+  Redundant network paths for critical PLCs    REVIEW   Ring topology or dual NIC
+  UPS on OT network equipment                  REVIEW   Switches, routers, firewalls
+  Network device configuration backup          REVIEW   Weekly config backup to offline store
+  OT network redundancy test                   REVIEW   Annual failover test performed?
+  ══════════════════════════════════════════════════════════════════════
 ```
 
 ---
 
 ## All 28 MITRE Technique Assessment Modules
 
-All modules are under `assessment/mitre_ics/`. They run in simulate mode by default and provide structured analysis with detection and prevention controls.
+The following assessment modules implement individual MITRE ATT&CK for ICS techniques as simulation/detection assessment:
 
-| # | Module Path | Technique | Tactic | Description |
-|---|------------|-----------|--------|-------------|
-| 1 | `t0800_activate_firmware_update_mode` | T0800 | Persistence | Firmware update mode activation analysis |
-| 2 | `t0801_monitor_process_state` | T0801 | Collection | Process state monitoring for attack staging |
-| 3 | `t0802_automated_collection` | T0802 | Collection | Automated historian and tag data collection |
-| 4 | `t0803_block_command_message` | T0803 | Inhibit Response | Command message blocking analysis |
-| 5 | `t0804_block_reporting_message` | T0804 | Inhibit Response | Reporting message blocking assessment |
-| 6 | `t0805_block_serial_com` | T0805 | Inhibit Response | Serial communication blocking assessment |
-| 7 | `t0806_brute_force_io` | T0806 | Impair Process Control | Brute force I/O forcing assessment |
-| 8 | `t0809_data_destruction` | T0809 | Impact | Data destruction (KillDisk/NotPetya) assessment |
-| 9 | `t0812_default_credentials` | T0812 | Initial Access | Default credential exposure assessment |
-| 10 | `t0813_denial_of_control` | T0813 | Inhibit Response | Denial of control assessment |
-| 11 | `t0814_denial_of_service` | T0814 | Impact | Denial of service against ICS components |
-| 12 | `t0816_device_restart_shutdown` | T0816 | Impact | Device restart and shutdown assessment |
-| 13 | `t0817_drive_by_compromise` | T0817 | Initial Access | Drive-by compromise via ICS vendor portals |
-| 14 | `t0822_external_remote_services` | T0822 | Initial Access | Remote access without MFA assessment |
-| 15 | `t0827_loss_of_control` | T0827 | Impact | Loss of control analysis |
-| 16 | `t0828_loss_of_productivity` | T0828 | Impact | Productivity and revenue loss assessment |
-| 17 | `t0831_manipulation_of_control` | T0831 | Impact | Control manipulation techniques |
-| 18 | `t0836_modify_parameter` | T0836 | Impair Process Control | Setpoint and parameter modification |
-| 19 | `t0839_module_firmware` | T0839 | Persistence | Firmware modification persistence |
-| 20 | `t0840_network_connection_enum` | T0840 | Discovery | Network connection enumeration |
-| 21 | `t0843_program_upload` | T0843 | Collection | PLC program upload exfiltration |
-| 22 | `t0851_rootkit` | T0851 | Evasion | ICS rootkit and evasion techniques |
-| 23 | `t0855_unauthorized_command` | T0855 | Impair Process Control | Unauthorized command injection |
-| 24 | `t0856_spoof_reporting_message` | T0856 | Impair Process Control | Sensor spoofing and data falsification |
-| 25 | `t0857_modify_control_logic` | T0857 | Persistence | PLC control logic modification |
-| 26 | `t0859_valid_accounts` | T0859 | Credential Access | Valid account abuse assessment |
-| 27 | `t0878_alarm_suppression` | T0878 | Inhibit Response | Alarm suppression technique analysis |
-| 28 | `t0880_modify_alarm_settings` | T0880 | Inhibit Response | Alarm setting modification assessment |
-
-**Run any MITRE assessment module:**
-
-```bash
-ixf use assessment/mitre_ics/t0836_modify_parameter
-ixf > set target 192.168.1.100
-ixf > run
-```
-
-**Run all MITRE assessment modules in sequence:**
-
-```bash
-for technique in t0800 t0801 t0802 t0803 t0804 t0805 t0806 t0809 t0812 t0813 \
-                 t0814 t0816 t0817 t0822 t0827 t0828 t0831 t0836 t0839 t0840 \
-                 t0843 t0851 t0855 t0856 t0857 t0859 t0878 t0880; do
-  ixf assess "mitre_ics/${technique}_*" 2>/dev/null || true
-done
-```
+| Module | TID | Technique Name | Tactic |
+|--------|-----|----------------|--------|
+| `assessment/mitre_ics/t0801_monitor_process_state` | T0801 | Monitor Process State | Collection |
+| `assessment/mitre_ics/t0806_brute_force_io` | T0806 | Brute Force I/O | Impair Process Control |
+| `assessment/mitre_ics/t0807_remote_services` | T0807 | Command-Line Interface | Execution |
+| `assessment/mitre_ics/t0820_exploitation_remote` | T0820 | Exploitation of Remote Services | Lateral Movement |
+| `assessment/mitre_ics/t0823_graphical_user` | T0823 | Graphical User Interface | Execution |
+| `assessment/mitre_ics/t0828_loss_of_productivity` | T0828 | Loss of Productivity and Revenue | Impact |
+| `assessment/mitre_ics/t0830_aitm_modbus` | T0830 | Adversary-in-the-Middle | Collection |
+| `assessment/mitre_ics/t0835_manipulate_io` | T0835 | Manipulate I/O Image | Impair Process Control |
+| `assessment/mitre_ics/t0840_network_connection` | T0840 | Network Connection Enumeration | Discovery |
+| `assessment/mitre_ics/t0842_network_sniff` | T0842 | Network Sniffing | Discovery |
+| `assessment/mitre_ics/t0845_program_upload` | T0845 | Program Upload | Collection |
+| `assessment/mitre_ics/t0847_replication_via` | T0847 | Replication via Removable Media | Persistence |
+| `assessment/mitre_ics/t0848_rogue_master` | T0848 | Rogue Master | Impair Process Control |
+| `assessment/mitre_ics/t0851_rootkit` | T0851 | Rootkit | Evasion |
+| `assessment/mitre_ics/t0852_screen_capture` | T0852 | Screen Capture | Collection |
+| `assessment/mitre_ics/t0861_point_and_tag` | T0861 | Point and Tag Identification | Discovery |
+| `assessment/mitre_ics/t0863_user_exec_mali` | T0863 | User Execution Malicious Content | Execution |
+| `assessment/mitre_ics/t0864_transient_cyber` | T0864 | Transient Cyber Asset | Initial Access |
+| `assessment/mitre_ics/t0867_lateral_tool_t` | T0867 | Lateral Tool Transfer | Lateral Movement |
+| `assessment/mitre_ics/t0869_standard_appli` | T0869 | Standard Application Layer Protocol | C2 |
+| `assessment/mitre_ics/t0870_network_sniffi` | T0870 | Network Sniffing | Discovery |
+| `assessment/mitre_ics/t0871_execution_via` | T0871 | Execution via Interpreter | Execution |
+| `assessment/mitre_ics/t0874_hooking` | T0874 | Hooking | Evasion |
+| `assessment/mitre_ics/t0877_io_module_disc` | T0877 | I/O Module Discovery | Discovery |
+| `assessment/mitre_ics/t0878_alarm_suppress` | T0878 | Alarm Suppression | Inhibit Response Function |
+| `assessment/mitre_ics/t0879_damage_to_prop` | T0879 | Damage to Property | Impact |
+| `assessment/mitre_ics/t0881_service_stop` | T0881 | Service Stop | Impact |
+| `assessment/mitre_ics/t0890_exploitation_f` | T0890 | Exploitation for Privilege Escalation | Privilege Escalation |
 
 ---
 
-## Complete Assessment Session — Full Terminal Transcript
+## Complete Assessment Session Transcript
 
-This is a complete run of a full IXF compliance and threat assessment session against a target network:
+A full session using 30+ commands across all assessment areas:
 
 ```
 $ ixf
 
-[*] Indexing modules…
-[+] 976 modules indexed.
+  ___           _           _       _  __  ______  _       ______
+ |_ _|_ __   __| |_   _ ___| |_ _ __(_) \ \/ / _ \| |     |  ___|__  _ __ __ _  ___
+  | || '_ \ / _` | | | / __| __| '__| |  \  /|  __/| |     | |_ / _ \| '__/ _` |/ _ \
+  | || | | | (_| | |_| \__ \ |_| |  | |  /  \| |   | |___  |  _| (_) | | | (_| |  __/
+ |___|_| |_|\__,_|\__,_|___/\__|_|  |_| /_/\_\_|   |_____| |_|  \___/|_|  \__, |\___|
+                                                                              |___/
+  IndustrialXPL-Forge v1.0.13
+  Type 'help' for commands.  simulate=True by default.
 
-ixf > assess iec62443/zone_conduit_audit
+ixf > setg simulate true
+[*] Global: simulate => True
 
-[*] Loading assessment/iec62443/zone_conduit_audit...
-[*] Running IEC 62443 Zone and Conduit Audit...
-
-  IEC 62443 Zone and Conduit Security Audit
-  ══════════════════════════════════════════════════════════════════════
-  [Zone Architecture — SR 5.1]
-  Check                               Result    Priority  Notes
-  IT/OT zone separation               MANUAL    HIGH      Verify Level 3→2 firewall rules
-  Protocol whitelisting (Purdue)      MANUAL    HIGH      Only OT protocols in ICS zone
-  Remote access authentication        MANUAL    HIGH      VPN MFA required for OT zones
-  Jump server / DMZ presence          MANUAL    HIGH      Historian in DMZ, not directly in OT
-  Zone/conduit documentation          MANUAL    MEDIUM    Zones defined in security plan
-  Redundant control path              MANUAL    MEDIUM    Primary/secondary network separation
-  [i] Reference: https://www.isa.org/standards-publications/isa-standards/isa-62443
-  ══════════════════════════════════════════════════════════════════════
-
-ixf > assess nist_sp800_82/control_checklist
-
-[*] Running NIST SP 800-82r3 ICS Security Checklist...
-  [output as shown in NIST section above...]
-
-ixf > assess risk/ics_risk_scorer
-
-[*] ICS Risk Scoring Assessment...
-  [output as shown in Risk Scoring section above...]
-  TOTAL RISK SCORE: 78.25 / 100 → CRITICAL
-
-ixf > assess threat_intel/ics_kill_chain
-
-[*] ICS Kill Chain Analysis...
-  [output as shown in ICS Kill Chain section above...]
-
-ixf > assess ir/iacs_ir_playbook
-
-[*] ICS/OT Incident Response Playbook...
-  [output as shown in IR Playbook section above...]
-
-ixf > use assessment/protocols/opcua_security_audit
-[*] Module loaded: OPC UA Security Audit
-
-ixf > set target 192.168.1.100
-[*] target => 192.168.1.100
-
-ixf > run
-  [output as shown in OPC UA section above...]
-
-ixf > assess protocols/dnp3_security_audit
-  [output as shown in DNP3 section above...]
-
-ixf > assess protocols/iec61850_security_audit
-  [output as shown in IEC 61850 section above...]
-
-ixf > assess network/ics_firewall_audit
-  [output as shown in ICS Firewall section above...]
-
-ixf > assess network/industrial_network_assessment
-  [output as shown in Industrial Network section above...]
-
-ixf > use assessment/mitre_ics/t0843_program_upload
-[*] Module loaded: MITRE T0843 Program Upload — PLC Logic Exfiltration Assessment
-
-ixf > set target 192.168.1.100
-[*] target => 192.168.1.100
-
-ixf > run
-
-  [SIMULATE MODE — no packets sent]
-  ─────────────────────────────────────────────────────────────────────
-  [i] What would happen:
-
-      T0843 Program Upload — Attack Scenario
-
-      Stage 1: Discovery — enumerate S7comm/EIP/Modbus PLCs
-      Stage 2: Access — connect to PLC programming interface
-      Stage 3: Upload — request complete PLC ladder logic program
-      Stage 4: Analysis — identify safety bypass opportunities
-
-  [i] Detection and Prevention Controls:
-  Check                               Control                    Framework
-  Engineering station access control  Require auth for S7comm    IEC 62443 CR 1.1
-  PLC write protection switch         Enable hardware key         NIST AC-3
-  Network segmentation                Engineering VLAN separate   IEC 62443 SR 5.1
-  Protocol whitelisting               Block S7comm non-eng IPs    NIST SC-7
-  Audit logging                       Log all PLC operations      NIST AU-12
-  [i] MITRE ATT&CK for ICS: T0843 (Program Upload)
-  ─────────────────────────────────────────────────────────────────────
-
-ixf > use assessment/mitre_ics/t0836_modify_parameter
-[*] Module loaded: MITRE T0836 Modify Parameter Assessment
-ixf > set target 192.168.1.100
-ixf > run
-  [Simulate output — setpoint manipulation controls...]
-
-ixf > use assessment/mitre_ics/t0880_modify_alarm_settings
-ixf > set target 192.168.1.100
-ixf > run
-  [Simulate output — alarm suppression controls...]
+ixf > stats
+[i] Total: 976 | Vendors: 150 | MITRE: 74/90 (82%)
 
 ixf > mitre-coverage
+  TOTAL: 74/90 (82%)
 
-[*] Indexing modules…
-  MITRE ATT&CK for ICS Coverage
-  Overall: 82/85 techniques (96.5%)
-  Tactic                    Total  Covered  %
-  Initial Access            9      9        100%
-  Execution                 12     11       91.7%
-  [... full coverage table ...]
+ixf > discover 192.168.1.0/24
+[*] Module loaded: Modbus TCP Device Detect
+[*] target => 192.168.1.0/24
+  [SIMULATE] Would scan 192.168.1.0/24:502 for Modbus...
 
-ixf > report json
-[*] Generating JSON report...
-[+] Report saved: .tmp/ixf_report_20240601_182500.json
+ixf > back
+ixf > mitre-scan discovery 192.168.1.0/24
+[*] Sweeping Discovery (TA0102) on 192.168.1.0/24...
+  [SIMULATE] 11 techniques, 28 modules...
+[+] Discovery sweep complete.
 
-ixf > report html
-[*] Generating HTML report...
-[+] Report saved: .tmp/ixf_report_20240601_182501.html
+ixf > ttp T0843 192.168.1.100
+[*] T0843 (Program Download) — 5 modules — simulate
+[+] T0843 complete.
+
+ixf > ttp T0812 192.168.1.0/24
+[*] T0812 (Default Credentials) — 34 modules — simulate
+[+] T0812 complete.
+
+ixf > ttp-check T0846 192.168.1.100
+[*] T0846 check-only on 192.168.1.100...
+[+] Potential: scanners/ics/modbus_detect — port 502 open
+[+] Potential: scanners/ics/s7_comm_scanner — port 102 open
+
+ixf > cve CVE-2021-22681
+[*] Module loaded: CVE-2021-22681 Siemens S7-1200/1500 PLC (CRITICAL)
+
+ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > set target 192.168.1.50
+[*] target => 192.168.1.50
+
+ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > show info
+  cvss: 9.8 | impact: CRITICAL | MITRE: T0830, T0855
+
+ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > check
+[*] Checking 192.168.1.50:102...
+[+] POTENTIAL — Port 102 open, S7comm+ detected
+
+ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > run
+  [SIMULATE] CVE-2021-22681 S7 TLS Key exploit chain...
+
+ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > back
+
+ixf > assess iec62443/zone_conduit_audit
+  [IEC 62443 audit output — 24 SR checks REVIEW]
+
+ixf > assess nist_sp800_82/control_checklist
+  [NIST 800-82r3 — 8 domains, 35 controls REVIEW]
+
+ixf > assess risk/ics_risk_scorer
+  COMPOSITE SCORE: 7.375 / 10.0 — HIGH
+
+ixf > assess threat_intel/ics_kill_chain
+  [8-stage kill chain analysis]
+
+ixf > assess ir/iacs_ir_playbook
+  [5-phase IR playbook]
+
+ixf > assess protocols/opcua_security_audit
+  [OPC UA security checks]
+
+ixf > assess protocols/dnp3_security_audit
+  [DNP3 SAv5 checks]
+
+ixf > assess network/ics_firewall_audit
+  [Firewall rule audit]
+
+ixf > assess network/industrial_network_assessment
+  [Full network assessment]
 
 ixf > mitre-report layer
-[*] Generating MITRE ATT&CK Navigator layer...
-[+] Layer saved: .tmp/ixf_navigator_layer_20240601.json
-[i] Import at: https://mitre-attack.github.io/attack-navigator/
+[+] Navigator layer saved: ixf_mitre_layer_20260601.json
+
+ixf > report html
+[+] Report saved: ixf_report_20260601_164500.html
+
+ixf > report json
+[+] Report saved: ixf_report_20260601_164502.json
 
 ixf > exit
-[*] Goodbye.
+[*] Exiting IndustrialXPL-Forge. Stay safe.
 ```
 
-**Non-interactive equivalent (single command):**
+---
+
+## Compliance Reporting — Generating Reports for Each Framework
+
+### IEC 62443 Report
 
 ```bash
+ixf assess iec62443/zone_conduit_audit report markdown
+# Saves: ixf_report_*.md (include IEC 62443 checklist section)
+```
+
+### NIST SP 800-82r3 Report
+
+```bash
+ixf assess nist_sp800_82/control_checklist report html
+# Generates HTML with NIST control checklist
+```
+
+### MITRE ATT&CK for ICS Navigator Layer
+
+```bash
+ixf mitre-report layer
+# Generates: ixf_mitre_layer_YYYYMMDD.json
+# Open at: https://mitre-attack.github.io/attack-navigator/
+```
+
+### Combined Assessment Report
+
+```bash
+# Run all assessments then generate comprehensive report
 ixf \
   assess iec62443/zone_conduit_audit \
   assess nist_sp800_82/control_checklist \
   assess risk/ics_risk_scorer \
-  assess threat_intel/ics_kill_chain \
-  assess ir/iacs_ir_playbook \
-  assess network/ics_firewall_audit \
-  assess network/industrial_network_assessment \
-  assess protocols/opcua_security_audit \
-  assess protocols/dnp3_security_audit \
-  assess protocols/iec61850_security_audit \
   mitre-coverage \
-  report json \
+  mitre-report layer \
   report html \
-  mitre-report layer
+  report json
+```
+
+### NERC CIP Mapping
+
+IXF assessment modules map to NERC CIP standards for bulk electric systems:
+
+| IXF Module | NERC CIP Standard | Description |
+|------------|------------------|-------------|
+| `network/ics_firewall_audit` | CIP-005 (Electronic Security Perimeter) | Verify ESP boundary, access points |
+| `network/industrial_network_assessment` | CIP-007 (System Security Management) | Port management, security patches |
+| `ir/iacs_ir_playbook` | CIP-008 (Incident Reporting and Response) | IR plan, reporting timelines |
+| `nist_sp800_82/control_checklist` | CIP-010 (Configuration Management) | Baseline configs, change management |
+| `iec62443/zone_conduit_audit` | CIP-005, CIP-006 (Physical Security) | Zone model, physical access controls |
+| `protocols/opcua_security_audit` | CIP-007 (Ports and Services) | OPC UA security configuration |
+| `protocols/dnp3_security_audit` | CIP-005 (Interactive Remote Access) | DNP3 SAv5 for remote access |
+| `risk/ics_risk_scorer` | CIP-011 (Information Protection) | Risk-based classification |
+
+---
+
+## IEC 62443 Security Levels — Complete Reference
+
+### SL1: Protection against Unintentional Violation
+
+**Target scenario:** Casual or unintentional violations by authorized users or by accidental system misconfiguration.
+
+**Minimum controls required at SL1:**
+- Asset inventory maintained
+- Documented network topology
+- Basic account management (unique accounts, no shared admin)
+- Quarterly patch review process
+- Basic incident response procedure
+- Physical access restrictions to control room
+
+**IXF assessment:** `assess iec62443/zone_conduit_audit` with `set sl_target 1`
+
+### SL2: Protection against Intentional Violation Using Simple Means
+
+**Target scenario:** Motivated attacker using simple attack methods, publicly available tools, and limited resources. This is the baseline target for most industrial sites.
+
+**Controls added at SL2 (above SL1):**
+- Network segmentation (zone and conduit model)
+- Firewall at IT/OT boundary with default-deny policy
+- MFA for all remote access to OT zones
+- Jump server for all remote access (no direct OT VPN)
+- Security event logging and review
+- Defined incident response with OT-specific procedures
+- Patch management process with risk-based prioritization
+- OT-safe endpoint protection on EWS and HMI
+
+**IXF assessment:** `assess iec62443/zone_conduit_audit` (default target: SL2)
+
+### SL3: Protection against Intentional Violation Using Sophisticated Means
+
+**Target scenario:** Motivated attacker with sophisticated skills, custom attack tools, moderate resources, and OT-specific knowledge. Includes organized crime and advanced cybercriminals.
+
+**Controls added at SL3 (above SL2):**
+- Defense-in-depth across all Purdue levels
+- Advanced threat detection and OT-specific monitoring (Claroty, Dragos, Nozomi)
+- Physical security controls for OT assets (tamper seals, CCTV, access logs)
+- Comprehensive audit logging with tamper-evident storage
+- Strict change management with dual approval for OT changes
+- Regular penetration testing and red team exercises (using IXF)
+- Cryptographic authentication for protocol-level access where supported
+- PLC firmware integrity verification
+
+### SL4: Protection against State-Sponsored Attack (Nation-State APT)
+
+**Target scenario:** Highly capable nation-state attacker with advanced custom tooling, unlimited resources, insider knowledge, and long-term persistent access campaigns. Applicable to nuclear, critical power infrastructure, water treatment serving millions.
+
+**Controls added at SL4 (above SL3):**
+- Physical security hardening equivalent to government classified facilities
+- All OT communication channels cryptographically authenticated
+- Continuous real-time threat hunting with dedicated ICS SOC
+- Annual red team exercises against nation-state TTPs
+- Air-gapped or unidirectional data diodes for critical data flows
+- Hardware security modules for cryptographic key management
+- Multi-party authorization for safety-critical operations
+- Formal security architecture review by qualified ICS security experts
+
+### Zone and Conduit Model
+
+The IEC 62443 zone and conduit model organizes OT assets into security zones, with conduits defining the allowed communication paths between zones.
+
+| Zone | Purdue Level | Typical Assets | Recommended SL |
+|------|-------------|----------------|----------------|
+| Enterprise Zone | Level 4-5 | ERP, email, internet | Not in scope |
+| Site Business Zone | Level 3 | Historian (DMZ), data aggregation | SL2 |
+| Control Zone | Level 2 | SCADA servers, EWS, HMI | SL2-SL3 |
+| Field Zone | Level 1 | PLCs, DCS controllers | SL2-SL3 |
+| Process Zone | Level 0 | Sensors, actuators, field devices | SL1-SL2 |
+| Safety Zone | Separate | SIS, ESD, F&G systems | SL3-SL4 |
+
+**Conduit security requirements:**
+- Each conduit must document: allowed protocols, data flow direction, authentication requirements
+- Firewall or data diode must enforce conduit rules
+- All conduit crossing events must be logged
+
+---
+
+## Additional MITRE Technique Assessment Modules
+
+### T0843 — Program Download
+
+```
+ixf > use assessment/mitre_ics/t0843_program_upload
+ixf > set target 192.168.1.55
+ixf > run
+
+  MITRE T0843 — Program Download Assessment
+  ═══════════════════════════════════════════════════════════════════════════
+  Checks:
+  PD-001  S7comm program block write accessible       MANUAL  Port 102 reachable
+  PD-002  EtherNet/IP CIP firmware download possible  MANUAL  Port 44818 reachable
+  PD-003  Program download requires auth              MANUAL  Check TIA Portal security
+  PD-004  Firmware integrity verification enabled     MANUAL  Check hash verification
+
+  Attack scenario: Modified PLC program downloaded (e.g., STUXNET pattern)
+  MITRE: T0843 (Program Download), T0889 (Modify Program)
+  Remediation: Enable access protection; sign PLC programs; monitor for downloads
+  ═══════════════════════════════════════════════════════════════════════════
+```
+
+### T0851 — Rootkit
+
+```
+ixf > use assessment/mitre_ics/t0851_rootkit
+ixf > run
+
+  MITRE T0851 — Rootkit Assessment
+  ═══════════════════════════════════════════════════════════════════════════
+  Checks:
+  RK-001  PLC firmware hash verification enabled      MANUAL  Compare against baseline
+  RK-002  EWS process list monitoring                 MANUAL  Detect hidden processes
+  RK-003  SCADA application integrity monitoring      MANUAL  File hash comparison
+
+  Known ICS rootkit patterns: STUXNET (S7 rootkit), TRITON (SIS firmware patch)
+  MITRE: T0851 (Rootkit), T0857 (System Firmware)
+  ═══════════════════════════════════════════════════════════════════════════
 ```
 
 ---

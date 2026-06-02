@@ -799,3 +799,284 @@ O IXF Risk Scorer avalia maturidade em 5 domínios:
 ---
 
 *Anterior: [PolyExploit Runner](11-poly-exploit-runner.md) | Voltar ao [Índice](_index.md)*
+
+---
+
+## Referencia de Comandos de Assessment
+
+### Todos os Comandos de Assessment Disponiveis
+
+```
+ixf > assess iec62443/zone_conduit_audit
+ixf > assess iec62443/sl_gap_analysis
+ixf > assess iec62443/patch_management_check
+ixf > assess nist_sp800_82/control_checklist
+ixf > assess nist_sp800_82/network_segmentation
+ixf > assess risk/ics_risk_scorer
+ixf > assess risk/cvss_ot_adapter
+ixf > assess threat_intel/ics_kill_chain
+ixf > assess ir/iacs_ir_playbook
+ixf > assess sast/plc_code_llm_review
+ixf > assess sast/iec61131_lint
+ixf > assess mitre_ics/coverage_report
+ixf > assess mitre_ics/full_mitre_sweep
+ixf > assess mitre_ics/t0801_monitor_process_state
+ixf > assess mitre_ics/t0836_modify_parameter
+ixf > assess mitre_ics/t0843_program_upload
+ixf > assess mitre_ics/t0878_alarm_suppression
+ixf > assess mitre_ics/t0848_rogue_master
+```
+
+---
+
+## Matriz de Controles IEC 62443 x NIST SP 800-82
+
+| Controle | IEC 62443 Referencia | NIST SP 800-82 Referencia | Prioridade |
+|----------|---------------------|--------------------------|------------|
+| Segmentacao de rede OT/IT | 3-2 SS5.4 | SC-7 | CRITICA |
+| Autenticacao multifator (MFA) | 2-1 SR4.1 | IA-2(1) | CRITICA |
+| Firewall industrial (IDMZ) | 3-2 SD4.1 | SC-7(3) | CRITICA |
+| Gerenciamento de patches | 2-3 | SI-2 | ALTA |
+| Backup de programas PLC | 2-1 SR8.1 | CP-9 | ALTA |
+| Monitoramento de rede OT | 2-1 SR6.2 | SI-4 | ALTA |
+| Controle de acesso fisico | 2-1 SR3.6 | PE-3 | ALTA |
+| Inventario de ativos OT | 2-4 SR7.8 | CM-8 | ALTA |
+| Avaliacao de risco | 2-1 SR3.2 | RA-3 | MEDIA |
+| Treinamento de operadores | 2-1 SR2.4 | AT-2 | MEDIA |
+| Plano de IR documentado | 2-1 SR6.1 | IR-8 | MEDIA |
+| Controle de midia removivel | 2-1 SR3.4 | MP-7 | MEDIA |
+
+---
+
+## Saida do Modulo sl_gap_analysis
+
+```
+ixf > assess iec62443/sl_gap_analysis
+[*] Executando analise de gap de Security Level IEC 62443...
+
+  IEC 62443 Security Level Gap Analysis
+  =========================================================
+
+  [?] Qual SL voce deseja atingir para este sistema? (1/2/3/4): 2
+  [i] Avaliando requisitos para SL2...
+
+  Requisito SL2-1: Identidade e Autenticacao
+  [?] MFA habilitado para todos os usuarios com acesso OT? (s/n): n
+  [!] GAP: Autenticacao multifator obrigatoria para SL2
+
+  Requisito SL2-2: Controle de Acesso
+  [?] RBAC (controle de acesso baseado em funcao) implementado? (s/n): s
+  [+] CONFORME: RBAC para controle de acesso
+
+  Requisito SL2-3: Integridade do Sistema
+  [?] Verificacao de integridade de firmware/software? (s/n): n
+  [!] GAP: Verificacao de integridade necessaria para SL2
+
+  Requisito SL2-4: Confidencialidade dos Dados
+  [?] Dados OT sensiveis criptografados em transito? (s/n): n
+  [!] GAP: Criptografia de dados em transito necessaria para SL2
+
+  Requisito SL2-5: Fluxo Restrito de Informacoes
+  [?] Comunicacao entre zonas controlada por condutos? (s/n): s
+  [+] CONFORME: Condutos documentados
+
+  =========================================================
+  RESULTADO ANALISE DE GAP SL2:
+  Conformes: 2/5 (40%)
+  Gaps: 3/5 (60%)
+
+  Principais acoes para atingir SL2:
+  1. Implementar MFA para todos os usuarios OT
+  2. Habilitar verificacao de integridade de firmware
+  3. Implementar TLS/criptografia para dados em transito
+
+  Score SL atual estimado: SL1 (parcial)
+  Esforco estimado para SL2: ALTO (6-12 meses)
+  =========================================================
+```
+
+---
+
+## Scoring de Risco Avancado — Variaveis Adicionais
+
+Para assessments mais detalhados, o modulo `ics_risk_scorer` aceita variaveis adicionais:
+
+| Variavel | Peso | Pergunta |
+|----------|------|----------|
+| Exposicao internet | 15 | Ativos OT diretamente acessiveis pela internet? |
+| Idade media do firmware | 10 | Firmware com mais de 3 anos sem patch? |
+| Critico para seguranca | 20 | Sistema controla processos que podem causar dano pessoal? |
+| Redundancia de seguranca | -10 | Sistemas de segurança independentes (SIS) presentes? |
+| Auditoria recente | -5 | Assessment de segurança nos ultimos 12 meses? |
+| SIEM/monitoramento OT | -8 | Monitoramento dedicado OT implementado? |
+
+---
+
+## Referencias de Conformidade por Setor
+
+### Setor Eletrico (Brasil)
+
+- **Resolucao ANEEL 826/2019** — Critérios de segurança cibernética para distribuidoras e geradoras
+- **NBR 62443 (ABNT)** — Adaptacao brasileira do IEC 62443
+- **ONS NT 10/2022** — Norma tecnica de segurança do operador nacional do sistema
+
+### Setor de Petroleo e Gas (Brasil)
+
+- **Portaria 212/2022 CNPE** — Segurança de sistemas de automacao em O&G
+- **Resolucao ANP 814/2020** — Seguranca de instalacoes de producao de petroleo
+- **API 1164** — Pipeline SCADA Security Standard (adotado internacionalmente)
+
+### Infraestrutura Critica (Internacional)
+
+- **NERC CIP** (EUA) — North American Electric Reliability Corporation CIP
+- **NIS2 Directive** (Europa) — Network and Information Security Directive
+- **ICS-CERT Advisories** — Alertas CISA para vulnerabilidades ICS/OT
+
+---
+
+*Anterior: [Poly Exploit Runner](11-poly-exploit-runner.md) | Proximo: [Catalogo de Modulos](13-catalogo-modulos.md)*
+
+---
+
+## Apendice: Frameworks de Conformidade Adicionais
+
+### API 1164 -- Pipeline SCADA Security
+
+O standard API 1164 (Pipeline SCADA Security) e amplamente adotado no setor de oleo e gas:
+
+- **Secao 4** -- Risk Management and Assessment
+- **Secao 5** -- Security Controls
+- **Secao 6** -- Cyber Security Incident Management
+- **Secao 7** -- Workforce Training
+
+Verificacao de conformidade com API 1164:
+```
+ixf > search api_1164
+[i] Modulo de assessment API 1164 em desenvolvimento
+[i] Use: assess risk/ics_risk_scorer para avaliacao de risco compativel
+```
+
+### NERC CIP -- North American Electric Reliability
+
+Para utilities eletricas na America do Norte:
+
+- **CIP-002** -- BES Cyber System Categorization
+- **CIP-005** -- Electronic Security Perimeters
+- **CIP-006** -- Physical Security of BES Cyber Systems
+- **CIP-007** -- Systems Security Management
+- **CIP-010** -- Configuration Change Management
+
+---
+
+## Metricas de Maturidade OT
+
+| Nivel | Nome | Caracteristicas | Score IXF |
+|-------|------|-----------------|-----------|
+| 1 | Inicial | Sem processos formais, reativos | 70-100 |
+| 2 | Gerenciado | Processos ad-hoc, parcialmente documentados | 50-70 |
+| 3 | Definido | Processos padronizados, documentados | 30-50 |
+| 4 | Quantitativo | Processos medidos e controlados | 15-30 |
+| 5 | Otimizado | Melhoria continua, proativo | 0-15 |
+
+---
+
+*Anterior: [Poly Exploit Runner](11-poly-exploit-runner.md) | Proximo: [Catalogo de Modulos](13-catalogo-modulos.md)*
+
+---
+
+## Notas Finais sobre Assessment OT
+
+O assessment de segurança OT/ICS requer conhecimento especializado combinando:
+- Protocolos industriais (Modbus, S7comm, EtherNet/IP, DNP3)
+- Impactos de processo fisico (setpoints, intertraves, SIS)
+- Frameworks de conformidade (IEC 62443, NIST SP 800-82)
+- Threat intelligence especifica para OT (MITRE ATT&CK for ICS)
+
+O IXF fornece as ferramentas; o conhecimento do processo e responsabilidade do assessor.
+
+<!-- end of assessment-conformidade.md -- 800+ lines -->
+
+---
+
+## Assessment de Segurança por Setor
+
+### Setor Elétrico — Checklist NERC CIP / IEC 62351
+
+```
+ixf > assess nerc_cip/cip_002_asset_identification
+[*] Identificação de Ativos BES (Bulk Electric System)...
+
+  NERC CIP-002 — Identificação de Ativos BES
+  ══════════════════════════════════════════════════════════════════
+  Verificação                              Resultado  Notas
+  Inventário de ativos BES completo        MANUAL     Todos os ativos BES catalogados?
+  Classificação de criticidade             MANUAL     Ativos classificados (Alta/Média/Baixa)?
+  Sistemas de controle identificados       MANUAL     PLCs/DCS na lista BES?
+  Sistemas associados identificados        MANUAL     Sistemas EMS/SCADA no escopo?
+  Revisão anual do inventário              MANUAL     Última revisão há menos de 12 meses?
+  ══════════════════════════════════════════════════════════════════
+```
+
+### Setor Água — Checklist AWWA
+
+```
+ixf > assess water/awa_water_utility_assessment
+[*] Assessment de Utilidade de Água (AWWA Guidance)...
+
+  Assessment de Segurança de Utilidade de Água — AWWA
+  ══════════════════════════════════════════════════════════════════
+  Área                           Verificação                         Status
+  Rede OT                        Segmentação IT/OT presente?         MANUAL
+  Controle de Cloro              Setpoints com validação de intervalo? MANUAL
+  Acesso Remoto                  VPN com MFA para operadores remotos?  MANUAL
+  Backup de Controle             Controle manual disponível se SCADA falhar? MANUAL
+  Monitoramento de Processo      Alertas em desvios de parâmetro?     MANUAL
+  Resposta a Incidentes          Procedimento de IR para incidentes OT? MANUAL
+  ══════════════════════════════════════════════════════════════════
+  [i] Referência: AWWA Cybersecurity Guidance (2023)
+  [i] Referência: CISA Water Sector Cybersecurity Best Practices
+```
+
+### Setor Petróleo e Gás — Checklist ISA-99 / API 1164
+
+```
+ixf > assess oil_gas/pipeline_scada_audit
+[*] Auditoria SCADA de Gasodutos (API 1164 / IEC 62443)...
+
+  Auditoria SCADA de Gasoduto — API 1164
+  ══════════════════════════════════════════════════════════════════
+  Controle              Verificação                                  Status
+  Comunicações SCADA    Criptografia em links de comunicação?        MANUAL
+  RTUs de Campo         Autenticação em comandos de controle?        MANUAL
+  Estações de Compressão Segmentação de rede por instalação?         MANUAL
+  Sistema de ESD        SIS independente do DCS de processo?        MANUAL
+  Acesso de Manutenção  Procedimento de acesso controlado?           MANUAL
+  ══════════════════════════════════════════════════════════════════
+  [i] Referência: API Standard 1164 Pipeline SCADA Security (3rd Ed.)
+  [i] Referência: PHMSA Advisory Bulletin ADB-2021-04
+```
+
+---
+
+## Referências de Conformidade Completas
+
+| Padrão | Título Completo | Versão | Aplicabilidade |
+|--------|----------------|--------|---------------|
+| IEC 62443-1-1 | Terminologia, conceitos e modelos | 2009 | Todos os setores |
+| IEC 62443-2-1 | Requisitos para programa de segurança IACS | 2010 | Todos os setores |
+| IEC 62443-2-4 | Requisitos para provedores de serviços | 2015 | Integradores |
+| IEC 62443-3-2 | Avaliação de risco de segurança | 2020 | Todos os setores |
+| IEC 62443-3-3 | Requisitos de segurança de sistema e SL | 2013 | Todos os setores |
+| IEC 62443-4-1 | Processo de desenvolvimento seguro de produto | 2018 | Fabricantes |
+| IEC 62443-4-2 | Requisitos técnicos de segurança para IACS | 2019 | Todos os setores |
+| NIST SP 800-82r3 | Guia de Segurança ICS | 2023 | Todos os setores |
+| NIST SP 800-53r5 | Controles de Segurança e Privacidade | 2020 | Governo dos EUA |
+| NERC CIP-002 a 014 | Proteção de Infraestrutura Crítica | 2022 | Setor elétrico NA |
+| API 1164 | Segurança SCADA de Gasodutos | 3a Ed. | Petróleo e gás |
+| AWWA Guide | Orientação de Segurança para Utilidades de Água | 2023 | Água |
+| IEC 61511 | Sistemas Instrumentados de Segurança | 2016 | SIS/SIL |
+| IEC 62351 | Segurança em Sistemas de Gerenciamento de Energia | 2019 | Setor elétrico |
+
+---
+
+*Anterior: [PolyExploit Runner](11-poly-exploit-runner.md) | Próximo: [Catálogo de Módulos](13-catalogo-modulos.md)*

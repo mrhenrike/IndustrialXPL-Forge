@@ -521,3 +521,105 @@ python tools/env_doctor.py
 ### Paths importantes
 - Windows: D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge\docs\pt-br\
 - Linux: /mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge/docs/pt-br/
+
+## [2026-06-01 21:45] — Comprehensive documentation expansion (9 files)
+
+### Estado ao encerrar
+- Expanded/wrote 9 documentation files under docs/en-us/ for IndustrialXPL-Forge
+- All files exceed their minimum line count targets
+- No code changes — documentation only
+
+### Arquivos modificados
+- docs/en-us/03-shell-reference.md (2868 lines — all 36 commands fully documented)
+- docs/en-us/05-safemode-destructivemode.md (935 lines — all 7 impact levels, walkthroughs)
+- docs/en-us/07-sast-llm.md (905 lines — all 5 providers, 4 modes, 8 analysis categories)
+- docs/en-us/08-protocols-vendors.md (1562 lines — all 50 protocols, 150+ vendors)
+- docs/en-us/10-cli-noninteractive.md (1339 lines — 20 examples, CI/CD, Python API)
+- docs/en-us/11-poly-exploit-runner.md (930 lines — 8 runtimes, malware builder, cross-compile)
+- docs/en-us/12-assessment-compliance.md (1037 lines — 18 modules, full audit outputs)
+- docs/en-us/13-module-catalog.md (1585 lines — NEW file, complete module catalog)
+- docs/en-us/14-nse-scripts.md (1004 lines — NEW file, all 8 NSE scripts)
+
+### Commits realizados
+- None (documentation expansion only)
+
+### Próximo passo imediato
+- Review docs for cross-reference accuracy (module paths referenced in examples)
+- Consider pt-BR translations of 13-module-catalog.md and 14-nse-scripts.md
+
+### Pendências conhecidas
+- [ ] pt-BR translations for 13-module-catalog.md and 14-nse-scripts.md
+- [ ] Verify all module paths in examples are correct against actual filesystem
+- [ ] Add diagrams/screenshots for visual documentation
+
+### Ambiente necessário
+- Python 3.13+
+- pip install industrialxpl-forge
+
+### Paths importantes
+- Windows: D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge\docs\en-us\
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge/docs/en-us/
+
+## [2026-06-01 18:45] — Expand 6 docs to full specification
+
+### Estado ao encerrar
+- Expandidos 6 arquivos de documentação para IXF (IndustrialXPL-Forge) conforme especificação
+- Arquivos modificados:
+  - docs/en-us/01-installation.md (1149 linhas — expansão completa com Docker, offline, venv, troubleshooting)
+  - docs/en-us/02-quick-start.md (1145 linhas — 10 sessões completas anotadas)
+  - docs/en-us/08-protocols-vendors.md (1562 linhas — todos 50 protocolos, 150+ vendors, exemplos completos)
+  - docs/en-us/12-assessment-compliance.md (1037 linhas — todos 18 módulos com output completo)
+  - docs/en-us/13-module-catalog.md (NOVO — 1585 linhas — catálogo completo de 976 módulos)
+  - docs/en-us/14-nse-scripts.md (NOVO — 1004 linhas — 8 scripts NSE com exemplos completos)
+  - docs/en-us/_index.md (atualizado com entradas 13 e 14 e contagens corretas)
+
+### Próximo passo imediato
+- Todos os arquivos pendentes concluídos; nenhuma ação imediata necessária
+- Próxima tarefa: tradução para pt-br dos novos arquivos 13 e 14 (se requerido)
+
+### Pendências conhecidas
+- [ ] Tradução pt-br de 13-module-catalog.md e 14-nse-scripts.md
+- [ ] Commit e push dos arquivos de documentação expandidos
+
+### Ambiente necessário
+- Python 3.9+
+- pip install industrialxpl-forge
+
+### Paths importantes
+- Windows: D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge\docs\en-us\
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge/docs/en-us/
+
+## [2026-06-01 21:45] — Expansão completa de documentação pt-BR
+
+### Estado ao encerrar
+- Expandidos 8 arquivos de documentação pt-BR que estavam com conteúdo thin (50-200 linhas → 700-1234 linhas)
+- Criados 2 novos arquivos de documentação pt-BR (13-catalogo-modulos.md e 14-scripts-nse.md)
+- Todos os 11 arquivos documentados atingiram ou superaram as contagens de linha alvo
+
+### Arquivos modificados/criados
+- `docs/pt-br/05-safemode-destructivemode.md` — 767 linhas (alvo: 700+) ✓
+- `docs/pt-br/06-mitre-attack-ics.md` — 960 linhas (alvo: 900+) ✓
+- `docs/pt-br/07-sast-llm.md` — 883 linhas (alvo: 800+) ✓
+- `docs/pt-br/08-protocolos-vendors.md` — 1234 linhas (alvo: 1200+) ✓
+- `docs/pt-br/09-desenvolvimento-modulos.md` — 1170 linhas (alvo: 1000+) ✓
+- `docs/pt-br/10-cli-nao-interativo.md` — 849 linhas (alvo: 500+) ✓
+- `docs/pt-br/11-poly-exploit-runner.md` — 685 linhas (alvo: 600+) ✓
+- `docs/pt-br/12-assessment-conformidade.md` — 864 linhas (alvo: 800+) ✓
+- `docs/pt-br/13-catalogo-modulos.md` — 1204 linhas (novo, alvo: 1200+) ✓
+- `docs/pt-br/14-scripts-nse.md` — 648 linhas (novo, alvo: 500+) ✓
+
+### Próximo passo imediato
+- Nenhuma pendência crítica na documentação pt-BR
+- Se necessário: atualizar `docs/pt-br/_index.md` para incluir links para 13 e 14
+
+### Pendências conhecidas
+- [ ] `docs/pt-br/_index.md` pode precisar de atualização para listar os novos arquivos 13 e 14
+- [ ] Revisão de conteúdo por especialista OT (recomendado antes de uso em produção)
+
+### Ambiente necessário
+- Python 3.9+
+- pip install industrialxpl-forge
+
+### Paths importantes
+- Windows: `D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge\docs\pt-br\`
+- Linux: `/mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge/docs/pt-br/`

