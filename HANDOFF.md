@@ -711,3 +711,69 @@ python tools/env_doctor.py
 - Issue #1: implementar tecnicas MITRE restantes (TA 82% -> 100%)
 - Issue #2: novos CVEs 2025 CVSS >= 5.0
 - Issue #5: creds para vendors sem cobertura
+
+## [2026-06-07 05:45] -- Gridwolf assessment layer + ComBox DoS + SOC sigma
+
+### Estado ao encerrar
+- Criados modulos de importacao de scan e correlacao CVE portados do Gridwolf
+- Novo exploit CVE-2017-6019 Schneider Conext ComBox HTTP DoS com contrato IXF completo
+- Sigma rules para SOC Detection Lab adicionados ao FXF
+- Base de credenciais ICS padrao criada no EmbedXPL com 70+ entradas
+- Commit e push em todos os 3 repos
+
+### Arquivos modificados
+- industrialxpl/modules/assessment/import/__init__.py (novo)
+- industrialxpl/modules/assessment/import/scan_import_normalizer.py (novo)
+- industrialxpl/modules/assessment/import/cve_correlation.py (novo)
+- industrialxpl/modules/exploits/scada/schneider/combox_dos_cve_2017_6019.py (novo)
+- [FXF] firewallxpl/resources/sigma/windows/soc_detection_lab/*.yml (6 novas regras)
+- [EmbedXPL] embedxpl/modules/creds/ics/ics_default_creds.py (novo)
+
+### Commits realizados
+- IXF: a428d03 em feat/ixf-remaining-exploits
+- FXF: 82286c7 em feat/gridwolf-soc-expansion
+- EmbedXPL: 96b41cc2 em feat/gridwolf-soc-expansion
+
+### Proximo passo imediato
+- Abrir PRs para os 3 repos nos branches criados
+- Verificar se o agente paralelo (feat/ixf-remaining-exploits) nao gerou conflitos
+
+### Pendencias conhecidas
+- [ ] feat/gridwolf-soc-expansion no IXF existe mas esta vazio - pode ser deletado ou ignorado
+- [ ] PR review necessario nos 3 repos
+
+### Ambiente necessario
+- Python 3.11+
+- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\{IndustrialXPL,FirewallXPL,EmbedXPL}-Forge
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/{...}-Forge
+
+## [2026-06-07 05:40] - ISF remaining exploits ported to IXF native
+
+### Estado ao encerrar
+- Portados 6 novos modulos do ISF icssploit/ModBusSploit para IXF native (zero dependencia ISF em runtime)
+- xploits/rtos/qnx/qnx_inetd_dos.py - QNX SDP 6.6.0 inetd TCP service crash (dark-lbp PoC)
+- xploits/rtos/vxworks/vxworks_wdb_rpc_dos.py - VxWorks RPC integer overflow DoS (CVE-2015-7599)
+- ssessment/lateral/fake_dhcp_ot.py - Rogue DHCP server para OT (raw sockets, sem Scapy)
+- ssessment/lateral/modbus_arp_mitm.py - ARP cache poisoning MITM bidirecional (raw sockets)
+- creds/generic/ics_snmp_bruteforce.py - SNMP community string bruteforce (UDP nativo, sem pysnmp)
+- creds/generic/ics_telnet_bruteforce.py - Telnet credential bruteforce (stdlib telnetlib)
+- Todos os arquivos validados com st.parse (OK)
+- Todos commitados e pushados em eat/ixf-remaining-exploits (commit a428d03)
+
+### Modulos ignorados por duplicidade
+- quantum_plc_control.py ja existe (Schneider Quantum 140 control)
+- dos_write_coils.py + modbus_write_coil_flood.py ja existem (Modbus coil flood)
+- xploits/plc/siemens/profinet_set_ip.py ja existe (Profinet DCP IP set)
+
+### Proximo passo imediato
+- Abrir PR de eat/ixf-remaining-exploits para master para revisao e merge
+
+### Pendencias conhecidas
+- [ ] PR de feat/ixf-remaining-exploits -> master
+- [ ] assessment/__init__.py tem whitespace extra nao commitado (inofensivo)
+
+### Ambiente necessario
+- Python 3.11+
+- Branch: feat/ixf-remaining-exploits (ja pushado em origin)
+- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\IndustrialXPL-Forge
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/IndustrialXPL-Forge
