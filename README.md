@@ -177,6 +177,63 @@ Full documentation is available in both English and Brazilian Portuguese:
 
 ---
 
+## Security Modules (BLOCO J)
+
+New attack category modules added in BLOCO J expansion:
+
+### Ransomware / Impact Simulation
+
+| Module | Path | Impact | Description |
+|--------|------|--------|-------------|
+| `plc_project_locker` | `exploits/ransomware/` | CATASTROPHIC | Zeros all Modbus holding registers (FC16). Simulates CISA AA26-097A Iranian APT PLC manipulation. Triple gate required. |
+| `hmi_display_ransomware` | `exploits/ransomware/` | CATASTROPHIC | Overwrites SCADA display string tags with ransom note via Modbus FC16. Triple gate required. |
+
+### Persistence
+
+| Module | Path | Impact | Description |
+|--------|------|--------|-------------|
+| `plc_logic_bomb_inject` | `exploits/persistence/` | HIGH | Writes a trigger value to a designated holding register to activate a pre-planted logic bomb. Based on INCONTROLLER/PIPEDREAM TTPs. |
+
+### Routing Attacks (RTP)
+
+| Module | Path | Impact | Description |
+|--------|------|--------|-------------|
+| `ospf_lsa_inject` | `exploits/routing/` | HIGH | Injects forged OSPF Router LSA to poison routing tables. Based on DCmal-2025 OSPF spoofing (MDPI 2025). Requires Scapy. |
+| `bgp_vortex_dos` | `exploits/routing/` | HIGH | Sends 3 crafted BGP UPDATE messages triggering persistent route oscillation. Based on USENIX Security 2025 "BGP Vortex" (Stoeger et al.). |
+
+### Credential Attacks
+
+| Module | Path | Impact | Description |
+|--------|------|--------|-------------|
+| `ics_mqtt_bruteforce` | `creds/generic/` | MEDIUM | MQTT broker credential bruteforce using native Python socket (no external MQTT library). Checks CONNACK return codes. |
+
+### MiTM / Lateral Movement
+
+| Module | Path | Impact | Description |
+|--------|------|--------|-------------|
+| `modbus_mitm_inline` | `assessment/lateral/` | HIGH | Inline Modbus TCP proxy. Logs all function codes with decoded register info. Optional value injection in FC03/FC04 responses. |
+
+### CVE 2025
+
+| Module | Path | CVE | Description |
+|--------|------|-----|-------------|
+| `siemens_telecontrol_cve_2025` | `cve/siemens/` | CVE-2025-28390 | Siemens TeleControl Server Basic authentication bypass + path traversal. CVSS 9.8. |
+
+### Capability Table Update
+
+| Category | Modules |
+|----------|---------|
+| Ransomware / Impact | `plc_project_locker`, `hmi_display_ransomware`, `ekans_snake_ics_ransomware` |
+| Persistence | `plc_logic_bomb_inject` |
+| Routing (RTP) | `ospf_lsa_inject`, `bgp_vortex_dos` |
+| MiTM | `modbus_arp_mitm`, `modbus_mitm_inline` |
+| Credentials | `ics_mqtt_bruteforce`, + 30+ vendor-specific modules |
+| CVE 2025 | `siemens_telecontrol_cve_2025` |
+
+All destructive modules default to `simulate=True`. Ransomware/wiper modules require triple gate confirmation (`simulate=False` + `destructive=True` + `explicit_confirm="I_UNDERSTAND_THIS_IS_DESTRUCTIVE"`).
+
+---
+
 ## Legal Disclaimer
 
 This tool is intended for **authorized security testing, research, and educational purposes only**.
