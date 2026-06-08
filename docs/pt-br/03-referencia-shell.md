@@ -2024,7 +2024,7 @@ Configura uma chave de API de provedor LLM para análise SAST. Chaves são armaz
 
 **Exemplo 1 — configurar Google Gemini:**
 ```
-ixf > llm-key gemini AIzaSyBGaoio5aKf3rWNFjpqc8trP4EJPyABYH8
+ixf > llm-key gemini AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 [+] Chave LLM configurada: provider=gemini len=39
 ```
 

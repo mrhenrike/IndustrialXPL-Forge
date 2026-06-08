@@ -32,7 +32,7 @@ Set the environment variable before launching IXF. The key is read at startup an
 
 ```bash
 # Google Gemini (free tier available)
-export GOOGLE_AI_STUDIO_API_KEY=AIzaSyBGaoio5aKf3rWNFjpqc8trP4EJPyABYH8
+export GOOGLE_AI_STUDIO_API_KEY=AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 ixf
 
 # OpenAI
@@ -57,7 +57,7 @@ ixf
 The `llm-key` command stores the key in memory only for the current session. The key is never written to disk, history, or logs.
 
 ```
-ixf > llm-key gemini AIzaSyBGaoio5aKf3rWNFjpqc8trP4EJPyABYH8
+ixf > llm-key gemini AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 [+] LLM key configured: provider=gemini len=39
 [i] Key stored in-session only. Set GOOGLE_AI_STUDIO_API_KEY to persist.
 

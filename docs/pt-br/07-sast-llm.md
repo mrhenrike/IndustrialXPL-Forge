@@ -80,7 +80,7 @@ export ANTHROPIC_API_KEY=sk-ant-api03-AbCdEfGhIjKlMnOpQrStUvWxYz...
 
 **Configuração:**
 ```bash
-export GOOGLE_AI_STUDIO_API_KEY=AIzaSyBGaoio5aKf3rWNFjpqc8trP4EJPyABYH8
+export GOOGLE_AI_STUDIO_API_KEY=AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 ```
 
 ### Provider 4: DeepSeek
@@ -159,7 +159,7 @@ ixf > llm-key anthropic sk-ant-api03-AbCdEfGhIjKlMnOpQrStUvWxYz1234567890AbCdEf
 
 **Gemini:**
 ```
-ixf > llm-key gemini AIzaSyBGaoio5aKf3rWNFjpqc8trP4EJPyABYH8
+ixf > llm-key gemini AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 [+] Chave LLM configurada: provider=gemini len=39
 ```
 

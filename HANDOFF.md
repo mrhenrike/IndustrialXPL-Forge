@@ -777,3 +777,50 @@ python tools/env_doctor.py
 - Branch: feat/ixf-remaining-exploits (ja pushado em origin)
 - Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\IndustrialXPL-Forge
 - Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/IndustrialXPL-Forge
+
+## [2026-06-08 08:55] -- Documentation overhaul: new modules, wiki expansion
+
+### Estado ao encerrar
+- Badge de modulos corrigido: 972+ -> 1000+ (contagem real: 1022)
+- Referencia 'BLOCO J' removida de README.md e README.pt-BR.md
+- Exemplos de terminal adicionados para 7 novos modulos (en-US e pt-BR):
+  - assessment/detection/modbus_pcap_analyzer
+  - assessment/detection/suricata_ot_rules_generator
+  - assessment/detection/modbus_zeek_rule_generator
+  - exploits/protocols/coap_fuzzer
+  - assessment/detection/conpot_integration
+  - scanners/ot/nmap_ot_scanner
+  - assessment/lab_environment_setup
+- Secao 'Purple Team & Detection Modules' adicionada a ambos os READMEs
+- Wiki expandida: Home.md atualizado + 4 novas paginas criadas
+- Commits realizados e push realizado (main repo e wiki)
+
+### Arquivos modificados
+- README.md
+- README.pt-BR.md
+- .tmp/ixf_wiki/Home.md (wiki)
+- .tmp/ixf_wiki/Modbus-Attacks.md (nova pagina)
+- .tmp/ixf_wiki/Ransomware-Simulation.md (nova pagina)
+- .tmp/ixf_wiki/Purple-Team.md (nova pagina)
+- .tmp/ixf_wiki/Lab-Setup.md (nova pagina)
+
+### Commits realizados
+- main repo: 99eac40 "Update documentation with new module examples and fix outdated module count"
+- wiki: 63c5b0c "Add new wiki pages and update navigation index"
+
+### Proximo passo imediato
+- Verificar se o CI passou no GitHub Actions apos o push
+- Considerar atualizar a assertiva do CI de >700 para >1000 modulos
+
+### Pendencias conhecidas
+- [ ] CI assertion em ci.yml ainda verifica >700 modulos - pode atualizar para >1000
+- [ ] README nao tem tabela de modulos para scanners/ot e assessment/detection expandida
+- [ ] Wiki em pt-BR para as 4 novas paginas nao foi criada
+
+### Ambiente necessario
+- Python 3.11+
+- git com acesso a https://github.com/mrhenrike/IndustrialXPL-Forge
+
+### Paths importantes
+- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\IndustrialXPL-Forge
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/IndustrialXPL-Forge

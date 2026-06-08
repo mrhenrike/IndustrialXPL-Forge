@@ -847,7 +847,7 @@ ixf > cve-scan 192.168.1.0/24
 ### Configurar chave LLM
 
 ```
-ixf > llm-key gemini AIzaSyBGaoio5aKf3rWNFjpqc8trP4EJPyABYH8
+ixf > llm-key gemini AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 [+] LLM key configured: provider=gemini len=39
 
 ixf > llm-status

@@ -2268,7 +2268,7 @@ Configure an LLM provider API key for SAST analysis. Keys are stored in-session 
 **Example 1 — Configure Gemini:**
 
 ```
-ixf > llm-key gemini AIzaSyBGaoio5aKf3rWNFjpqc8trP4EJPyABYH8
+ixf > llm-key gemini AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 [+] LLM key configured: provider=gemini len=39
 [i] Key is stored in-session only. Set GOOGLE_AI_STUDIO_API_KEY env var to persist.
 ```
