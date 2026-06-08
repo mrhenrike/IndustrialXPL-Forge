@@ -9,7 +9,7 @@
 [![Python](https://img.shields.io/pypi/pyversions/industrialxpl-forge?color=blue&label=Python)](https://pypi.org/project/industrialxpl-forge/)
 [![Licença: MIT](https://img.shields.io/badge/Licen%C3%A7a-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![CI](https://img.shields.io/github/actions/workflow/status/mrhenrike/IndustrialXPL-Forge/ci.yml?branch=master&label=CI)](https://github.com/mrhenrike/IndustrialXPL-Forge/actions)
-[![Módulos](https://img.shields.io/badge/M%C3%B3dulos-972%2B-brightgreen)](https://github.com/mrhenrike/IndustrialXPL-Forge)
+[![Módulos](https://img.shields.io/badge/M%C3%B3dulos-1000%2B-brightgreen)](https://github.com/mrhenrike/IndustrialXPL-Forge)
 [![Vendors](https://img.shields.io/badge/Vendors-150%2B-orange)](https://github.com/mrhenrike/IndustrialXPL-Forge)
 [![Protocolos](https://img.shields.io/badge/Protocolos-50%2B-blue)](https://github.com/mrhenrike/IndustrialXPL-Forge)
 [![MITRE ATT&CK ICS](https://img.shields.io/badge/MITRE%20ATT%26CK%20ICS-v19-red)](https://attack.mitre.org/matrices/ics/)
@@ -138,7 +138,7 @@ Documentação completa disponível em inglês e português brasileiro:
 
 ---
 
-## BLOCO J - Categorias de Ataque (v2.0.0)
+## Categorias de Ataque (v2.0.0)
 
 > **AVISO LEGAL:** Todos os módulos desta seção são destinados **exclusivamente a testes de segurança autorizados, pesquisa e uso educacional**. A execução contra sistemas sem autorização expressa e por escrito configura crime federal de acordo com as leis de fraude cibernética. Os autores e a União Geek não assumem responsabilidade por uso indevido.
 
@@ -306,6 +306,183 @@ ixf (MQTTBruteforce) > run
 | CVE 2025 | `siemens_telecontrol_cve_2025` | simulate=True |
 
 Todos os módulos destrutivos utilizam `simulate=True` por padrão. Módulos de ransomware/wiper exigem confirmação de gate triplo: `simulate=False` + `destructive=True` + `explicit_confirm="I_UNDERSTAND_THIS_IS_DESTRUCTIVE"`.
+
+---
+
+## Módulos Purple Team e Detecção
+
+### Modbus PCAP Analyzer
+
+Analisa capturas de tráfego Modbus/TCP em busca de operações de escrita não autorizadas e padrões de reconhecimento.
+
+```bash
+ixf > use assessment/detection/modbus_pcap_analyzer
+ixf (ModbusPCAP) > set PCAP_FILE /tmp/captura_modbus.pcap
+ixf (ModbusPCAP) > set OUTPUT_JSON /tmp/analise.json
+ixf (ModbusPCAP) > run
+
+[*] Analisando PCAP Modbus: /tmp/captura_modbus.pcap
+[+] 847 transações Modbus processadas
+
+Resumo:
+  Total de transações:      847
+  IPs de origem únicos:     3
+  Operações de escrita:     12
+  Operações PERIGOSAS:      4  <- FC5/6/15/16
+  Operações de Recon:       2  <- FC43/FC17
+
+[!] ALERTA: 4 operações de escrita Modbus PERIGOSAS detectadas
+
+Origem       Destino      FC   Nome                   Reg   Flag
+10.0.1.100   10.0.1.10   16   Write Multiple Regs    100   [PERIGOSO]
+10.0.1.100   10.0.1.10   5    Write Single Coil      1     [PERIGOSO]
+10.0.1.200   10.0.1.10   43   Read Device ID         -     [RECON]
+
+[+] Relatório JSON salvo: /tmp/analise.json
+[*] Dica: capture com: tcpdump -w captura.pcap 'tcp port 502'
+```
+
+### Gerador de Regras Suricata OT
+
+Gera regras Suricata IDS adaptadas para detecção de anomalias em protocolos OT/ICS.
+
+```bash
+ixf > use assessment/detection/suricata_ot_rules_generator
+ixf (SuricataOT) > set OUTPUT_FILE /tmp/regras_ics.rules
+ixf (SuricataOT) > set PROTOCOLS modbus,dnp3,bacnet
+ixf (SuricataOT) > set INCLUDE_CVE_RULES true
+ixf (SuricataOT) > run
+
+[*] Gerando regras Suricata OT/ICS
+[+] Regras Modbus:    18 (operações de escrita, abuso de código de função, broadcast)
+[+] Regras DNP3:       9 (resposta não solicitada, controle não autorizado)
+[+] Regras BACnet:    11 (flood who-is, abuso de foreign device)
+[+] Regras por CVE:   14 (assinaturas TRITON, FrostyGoop, INCONTROLLER)
+[+] Total de regras:  52
+
+[+] Regras gravadas em: /tmp/regras_ics.rules
+[*] Carregue com: suricata -r trafego.pcap -S /tmp/regras_ics.rules
+```
+
+### Gerador de Regras Zeek para Modbus
+
+Gera scripts Zeek/Bro para análise e alertas de tráfego Modbus/TCP.
+
+```bash
+ixf > use assessment/detection/modbus_zeek_rule_generator
+ixf (ModbusZeek) > set OUTPUT_DIR /tmp/scripts_zeek
+ixf (ModbusZeek) > set ALERT_WRITE_OPS true
+ixf (ModbusZeek) > set ALERT_BROADCAST true
+ixf (ModbusZeek) > run
+
+[*] Gerando scripts Zeek para análise Modbus
+[+] modbus-write-monitor.zeek     Alertas em operações de escrita FC5/6/15/16
+[+] modbus-broadcast-detect.zeek  Detecta recon com broadcast unit_id=255
+[+] modbus-function-log.zeek      Log completo de códigos de função
+[+] modbus-anomaly-detect.zeek    Alertas de desvio de baseline estatístico
+
+[+] Scripts salvos em: /tmp/scripts_zeek/
+[*] Carregue com: zeek -i eth0 /tmp/scripts_zeek/
+```
+
+### CoAP Protocol Fuzzer
+
+Envia pacotes CoAP malformados para testar a resiliência de dispositivos IIoT embarcados contra ataques de parser.
+
+```bash
+ixf > use exploits/protocols/coap_fuzzer
+ixf (CoAPFuzzer) > set TARGET 192.168.1.10
+ixf (CoAPFuzzer) > set PORT 5683
+ixf (CoAPFuzzer) > set SIMULATE true
+ixf (CoAPFuzzer) > run
+
+[SIMULATE] CoAP Fuzzer: 8 casos de teste contra 192.168.1.10:5683
+
+Caso                   Descrição                          Esperado
+invalid_version_3      Campo version=3 (inválido)         ignorar/erro
+tkl_overflow           TKL=15, apenas 4 bytes seguem      buffer overflow
+payload_marker_empty   Marcador 0xFF com payload vazio    erro de protocolo
+option_length_overflow Tamanho estendido 255, sem dados   leitura além do buffer
+uri_path_traversal     /../../../etc/passwd no URI-Path   negação de acesso
+observe_flood_50x      Flood de subscribe via CoAP Observe esgotamento de recursos
+empty_rst              RST com código vazio               sem crash
+giant_token_32         TKL=8 mas 32 bytes seguem          crash ou ignorar
+
+[!] Defina SIMULATE=false para enviar ao alvo real
+[!] TIMEOUT = possível DoS/crash | RESPOSTA = dispositivo ainda ativo
+```
+
+### Detecção de Honeypot Conpot
+
+Identifica deployments do honeypot ICS Conpot detectando padrões de resposta característicos.
+
+```bash
+ixf > use assessment/detection/conpot_integration
+ixf (ConpotDetect) > set TARGET 192.168.1.10
+ixf (ConpotDetect) > set CHECK_MODBUS true
+ixf (ConpotDetect) > set CHECK_S7 true
+ixf (ConpotDetect) > run
+
+[*] Verificando 192.168.1.10 por indicadores de honeypot Conpot
+[*] Modbus FC43 (Read Device ID): vendor=Siemens, model=S7-200 [GENÉRICO - SUSPEITO]
+[*] S7comm: versão de firmware corresponde ao padrão Conpot [INDICADOR]
+[*] HTTP /index.html: template padrão Conpot detectado [CONFIRMADO]
+
+[!] VEREDICTO: Alta confiança de honeypot Conpot (3/3 indicadores)
+[*] Dica: um Siemens S7-200 real não expõe HTTP na porta 80 por padrão
+```
+
+### Nmap OT Scanner
+
+Executa Nmap com scripts NSE específicos para OT/ICS para descoberta de protocolo e fingerprinting de serviço.
+
+```bash
+ixf > use scanners/ot/nmap_ot_scanner
+ixf (NmapOT) > set TARGET 192.168.1.0/24
+ixf (NmapOT) > set PROTOCOLS modbus,s7,bacnet,enip
+ixf (NmapOT) > set SIMULATE true
+ixf (NmapOT) > run
+
+[SIMULATE] Nmap OT Scanner - alvo: 192.168.1.0/24
+
+Comando que seria executado:
+  nmap -sV -p 502,102,47808,44818 --script modbus-discover,s7-info,bacnet-info,enip-info 192.168.1.0/24
+
+Scripts de descoberta esperados:
+  modbus-discover   Porta 502   - Enumeração de Unit ID, info FC43
+  s7-info           Porta 102   - Fingerprint de PLC Siemens S7comm
+  bacnet-info       Porta 47808 - Lista de objetos de dispositivo BACnet
+  enip-info         Porta 44818 - Objeto de identidade EtherNet/IP
+
+[!] Defina SIMULATE=false para executar contra alvos reais (requer nmap instalado)
+```
+
+### Configuração de Laboratório (Docker)
+
+Gera um laboratório ICS/OT completo com Docker Compose incluindo Conpot, FUXA SCADA e OpenPLC.
+
+```bash
+ixf > use assessment/lab_environment_setup
+ixf (ICSLab) > set INCLUDE_CONPOT true
+ixf (ICSLab) > set INCLUDE_FUXA true
+ixf (ICSLab) > set OUTPUT_DIR /tmp/lab_ics
+ixf (ICSLab) > run
+
+[+] Arquivos do laboratório ICS/OT gerados em: /tmp/lab_ics
+    docker-compose.yml     Definição dos serviços Docker
+    setup.sh               Script de configuração automatizado
+    LAB_NOTES.md           Guia de exercícios do laboratório
+
+[*] Iniciar laboratório: cd /tmp/lab_ics && bash setup.sh
+[*] Componentes:
+    Conpot 172.20.0.10   Modbus:502, HTTP:80, S7comm:102
+    FUXA  172.20.0.20   SCADA HMI: http://localhost:1881
+[*] Parar laboratório: docker compose down
+```
+
+---
+
+## Aviso Legal
 
 Esta ferramenta é destinada **exclusivamente a testes de segurança autorizados, pesquisa e fins educacionais**.
 

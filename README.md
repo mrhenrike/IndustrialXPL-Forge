@@ -9,7 +9,7 @@
 [![Python](https://img.shields.io/pypi/pyversions/industrialxpl-forge?color=blue&label=Python)](https://pypi.org/project/industrialxpl-forge/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![CI](https://img.shields.io/github/actions/workflow/status/mrhenrike/IndustrialXPL-Forge/ci.yml?branch=master&label=CI)](https://github.com/mrhenrike/IndustrialXPL-Forge/actions)
-[![Modules](https://img.shields.io/badge/Modules-972%2B-brightgreen)](https://github.com/mrhenrike/IndustrialXPL-Forge)
+[![Modules](https://img.shields.io/badge/Modules-1000%2B-brightgreen)](https://github.com/mrhenrike/IndustrialXPL-Forge)
 [![Vendors](https://img.shields.io/badge/Vendors-150%2B-orange)](https://github.com/mrhenrike/IndustrialXPL-Forge)
 [![Protocols](https://img.shields.io/badge/Protocols-50%2B-blue)](https://github.com/mrhenrike/IndustrialXPL-Forge)
 [![MITRE ATT&CK ICS](https://img.shields.io/badge/MITRE%20ATT%26CK%20ICS-v19-red)](https://attack.mitre.org/matrices/ics/)
@@ -70,7 +70,9 @@ OSINT → Discovery → Fingerprint → Vulnerability Check → Exploit → Repo
 | `creds/` | ~55 | Default credentials for 50+ OT/ICS vendors |
 | `cve/` | 3,300+ | All CVE severity levels (CVSS 0.1-10.0), 3 implementation tiers |
 | `cve/apt/` | ~10 | APT malware TTPs: FrostyGoop, Industroyer2, TRITON, INCONTROLLER |
-| `assessment/` | ~25 | IEC 62443, NIST 800-82r3, MITRE ICS, risk scoring, IR playbook |
+| `assessment/` | ~35 | IEC 62443, NIST 800-82r3, MITRE ICS, risk scoring, IR playbook |
+| `assessment/detection/` | ~8 | Modbus PCAP analyzer, Suricata/Zeek rule generators, Conpot detection |
+| `scanners/ot/` | ~10 | Nmap OT scanner with ICS-specific scripts and service detection |
 
 ---
 
@@ -177,7 +179,7 @@ Full documentation is available in both English and Brazilian Portuguese:
 
 ---
 
-## BLOCO J - Attack Categories (v2.0.0)
+## Attack Categories (v2.0.0)
 
 > **LEGAL WARNING:** All modules in this section are for **authorized security testing, research, and educational use only**. Execution against systems without explicit written authorization is a federal crime under computer fraud statutes in most jurisdictions. Ransomware/wiper modules require triple confirmation. The authors and Uniao Geek assume no liability for misuse.
 
@@ -352,6 +354,179 @@ ixf (MQTTBruteforce) > run
 | CVE 2025 | `siemens_telecontrol_cve_2025` | simulate=True |
 
 All destructive modules default to `simulate=True`. Ransomware/wiper modules require triple gate confirmation: `simulate=False` + `destructive=True` + `explicit_confirm="I_UNDERSTAND_THIS_IS_DESTRUCTIVE"`.
+
+---
+
+## Purple Team & Detection Modules
+
+### Modbus PCAP Analyzer
+
+Analyzes captured Modbus/TCP traffic for unauthorized write operations and reconnaissance patterns.
+
+```bash
+ixf > use assessment/detection/modbus_pcap_analyzer
+ixf (ModbusPCAP) > set PCAP_FILE /tmp/modbus_capture.pcap
+ixf (ModbusPCAP) > set OUTPUT_JSON /tmp/analysis.json
+ixf (ModbusPCAP) > run
+
+[*] Analyzing Modbus PCAP: /tmp/modbus_capture.pcap
+[+] Parsed 847 Modbus transactions
+
+Summary:
+  Total transactions:       847
+  Unique source IPs:        3
+  Write operations:         12
+  DANGEROUS operations:     4  <- FC5/6/15/16
+  Recon operations:         2  <- FC43/FC17
+
+[!] ALERT: 4 DANGEROUS Modbus write operations detected
+
+Source       Destination  FC   Name                   Reg   Flag
+10.0.1.100   10.0.1.10   16   Write Multiple Regs    100   [DANGEROUS]
+10.0.1.100   10.0.1.10   5    Write Single Coil      1     [DANGEROUS]
+10.0.1.200   10.0.1.10   43   Read Device ID         -     [RECON]
+
+[+] JSON report saved: /tmp/analysis.json
+[*] Tip: capture with: tcpdump -w capture.pcap 'tcp port 502'
+```
+
+### Suricata OT Rules Generator
+
+Generates Suricata IDS rules tailored for OT/ICS protocol anomaly detection.
+
+```bash
+ixf > use assessment/detection/suricata_ot_rules_generator
+ixf (SuricataOT) > set OUTPUT_FILE /tmp/ics_rules.rules
+ixf (SuricataOT) > set PROTOCOLS modbus,dnp3,bacnet
+ixf (SuricataOT) > set INCLUDE_CVE_RULES true
+ixf (SuricataOT) > run
+
+[*] Generating Suricata OT/ICS rules
+[+] Modbus rules:    18 (write ops, function code abuse, broadcast)
+[+] DNP3 rules:       9 (unsolicited response, unauthorized control)
+[+] BACnet rules:    11 (who-is flood, foreign device abuse)
+[+] CVE-based rules: 14 (TRITON, FrostyGoop, INCONTROLLER signatures)
+[+] Total rules:     52
+
+[+] Rules written to: /tmp/ics_rules.rules
+[*] Load with: suricata -r traffic.pcap -S /tmp/ics_rules.rules
+```
+
+### Modbus Zeek Rule Generator
+
+Generates Zeek/Bro scripts for Modbus/TCP traffic analysis and alerting.
+
+```bash
+ixf > use assessment/detection/modbus_zeek_rule_generator
+ixf (ModbusZeek) > set OUTPUT_DIR /tmp/zeek_scripts
+ixf (ModbusZeek) > set ALERT_WRITE_OPS true
+ixf (ModbusZeek) > set ALERT_BROADCAST true
+ixf (ModbusZeek) > run
+
+[*] Generating Zeek Modbus analysis scripts
+[+] modbus-write-monitor.zeek     Alert on FC5/6/15/16 write operations
+[+] modbus-broadcast-detect.zeek  Detect broadcast unit_id=255 recon
+[+] modbus-function-log.zeek      Full function code audit log
+[+] modbus-anomaly-detect.zeek    Statistical baseline deviation alerts
+
+[+] Scripts saved to: /tmp/zeek_scripts/
+[*] Load with: zeek -i eth0 /tmp/zeek_scripts/
+```
+
+### CoAP Protocol Fuzzer
+
+Sends malformed CoAP packets to test embedded IIoT device resilience against parser attacks.
+
+```bash
+ixf > use exploits/protocols/coap_fuzzer
+ixf (CoAPFuzzer) > set TARGET 192.168.1.10
+ixf (CoAPFuzzer) > set PORT 5683
+ixf (CoAPFuzzer) > set SIMULATE true
+ixf (CoAPFuzzer) > run
+
+[SIMULATE] CoAP Fuzzer: 8 test cases against 192.168.1.10:5683
+
+Case                   Description                        Expected
+invalid_version_3      Version field=3 (invalid)          ignore/error
+tkl_overflow           TKL says 15, 4 bytes follow        buffer overflow
+payload_marker_empty   0xFF marker with empty payload     protocol error
+option_length_overflow Extended length 255, no data       buffer read overflow
+uri_path_traversal     /../../../etc/passwd in URI-Path   access denial
+observe_flood_50x      Subscribe flood via CoAP Observe   resource exhaustion
+empty_rst              RST with empty code                no crash
+giant_token_32         TKL=8 but 32 bytes follow          crash or ignore
+
+[!] Set SIMULATE=false to send to live target
+[!] TIMEOUT = possible DoS/crash | RESPONSE = device still up
+```
+
+### Conpot Honeypot Detection
+
+Identifies Conpot ICS honeypot deployments by fingerprinting characteristic response patterns.
+
+```bash
+ixf > use assessment/detection/conpot_integration
+ixf (ConpotDetect) > set TARGET 192.168.1.10
+ixf (ConpotDetect) > set CHECK_MODBUS true
+ixf (ConpotDetect) > set CHECK_S7 true
+ixf (ConpotDetect) > run
+
+[*] Scanning 192.168.1.10 for Conpot honeypot indicators
+[*] Modbus FC43 (Read Device ID): vendor=Siemens, model=S7-200 [GENERIC - SUSPECT]
+[*] S7comm: firmware version matches known Conpot default [INDICATOR]
+[*] HTTP /index.html: default Conpot template detected [CONFIRMED]
+
+[!] VERDICT: High confidence Conpot honeypot (3/3 indicators)
+[*] Tip: real Siemens S7-200 does not expose HTTP on port 80 by default
+```
+
+### Nmap OT Scanner
+
+Runs Nmap with OT/ICS-specific NSE scripts for protocol discovery and service fingerprinting.
+
+```bash
+ixf > use scanners/ot/nmap_ot_scanner
+ixf (NmapOT) > set TARGET 192.168.1.0/24
+ixf (NmapOT) > set PROTOCOLS modbus,s7,bacnet,enip
+ixf (NmapOT) > set SIMULATE true
+ixf (NmapOT) > run
+
+[SIMULATE] Nmap OT Scanner - target: 192.168.1.0/24
+
+Command that would run:
+  nmap -sV -p 502,102,47808,44818 --script modbus-discover,s7-info,bacnet-info,enip-info 192.168.1.0/24
+
+Expected discovery scripts:
+  modbus-discover   Port 502  - Unit ID enumeration, FC43 device info
+  s7-info           Port 102  - Siemens S7comm PLC fingerprint
+  bacnet-info       Port 47808- BACnet device object list
+  enip-info         Port 44818- EtherNet/IP identity object
+
+[!] Set SIMULATE=false to run against live targets (requires nmap installed)
+```
+
+### Lab Environment Setup (Docker)
+
+Generates a complete Docker Compose ICS/OT lab with Conpot, FUXA SCADA, and OpenPLC.
+
+```bash
+ixf > use assessment/lab_environment_setup
+ixf (ICSLab) > set INCLUDE_CONPOT true
+ixf (ICSLab) > set INCLUDE_FUXA true
+ixf (ICSLab) > set OUTPUT_DIR /tmp/ics_lab
+ixf (ICSLab) > run
+
+[+] ICS/OT lab files generated in: /tmp/ics_lab
+    docker-compose.yml     Docker services definition
+    setup.sh               Automated setup script
+    LAB_NOTES.md           Lab exercises guide
+
+[*] Start lab: cd /tmp/ics_lab && bash setup.sh
+[*] Components:
+    Conpot 172.20.0.10   Modbus:502, HTTP:80, S7comm:102
+    FUXA  172.20.0.20   SCADA HMI: http://localhost:1881
+[*] Stop lab: docker compose down
+```
 
 ---
 
