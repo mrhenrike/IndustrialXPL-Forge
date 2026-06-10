@@ -1,15 +1,15 @@
 # Author: André Henrique (@mrhenrike) | https://github.com/mrhenrike
 
 [build-system]
-requires = ["setuptools>=70", "wheel"]
+requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "industrialxpl-forge"
-version = "1.0.24"
+version = "1.0.25"
 description = "IndustrialXPL-Forge (IXF) — OT/ICS/SCADA/HMI/IIoT Security Assessment & Exploitation Framework. Python-First, 972+ modules, 79 MITRE ATT&CK for ICS techniques, 26 ICS malware TTPs, 150+ vendors, 50+ protocols."
 readme = { file = "README.md", content-type = "text/markdown" }
-license = "MIT"
+license = { text = "MIT" }
 authors = [
     { name = "André Henrique", email = "henrique.santos@uniaogeek.com.br" },
 ]

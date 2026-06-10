@@ -30,7 +30,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install build tools
-        run: pip install --upgrade build twine
+        run: pip install --upgrade "build" "twine>=6.1" "setuptools>=68"
 
       - name: Build sdist and wheel
         run: python -m build
