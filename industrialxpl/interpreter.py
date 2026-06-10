@@ -36,7 +36,7 @@ from industrialxpl.core.exploit.utils import (
     module_required, MODULES_DIR,
 )
 
-VERSION = "1.0.19"
+VERSION = "1.0.20"
 
 _BANNER = r"""
  ___           _           _        _       ___  ______  _          _____
@@ -276,13 +276,18 @@ class IXFInterpreter(BaseInterpreter):
                 self._help_loglevel()
                 return
             if term in ("timing", "t0", "t1", "t2", "t3", "t4", "t5", "nmap"):
-                self._help_timing()
+                self._help_option_timing()
                 return
             if term in ("search",):
                 self._help_search()
                 return
             if term in ("mitre", "ttp"):
                 self._help_mitre()
+                return
+            # Check per-option help map
+            option_map = self._get_option_help_map()
+            if term in option_map:
+                option_map[term]()
                 return
             # Try to load the module and print its options
             module_path = pythonize_path(term)
@@ -363,33 +368,40 @@ class IXFInterpreter(BaseInterpreter):
 
     def _help_global(self) -> None:
         rows = [
-            ("loglevel",     str(self._global_opts.get("loglevel", "info")),
-             "debug | info | warning | error   — verbosity of IXF output"),
-            ("verbose",      str(self._global_opts.get("verbose", "false")),
-             "true | false                      — alias for loglevel=debug"),
-            ("threads",      str(self._global_opts.get("threads", "10")),
-             "integer >= 1                      — parallel threads for multi-host ops"),
-            ("timeout",      str(self._global_opts.get("timeout", "5")),
-             "integer seconds                   — socket timeout for all modules"),
-            ("target",       str(self._global_opts.get("target", "")),
-             "IP / hostname / CIDR              — default target for all modules"),
-            ("port",         str(self._global_opts.get("port", "")),
-             "integer 1-65535                   — override default port"),
-            ("output",       str(self._global_opts.get("output", "")),
-             "filepath                          — save output to file"),
-            ("report_fmt",   str(self._global_opts.get("report_fmt", "markdown")),
-             "json | html | markdown            — report format for 'report' cmd"),
+            ("loglevel",   str(self._global_opts.get("loglevel", "info")),
+             "debug | info | warning | error"),
+            ("verbose",    str(self._global_opts.get("verbose", "false")),
+             "true | false  (alias: loglevel=debug)"),
+            ("timing",     str(self._global_opts.get("timing", "T3")),
+             "T0 T1 T2 T3 T4 T5  (Modbus/OT scan speed)"),
+            ("threads",    str(self._global_opts.get("threads", "10")),
+             "integer >= 1  (parallel threads)"),
+            ("timeout",    str(self._global_opts.get("timeout", "0")),
+             "integer seconds  (0 = use timing default)"),
+            ("target",     str(self._global_opts.get("target", "")),
+             "IP / hostname  (default target for all modules)"),
+            ("port",       str(self._global_opts.get("port", "")),
+             "502 | 502,510 | 500-510  (port or range)"),
+            ("unit_id",    str(self._global_opts.get("unit_id", "1")),
+             "0-247  (Modbus slave/unit ID)"),
+            ("output",     str(self._global_opts.get("output", "")),
+             "filepath  (save output to file)"),
+            ("report_fmt", str(self._global_opts.get("report_fmt", "markdown")),
+             "json | html | markdown | csv"),
         ]
         print_table(
-            ["Option", "Current", "Description"],
+            ["Option", "Current Value", "Accepted Values / Description"],
             rows,
-            title="Global Options (setg / unsetg)",
+            title="Global Options  —  setg <option> <value>  |  unsetg <option>",
         )
-        print_info("\nUsage:  setg loglevel debug")
-        print_info("        setg threads 20")
-        print_info("        setg target 192.168.1.0/24")
-        print_info("        unsetg target\n")
-        print_info("Global options are applied to every module loaded after 'setg'.")
+        print_info("")
+        print_info("  Type 'help <option>' for detailed help on any option:")
+        print_info("  help timing     help registers    help port    help fc")
+        print_info("  help unit_id    help timeout      help target  help threads")
+        print_info("")
+        print_info("  setg loglevel debug     setg timing T2     setg threads 20")
+        print_info("  setg target 192.168.1.100              setg unit_id 1")
+        print_info("  unsetg target           — clear a global option")
 
     def _help_simulate(self) -> None:
         print_info("""
@@ -458,23 +470,322 @@ Type examples:
 Tip: 'modules' or 'modules <category>' browses the full tree.
 """)
 
-    def _help_timing(self) -> None:
+    # ── Per-option help ───────────────────────────────────────────────────────
+
+    # Map of option name -> help function
+    _OPTION_HELP_MAP: dict = {}  # populated lazily below
+
+    def _get_option_help_map(self) -> dict:
+        return {
+            "timing":      self._help_option_timing,
+            "scan_timing": self._help_option_timing,
+            "registers":   self._help_option_registers,
+            "register":    self._help_option_registers,
+            "port":        self._help_option_port,
+            "ports":       self._help_option_port,
+            "fc":          self._help_option_fc,
+            "unit_id":     self._help_option_unit_id,
+            "unitid":      self._help_option_unit_id,
+            "timeout":     self._help_option_timeout,
+            "target":      self._help_option_target,
+            "simulate":    self._help_simulate,
+            "destructive": self._help_option_destructive,
+            "loglevel":    self._help_loglevel,
+            "verbose":     self._help_loglevel,
+            "threads":     self._help_option_threads,
+            "output":      self._help_option_output,
+            "report_fmt":  self._help_option_report_fmt,
+        }
+
+    def _help_option_timing(self) -> None:
         from industrialxpl.core.modbus.timing import ModbusTiming
-        print_info(ModbusTiming.describe_all())
         print_info("""
-Usage (in any Modbus module):
-  set timing T3            — Normal (default, similar to Nmap -T3)
-  set timing T0            — Paranoid: 5s timeout, 10s between requests
-  set timing T5            — Insane: 0.2s timeout, no inter-request delay
-  set timeout 2            — Override socket timeout only (keeps timing retries/delays)
+Option: timing
+━━━━━━━━━━━━━━
+Type     : T-level string (T0–T5) or name
+Default  : T3 (Normal)
+Scope    : global (setg) + per-module (set)
+Applies  : all Modbus/OT scanner and exploit modules
 
-  setg timing T2           — Apply timing globally to all Modbus modules
-  setg timeout 3           — Global socket timeout override
+{}
 
-Timing interacts with:
-  port    — each port in a range is probed individually with the chosen timing
-  registers  — each bulk read uses timing.socket_timeout per FC call
+Accepted values:
+  T0  paranoid      — T0
+  T1  sneaky        — T1
+  T2  polite        — T2
+  T3  normal        — T3  (default)
+  T4  aggressive    — T4
+  T5  insane        — T5
+
+Examples:
+  set timing T3              — single module
+  setg timing T2             — all modules loaded after this
+  setg timing paranoid       — name form also accepted
+
+Related:
+  set timeout 5              — override socket timeout only
+  setg timeout 10            — global socket timeout override
+""".format(ModbusTiming.describe_all()))
+
+    def _help_option_registers(self) -> None:
+        print_info("""
+Option: registers
+━━━━━━━━━━━━━━━━━
+Type     : address expression string
+Default  : (module-specific, e.g. 0-9)
+Scope    : per-module (set)
+Applies  : all Modbus scanner/read modules
+
+Accepted notations:
+  Decimal offset (0-based):
+    10               — single address, offset 10
+    14-20            — range: offsets 14,15,...,20
+    10,14-20,100     — mixed list
+
+  Schneider/Modicon 5-digit (implied FC):
+    00001            — coil 1  (implies FC1)
+    00001-00100      — coils 1-100 (implies FC1)
+    10001            — discrete input 1 (implies FC2)
+    30001-30010      — input registers 1-10 (implies FC4)
+    40001            — holding register 1 (implies FC3)
+    40001-40010      — holding registers 1-10
+    40001,40005,41000 — specific holding registers
+
+  Modicon 6-digit:
+    000001-065536    — coils (FC1)
+    400001-465536    — holding registers (FC3)
+
+Notes:
+  - Schneider/Modicon notation automatically sets the FC unless overridden by 'fc'
+  - Empty = use module default range
+  - Max range per single read: 125 words (FC3/4) or 2000 bits (FC1/2)
+
+Examples:
+  set registers 40001-40010         — holding registers 1-10 (FC3)
+  set registers 0-9                 — first 10 addresses with module default FC
+  set registers 10,14-20,100        — sparse list, 3 groups
+  set registers 00001-00100         — 100 coils starting at 1 (FC1)
 """)
+
+    def _help_option_port(self) -> None:
+        print_info("""
+Option: port
+━━━━━━━━━━━━
+Type     : port expression string
+Default  : 502 (standard Modbus/TCP)
+Scope    : per-module (set) or global (setg)
+
+Accepted values:
+  Single:      502
+  List:        502,510,5020
+  Range:       500-510         (max 1000 ports per range for safety)
+  Mixed:       502,1000-1010
+
+Common Modbus/OT ports:
+  502    — Modbus/TCP (standard)
+  4840   — OPC-UA
+  44818  — EtherNet/IP
+  20000  — DNP3
+  2404   — IEC 60870-5-104
+  102    — S7comm / ISO-on-TCP
+  47808  — BACnet/IP
+  5094   — HART-IP
+  18245  — GE-SRTP
+
+Examples:
+  set port 502               — standard Modbus
+  set port 502,510           — two ports
+  set port 500-510           — scan range of 11 ports
+  setg port 502              — global default port
+""")
+
+    def _help_option_fc(self) -> None:
+        print_info("""
+Option: fc
+━━━━━━━━━━
+Type     : integer (0-127)
+Default  : 0 (use module default or implied by register notation)
+Scope    : per-module (set)
+
+Function Codes:
+  0    — auto (module default or inferred from 'registers' notation)
+  1    — Read Coils               (bits, max 2000 per request)
+  2    — Read Discrete Inputs     (bits, max 2000 per request)
+  3    — Read Holding Registers   (16-bit words, max 125 per request)
+  4    — Read Input Registers     (16-bit words, max 125 per request)
+  5    — Write Single Coil        (requires destructive=true)
+  6    — Write Single Register    (requires destructive=true)
+  15   — Write Multiple Coils     (requires destructive=true)
+  16   — Write Multiple Registers (requires destructive=true)
+  17   — Report Server ID         (device fingerprint)
+  43   — Read Device Identification (MEI, vendor/product info)
+
+Priority:
+  explicit fc > fc implied by register notation > module default
+
+Examples:
+  set fc 0             — auto (default)
+  set fc 3             — force FC3 regardless of register notation
+  set fc 4             — force FC4 Input Registers
+  set registers 40001  — automatically implies fc=3 (unless overridden)
+""")
+
+    def _help_option_unit_id(self) -> None:
+        print_info("""
+Option: unit_id
+━━━━━━━━━━━━━━━
+Type     : integer (0-247)
+Default  : 1
+Scope    : per-module (set) or global (setg)
+
+Modbus Unit ID (also called Slave ID or Slave Address) identifies
+the target device on a Modbus network.
+
+  0      — broadcast (no response expected, not all devices support)
+  1      — standard single-device default
+  1-247  — serial Modbus slave addresses
+  255    — reserved for gateway/host use in some implementations
+
+When to change:
+  - Modbus-to-TCP gateways bridge multiple serial devices; each has a different unit_id
+  - Use 'modbus_id_fuzzer' to discover active unit_ids on a gateway
+  - RTU serial chains: each device has a unique ID (1-247)
+
+Examples:
+  set unit_id 1              — default
+  set unit_id 10             — specific slave
+  setg unit_id 1             — global default
+  use scanners/ics/modbus_id_fuzzer  — discover all active IDs
+""")
+
+    def _help_option_timeout(self) -> None:
+        print_info("""
+Option: timeout
+━━━━━━━━━━━━━━━
+Type     : integer (seconds, 0 = use timing profile default)
+Default  : 0
+Scope    : per-module (set) or global (setg)
+
+Overrides the socket timeout from the timing profile.
+When 0, the timeout from the selected 'timing' profile is used.
+
+Relationship with timing:
+  timing=T3  → socket_timeout=1s   (normal)
+  timeout=5  → overrides to 5s     (explicit value wins)
+  timeout=0  → use timing default  (no override)
+
+Examples:
+  set timeout 0              — use timing profile default (recommended)
+  set timeout 5              — 5-second socket timeout
+  set timeout 30             — for slow serial-to-TCP gateways
+  setg timeout 3             — global override for all modules
+""")
+
+    def _help_option_target(self) -> None:
+        print_info("""
+Option: target
+━━━━━━━━━━━━━━
+Type     : IPv4 address, IPv6 address, or hostname
+Default  : (empty — required)
+Scope    : per-module (set) or global (setg)
+
+Accepted values:
+  IPv4:       192.168.1.100
+  IPv6:       2001:db8::1
+  Hostname:   plc.corp.local
+  CIDR:       (not accepted here — use 'discover' for subnet sweep)
+
+Examples:
+  set target 192.168.1.100
+  set target 10.0.0.50
+  setg target 192.168.1.100  — apply to all subsequent modules
+  unsetg target              — clear global target
+""")
+
+    def _help_option_destructive(self) -> None:
+        print_info("""
+Option: destructive
+━━━━━━━━━━━━━━━━━━━
+Type     : bool (true/false/yes/no/1/0)
+Default  : false
+Scope    : per-module (set)
+
+Enables write/exploit operations that may cause irreversible changes:
+  false  — read-only operations only (safe for production)
+  true   — enables writes, firmware changes, coil manipulation, DoS
+
+For INFO/READ modules (assessment, scanners): destructive has no effect.
+For HIGH/CRITICAL modules: requires typed confirmation before execution.
+
+Never set destructive=true on production systems without authorization.
+
+Examples:
+  set destructive false      — default, safe
+  set destructive true       — enables exploit — use with extreme caution
+""")
+
+    def _help_option_threads(self) -> None:
+        print_info("""
+Option: threads (global only)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Type     : integer >= 1
+Default  : 10
+Scope    : global (setg only)
+
+Number of parallel threads for multi-host or multi-port operations.
+Affects: subnet sweeps, CIDR scans, TTP runs, MITRE full sweeps.
+
+Recommended values:
+  1-5    — conservative (T0/T1 timing)
+  10     — default (T3 Normal)
+  20-50  — fast networks (T4 Aggressive)
+  100+   — not recommended; may cause TCP exhaustion
+
+Examples:
+  setg threads 5             — conservative
+  setg threads 20            — fast scan
+  setg threads 1             — single-threaded (max stealth)
+""")
+
+    def _help_option_output(self) -> None:
+        print_info("""
+Option: output (global)
+━━━━━━━━━━━━━━━━━━━━━━━
+Type     : file path string
+Default  : (empty — no file output)
+Scope    : global (setg)
+
+Save all module output to a file in addition to the terminal.
+Format determined by 'report_fmt' option.
+
+Examples:
+  setg output /tmp/scan_results.txt
+  setg output ./reports/modbus_scan.json
+  unsetg output              — disable file output
+""")
+
+    def _help_option_report_fmt(self) -> None:
+        print_info("""
+Option: report_fmt (global)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Type     : string
+Default  : markdown
+Scope    : global (setg)
+
+Accepted values:
+  markdown  — human-readable Markdown report
+  json      — machine-readable JSON
+  html      — HTML report with styling
+  csv       — comma-separated values (for tabular results)
+
+Examples:
+  setg report_fmt json       — JSON output
+  setg report_fmt markdown   — default Markdown
+  report json                — generate report in JSON format immediately
+""")
+
+    def _help_timing(self) -> None:
+        self._help_option_timing()
 
     def _help_mitre(self) -> None:
         print_info("""
@@ -631,6 +942,12 @@ Example:
                         setattr(self.current_module, key, val)
                     except Exception:
                         pass
+                # timeout global also applies to modules that have it
+                if key == "timeout" and "timeout" in self.current_module.options:
+                    try:
+                        setattr(self.current_module, "timeout", val)
+                    except Exception:
+                        pass
             # Warn if poly language requires external runtime
             info = self.current_module.get_info()
             poly_lang = info.get("poly_language", "python")
@@ -653,13 +970,30 @@ Example:
     def command_set(self, args: str, **kwargs) -> None:
         parts = args.split(None, 1)
         if len(parts) < 2:
-            print_error("Usage: set <option> <value>")
+            # 'set <option>' with no value — show help for that option
+            if len(parts) == 1:
+                opt = parts[0].lower()
+                omap = self._get_option_help_map()
+                if opt in omap:
+                    omap[opt]()
+                    return
+            print_error("Usage: set <option> <value>  |  set <option> ?")
+            if self.current_module:
+                self.command_show("options")
             return
         key_raw, value = parts[0], parts[1]
         # Case-insensitive option matching
         key = key_raw.lower()
+        # '?' as value = show help for that option
+        if value.strip() == "?":
+            omap = self._get_option_help_map()
+            if key in omap:
+                omap[key]()
+            else:
+                print_info("No dedicated help for '{}'. Type 'help {}' to search.".format(key, key))
+            return
         if key not in self.current_module.options:
-            print_error("Unknown option: '{}'".format(key_raw))
+            print_error("Unknown option: '{}' — type 'show options' to list valid options".format(key_raw))
             return
         try:
             setattr(self.current_module, key, value)
@@ -667,6 +1001,9 @@ Example:
             print_success("{} => {}".format(key, value))
         except Exception as exc:
             print_error("Cannot set '{}': {}".format(key, exc))
+            omap = self._get_option_help_map()
+            if key in omap:
+                print_info("  Type 'set {} ?' for accepted values.".format(key))
 
     def command_setg(self, args: str, **kwargs) -> None:
         parts = args.split(None, 1)
@@ -695,6 +1032,23 @@ Example:
                 self._global_opts["threads"] = str(t)
             except ValueError:
                 print_error("threads must be a positive integer, got: {}".format(value))
+                return
+
+        if key in ("timing", "scan_timing"):
+            try:
+                from industrialxpl.core.modbus.timing import ModbusTiming
+                profile = ModbusTiming.resolve(value)
+                self._global_opts["timing"] = str(value)
+                print_success("[global] timing => {} ({})".format(value, profile.name))
+                if self.current_module and "timing" in self.current_module.options:
+                    try:
+                        setattr(self.current_module, "timing", value)
+                    except Exception:
+                        pass
+                return
+            except ValueError as exc:
+                print_error(str(exc))
+                self._help_timing()
                 return
 
         if self.current_module and key in self.current_module.options:
@@ -734,6 +1088,11 @@ Example:
         if sub in ("mitre", "ttp"):
             self._help_mitre()
             return
+        # Per-option help via show
+        omap = self._get_option_help_map()
+        if sub in omap:
+            omap[sub]()
+            return
 
         if not self.current_module:
             if sub in ("modules", "all", "options", ""):
@@ -761,6 +1120,8 @@ Example:
             ]
             print_table(["Option", "Value", "Required", "Description"], rows,
                         title="Options — {}".format(info.get("name", str(mod))))
+            print_info("  Tip: 'set <option> ?' or 'help <option>' for per-option help")
+            print_info("       'set <option> <value>' to configure  |  'run' to execute")
         elif sub == "devices":
             devices = info.get("devices", [])
             print_info("Devices: {}".format(", ".join(devices) if devices else "Any"))
