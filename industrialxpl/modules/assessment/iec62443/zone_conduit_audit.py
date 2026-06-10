@@ -193,7 +193,8 @@ class Exploit(Exploit):
 
     @mute
     def check(self) -> bool:
-        return True
+        # Assessment modules have no network check — return None to indicate "not applicable"
+        return None  # type: ignore[return-value]
 
     def run(self) -> None:
         site = self.site_name if self.site_name else "Unnamed Site"
@@ -223,20 +224,39 @@ class Exploit(Exploit):
 
         scores = []
         gaps   = []
+        _aborted = False
 
         for q in _QUESTIONS:
+            if _aborted:
+                scores.append(0)
+                continue
+
             print_info("\n" + "-" * 60)
             print_status(q["text"])
             print_info("  Guidance: {}".format(q["guidance"]))
 
+            answer = "S"
             while True:
                 try:
-                    answer = input("  Answer [Y/P/N/S]: ").strip().upper()
+                    raw = input("  Answer [Y/P/N/S/Q]: ").strip().upper()
                 except EOFError:
                     answer = "S"
-                if answer in ("Y", "P", "N", "S"):
                     break
-                print_warning("  Enter Y, P, N, or S.")
+                except KeyboardInterrupt:
+                    print()
+                    print_info("Audit interrupted. Remaining questions will be scored as skipped.")
+                    _aborted = True
+                    answer = "S"
+                    break
+                if raw in ("Y", "P", "N", "S"):
+                    answer = raw
+                    break
+                if raw in ("Q", "QUIT", "EXIT"):
+                    print_info("Audit aborted by user. Partial results will be shown.")
+                    _aborted = True
+                    answer = "S"
+                    break
+                print_warning("  Enter Y (yes), P (partial), N (no), S (skip), or Q (quit).")
 
             if answer == "Y":
                 scores.append(q["sl_weight"])
@@ -247,7 +267,7 @@ class Exploit(Exploit):
                 scores.append(0)
                 gaps.append("{} — NOT IMPLEMENTED: {}".format(q["id"], q["text"].split("]")[1].strip()))
             else:
-                scores.append(q["sl_weight"] * 0.5)  # partial credit for skipped/NA
+                scores.append(0)  # skip = no credit, honest assessment
 
         total_score = sum(scores)
         max_score   = sum(q["sl_weight"] for q in _QUESTIONS)

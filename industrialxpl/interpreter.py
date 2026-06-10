@@ -57,7 +57,13 @@ IndustrialXPL-Forge (IXF) v{version}
 GLOBAL COMMANDS:
   help                          Show this help menu
   use <module>                  Load a module (e.g. use scanners/ics/modbus_detect)
-  search <term>                 Search modules by keyword, vendor, CVE, or protocol
+  search <term>                 Search by keyword, vendor, CVE, or protocol
+  search type=<category>        Filter by type: scanner, exploit, cve, assessment, creds
+  search sector=<sector>        Filter by sector: energy, oilgas, water, manufacturing...
+  modules                       Browse all categories with module counts
+  modules <category>            Drill-down: modules scanners / modules assessment
+  info                          Alias for 'show info' (when module loaded)
+  options                       Alias for 'show options' (when module loaded)
   exec <shell_cmd>              Execute a shell command
   discover <CIDR>               Discover OT/ICS assets on a network
   exit                          Exit IXF
@@ -66,10 +72,18 @@ MODULE COMMANDS (after 'use'):
   run                           Execute the current module
   check                         Run check() only — read-only fingerprint
   back                          Deselect current module
-  set <option> <value>          Set a module option (e.g. set target 192.168.1.1)
+  set <option> <value>          Set a module option (case-insensitive option names)
   setg <option> <value>         Set a global option (applies to all modules)
   unsetg <option>               Clear a global option
   show [info|options|devices]   Show module information
+  info                          Shortcut for 'show info'
+  options                       Shortcut for 'show options'
+
+SIMULATE vs DESTRUCTIVE:
+  simulate=true   (default)     Print planned actions — no packets sent, fully safe.
+  simulate=false                Execute actions, but only for read-only/INFO modules.
+  destructive=true              Enable write/exploit execution — requires confirmation.
+  Assessment/INFO modules run on simulate=false without needing destructive=true.
 
 CVE COMMANDS:
   cve <CVE-ID>                  Load module for a specific CVE
@@ -80,37 +94,27 @@ MITRE ATT&CK FOR ICS COMMANDS:
   mitre <TID>                   Show modules covering a technique (e.g. mitre T0843)
   mitre-list [tactic]           List all techniques [filtered by tactic]
   mitre-scan <tactic|TID> <target>  Execute all modules for a tactic/technique
-  mitre-all <target>            Execute all 79 MITRE ICS techniques (simulate default)
   mitre-coverage                Show coverage percentage per tactic
-  mitre-report [json|html|layer]Generate MITRE report / ATT&CK Navigator JSON layer
 
 TTP COMMANDS:
-  ttp <TID> <target>            Execute all modules for a TTP-ID against target/CIDR
-  ttp T0843 192.168.1.100       Run Program Download modules against target
-  ttp T0878 10.0.0.0/24         Run Alarm Suppression modules against subnet
-  ttp-check <TID> <target>      Run only check() — read-only, always safe
-  ttp-simulate <TID> <target>   Force simulate mode — print payloads only, no send
+  ttp <TID> <target>            Execute all modules for a TTP-ID against target
+  ttp-check <TID> <target>      Run check() only — read-only, always safe
+  ttp-simulate <TID> <target>   Force simulate mode — no packets sent
   ttp-list [--tactic <name>]    List all TTP-IDs with module counts
 
-ASSESSMENT:
-  assess <module_path>          Run an assessment module
-
-SAFETY (applies to all modules):
-  simulate  (default: true)     Print payload without sending — SAFE
-  destructive (default: false)  Enable real execution — requires confirmation
-  All destructive modules show an impact banner and require typed confirmation.
-  Audit log: .log/destructive_ops_YYYY-MM-DD.log
+SECTORS AVAILABLE FOR search sector=<name>:
+  energy, oilgas, water, manufacturing, building, automotive, maritime,
+  aviation, mining, railway, chemical, hospital, datacenter, smart_grid
 
 EXAMPLES:
+  ixf > search sector=energy           — find energy sector modules
+  ixf > search type=scanner            — list all scanners
+  ixf > modules                        — browse all categories
+  ixf > modules assessment             — show assessment subcategories
   ixf > use scanners/ics/modbus_detect
-  ixf > set target 192.168.1.100
-  ixf > check
-
-  ixf > ttp T0843 192.168.1.100
-  ixf > mitre-scan discovery 10.0.0.0/24
+  ixf > set TARGET 192.168.1.100       — case-insensitive
+  ixf > run
   ixf > cve CVE-2022-29953
-  ixf > cve-scan 192.168.1.0/24
-  ixf > report html
 """.format(version=VERSION)
 
 _MODULE_HELP = """
@@ -243,6 +247,19 @@ class IXFInterpreter(BaseInterpreter):
         else:
             print(_GLOBAL_HELP)
 
+    # Aliases for common typos / shortcuts
+    def command_info(self, args: str = "", **kwargs) -> None:
+        if self.current_module:
+            self.command_show("info")
+        else:
+            print_error("No module loaded. Use 'use <module_path>' first.")
+
+    def command_options(self, args: str = "", **kwargs) -> None:
+        if self.current_module:
+            self.command_show("options")
+        else:
+            print_error("No module loaded. Use 'use <module_path>' first.")
+
     def command_exit(self, args: str = "", **kwargs) -> None:
         print_info("Exiting IndustrialXPL-Forge. Stay safe.")
         sys.exit(0)
@@ -284,9 +301,21 @@ class IXFInterpreter(BaseInterpreter):
         if len(parts) < 2:
             print_error("Usage: set <option> <value>")
             return
-        key, value = parts[0], parts[1]
+        key_raw, value = parts[0], parts[1]
+        # Case-insensitive option matching
+        key = key_raw.lower()
+
+        # #region agent log
+        import json as _json, time as _time
+        try:
+            with open("debug-acd082.log", "a") as _f:
+                _f.write(_json.dumps({"sessionId":"acd082","runId":"run1","hypothesisId":"H5","location":"interpreter.py:command_set","message":"set called","data":{"key_raw":key_raw,"key_norm":key,"value":value,"available_options":list(self.current_module.options.keys()) if self.current_module else []},"timestamp":int(_time.time()*1000)}) + "\n")
+        except Exception:
+            pass
+        # #endregion
+
         if key not in self.current_module.options:
-            print_error("Unknown option: '{}'".format(key))
+            print_error("Unknown option: '{}'".format(key_raw))
             return
         try:
             setattr(self.current_module, key, value)
@@ -314,9 +343,19 @@ class IXFInterpreter(BaseInterpreter):
         else:
             print_warning("'{}' was not set globally.".format(key))
 
-    @module_required
-    def command_show(self, args: str, **kwargs) -> None:
+    def command_show(self, args: str = "", **kwargs) -> None:
         sub = args.strip().lower() or "options"
+        if not self.current_module:
+            if sub in ("modules", "all", ""):
+                print_status("{} modules indexed. Use 'search <keyword>' to find modules.".format(len(self.modules)))
+                print_info("  search modbus       — find Modbus modules")
+                print_info("  search siemens      — find Siemens modules")
+                print_info("  search assessment   — find assessment modules")
+                print_info("  search cve          — find CVE modules")
+                print_info("  show modules        — list all categories")
+            else:
+                print_error("No module loaded. Use 'use <module_path>' first.")
+            return
         mod = self.current_module
         info = mod.get_info()
 
@@ -344,6 +383,15 @@ class IXFInterpreter(BaseInterpreter):
         mod = self.current_module
         info = mod.get_info()
         impact = info.get("impact", "LOW")
+
+        # #region agent log
+        import json as _json, time as _time
+        try:
+            with open("debug-acd082.log", "a") as _f:
+                _f.write(_json.dumps({"sessionId":"acd082","runId":"run1","hypothesisId":"H3","location":"interpreter.py:command_run","message":"command_run called","data":{"simulate":str(mod.simulate),"destructive":str(mod.destructive),"impact":impact,"module":info.get("name","?")},"timestamp":int(_time.time()*1000)}) + "\n")
+        except Exception:
+            pass
+        # #endregion
 
         # Simulate mode (default)
         if mod.simulate:
@@ -379,7 +427,17 @@ class IXFInterpreter(BaseInterpreter):
                 print_warning("Module run() not yet implemented.")
             return
 
-        # simulate=false + destructive=false → safe check only
+        # simulate=false + destructive=false → run for INFO/assessment modules, check() for risky ones
+        impact = info.get("impact", "LOW").upper()
+        if impact in ("INFO", "READ"):
+            # Assessment/read-only modules: run directly without destructive gate
+            mod._simulate_mode = False
+            print_status("Running {}…".format(info.get("name", str(mod))))
+            try:
+                mod.run()
+            except NotImplementedError:
+                print_warning("Module run() not yet implemented.")
+            return
         print_warning("simulate=false but destructive=false — running check() only.")
         self.command_check(args, **kwargs)
 
@@ -387,30 +445,161 @@ class IXFInterpreter(BaseInterpreter):
     def command_check(self, args: str = "", **kwargs) -> None:
         mod = self.current_module
         info = mod.get_info()
+        impact = info.get("impact", "LOW").upper()
+        if impact in ("INFO", "READ"):
+            print_info("This module is assessment-only. Use 'run' to start the questionnaire.")
+            return
         print_status("Checking {}…".format(info.get("name", str(mod))))
         try:
             result = mod.check()
-            if result:
+            if result is None:
+                print_info("check() not applicable for this module type.")
+            elif result:
                 print_success("VULNERABLE — {}".format(info.get("name", "")))
             else:
                 print_info("NOT_VULNERABLE — {}".format(info.get("name", "")))
         except NotImplementedError:
             print_warning("Module check() not yet implemented.")
 
+    # Sector/industry keyword mapping for discovery
+    _SECTOR_ALIASES = {
+        "energy": ["siemens", "abb", "schneider", "ge", "emerson", "power", "scada", "dnp3"],
+        "oilgas": ["oilgas", "oil_gas", "night_dragon", "vsat", "cobham", "dnp3"],
+        "oil": ["night_dragon", "oil_gas", "dnp3", "modbus"],
+        "gas": ["gas", "modbus", "dnp3"],
+        "water": ["water", "modbus", "dnp3", "scada"],
+        "pharma": ["pharma", "batch", "opc", "profinet"],
+        "manufacturing": ["modbus", "enip", "profinet", "plc", "rockwell", "siemens", "abb"],
+        "building": ["bacnet", "knx", "bms", "hvac", "automated_logic", "webctrl"],
+        "automotive": ["profinet", "can", "upa", "obd"],
+        "maritime": ["ais", "nmea", "vsat", "gps"],
+        "aviation": ["ads_b", "asterix", "fms"],
+        "mining": ["modbus", "dnp3", "abb", "siemens"],
+        "railway": ["modbus", "profinet", "dnp3", "cbtc"],
+        "chemical": ["modbus", "profinet", "siemens", "safety", "triton"],
+        "nuclear": ["modbus", "profinet", "siemens", "plc"],
+        "hospital": ["modbus", "bacnet", "bms", "ics"],
+        "hospital": ["modbus", "bacnet", "bms"],
+        "datacenter": ["modbus", "bacnet", "bms", "hvac", "ups"],
+        "smart_grid": ["dnp3", "iec104", "iec61850", "modbus"],
+        "scada": ["scada", "hmi", "historian", "opc"],
+        "plc": ["plc", "modbus", "s7comm", "enip", "profinet"],
+        "firepower": ["schneider", "rockwell", "siemens", "plc"],
+        "dcs": ["dcs", "yokogawa", "emerson", "abb", "honeywell"],
+        "rtu": ["rtu", "modbus", "dnp3"],
+    }
+
     def command_search(self, args: str, **kwargs) -> None:
         term = args.strip().lower()
         if not term:
             print_error("Usage: search <keyword>")
+            print_info("  search modbus          — keyword search")
+            print_info("  search sector=energy   — modules for energy sector")
+            print_info("  search type=scanner    — filter by category (scanner/exploit/cve/assessment/creds)")
             return
+
+        # Sector filter: search sector=energy
+        if term.startswith("sector="):
+            sector = term[7:].strip()
+            aliases = self._SECTOR_ALIASES.get(sector, [sector])
+            results = set()
+            for alias in aliases:
+                for m in self.modules:
+                    if alias in m.lower():
+                        results.add(m)
+            results = sorted(results)
+            if not results:
+                known = ", ".join(sorted(self._SECTOR_ALIASES.keys()))
+                print_info("No modules for sector '{}'. Known sectors: {}".format(sector, known))
+                return
+            print_success("{} module(s) for sector '{}':".format(len(results), sector))
+            for m in results[:50]:
+                print_info("  use {}".format(humanize_path(m)))
+            if len(results) > 50:
+                print_info("  … and {} more. Refine your search.".format(len(results) - 50))
+            return
+
+        # Type/category filter: search type=scanner
+        if term.startswith("type="):
+            category = term[5:].strip()
+            _CAT_MAP = {
+                "scanner": "scanners/",
+                "scanners": "scanners/",
+                "exploit": "exploits/",
+                "exploits": "exploits/",
+                "cve": "cve/",
+                "assessment": "assessment/",
+                "creds": "creds/",
+                "credentials": "creds/",
+            }
+            prefix = _CAT_MAP.get(category, category + "/")
+            results = [m for m in self.modules if prefix in m.lower()]
+            if not results:
+                known = ", ".join(sorted(_CAT_MAP.keys()))
+                print_info("No modules for type '{}'. Known types: {}".format(category, known))
+                return
+            print_success("{} module(s) of type '{}':".format(len(results), category))
+            for m in results[:50]:
+                print_info("  use {}".format(humanize_path(m)))
+            if len(results) > 50:
+                print_info("  … and {} more. Refine your search.".format(len(results) - 50))
+            return
+
+        # Standard keyword search
         results = [m for m in self.modules if term in m.lower()]
         if not results:
-            print_info("No modules found for '{}'.".format(term))
+            # Suggest sector search if term looks like an industry
+            if term in self._SECTOR_ALIASES:
+                print_info("No modules matched keyword '{}'. Try: search sector={}".format(term, term))
+            else:
+                print_info("No modules found for '{}'.".format(term))
             return
         print_success("{} module(s) found:".format(len(results)))
         for m in results[:50]:
             print_info("  use {}".format(humanize_path(m)))
         if len(results) > 50:
             print_info("  … and {} more. Refine your search.".format(len(results) - 50))
+
+    def command_modules(self, args: str = "", **kwargs) -> None:
+        """Drill-down module browser by top-level category."""
+        sub = args.strip().lower()
+        from collections import defaultdict
+        tree: dict = defaultdict(lambda: defaultdict(list))
+        for m in self.modules:
+            parts = m.split(".")
+            # parts example: industrialxpl.modules.scanners.ics.modbus_scan
+            if len(parts) >= 5:
+                cat = parts[3]      # e.g. scanners
+                subcat = parts[4]   # e.g. ics
+                tree[cat][subcat].append(parts[-1])
+            elif len(parts) >= 4:
+                cat = parts[3]
+                tree[cat][""].append(parts[-1])
+
+        if not sub:
+            print_success("Top-level categories ({} total):".format(len(tree)))
+            for cat in sorted(tree.keys()):
+                subcats = sorted(tree[cat].keys())
+                total = sum(len(v) for v in tree[cat].values())
+                print_info("  {:20s} {:4d} modules  subcats: {}".format(
+                    cat, total, ", ".join(s for s in subcats if s)))
+            print_info("\nDrill down: modules <category>  (e.g. modules scanners)")
+            return
+
+        if sub not in tree:
+            print_error("Category '{}' not found. Run 'modules' to see categories.".format(sub))
+            return
+
+        print_success("Category: {} ({} subcategories)".format(sub, len(tree[sub])))
+        for subcat in sorted(tree[sub].keys()):
+            mods = tree[sub][subcat]
+            label = "{}/{}".format(sub, subcat) if subcat else sub
+            print_info("  [{:3d}] {}".format(len(mods), label))
+            for modname in sorted(mods)[:8]:
+                path = "{}/{}/{}".format(sub, subcat, modname).replace("//" , "/")
+                print_info("          use {}".format(path))
+            if len(mods) > 8:
+                print_info("          … and {} more — search {} to list all".format(len(mods) - 8, subcat))
 
     def command_exec(self, args: str, **kwargs) -> None:
         if not args.strip():
