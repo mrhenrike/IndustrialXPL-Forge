@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """IndustrialXPL-Forge environment health checker.
 
 Verifies Python version, required pip packages (Tier 1-2),
@@ -110,8 +110,14 @@ def main() -> None:
 
     print("\n[Summary]")
     print("  Python-First mode: all IXF features work without Tier 3 runtimes.")
-    print("  Install Tier 2: pip install industrialxpl[ot]")
-    print("  Install all:    pip install industrialxpl[full]")
+    print("  Install Tier 2: 
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    ")
+    print("  Install all:    
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    ")
     print()
 
 

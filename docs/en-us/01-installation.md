@@ -57,7 +57,10 @@ IndustrialXPL-Forge (IXF) is a pure Python framework published on PyPI. The reco
 The simplest and most reliable installation method:
 
 ```bash
-pip install industrialxpl
+
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    
 ```
 
 ### Full Terminal Output (pip install)
@@ -65,7 +68,10 @@ pip install industrialxpl
 The following is a complete representative terminal session showing the full install output, including the progress bars pip displays when downloading and installing packages:
 
 ```
-$ pip install industrialxpl
+$ 
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    
 Collecting industrialxpl-forge
   Downloading industrialxpl_forge-1.0.12-py3-none-any.whl.metadata (8.4 kB)
 Collecting requests>=2.31.0 (from industrialxpl-forge)
@@ -179,7 +185,10 @@ $ ixf
                                                                               |___/
   IndustrialXPL-Forge v1.0.12 — OT/ICS/SCADA Security Assessment Framework
   Author: André Henrique (@mrhenrike) | União Geek | https://uniaogeek.com.br/
-  Python-First. Pure Python — install with pip install industrialxpl.
+  Python-First. Pure Python — install with 
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    .
   Type 'help' for commands.  simulate=True by default (safe mode).
 
 ixf >
@@ -207,7 +216,10 @@ source ~/.venvs/ixf/bin/activate
 /home/user/.venvs/ixf/bin/python
 
 # Install IXF into the venv
-(ixf) $ pip install industrialxpl
+(ixf) $ 
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    
 ```
 
 **Windows (PowerShell):**
@@ -224,7 +236,10 @@ python -m venv $HOME\.venvs\ixf
 C:\Users\mrhen\.venvs\ixf\Scripts\python.exe
 
 # Install IXF
-(ixf) PS> pip install industrialxpl
+(ixf) PS> 
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    
 ```
 
 **Windows (cmd.exe):**
@@ -232,7 +247,10 @@ C:\Users\mrhen\.venvs\ixf\Scripts\python.exe
 ```cmd
 python -m venv %USERPROFILE%\.venvs\ixf
 %USERPROFILE%\.venvs\ixf\Scripts\activate.bat
-pip install industrialxpl
+
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    
 ```
 
 ### Making the `ixf` command persistent
@@ -333,7 +351,10 @@ IndustrialXPL-Forge/
 
 ## Optional Dependency Extras
 
-IXF follows a **tiered dependency model**. The base `pip install industrialxpl` covers Tier 0 and Tier 1. Tiers 2 and 3 unlock additional protocol libraries, AI-powered SAST, and native multi-language execution.
+IXF follows a **tiered dependency model**. The base `
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    ` covers Tier 0 and Tier 1. Tiers 2 and 3 unlock additional protocol libraries, AI-powered SAST, and native multi-language execution.
 
 ### Tier 0 — Python Standard Library (Always Available)
 
@@ -387,7 +408,10 @@ Install these extras to unlock specific protocol libraries and AI-powered SAST a
 #### `[ot]` — OT/ICS Protocol Libraries
 
 ```bash
-pip install industrialxpl[ot]
+
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    
 ```
 
 **Installs:** `pymodbus>=3.0`, `asyncua>=1.0`, `cpppo>=4.3`
@@ -403,7 +427,10 @@ Without `[ot]`, the Modbus, OPC UA, and EtherNet/IP modules still run using raw 
 #### `[fieldbus]` — Industrial Fieldbus
 
 ```bash
-pip install industrialxpl[fieldbus]
+
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    
 ```
 
 **Installs:** `python-can>=4.0`
@@ -415,7 +442,10 @@ pip install industrialxpl[fieldbus]
 #### `[sast]` — SAST / LLM Analysis
 
 ```bash
-pip install industrialxpl[sast]
+
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    
 ```
 
 **Installs:** `openai>=1.0`, `anthropic>=0.25`
@@ -430,10 +460,16 @@ Both providers require an API key set via `set llm-key <key>` inside IXF. Keys a
 #### `[full]` — Everything
 
 ```bash
-pip install industrialxpl[full]
+
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    
 ```
 
-Equivalent to `pip install industrialxpl[ot,fieldbus,sast]`. Installs all optional extras at once.
+Equivalent to `
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    `. Installs all optional extras at once.
 
 ### Tier 3 — External Runtimes (Fully Optional)
 
@@ -462,7 +498,10 @@ python tools/env_doctor.py
 
 ### Windows
 
-`pyreadline3` is declared with `sys_platform == 'win32'` in `pyproject.toml` and is automatically installed when running `pip install industrialxpl` on Windows. It provides:
+`pyreadline3` is declared with `sys_platform == 'win32'` in `pyproject.toml` and is automatically installed when running `
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    ` on Windows. It provides:
 - Up/Down arrow history navigation in the IXF interactive shell
 - Tab completion for commands, module paths, and option names
 - Ctrl-R reverse history search
@@ -555,7 +594,10 @@ python3.11 --version
 # Create venv and install
 python3.11 -m venv ~/.venvs/ixf
 source ~/.venvs/ixf/bin/activate
-pip install industrialxpl
+
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    
 ```
 
 ### Running inside Docker or CI/CD
@@ -613,7 +655,10 @@ WORKDIR /opt/ixf
 RUN pip install --upgrade pip
 
 # Install IXF with all optional extras
-RUN pip install industrialxpl[full]
+RUN 
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    
 
 # Create log directory
 RUN mkdir -p /opt/ixf/.log /opt/ixf/.tmp && \
@@ -913,7 +958,10 @@ Complete expected output:
 
   Status: FULLY OPERATIONAL
   Python-First: all features available.
-  pip install industrialxpl[full] for Tier 2 (OT protocols + SAST)
+  
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+     for Tier 2 (OT protocols + SAST)
 ============================================================
 ```
 
@@ -921,12 +969,30 @@ Complete expected output:
 
 ```
 [Tier 2 — Optional pip extras]
-  pymodbus  MISSING  .......................................  OPTIONAL  pip install industrialxpl[ot]
-  asyncua  MISSING  ........................................  OPTIONAL  pip install industrialxpl[ot]
-  cpppo  MISSING  .........................................  OPTIONAL  pip install industrialxpl[ot]
-  python-can  MISSING  .....................................  OPTIONAL  pip install industrialxpl[fieldbus]
-  openai  MISSING  .........................................  OPTIONAL  pip install industrialxpl[sast]
-  anthropic  MISSING  ......................................  OPTIONAL  pip install industrialxpl[sast]
+  pymodbus  MISSING  .......................................  OPTIONAL  
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    
+  asyncua  MISSING  ........................................  OPTIONAL  
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    
+  cpppo  MISSING  .........................................  OPTIONAL  
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    
+  python-can  MISSING  .....................................  OPTIONAL  
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    
+  openai  MISSING  .........................................  OPTIONAL  
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    
+  anthropic  MISSING  ......................................  OPTIONAL  
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    
 
 [Tier 3 — External runtimes]
   gcc  NOT FOUND  ..........................................  OPTIONAL  apt install gcc / brew install gcc
@@ -1141,7 +1207,10 @@ pip install --force-reinstall industrialxpl-forge
 pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org industrialxpl-forge
 
 # Preferred: configure proxy
-pip install industrialxpl --proxy http://proxy.corp.example.com:8080
+
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+     --proxy http://proxy.corp.example.com:8080
 ```
 
 ---

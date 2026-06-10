@@ -40,7 +40,10 @@ O IndustrialXPL-Forge (IXF) é um framework Python modular para assessment de se
 
 **Princípios de design:**
 
-- **Python-First** — toda a funcionalidade essencial roda com `pip install industrialxpl`; sem ferramentas externas obrigatórias
+- **Python-First** — toda a funcionalidade essencial roda com `
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    `; sem ferramentas externas obrigatórias
 - **SafeMode por padrão** — todo módulo começa com `simulate=True`; nenhum pacote é enviado até habilitação explícita
 - **Autorize antes de agir** — projetado exclusivamente para testes autorizados, pesquisa e educação
 

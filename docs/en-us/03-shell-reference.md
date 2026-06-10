@@ -2037,7 +2037,10 @@ ixf > stats
   GE / GE Vernova         18 modules
   Emerson                 16 modules
 
-  PyPI: pip install industrialxpl
+  PyPI: 
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    
   GitHub: https://github.com/mrhenrike/IndustrialXPL-Forge
 ```
 

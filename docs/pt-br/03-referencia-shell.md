@@ -92,7 +92,10 @@ ixf (Modbus TCP Device Detect) > help
 ```
 ixf > help
   IndustrialXPL-Forge v1.0.13 — ...
-  [i] PyPI: pip install industrialxpl
+  [i] PyPI: 
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    
   [i] Documentação: docs/pt-br/
 ```
 
@@ -1824,7 +1827,10 @@ ixf > stats
 [i] Vendors cobertos: 150 | TTPs de malware: 26
 [i] MITRE ATT&CK para ICS: 12 táticas, 74/90 técnicas mapeadas (82%)
 [i] Protocolos cobertos: 50
-[i] PyPI: pip install industrialxpl
+[i] PyPI: 
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    
 [i] Versão: 1.0.13
 ```
 

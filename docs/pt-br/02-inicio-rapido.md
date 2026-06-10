@@ -47,7 +47,10 @@ $ ixf
                                                                               |___/
   IndustrialXPL-Forge v1.0.12 — OT/ICS/SCADA Security Assessment Framework
   Author: André Henrique (@mrhenrike) | União Geek | https://uniaogeek.com.br/
-  Python-First. Pure Python — install with pip install industrialxpl.
+  Python-First. Pure Python — install with 
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    .
   Type 'help' for commands.  simulate=True by default (safe mode).
 
 ixf >
@@ -177,7 +180,10 @@ ixf > stats
 
   Vendors covered: 150 | Malware TTPs: 26
   MITRE ATT&CK for ICS: 12 táticas, 103 técnicas mapeadas
-  PyPI: pip install industrialxpl | GitHub: github.com/mrhenrike/IndustrialXPL-Forge
+  PyPI: 
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+     | GitHub: github.com/mrhenrike/IndustrialXPL-Forge
 ```
 
 ```

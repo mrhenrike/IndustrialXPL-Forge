@@ -22,7 +22,10 @@ NSE scripts run within Nmap's sandboxed Lua environment, making them safe to dep
 
 - **Nmap 7.80 or later** (7.95+ recommended for full NSE library compatibility)
 - **Root/Administrator privileges** for raw socket scans (`-sS`) and Layer 2 scripts
-- **IXF installed** (`pip install industrialxpl`) — provides the NSE scripts
+- **IXF installed** (`
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    `) — provides the NSE scripts
 - Scripts work on Linux, macOS, and Windows
 
 **Verify Nmap version:**

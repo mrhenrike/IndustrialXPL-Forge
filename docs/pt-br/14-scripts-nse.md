@@ -31,7 +31,10 @@ Os scripts NSE do IXF são scripts Lua compatíveis com o Nmap Scripting Engine.
 | Requisito | Versão Mínima | Instalação |
 |-----------|--------------|------------|
 | Nmap | 7.80+ | `apt install nmap` / `brew install nmap` |
-| IXF | 2.0+ | `pip install industrialxpl` |
+| IXF | 2.0+ | `
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    ` |
 | Python | 3.9+ | Pré-requisito do IXF |
 | Lua | 5.3+ | Incluído no Nmap |
 | Permissão root/admin | — | Necessária para pacotes raw (alguns scripts) |

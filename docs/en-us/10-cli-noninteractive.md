@@ -570,7 +570,10 @@ A complete ICS security assessment script using IXF in non-interactive mode:
 #!/usr/bin/env bash
 # ixf_assessment.sh — Automated ICS Security Assessment
 # Usage: ./ixf_assessment.sh <target_ip> [output_dir]
-# Requires: ixf installed (pip install industrialxpl)
+# Requires: ixf installed (
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    )
 # Author: Andre Henrique (@mrhenrike) | União Geek
 
 set -euo pipefail
@@ -588,7 +591,10 @@ echo "" | tee -a "$LOGFILE"
 
 # Check IXF is available
 if ! command -v ixf &>/dev/null; then
-    echo "ERROR: ixf not found. Install: pip install industrialxpl" >&2
+    echo "ERROR: ixf not found. Install: 
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    " >&2
     exit 1
 fi
 
@@ -997,7 +1003,10 @@ jobs:
           python-version: "3.13"
 
       - name: Install IXF
-        run: pip install industrialxpl
+        run: 
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    
 
       - name: Verify IXF Installation
         run: |
@@ -1076,7 +1085,10 @@ pipeline {
     stages {
         stage('Install IXF') {
             steps {
-                sh 'pip install industrialxpl'
+                sh '
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    '
                 sh 'ixf stats'
             }
         }
@@ -1169,7 +1181,10 @@ install-ixf:
   stage: setup
   image: python:3.13-slim
   script:
-    - pip install industrialxpl
+    - 
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    
     - ixf stats
     - ixf mitre-coverage
   artifacts:
@@ -1180,7 +1195,10 @@ protocol-scan:
   stage: scan
   image: python:3.13-slim
   script:
-    - pip install industrialxpl
+    - 
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    
     - ixf use scanners/ics/modbus_detect set target $TARGET check || true
     - ixf use scanners/ics/s7_comm_scanner set target $TARGET check || true
     - ixf mitre-scan discovery $TARGET > discovery_report.txt
@@ -1199,7 +1217,10 @@ ttp-analysis:
       - TTP_ID: T0846
       - TTP_ID: T0819
   script:
-    - pip install industrialxpl
+    - 
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    
     - ixf ttp $TTP_ID $TARGET > ttp_${TTP_ID}_results.txt
   artifacts:
     paths:
@@ -1209,7 +1230,10 @@ compliance-assess:
   stage: assess
   image: python:3.13-slim
   script:
-    - pip install industrialxpl
+    - 
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    
     - ixf assess iec62443/zone_conduit_audit > iec62443.txt
     - ixf assess nist_sp800_82/control_checklist > nist_report.txt
     - ixf assess risk/ics_risk_scorer > risk_score.txt
@@ -1223,7 +1247,10 @@ generate-reports:
   stage: report
   image: python:3.13-slim
   script:
-    - pip install industrialxpl
+    - 
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    
     - ixf report json
     - ixf report html
     - ixf mitre-report layer
@@ -1243,17 +1270,26 @@ generate-reports:
 ```bash
 # Run IXF in Docker
 docker run --rm python:3.13-slim bash -c \
-    "pip install industrialxpl -q && ixf stats"
+    "
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+     -q && ixf stats"
 
 # With target network access
 docker run --rm --network host python:3.13-slim bash -c \
-    "pip install industrialxpl -q && \
+    "
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+     -q && \
      ixf use scanners/ics/modbus_detect set target 192.168.1.100 run"
 
 # Dockerfile for custom IXF image
 cat > Dockerfile << 'EOF'
 FROM python:3.13-slim
-RUN pip install industrialxpl
+RUN 
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    
 WORKDIR /assessment
 ENTRYPOINT ["ixf"]
 EOF

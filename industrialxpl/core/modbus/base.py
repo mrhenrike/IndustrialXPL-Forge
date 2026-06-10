@@ -130,17 +130,60 @@ class ModbusBaseExploit(Exploit):
     # --- Helpers ---
 
     def _get_timing(self) -> TimingProfile:
-        """Resolve timing profile and apply timeout override if set."""
+        """Resolve timing profile, applying global scan options when present."""
+        import dataclasses
+
         profile = ModbusTiming.resolve(self.timing)
+
+        # Socket timeout override (module-level)
         if self.timeout and int(self.timeout) > 0:
-            # Build a copy with overridden socket_timeout
-            import dataclasses
             profile = dataclasses.replace(
                 profile,
                 socket_timeout=float(self.timeout),
                 max_rtt_timeout=float(self.timeout),
             )
+
+        # Global scan options override timing retries and delay if set
+        _g = getattr(self, "_global_scan_opts", {})
+        max_r = _g.get("max_retries")
+        delay = _g.get("scan_delay")
+        if max_r is not None:
+            try:
+                profile = dataclasses.replace(profile, retries=max(1, int(max_r)))
+            except (ValueError, TypeError):
+                pass
+        if delay is not None:
+            try:
+                profile = dataclasses.replace(
+                    profile, inter_request_delay=float(delay) / 1000.0
+                )
+            except (ValueError, TypeError):
+                pass
+
         return profile
+
+    def _apply_global_scan_opts(self, opts: dict) -> None:
+        """Called by the interpreter to inject global scan options."""
+        self._global_scan_opts = opts
+
+    @property
+    def probe_level(self) -> int:
+        """Return effective probe level (from global opts, default 2)."""
+        _g = getattr(self, "_global_scan_opts", {})
+        try:
+            return max(1, min(5, int(_g.get("probe_level", 2))))
+        except (ValueError, TypeError):
+            return 2
+
+    @property
+    def host_timeout(self) -> float:
+        """Return host timeout in seconds from global opts (default 30)."""
+        _g = getattr(self, "_global_scan_opts", {})
+        try:
+            v = float(_g.get("host_timeout", 30))
+            return v if v > 0 else float("inf")
+        except (ValueError, TypeError):
+            return 30.0
 
     def _get_ports(self) -> List[int]:
         """Return list of ports from the port expression."""

@@ -1564,7 +1564,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install IXF
-        run: pip install industrialxpl
+        run: 
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    
 
       - name: Run compliance assessment
         run: |

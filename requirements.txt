@@ -1,4 +1,4 @@
-# IndustrialXPL-Forge — Core Python dependencies (Tier 1)
+﻿# IndustrialXPL-Forge — Core Python dependencies (Tier 1)
 # Python-First: pure Python implementation. External runtimes optional.
 # Install: pip install -r requirements.txt
 # Full install: pip install -e ".[full]"
@@ -17,7 +17,10 @@ rich>=13.0
 psutil>=5.9
 
 # ── OT/ICS optional (Tier 2) ──────────────────────────────────────────────
-# Install with: pip install industrialxpl[ot]
+# Install with: 
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    
 # pymodbus>=3.5          # Modbus TCP/RTU/ASCII (required for Modbus modules)
 # asyncua>=1.0           # OPC UA client/server
 # cpppo>=4.3             # EtherNet/IP / CIP

@@ -517,7 +517,10 @@ log "Log: $LOG_FILE"
 
 # Verificar que IXF está instalado
 if ! command -v ixf &>/dev/null; then
-    error "IXF não encontrado. Instale com: pip install industrialxpl"
+    error "IXF não encontrado. Instale com: 
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    "
     exit 1
 fi
 
@@ -989,8 +992,14 @@ jobs:
 
       - name: Instalar IXF
         run: |
-          pip install industrialxpl
-          pip install industrialxpl[extras]
+          
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    
+          
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    
 
       - name: Verificar instalação IXF
         run: ixf stats
