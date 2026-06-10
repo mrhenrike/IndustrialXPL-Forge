@@ -58,10 +58,7 @@ The simplest and most reliable installation method:
 
 ```bash
 
-        $extras = $args[0].Groups[1].Value
-        "pip install industrialxpl-forge$extras"
-    
-```
+        ```
 
 ### Full Terminal Output (pip install)
 
@@ -69,11 +66,8 @@ The following is a complete representative terminal session showing the full ins
 
 ```
 $ 
-        $extras = $args[0].Groups[1].Value
-        "pip install industrialxpl-forge$extras"
-    
-Collecting industrialxpl-forge
-  Downloading industrialxpl_forge-1.0.12-py3-none-any.whl.metadata (8.4 kB)
+        Collecting industrialxpl-forge
+  Downloading industrialxpl_forge-1.0.31-py3-none-any.whl.metadata (8.4 kB)
 Collecting requests>=2.31.0 (from industrialxpl-forge)
   Downloading requests-2.32.4-py3-none-any.whl.metadata (4.9 kB)
 Collecting urllib3>=1.26.0 (from industrialxpl-forge)
@@ -117,7 +111,7 @@ Collecting mdurl~=0.1 (from markdown-it-py>=2.2.0->rich>=13.0->industrialxpl-for
 Collecting pycparser (from cffi>=1.12->cryptography>=41.0->paramiko>=3.0->industrialxpl-forge)
   Downloading pycparser-2.22-py3-none-any.whl.metadata (943 bytes)
 
-Downloading industrialxpl_forge-1.0.12-py3-none-any.whl (2.4 MB)
+Downloading industrialxpl_forge-1.0.31-py3-none-any.whl (2.4 MB)
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.4/2.4 MB 8.2 MB/s eta 0:00:00
 Downloading requests-2.32.4-py3-none-any.whl (64 kB)
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 64.5/64.5 kB 5.1 MB/s eta 0:00:00
@@ -183,12 +177,10 @@ $ ixf
   | || | | | (_| | |_| \__ \ |_| |  | |  /  \| |   | |___  |  _| (_) | | | (_| |  __/
  |___|_| |_|\__,_|\__,_|___/\__|_|  |_| /_/\_\_|   |_____| |_|  \___/|_|  \__, |\___|
                                                                               |___/
-  IndustrialXPL-Forge v1.0.12 — OT/ICS/SCADA Security Assessment Framework
+  IndustrialXPL-Forge v1.0.31 — OT/ICS/SCADA Security Assessment Framework
   Author: André Henrique (@mrhenrike) | União Geek | https://uniaogeek.com.br/
   Python-First. Pure Python — install with 
-        $extras = $args[0].Groups[1].Value
-        "pip install industrialxpl-forge$extras"
-    .
+        .
   Type 'help' for commands.  simulate=True by default (safe mode).
 
 ixf >
@@ -217,10 +209,7 @@ source ~/.venvs/ixf/bin/activate
 
 # Install IXF into the venv
 (ixf) $ 
-        $extras = $args[0].Groups[1].Value
-        "pip install industrialxpl-forge$extras"
-    
-```
+        ```
 
 **Windows (PowerShell):**
 
@@ -237,10 +226,7 @@ C:\Users\mrhen\.venvs\ixf\Scripts\python.exe
 
 # Install IXF
 (ixf) PS> 
-        $extras = $args[0].Groups[1].Value
-        "pip install industrialxpl-forge$extras"
-    
-```
+        ```
 
 **Windows (cmd.exe):**
 
@@ -248,10 +234,7 @@ C:\Users\mrhen\.venvs\ixf\Scripts\python.exe
 python -m venv %USERPROFILE%\.venvs\ixf
 %USERPROFILE%\.venvs\ixf\Scripts\activate.bat
 
-        $extras = $args[0].Groups[1].Value
-        "pip install industrialxpl-forge$extras"
-    
-```
+        ```
 
 ### Making the `ixf` command persistent
 
@@ -292,7 +275,7 @@ pip install --upgrade pip
 pip install -r requirements.txt
 
 # Step 5: Launch
-python ixf.py
+ixf
 ```
 
 ### Source Install: Development Mode
@@ -352,9 +335,7 @@ IndustrialXPL-Forge/
 ## Optional Dependency Extras
 
 IXF follows a **tiered dependency model**. The base `
-        $extras = $args[0].Groups[1].Value
-        "pip install industrialxpl-forge$extras"
-    ` covers Tier 0 and Tier 1. Tiers 2 and 3 unlock additional protocol libraries, AI-powered SAST, and native multi-language execution.
+        ` covers Tier 0 and Tier 1. Tiers 2 and 3 unlock additional protocol libraries, AI-powered SAST, and native multi-language execution.
 
 ### Tier 0 — Python Standard Library (Always Available)
 
@@ -409,10 +390,7 @@ Install these extras to unlock specific protocol libraries and AI-powered SAST a
 
 ```bash
 
-        $extras = $args[0].Groups[1].Value
-        "pip install industrialxpl-forge$extras"
-    
-```
+        ```
 
 **Installs:** `pymodbus>=3.0`, `asyncua>=1.0`, `cpppo>=4.3`
 
@@ -428,10 +406,7 @@ Without `[ot]`, the Modbus, OPC UA, and EtherNet/IP modules still run using raw 
 
 ```bash
 
-        $extras = $args[0].Groups[1].Value
-        "pip install industrialxpl-forge$extras"
-    
-```
+        ```
 
 **Installs:** `python-can>=4.0`
 
@@ -443,10 +418,7 @@ Without `[ot]`, the Modbus, OPC UA, and EtherNet/IP modules still run using raw 
 
 ```bash
 
-        $extras = $args[0].Groups[1].Value
-        "pip install industrialxpl-forge$extras"
-    
-```
+        ```
 
 **Installs:** `openai>=1.0`, `anthropic>=0.25`
 
@@ -461,15 +433,10 @@ Both providers require an API key set via `set llm-key <key>` inside IXF. Keys a
 
 ```bash
 
-        $extras = $args[0].Groups[1].Value
-        "pip install industrialxpl-forge$extras"
-    
-```
+        ```
 
 Equivalent to `
-        $extras = $args[0].Groups[1].Value
-        "pip install industrialxpl-forge$extras"
-    `. Installs all optional extras at once.
+        `. Installs all optional extras at once.
 
 ### Tier 3 — External Runtimes (Fully Optional)
 
@@ -499,9 +466,7 @@ python tools/env_doctor.py
 ### Windows
 
 `pyreadline3` is declared with `sys_platform == 'win32'` in `pyproject.toml` and is automatically installed when running `
-        $extras = $args[0].Groups[1].Value
-        "pip install industrialxpl-forge$extras"
-    ` on Windows. It provides:
+        ` on Windows. It provides:
 - Up/Down arrow history navigation in the IXF interactive shell
 - Tab completion for commands, module paths, and option names
 - Ctrl-R reverse history search
@@ -595,10 +560,7 @@ python3.11 --version
 python3.11 -m venv ~/.venvs/ixf
 source ~/.venvs/ixf/bin/activate
 
-        $extras = $args[0].Groups[1].Value
-        "pip install industrialxpl-forge$extras"
-    
-```
+        ```
 
 ### Running inside Docker or CI/CD
 
@@ -656,11 +618,7 @@ RUN pip install --upgrade pip
 
 # Install IXF with all optional extras
 RUN 
-        $extras = $args[0].Groups[1].Value
-        "pip install industrialxpl-forge$extras"
-    
-
-# Create log directory
+        # Create log directory
 RUN mkdir -p /opt/ixf/.log /opt/ixf/.tmp && \
     chown -R ixfuser:ixfuser /opt/ixf
 
@@ -959,9 +917,7 @@ Complete expected output:
   Status: FULLY OPERATIONAL
   Python-First: all features available.
   
-        $extras = $args[0].Groups[1].Value
-        "pip install industrialxpl-forge$extras"
-     for Tier 2 (OT protocols + SAST)
+        for Tier 2 (OT protocols + SAST)
 ============================================================
 ```
 
@@ -970,31 +926,12 @@ Complete expected output:
 ```
 [Tier 2 — Optional pip extras]
   pymodbus  MISSING  .......................................  OPTIONAL  
-        $extras = $args[0].Groups[1].Value
-        "pip install industrialxpl-forge$extras"
-    
-  asyncua  MISSING  ........................................  OPTIONAL  
-        $extras = $args[0].Groups[1].Value
-        "pip install industrialxpl-forge$extras"
-    
-  cpppo  MISSING  .........................................  OPTIONAL  
-        $extras = $args[0].Groups[1].Value
-        "pip install industrialxpl-forge$extras"
-    
-  python-can  MISSING  .....................................  OPTIONAL  
-        $extras = $args[0].Groups[1].Value
-        "pip install industrialxpl-forge$extras"
-    
-  openai  MISSING  .........................................  OPTIONAL  
-        $extras = $args[0].Groups[1].Value
-        "pip install industrialxpl-forge$extras"
-    
-  anthropic  MISSING  ......................................  OPTIONAL  
-        $extras = $args[0].Groups[1].Value
-        "pip install industrialxpl-forge$extras"
-    
-
-[Tier 3 — External runtimes]
+        asyncua  MISSING  ........................................  OPTIONAL  
+        cpppo  MISSING  .........................................  OPTIONAL  
+        python-can  MISSING  .....................................  OPTIONAL  
+        openai  MISSING  .........................................  OPTIONAL  
+        anthropic  MISSING  ......................................  OPTIONAL  
+        [Tier 3 — External runtimes]
   gcc  NOT FOUND  ..........................................  OPTIONAL  apt install gcc / brew install gcc
   g++  NOT FOUND  ..........................................  OPTIONAL  apt install g++ / brew install g++
   go  NOT FOUND  ...........................................  OPTIONAL  https://go.dev/dl/
@@ -1028,7 +965,7 @@ Expected output:
 ```bash
 # Version
 ixf --version
-# IndustrialXPL-Forge v1.0.12
+# IndustrialXPL-Forge v1.0.31
 
 # Help text
 ixf --help
@@ -1064,7 +1001,7 @@ pip uninstall industrialxpl-forge
 
 Confirm the prompt:
 ```
-Found existing installation: industrialxpl-forge 1.0.12
+Found existing installation: industrialxpl-forge 1.0.31
 Uninstalling industrialxpl-forge-1.0.12:
   Would remove:
     /home/user/.venvs/ixf/bin/ixf
@@ -1122,6 +1059,184 @@ If IXF was installed into a virtual environment, simply delete the venv. All pac
 
 ```bash
 rm -rf ~/.venvs/ixf
+```
+
+---
+
+## Kali Linux / Parrot OS — PEP 668 and Externally Managed Environments
+
+Kali Linux 2024+ (and Parrot OS 6+) enforce **PEP 668**: the system `pip` is locked to prevent conflicts with `apt`-managed packages. Running `pip install industrialxpl-forge` directly will fail:
+
+```
+error: externally-managed-environment
+x This environment is externally managed
+```
+
+There are three correct approaches. Choose the one that fits your workflow:
+
+---
+
+### Option 1 — pipx (Recommended for daily CLI use)
+
+`pipx` creates an isolated virtualenv automatically and exposes `ixf` in your PATH without any manual activation.
+
+```bash
+# Install pipx if not present
+sudo apt install pipx -y
+pipx ensurepath
+source ~/.bashrc          # or: exec $SHELL
+
+# Install IXF
+pipx install industrialxpl-forge
+
+# Verify
+ixf --version
+```
+
+**Expected output:**
+```
+  installed package industrialxpl-forge 1.0.31, installed using Python 3.12
+  These apps are now globally available: ixf
+Done!
+
+IndustrialXPL-Forge v1.0.31
+```
+
+**Update later:**
+```bash
+pipx upgrade industrialxpl-forge
+
+# Or from within IXF:
+ixf > update
+```
+
+---
+
+### Option 2 — Manual virtualenv (Recommended for development and labs)
+
+Creates an isolated environment. You need to activate it each session.
+
+```bash
+# Create the virtualenv
+python3 -m venv ~/venvs/ixf
+
+# Activate
+source ~/venvs/ixf/bin/activate
+
+# Install
+pip install industrialxpl-forge
+
+# Verify
+ixf --version
+```
+
+**Tip — add a permanent alias so you never need to activate manually:**
+
+```bash
+echo 'alias ixf="source ~/venvs/ixf/bin/activate && ixf"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+**Deactivate when done:**
+```bash
+deactivate
+```
+
+**Update:**
+```bash
+source ~/venvs/ixf/bin/activate
+pip install --upgrade industrialxpl-forge
+```
+
+---
+
+### Option 3 — Clone the repository with integrated venv (bleeding-edge modules)
+
+Use this to get the very latest modules before they are published to PyPI.
+
+```bash
+# Clone
+git clone https://github.com/mrhenrike/IndustrialXPL-Forge.git
+cd IndustrialXPL-Forge
+
+# Create and activate venv inside the project
+python3 -m venv .venv
+source .venv/bin/activate
+
+# Install in editable mode (changes in source apply immediately)
+pip install -e .
+
+# Run
+ixf
+```
+
+**Update to latest commit:**
+```bash
+cd IndustrialXPL-Forge
+git pull
+source .venv/bin/activate
+pip install -e . --upgrade
+ixf --version
+```
+
+---
+
+### Option Comparison
+
+| Criterion | pipx | Manual venv | Clone + venv |
+|-----------|------|-------------|--------------|
+| Module freshness | PyPI releases | PyPI releases | Git bleeding edge |
+| Auto-activation | Yes | No (needs `source`) | No (needs `source`) |
+| Best for | Daily CLI use | Development, labs | Contributing, latest modules |
+| Update command | `pipx upgrade` | `pip install --upgrade` | `git pull` |
+| Disk usage | ~50 MB | ~50 MB | ~200 MB (full repo) |
+| Multiple IXF versions | Yes (pipx supports it) | Yes (separate venvs) | One per clone |
+
+---
+
+### Kali-Specific Troubleshooting
+
+**Problem:** `ixf: command not found` after `pipx install`
+
+```bash
+# Reload PATH
+pipx ensurepath && exec $SHELL
+which ixf     # should now show ~/.local/bin/ixf
+```
+
+**Problem:** `SyntaxError` or `ImportError` on startup
+
+The installed version may be outdated. Upgrade:
+```bash
+pipx upgrade industrialxpl-forge
+# or
+source ~/venvs/ixf/bin/activate && pip install --upgrade industrialxpl-forge
+```
+
+**Problem:** Scapy modules fail (`No libpcap provider`)
+
+```bash
+sudo apt install -y libpcap-dev
+# For raw socket access without root:
+sudo setcap cap_net_raw+eip $(which python3)
+```
+
+**Problem:** `pip install --upgrade industrialxpl-forge` downloads old version
+
+pip may have cached metadata. Clear it:
+```bash
+pip install --upgrade --no-cache-dir industrialxpl-forge
+# Or force a specific version:
+pip install industrialxpl-forge==1.0.31
+```
+
+**Problem:** Auto-update notification on every startup (version mismatch between venv and PyPI)
+
+```bash
+# Inside the activated venv, upgrade:
+pip install --upgrade industrialxpl-forge
+# Then inside IXF confirm:
+ixf > update
 ```
 
 ---
@@ -1208,9 +1323,7 @@ pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org indust
 
 # Preferred: configure proxy
 
-        $extras = $args[0].Groups[1].Value
-        "pip install industrialxpl-forge$extras"
-     --proxy http://proxy.corp.example.com:8080
+pip install industrialxpl-forge --proxy http://proxy.corp.example.com:8080
 ```
 
 ---
