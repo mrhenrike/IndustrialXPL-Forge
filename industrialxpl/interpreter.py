@@ -1,8 +1,8 @@
 ﻿"""IndustrialXPL-Forge interactive shell interpreter.
 
 Shell hierarchy:
-    BaseInterpreter   — readline loop, command dispatch, history
-    IXFInterpreter    — ICS/OT-specific commands + module loading
+    BaseInterpreter   -- readline loop, command dispatch, history
+    IXFInterpreter    -- ICS/OT-specific commands + module loading
 
 Prompt: "ixf >" (global) / "ixf (Module Name) >" (module loaded)
 """
@@ -36,7 +36,7 @@ from industrialxpl.core.exploit.utils import (
     module_required, MODULES_DIR,
 )
 
-VERSION = "1.0.27"
+VERSION = "1.0.28"
 
 _BANNER = r"""
  ___           _           _        _       ___  ______  _          _____
@@ -45,12 +45,9 @@ _BANNER = r"""
  | || | | | (_| | |_| \__ \ |_| |  | | (_| | |/  \|  __/| |__|_____|  _| (_) | | | (_| |  __/
 |___|_| |_|\__,_|\__,_|___/\__|_|  |_|\__,_|_/_/\_\_|   |_____|    |_|  \___/|_|  \__, |\___|
                                                                                      |___/
-  IndustrialXPL-Forge v{version} — OT/ICS/SCADA Security Assessment Framework
+  IndustrialXPL-Forge v{version} -- OT/ICS/SCADA Security Assessment Framework
   Author: Andre Henrique (@mrhenrike) | Uniao Geek | https://uniaogeek.com.br/
-  Python-First. Pure Python — 
-        $extras = $args[0].Groups[1].Value
-        "pip install industrialxpl-forge$extras"
-    
+  Python-First. Pure Python -- pip install industrialxpl-forge
   Type 'help' for commands.  simulate=True by default (safe mode).
 """.format(version=VERSION)
 
@@ -110,13 +107,13 @@ GLOBAL OPTIONS:
 
   Target:    setg TARGET 10.0.0.1         (default target applied when module TARGET is empty)
 
-  NOTE: PORT and UNIT_ID are protocol-specific — set them per module, not globally.
+  NOTE: PORT and UNIT_ID are protocol-specific -- set them per module, not globally.
   Help:  help host_timeout | help max_retries | help scan_delay | help probe_level | help max_rate
 
 SIMULATE vs DESTRUCTIVE:
-  simulate=true   (DEFAULT)     Print planned actions only — no packets sent
-  simulate=false                Execute reads/scans — safe for INFO/assessment modules
-  destructive=true              Enable exploits/writes — requires typed confirmation
+  simulate=true   (DEFAULT)     Print planned actions only -- no packets sent
+  simulate=false                Execute reads/scans -- safe for INFO/assessment modules
+  destructive=true              Enable exploits/writes -- requires typed confirmation
   help simulate                 Full explanation of modes
 
 CVE / MITRE / TTP:
@@ -320,7 +317,7 @@ class IXFInterpreter(BaseInterpreter):
         self.modules: list = index_modules()
         print_success("{} modules indexed.".format(len(self.modules)))
 
-    # ── Global commands ────────────────────────────────────────────────────
+    # -- Global commands ----------------------------------------------------
 
     # Known terms that have dedicated help pages
     _HELP_TOPICS = {
@@ -332,7 +329,7 @@ class IXFInterpreter(BaseInterpreter):
     def command_help(self, args: str = "", **kwargs) -> None:
         term = args.strip().lower()
 
-        # help <term> — topic-based help
+        # help <term> -- topic-based help
         if term:
             if term in ("sector", "sectors"):
                 self._help_sectors()
@@ -370,7 +367,7 @@ class IXFInterpreter(BaseInterpreter):
                 cls = import_exploit(full_path)
                 tmp = cls()
                 info = tmp.get_info()
-                pprint_dict_in_order(info, header="Module Information — {}".format(info.get("name", term)))
+                pprint_dict_in_order(info, header="Module Information -- {}".format(info.get("name", term)))
                 rows = [
                     (k, str(v[0]), "yes" if not v[2] else "adv", v[1])
                     for k, v in tmp.exploit_attributes.items()
@@ -379,7 +376,7 @@ class IXFInterpreter(BaseInterpreter):
                 print_table(
                     ["Option", "Default", "Required", "Description"],
                     rows,
-                    title="Options — {}".format(info.get("name", term)),
+                    title="Options -- {}".format(info.get("name", term)),
                 )
                 return
             except Exception:
@@ -416,7 +413,7 @@ class IXFInterpreter(BaseInterpreter):
         print_table(
             ["Sector", "~Modules", "Matched keywords"],
             rows,
-            title="Sectors — search sector=<name>",
+            title="Sectors -- search sector=<name>",
         )
         print_info("\nUsage:  search sector=energy")
         print_info("        search sector=oilgas")
@@ -440,7 +437,7 @@ class IXFInterpreter(BaseInterpreter):
         print_info("        search type=exploit")
         print_info("        search type=assessment\n")
 
-    # Global option defaults — safe and conservative for OT environments
+    # Global option defaults -- safe and conservative for OT environments
     _GLOBAL_DEFAULTS = {
         "loglevel":       "info",
         "verbose":        "false",
@@ -497,10 +494,10 @@ class IXFInterpreter(BaseInterpreter):
             ("SKIP_PING",    self._get_global("skip_ping"),
              "true=skip alive check, scan anyway (like nmap -Pn, default false)"),
         ]
-        # Section 3: Targeting (global convenience only — protocol options stay in modules)
+        # Section 3: Targeting (global convenience only -- protocol options stay in modules)
         target_rows = [
             ("TARGET",  self._get_global("target"),
-             "IP / hostname — default target applied when module TARGET is empty"),
+             "IP / hostname -- default target applied when module TARGET is empty"),
         ]
 
         print_table(["Option", "Current", "Description / Accepted Values"],
@@ -511,7 +508,7 @@ class IXFInterpreter(BaseInterpreter):
                     target_rows, title="Global: Targeting")
 
         print_info("")
-        print_info("  NOTE: PORT and UNIT_ID are protocol-specific — set them per module, not globally.")
+        print_info("  NOTE: PORT and UNIT_ID are protocol-specific -- set them per module, not globally.")
         print_info("")
         print_info("  Usage:  setg TIMING T2          setg THREADS 3       setg MAX_RETRIES 1")
         print_info("          setg PROBE_LEVEL 1      setg HOST_TIMEOUT 15  setg SCAN_DELAY 500")
@@ -520,8 +517,8 @@ class IXFInterpreter(BaseInterpreter):
 
     def _help_simulate(self) -> None:
         print_info("""
-simulate — Safe Execution Mode
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+simulate -- Safe Execution Mode
+------------------------------
   simulate=true  (DEFAULT)
     - No packets are sent to the target.
     - The module prints what it WOULD do: payloads, expected responses,
@@ -541,24 +538,24 @@ simulate — Safe Execution Mode
     - Audit log written to .log/destructive_ops_YYYY-MM-DD.log
 
 Usage:
-  set simulate false          — probe target (safe reads)
-  set simulate false          — then set destructive true for exploits
-  setg simulate false         — apply to all subsequent modules
+  set simulate false          -- probe target (safe reads)
+  set simulate false          -- then set destructive true for exploits
+  setg simulate false         -- apply to all subsequent modules
 """)
 
     def _help_loglevel(self) -> None:
         print_info("""
-loglevel / verbose — Output Verbosity
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+loglevel / verbose -- Output Verbosity
+-------------------------------------
   Levels (setg loglevel <level>):
-    debug     — all internal messages, raw packets, socket events
-    info      — standard output (default)
-    warning   — only warnings and errors
-    error     — only fatal errors
+    debug     -- all internal messages, raw packets, socket events
+    info      -- standard output (default)
+    warning   -- only warnings and errors
+    error     -- only fatal errors
 
   Shorthand:
-    setg verbose true    — equivalent to setg loglevel debug
-    setg verbose false   — equivalent to setg loglevel info
+    setg verbose true    -- equivalent to setg loglevel debug
+    setg verbose false   -- equivalent to setg loglevel info
 
 Usage:
   setg loglevel debug
@@ -567,13 +564,13 @@ Usage:
 
     def _help_search(self) -> None:
         print_info("""
-search — Module Discovery
-━━━━━━━━━━━━━━━━━━━━━━━━━
-  search <keyword>           — keyword in module path or name
-  search sector=<name>       — all modules for an industry sector
-  search type=<category>     — filter by type: scanner, exploit, cve, assessment, creds
-  search cve_2022            — find modules for a CVE year
-  search <vendor>            — e.g. search siemens, search schneider, search abb
+search -- Module Discovery
+-------------------------
+  search <keyword>           -- keyword in module path or name
+  search sector=<name>       -- all modules for an industry sector
+  search type=<category>     -- filter by type: scanner, exploit, cve, assessment, creds
+  search cve_2022            -- find modules for a CVE year
+  search <vendor>            -- e.g. search siemens, search schneider, search abb
 
 Sector examples:
   search sector=energy       search sector=oilgas     search sector=water
@@ -585,7 +582,7 @@ Type examples:
 Tip: 'modules' or 'modules <category>' browses the full tree.
 """)
 
-    # ── Per-option help ───────────────────────────────────────────────────────
+    # -- Per-option help -------------------------------------------------------
 
     # Map of option name -> help function
     _OPTION_HELP_MAP: dict = {}  # populated lazily below
@@ -624,44 +621,34 @@ Tip: 'modules' or 'modules <category>' browses the full tree.
 
     def _help_option_timing(self) -> None:
         from industrialxpl.core.modbus.timing import ModbusTiming
-        print_info("""
-Option: timing
-━━━━━━━━━━━━━━
-Type     : T-level string (T0–T5) or name
-Default  : T3 (Normal)
-Scope    : global (setg) + per-module (set)
-Applies  : all Modbus/OT scanner and exploit modules
-
-{}
-
-Both the T<n> number AND the slug name are accepted everywhere:
-
-  Level  Slug          set / setg syntax examples
-  -----  ------------  ------------------------------------------
-  T0     paranoid      set TIMING T0   |  set TIMING paranoid
-  T1     sneaky        set TIMING T1   |  set TIMING sneaky
-  T2     polite        set TIMING T2   |  set TIMING polite
-  T3     normal        set TIMING T3   |  set TIMING normal     [default]
-  T4     aggressive    set TIMING T4   |  set TIMING aggressive
-  T5     insane        set TIMING T5   |  set TIMING insane
-
-{}
-
-Global vs per-module:
-  setg timing T2             — applies to ALL modules loaded after this command
-  set TIMING T4              — applies only to the current module
-  setg timing paranoid       — slug form works globally too
-  setg timing 0              — numeric form also accepted (no T prefix)
-
-Related options:
-  set TIMEOUT 5              — override socket timeout only (keeps timing delays/retries)
-  setg timeout 0             — 0 = use timing profile default (recommended)
-""".format(ModbusTiming.describe_all()))
+        profile_table = ModbusTiming.describe_all()
+        msg = (
+            "\nOption: TIMING"
+            "\n--------------"
+            "\nType     : T-level string (T0-T5) or slug name"
+            "\nDefault  : T3 (Normal)"
+            "\nScope    : global (setg) + per-module (set)"
+            "\nApplies  : all Modbus/OT scanner and exploit modules"
+            "\n\n" + profile_table +
+            "\n\nBoth T<n> number AND slug name are accepted everywhere:"
+            "\n  set TIMING T0   =   set TIMING paranoid"
+            "\n  set TIMING T2   =   set TIMING polite"
+            "\n  set TIMING T3   =   set TIMING normal      [default]"
+            "\n  set TIMING T4   =   set TIMING aggressive"
+            "\n  set TIMING T5   =   set TIMING insane"
+            "\n  setg timing T2       -- applies to ALL modules"
+            "\n  set TIMING T4        -- applies only to current module"
+            "\n  setg timing 0        -- numeric form (no T prefix) also accepted"
+            "\n\nRelated:"
+            "\n  set TIMEOUT 5        -- override socket timeout (keeps delays/retries)"
+            "\n  setg timeout 0       -- 0 = use timing profile default\n"
+        )
+        print_info(msg)
 
     def _help_option_registers(self) -> None:
         print_info("""
 Option: registers
-━━━━━━━━━━━━━━━━━
+-----------------
 Type     : address expression string
 Default  : (module-specific, e.g. 0-9)
 Scope    : per-module (set)
@@ -669,22 +656,22 @@ Applies  : all Modbus scanner/read modules
 
 Accepted notations:
   Decimal offset (0-based):
-    10               — single address, offset 10
-    14-20            — range: offsets 14,15,...,20
-    10,14-20,100     — mixed list
+    10               -- single address, offset 10
+    14-20            -- range: offsets 14,15,...,20
+    10,14-20,100     -- mixed list
 
   Schneider/Modicon 5-digit (implied FC):
-    00001            — coil 1  (implies FC1)
-    00001-00100      — coils 1-100 (implies FC1)
-    10001            — discrete input 1 (implies FC2)
-    30001-30010      — input registers 1-10 (implies FC4)
-    40001            — holding register 1 (implies FC3)
-    40001-40010      — holding registers 1-10
-    40001,40005,41000 — specific holding registers
+    00001            -- coil 1  (implies FC1)
+    00001-00100      -- coils 1-100 (implies FC1)
+    10001            -- discrete input 1 (implies FC2)
+    30001-30010      -- input registers 1-10 (implies FC4)
+    40001            -- holding register 1 (implies FC3)
+    40001-40010      -- holding registers 1-10
+    40001,40005,41000 -- specific holding registers
 
   Modicon 6-digit:
-    000001-065536    — coils (FC1)
-    400001-465536    — holding registers (FC3)
+    000001-065536    -- coils (FC1)
+    400001-465536    -- holding registers (FC3)
 
 Notes:
   - Schneider/Modicon notation automatically sets the FC unless overridden by 'fc'
@@ -692,18 +679,18 @@ Notes:
   - Max range per single read: 125 words (FC3/4) or 2000 bits (FC1/2)
 
 Examples:
-  set registers 40001-40010         — holding registers 1-10 (FC3)
-  set registers 0-9                 — first 10 addresses with module default FC
-  set registers 10,14-20,100        — sparse list, 3 groups
-  set registers 00001-00100         — 100 coils starting at 1 (FC1)
+  set registers 40001-40010         -- holding registers 1-10 (FC3)
+  set registers 0-9                 -- first 10 addresses with module default FC
+  set registers 10,14-20,100        -- sparse list, 3 groups
+  set registers 00001-00100         -- 100 coils starting at 1 (FC1)
 """)
 
     def _help_option_coils(self) -> None:
         print_info("""
 Option: COILS
-━━━━━━━━━━━━━
+-------------
 Type     : address expression string
-Default  : (empty — not used)
+Default  : (empty -- not used)
 Scope    : per-module (set)
 Priority : COILS takes precedence over REGISTERS when both are set
 
@@ -712,16 +699,16 @@ Use REGISTERS for holding (FC3) and input register (FC4) reads.
 
 Accepted notations:
   Decimal offset (0-based):
-    0                — single coil at offset 0
-    0-7              — 8 coils starting at 0
-    0-100            — 101 coils
-    10,20-30,100     — sparse list
+    0                -- single coil at offset 0
+    0-7              -- 8 coils starting at 0
+    0-100            -- 101 coils
+    10,20-30,100     -- sparse list
 
   Modicon 5-digit (auto-implies FC):
-    00001            — coil 1 (implies FC1)
-    00001-00100      — coils 1-100 (implies FC1)
-    10001            — discrete input 1 (implies FC2)
-    10001-10100      — discrete inputs 1-100 (implies FC2)
+    00001            -- coil 1 (implies FC1)
+    00001-00100      -- coils 1-100 (implies FC1)
+    10001            -- discrete input 1 (implies FC2)
+    10001-10100      -- discrete inputs 1-100 (implies FC2)
 
 Notes:
   - When COILS is set, FC is automatically 1 unless overridden by the FC option
@@ -729,18 +716,18 @@ Notes:
   - Max 2000 coils per single Modbus request
 
 Examples:
-  set COILS 0-7                     — read 8 coils starting at 0 (FC1)
-  set COILS 0-100                   — read 101 coils
-  set COILS 10,20-30,50             — sparse coil list
-  set COILS 00001-00100             — Modicon notation, 100 coils
-  set COILS 10001-10020             — 20 discrete inputs (FC2)
-  set COILS 0-7                     — then set FC 2 to read as discrete inputs
+  set COILS 0-7                     -- read 8 coils starting at 0 (FC1)
+  set COILS 0-100                   -- read 101 coils
+  set COILS 10,20-30,50             -- sparse coil list
+  set COILS 00001-00100             -- Modicon notation, 100 coils
+  set COILS 10001-10020             -- 20 discrete inputs (FC2)
+  set COILS 0-7                     -- then set FC 2 to read as discrete inputs
 """)
 
     def _help_option_port(self) -> None:
         print_info("""
 Option: port
-━━━━━━━━━━━━
+------------
 Type     : port expression string
 Default  : 502 (standard Modbus/TCP)
 Scope    : per-module (set) or global (setg)
@@ -752,58 +739,58 @@ Accepted values:
   Mixed:       502,1000-1010
 
 Common Modbus/OT ports:
-  502    — Modbus/TCP (standard)
-  4840   — OPC-UA
-  44818  — EtherNet/IP
-  20000  — DNP3
-  2404   — IEC 60870-5-104
-  102    — S7comm / ISO-on-TCP
-  47808  — BACnet/IP
-  5094   — HART-IP
-  18245  — GE-SRTP
+  502    -- Modbus/TCP (standard)
+  4840   -- OPC-UA
+  44818  -- EtherNet/IP
+  20000  -- DNP3
+  2404   -- IEC 60870-5-104
+  102    -- S7comm / ISO-on-TCP
+  47808  -- BACnet/IP
+  5094   -- HART-IP
+  18245  -- GE-SRTP
 
 Examples:
-  set port 502               — standard Modbus
-  set port 502,510           — two ports
-  set port 500-510           — scan range of 11 ports
-  setg port 502              — global default port
+  set port 502               -- standard Modbus
+  set port 502,510           -- two ports
+  set port 500-510           -- scan range of 11 ports
+  setg port 502              -- global default port
 """)
 
     def _help_option_fc(self) -> None:
         print_info("""
 Option: fc
-━━━━━━━━━━
+----------
 Type     : integer (0-127)
 Default  : 0 (use module default or implied by register notation)
 Scope    : per-module (set)
 
 Function Codes:
-  0    — auto (module default or inferred from 'registers' notation)
-  1    — Read Coils               (bits, max 2000 per request)
-  2    — Read Discrete Inputs     (bits, max 2000 per request)
-  3    — Read Holding Registers   (16-bit words, max 125 per request)
-  4    — Read Input Registers     (16-bit words, max 125 per request)
-  5    — Write Single Coil        (requires destructive=true)
-  6    — Write Single Register    (requires destructive=true)
-  15   — Write Multiple Coils     (requires destructive=true)
-  16   — Write Multiple Registers (requires destructive=true)
-  17   — Report Server ID         (device fingerprint)
-  43   — Read Device Identification (MEI, vendor/product info)
+  0    -- auto (module default or inferred from 'registers' notation)
+  1    -- Read Coils               (bits, max 2000 per request)
+  2    -- Read Discrete Inputs     (bits, max 2000 per request)
+  3    -- Read Holding Registers   (16-bit words, max 125 per request)
+  4    -- Read Input Registers     (16-bit words, max 125 per request)
+  5    -- Write Single Coil        (requires destructive=true)
+  6    -- Write Single Register    (requires destructive=true)
+  15   -- Write Multiple Coils     (requires destructive=true)
+  16   -- Write Multiple Registers (requires destructive=true)
+  17   -- Report Server ID         (device fingerprint)
+  43   -- Read Device Identification (MEI, vendor/product info)
 
 Priority:
   explicit fc > fc implied by register notation > module default
 
 Examples:
-  set fc 0             — auto (default)
-  set fc 3             — force FC3 regardless of register notation
-  set fc 4             — force FC4 Input Registers
-  set registers 40001  — automatically implies fc=3 (unless overridden)
+  set fc 0             -- auto (default)
+  set fc 3             -- force FC3 regardless of register notation
+  set fc 4             -- force FC4 Input Registers
+  set registers 40001  -- automatically implies fc=3 (unless overridden)
 """)
 
     def _help_option_unit_id(self) -> None:
         print_info("""
 Option: unit_id
-━━━━━━━━━━━━━━━
+---------------
 Type     : integer (0-247)
 Default  : 1
 Scope    : per-module (set) or global (setg)
@@ -811,10 +798,10 @@ Scope    : per-module (set) or global (setg)
 Modbus Unit ID (also called Slave ID or Slave Address) identifies
 the target device on a Modbus network.
 
-  0      — broadcast (no response expected, not all devices support)
-  1      — standard single-device default
-  1-247  — serial Modbus slave addresses
-  255    — reserved for gateway/host use in some implementations
+  0      -- broadcast (no response expected, not all devices support)
+  1      -- standard single-device default
+  1-247  -- serial Modbus slave addresses
+  255    -- reserved for gateway/host use in some implementations
 
 When to change:
   - Modbus-to-TCP gateways bridge multiple serial devices; each has a different unit_id
@@ -822,16 +809,16 @@ When to change:
   - RTU serial chains: each device has a unique ID (1-247)
 
 Examples:
-  set unit_id 1              — default
-  set unit_id 10             — specific slave
-  setg unit_id 1             — global default
-  use scanners/ics/modbus_id_fuzzer  — discover all active IDs
+  set unit_id 1              -- default
+  set unit_id 10             -- specific slave
+  setg unit_id 1             -- global default
+  use scanners/ics/modbus_id_fuzzer  -- discover all active IDs
 """)
 
     def _help_option_timeout(self) -> None:
         print_info("""
 Option: timeout
-━━━━━━━━━━━━━━━
+---------------
 Type     : integer (seconds, 0 = use timing profile default)
 Default  : 0
 Scope    : per-module (set) or global (setg)
@@ -840,49 +827,49 @@ Overrides the socket timeout from the timing profile.
 When 0, the timeout from the selected 'timing' profile is used.
 
 Relationship with timing:
-  timing=T3  → socket_timeout=1s   (normal)
-  timeout=5  → overrides to 5s     (explicit value wins)
-  timeout=0  → use timing default  (no override)
+  timing=T3  -> socket_timeout=1s   (normal)
+  timeout=5  -> overrides to 5s     (explicit value wins)
+  timeout=0  -> use timing default  (no override)
 
 Examples:
-  set timeout 0              — use timing profile default (recommended)
-  set timeout 5              — 5-second socket timeout
-  set timeout 30             — for slow serial-to-TCP gateways
-  setg timeout 3             — global override for all modules
+  set timeout 0              -- use timing profile default (recommended)
+  set timeout 5              -- 5-second socket timeout
+  set timeout 30             -- for slow serial-to-TCP gateways
+  setg timeout 3             -- global override for all modules
 """)
 
     def _help_option_target(self) -> None:
         print_info("""
 Option: target
-━━━━━━━━━━━━━━
+--------------
 Type     : IPv4 address, IPv6 address, or hostname
-Default  : (empty — required)
+Default  : (empty -- required)
 Scope    : per-module (set) or global (setg)
 
 Accepted values:
   IPv4:       192.168.1.100
   IPv6:       2001:db8::1
   Hostname:   plc.corp.local
-  CIDR:       (not accepted here — use 'discover' for subnet sweep)
+  CIDR:       (not accepted here -- use 'discover' for subnet sweep)
 
 Examples:
   set target 192.168.1.100
   set target 10.0.0.50
-  setg target 192.168.1.100  — apply to all subsequent modules
-  unsetg target              — clear global target
+  setg target 192.168.1.100  -- apply to all subsequent modules
+  unsetg target              -- clear global target
 """)
 
     def _help_option_destructive(self) -> None:
         print_info("""
 Option: destructive
-━━━━━━━━━━━━━━━━━━━
+-------------------
 Type     : bool (true/false/yes/no/1/0)
 Default  : false
 Scope    : per-module (set)
 
 Enables write/exploit operations that may cause irreversible changes:
-  false  — read-only operations only (safe for production)
-  true   — enables writes, firmware changes, coil manipulation, DoS
+  false  -- read-only operations only (safe for production)
+  true   -- enables writes, firmware changes, coil manipulation, DoS
 
 For INFO/READ modules (assessment, scanners): destructive has no effect.
 For HIGH/CRITICAL modules: requires typed confirmation before execution.
@@ -890,14 +877,14 @@ For HIGH/CRITICAL modules: requires typed confirmation before execution.
 Never set destructive=true on production systems without authorization.
 
 Examples:
-  set destructive false      — default, safe
-  set destructive true       — enables exploit — use with extreme caution
+  set destructive false      -- default, safe
+  set destructive true       -- enables exploit -- use with extreme caution
 """)
 
     def _help_option_threads(self) -> None:
         print_info("""
 Option: threads (global only)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+-----------------------------
 Type     : integer >= 1
 Default  : 10
 Scope    : global (setg only)
@@ -906,21 +893,21 @@ Number of parallel threads for multi-host or multi-port operations.
 Affects: subnet sweeps, CIDR scans, TTP runs, MITRE full sweeps.
 
 Recommended values:
-  1-5    — conservative (T0/T1 timing)
-  10     — default (T3 Normal)
-  20-50  — fast networks (T4 Aggressive)
-  100+   — not recommended; may cause TCP exhaustion
+  1-5    -- conservative (T0/T1 timing)
+  10     -- default (T3 Normal)
+  20-50  -- fast networks (T4 Aggressive)
+  100+   -- not recommended; may cause TCP exhaustion
 
 Examples:
-  setg threads 5             — conservative
-  setg threads 20            — fast scan
-  setg threads 1             — single-threaded (max stealth)
+  setg threads 5             -- conservative
+  setg threads 20            -- fast scan
+  setg threads 1             -- single-threaded (max stealth)
 """)
 
     def _help_option_host_timeout(self) -> None:
         print_info("""
-Option: HOST_TIMEOUT  (global only — setg)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Option: HOST_TIMEOUT  (global only -- setg)
+-----------------------------------------
 Type     : integer (seconds)
 Default  : 30
 Nmap eq. : --host-timeout 30s
@@ -935,15 +922,15 @@ Recommended values by environment:
   0                 : no limit (not recommended for large networks)
 
 Examples:
-  setg HOST_TIMEOUT 30       — 30-second cap per host (default)
-  setg HOST_TIMEOUT 60       — slower/distant OT devices
-  setg HOST_TIMEOUT 0        — no cap (use with care)
+  setg HOST_TIMEOUT 30       -- 30-second cap per host (default)
+  setg HOST_TIMEOUT 60       -- slower/distant OT devices
+  setg HOST_TIMEOUT 0        -- no cap (use with care)
 """)
 
     def _help_option_retries(self) -> None:
         print_info("""
-Options: MAX_RETRIES / MIN_RETRIES  (global only — setg)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Options: MAX_RETRIES / MIN_RETRIES  (global only -- setg)
+-------------------------------------------------------
 Type     : integer >= 0
 Defaults : MAX_RETRIES=2, MIN_RETRIES=0
 Nmap eq. : --max-retries 2
@@ -952,23 +939,23 @@ MAX_RETRIES: how many times to retry a probe before giving up.
 MIN_RETRIES: minimum attempts regardless of response.
 
 Tuning for OT environments:
-  Max=0: single attempt only — fastest, but misses intermittent devices
-  Max=1: one retry — good for stable networks
-  Max=2: two retries — default, balances reliability and speed
-  Max=3: three retries — for noisy serial links or slow PLCs
+  Max=0: single attempt only -- fastest, but misses intermittent devices
+  Max=1: one retry -- good for stable networks
+  Max=2: two retries -- default, balances reliability and speed
+  Max=3: three retries -- for noisy serial links or slow PLCs
 
 Caution: high retries may hammer fragile OT devices or trigger alarms.
 
 Examples:
-  setg MAX_RETRIES 2         — default (safe)
-  setg MAX_RETRIES 1         — lean scans on stable networks
-  setg MIN_RETRIES 0         — always at least 1 attempt
+  setg MAX_RETRIES 2         -- default (safe)
+  setg MAX_RETRIES 1         -- lean scans on stable networks
+  setg MIN_RETRIES 0         -- always at least 1 attempt
 """)
 
     def _help_option_scan_delay(self) -> None:
         print_info("""
-Option: SCAN_DELAY  (global only — setg)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Option: SCAN_DELAY  (global only -- setg)
+----------------------------------------
 Type     : integer (milliseconds)
 Default  : 300
 Nmap eq. : --scan-delay 300ms
@@ -976,25 +963,25 @@ Nmap eq. : --scan-delay 300ms
 Minimum delay between consecutive probes to the same host.
 This is the primary control to reduce scan aggression on OT devices.
 
-PLCs and RTUs are often single-threaded — rapid back-to-back requests
+PLCs and RTUs are often single-threaded -- rapid back-to-back requests
 can cause buffer overflows, CPU spikes, or communication hangs.
 
 Guidance:
   0-100 ms  : only for lab environments with modern equipment
-  300 ms    : default — conservative for most OT environments
+  300 ms    : default -- conservative for most OT environments
   500-1000  : for slow serial bridges, energy meters, older PLCs
   1000+     : for very sensitive RTUs (water/gas treatment plants)
 
 Examples:
-  setg SCAN_DELAY 300        — default
-  setg SCAN_DELAY 1000       — 1 second between probes (very gentle)
-  setg SCAN_DELAY 0          — no delay (not recommended for OT)
+  setg SCAN_DELAY 300        -- default
+  setg SCAN_DELAY 1000       -- 1 second between probes (very gentle)
+  setg SCAN_DELAY 0          -- no delay (not recommended for OT)
 """)
 
     def _help_option_max_rate(self) -> None:
         print_info("""
-Option: MAX_RATE  (global only — setg)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Option: MAX_RATE  (global only -- setg)
+--------------------------------------
 Type     : integer (probes per second, >= 1)
 Default  : 10
 Nmap eq. : --max-rate 10
@@ -1009,15 +996,15 @@ Safe values for OT:
   50+    : lab environments only
 
 Examples:
-  setg MAX_RATE 10           — default (safe for most OT)
-  setg MAX_RATE 2            — very gentle, for critical systems
-  setg MAX_RATE 50           — lab/fast network only
+  setg MAX_RATE 10           -- default (safe for most OT)
+  setg MAX_RATE 2            -- very gentle, for critical systems
+  setg MAX_RATE 50           -- lab/fast network only
 """)
 
     def _help_option_probe_level(self) -> None:
         print_info("""
-Option: PROBE_LEVEL  (global only — setg)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Option: PROBE_LEVEL  (global only -- setg)
+-----------------------------------------
 Type     : integer 1-5
 Default  : 2
 Nmap eq. : --version-intensity 0-9 (mapped to 1-5 here)
@@ -1025,25 +1012,25 @@ Nmap eq. : --version-intensity 0-9 (mapped to 1-5 here)
 Controls how deeply modules probe for service/version information.
 Higher levels send more packets but extract richer fingerprints.
 
-  1   Minimal   — TCP banner only, no active FC probes
-  2   Light     — FC43/MEI + FC17, no coil/register reads   [default]
-  3   Standard  — FC43/MEI + FC17 + FC1/FC3 register reads
-  4   Deep      — All FCs, full object ID enumeration, unit_id sweep
-  5   Exhaustive— All of level 4 + brute-force FC codes, full MEI tree
+  1   Minimal   -- TCP banner only, no active FC probes
+  2   Light     -- FC43/MEI + FC17, no coil/register reads   [default]
+  3   Standard  -- FC43/MEI + FC17 + FC1/FC3 register reads
+  4   Deep      -- All FCs, full object ID enumeration, unit_id sweep
+  5   Exhaustive-- All of level 4 + brute-force FC codes, full MEI tree
 
 OT guidance: keep at 1-2 for production environments.
 Level 3+ may cause unexpected behavior on older PLCs.
 
 Examples:
-  setg PROBE_LEVEL 2         — default (safe for OT)
-  setg PROBE_LEVEL 1         — read-banner-only (safest)
-  setg PROBE_LEVEL 4         — deep assessment (lab/authorized only)
+  setg PROBE_LEVEL 2         -- default (safe for OT)
+  setg PROBE_LEVEL 1         -- read-banner-only (safest)
+  setg PROBE_LEVEL 4         -- deep assessment (lab/authorized only)
 """)
 
     def _help_option_ping(self) -> None:
         print_info("""
-Options: PING_FIRST / SKIP_PING  (global only — setg)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Options: PING_FIRST / SKIP_PING  (global only -- setg)
+----------------------------------------------------
 Type     : bool (true/false)
 Defaults : PING_FIRST=true, SKIP_PING=false
 Nmap eq. : -Pn (skip ping) | default (ping first)
@@ -1063,17 +1050,17 @@ Note: PING_FIRST and SKIP_PING are opposites. Setting SKIP_PING=true
 overrides PING_FIRST regardless of its value.
 
 Examples:
-  setg PING_FIRST true       — default (safer, avoids dead hosts)
-  setg SKIP_PING true        — scan even if host appears down
-  setg PING_FIRST false      — alias for skip_ping=true
+  setg PING_FIRST true       -- default (safer, avoids dead hosts)
+  setg SKIP_PING true        -- scan even if host appears down
+  setg PING_FIRST false      -- alias for skip_ping=true
 """)
 
     def _help_option_output(self) -> None:
         print_info("""
 Option: output (global)
-━━━━━━━━━━━━━━━━━━━━━━━
+-----------------------
 Type     : file path string
-Default  : (empty — no file output)
+Default  : (empty -- no file output)
 Scope    : global (setg)
 
 Save all module output to a file in addition to the terminal.
@@ -1082,27 +1069,27 @@ Format determined by 'report_fmt' option.
 Examples:
   setg output /tmp/scan_results.txt
   setg output ./reports/modbus_scan.json
-  unsetg output              — disable file output
+  unsetg output              -- disable file output
 """)
 
     def _help_option_report_fmt(self) -> None:
         print_info("""
 Option: report_fmt (global)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━
+---------------------------
 Type     : string
 Default  : markdown
 Scope    : global (setg)
 
 Accepted values:
-  markdown  — human-readable Markdown report
-  json      — machine-readable JSON
-  html      — HTML report with styling
-  csv       — comma-separated values (for tabular results)
+  markdown  -- human-readable Markdown report
+  json      -- machine-readable JSON
+  html      -- HTML report with styling
+  csv       -- comma-separated values (for tabular results)
 
 Examples:
-  setg report_fmt json       — JSON output
-  setg report_fmt markdown   — default Markdown
-  report json                — generate report in JSON format immediately
+  setg report_fmt json       -- JSON output
+  setg report_fmt markdown   -- default Markdown
+  report json                -- generate report in JSON format immediately
 """)
 
     def _help_timing(self) -> None:
@@ -1110,13 +1097,13 @@ Examples:
 
     def _help_mitre(self) -> None:
         print_info("""
-MITRE ATT&CK for ICS — Commands
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  mitre <TID>                        — load module(s) for technique T0843
-  mitre-list [tactic]                — list all ICS techniques
-  mitre-scan <tactic|TID> <target>   — run all modules for a tactic/technique
-  mitre-coverage                     — show coverage % per tactic
-  use assessment/mitre_ics/full_mitre_sweep   — run all 12 tactics against target
+MITRE ATT&CK for ICS -- Commands
+--------------------------------
+  mitre <TID>                        -- load module(s) for technique T0843
+  mitre-list [tactic]                -- list all ICS techniques
+  mitre-scan <tactic|TID> <target>   -- run all modules for a tactic/technique
+  mitre-coverage                     -- show coverage % per tactic
+  use assessment/mitre_ics/full_mitre_sweep   -- run all 12 tactics against target
 
 Tactics: initial_access, execution, persistence, privilege_escalation,
          evasion, discovery, lateral_movement, collection,
@@ -1283,7 +1270,7 @@ Example:
                 runner = PolyExploitRunner()
                 if not runner.check_runtime(poly_lang):
                     print_warning(
-                        "[opt] Runtime '{}' not found — Python fallback will be used.".format(poly_lang)
+                        "[opt] Runtime '{}' not found -- Python fallback will be used.".format(poly_lang)
                     )
             # Inject global scan opts into Modbus modules
             _SCAN_KEYS = {"host_timeout", "max_retries", "min_retries",
@@ -1309,7 +1296,7 @@ Example:
     def command_set(self, args: str, **kwargs) -> None:
         parts = args.split(None, 1)
         if len(parts) < 2:
-            # 'set <option>' with no value — show help for that option
+            # 'set <option>' with no value -- show help for that option
             if len(parts) == 1:
                 opt = parts[0].lower()
                 omap = self._get_option_help_map()
@@ -1332,7 +1319,7 @@ Example:
                 print_info("No dedicated help for '{}'. Type 'help {}' to search.".format(key, key))
             return
         if key not in self.current_module.options:
-            print_error("Unknown option: '{}' — type 'show options' to list valid options".format(key_raw))
+            print_error("Unknown option: '{}' -- type 'show options' to list valid options".format(key_raw))
             return
         try:
             setattr(self.current_module, key, value)
@@ -1484,13 +1471,13 @@ Example:
         if not self.current_module:
             if sub in ("modules", "all", "options", ""):
                 print_status("{} modules indexed. Use 'search <keyword>' to find modules.".format(len(self.modules)))
-                print_info("  search modbus       — keyword search")
-                print_info("  search sector=energy — sector filter")
-                print_info("  search type=scanner — type filter")
-                print_info("  modules             — browse categories")
-                print_info("  show global         — global options")
-                print_info("  show sectors        — available sectors")
-                print_info("  show types          — module categories")
+                print_info("  search modbus       -- keyword search")
+                print_info("  search sector=energy -- sector filter")
+                print_info("  search type=scanner -- type filter")
+                print_info("  modules             -- browse categories")
+                print_info("  show global         -- global options")
+                print_info("  show sectors        -- available sectors")
+                print_info("  show types          -- module categories")
             else:
                 print_error("No module loaded. Use 'use <module_path>' first.")
             return
@@ -1506,7 +1493,7 @@ Example:
                 if sub == "advanced" or not v[2]
             ]
             print_table(["Option", "Value", "Required", "Description"], rows,
-                        title="Options — {}".format(info.get("name", str(mod))))
+                        title="Options -- {}".format(info.get("name", str(mod))))
             print_info("  Options are case-insensitive: SET TARGET, set target, and Set Target all work.")
             print_info("  Type 'set OPTION ?' or 'help OPTION' for detailed help on any option.")
         elif sub == "devices":
@@ -1534,7 +1521,7 @@ Example:
                 print_warning("Module run() not yet implemented.")
             return
 
-        # Destructive mode — gate check
+        # Destructive mode -- gate check
         if not mod.simulate and mod.destructive:
             if impact in ("HIGH", "CRITICAL", "CATASTROPHIC"):
                 target = str(getattr(mod, "target", "unknown"))
@@ -1558,7 +1545,7 @@ Example:
                 print_warning("Module run() not yet implemented.")
             return
 
-        # simulate=false + destructive=false → run for INFO/assessment modules, check() for risky ones
+        # simulate=false + destructive=false -> run for INFO/assessment modules, check() for risky ones
         impact = info.get("impact", "LOW").upper()
         if impact in ("INFO", "READ"):
             # Assessment/read-only modules: run directly without destructive gate
@@ -1569,7 +1556,7 @@ Example:
             except NotImplementedError:
                 print_warning("Module run() not yet implemented.")
             return
-        print_warning("simulate=false but destructive=false — running check() only.")
+        print_warning("simulate=false but destructive=false -- running check() only.")
         self.command_check(args, **kwargs)
 
     @module_required
@@ -1586,9 +1573,9 @@ Example:
             if result is None:
                 print_info("check() not applicable for this module type.")
             elif result:
-                print_success("VULNERABLE — {}".format(info.get("name", "")))
+                print_success("VULNERABLE -- {}".format(info.get("name", "")))
             else:
-                print_info("NOT_VULNERABLE — {}".format(info.get("name", "")))
+                print_info("NOT_VULNERABLE -- {}".format(info.get("name", "")))
         except NotImplementedError:
             print_warning("Module check() not yet implemented.")
 
@@ -1623,9 +1610,9 @@ Example:
         term = args.strip().lower()
         if not term:
             print_error("Usage: search <keyword>")
-            print_info("  search modbus          — keyword search")
-            print_info("  search sector=energy   — modules for energy sector")
-            print_info("  search type=scanner    — filter by category (scanner/exploit/cve/assessment/creds)")
+            print_info("  search modbus          -- keyword search")
+            print_info("  search sector=energy   -- modules for energy sector")
+            print_info("  search type=scanner    -- filter by category (scanner/exploit/cve/assessment/creds)")
             return
 
         # Sector filter: search sector=energy
@@ -1729,7 +1716,7 @@ Example:
                 path = "{}/{}/{}".format(sub, subcat, modname).replace("//" , "/")
                 print_info("          use {}".format(path))
             if len(mods) > 8:
-                print_info("          … and {} more — search {} to list all".format(len(mods) - 8, subcat))
+                print_info("          … and {} more -- search {} to list all".format(len(mods) - 8, subcat))
 
     def command_exec(self, args: str, **kwargs) -> None:
         if not args.strip():
@@ -1757,7 +1744,7 @@ Example:
             print_warning("Set target to each host in {} and run check().".format(cidr))
             print_info("For automated CIDR sweep: ixf > ttp T0846.001 {}".format(cidr))
 
-    # ── CVE commands ──────────────────────────────────────────────────────
+    # -- CVE commands ------------------------------------------------------
 
     def command_cve(self, args: str, **kwargs) -> None:
         cve_id = args.strip().upper()
@@ -1795,7 +1782,7 @@ Example:
         output = reporter.generate(fmt)
         print_success("Report generated: {}".format(output))
 
-    # ── MITRE commands ─────────────────────────────────────────────────────
+    # -- MITRE commands -----------------------------------------------------
 
     def command_mitre(self, args: str, **kwargs) -> None:
         tid = args.strip().upper()
@@ -1826,7 +1813,7 @@ Example:
                     continue
             rows.append((tid, str(len(mods)), humanize_path(mods[0]) if mods else ""))
         title = "MITRE ATT&CK for ICS{}".format(
-            " — {}".format(tactic_filter) if tactic_filter else ""
+            " -- {}".format(tactic_filter) if tactic_filter else ""
         )
         print_table(["TID", "# Modules", "Primary Module"], rows, title=title)
 
@@ -1871,7 +1858,7 @@ Example:
             total_tids += len(tids)
             total_cov += covered
         global_pct = int(total_cov / total_tids * 100) if total_tids else 0
-        rows.append(("TOTAL", "—", str(total_tids), str(total_cov), "{}%".format(global_pct)))
+        rows.append(("TOTAL", "--", str(total_tids), str(total_cov), "{}%".format(global_pct)))
         print_table(
             ["Tactic ID", "Tactic", "Total TIDs", "Covered", "%"],
             rows,
@@ -1887,7 +1874,7 @@ Example:
     def command_mitre_tactic(self, args: str, **kwargs) -> None:
         self.command_mitre_scan(args, **kwargs)
 
-    # ── TTP commands ───────────────────────────────────────────────────────
+    # -- TTP commands -------------------------------------------------------
 
     def command_ttp(self, args: str, **kwargs) -> None:
         parts = args.strip().split()
@@ -1951,7 +1938,7 @@ Example:
                 if not any(m in tac_mods for m in mods):
                     continue
             rows.append((tid, str(len(mods)), humanize_path(mods[0]) if mods else ""))
-        title = "TTP-IDs{}".format(" — {}".format(tactic_filter) if tactic_filter else " (all)")
+        title = "TTP-IDs{}".format(" -- {}".format(tactic_filter) if tactic_filter else " (all)")
         print_table(["TTP-ID", "# Modules", "Primary Module"], rows, title=title)
 
     def command_assess(self, args: str, **kwargs) -> None:
@@ -1963,7 +1950,7 @@ Example:
         if self.current_module:
             self.command_run("")
 
-    # ── NSE (Nmap Scripting Engine) commands ─────────────────────────────────
+    # -- NSE (Nmap Scripting Engine) commands ---------------------------------
 
     def command_nse(self, args: str = "", **kwargs) -> None:
         """Manage IXF Nmap NSE scripts. Usage: nse [install|list|status] [--force]"""
@@ -2007,7 +1994,7 @@ Example:
                 print_table(
                     ["Script", "Status", "Size"],
                     rows,
-                    title=f"IXF NSE Scripts ({len(scripts)} total) — {NSE_SCRIPTS_DIR}",
+                    title=f"IXF NSE Scripts ({len(scripts)} total) -- {NSE_SCRIPTS_DIR}",
                 )
             else:
                 print_error("No IXF NSE scripts found.")
@@ -2040,7 +2027,7 @@ Example:
                 for name in result["installed"]:
                     print_success(f"  Installed: {name}")
             if result["skipped"]:
-                print_info(f"  Skipped (already installed): {len(result['skipped'])} — use 'nse install --force'")
+                print_info(f"  Skipped (already installed): {len(result['skipped'])} -- use 'nse install --force'")
             if result["errors"]:
                 for err in result["errors"]:
                     print_error(f"  {err}")
@@ -2063,7 +2050,7 @@ Example:
             print_error(f"Unknown nse subcommand: '{subcmd}'")
             print_info("Usage: nse [install|list|status] [--force]")
 
-    # ── Stats / coverage commands ─────────────────────────────────────────────
+    # -- Stats / coverage commands ---------------------------------------------
 
     def command_stats(self, args: str = "", **kwargs) -> None:
         """Show IXF module statistics and coverage summary."""
@@ -2084,10 +2071,7 @@ Example:
         malware = sum(1 for m in mods if "malware" in m or m.startswith("cve.apt."))
         print_info(f"Vendors covered: {len(vendors)} | Malware TTPs: {malware}")
         print_info(f"MITRE ATT&CK for ICS: 12 tactics, 103 techniques mapped")
-        print_info("PyPI: 
-        $extras = $args[0].Groups[1].Value
-        "pip install industrialxpl-forge$extras"
-     | GitHub: github.com/mrhenrike/IndustrialXPL-Forge")
+        print_info("PyPI: pip install industrialxpl-forge | GitHub: github.com/mrhenrike/IndustrialXPL-Forge")
 
     def command_vendors(self, args: str = "", **kwargs) -> None:
         """List all OT/ICS vendors covered with module count. Usage: vendors [filter]"""
@@ -2124,7 +2108,7 @@ Example:
         """Show MITRE ATT&CK for ICS coverage. Alias for: mitre coverage"""
         self.command_mitre_coverage(args)
 
-    # ── Alias normalisation ────────────────────────────────────────────────
+    # -- Alias normalisation ------------------------------------------------
 
     # -- LLM / SAST commands --
 
@@ -2178,7 +2162,7 @@ Example:
             self.command_run("")
 
     def parse_line(self, line: str) -> tuple:
-        """Normalise hyphens in commands (mitre-list → mitre_list)."""
+        """Normalise hyphens in commands (mitre-list -> mitre_list)."""
         line = line.strip()
         if not line:
             return "", "", {}
