@@ -21,7 +21,10 @@ $ ixf
                                                                               |___/
   IndustrialXPL-Forge v1.0.12 — OT/ICS/SCADA Security Assessment Framework
   Author: André Henrique (@mrhenrike) | União Geek | https://uniaogeek.com.br/
-  Python-First. Pure Python — install with pip install industrialxpl.
+  Python-First. Pure Python — install with 
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    .
   Type 'help' for commands.  simulate=True by default (safe mode).
 
 ixf >

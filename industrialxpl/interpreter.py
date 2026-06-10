@@ -1,4 +1,4 @@
-"""IndustrialXPL-Forge interactive shell interpreter.
+﻿"""IndustrialXPL-Forge interactive shell interpreter.
 
 Shell hierarchy:
     BaseInterpreter   — readline loop, command dispatch, history
@@ -36,7 +36,7 @@ from industrialxpl.core.exploit.utils import (
     module_required, MODULES_DIR,
 )
 
-VERSION = "1.0.22"
+VERSION = "1.0.23"
 
 _BANNER = r"""
  ___           _           _        _       ___  ______  _          _____
@@ -47,7 +47,10 @@ _BANNER = r"""
                                                                                      |___/
   IndustrialXPL-Forge v{version} — OT/ICS/SCADA Security Assessment Framework
   Author: Andre Henrique (@mrhenrike) | Uniao Geek | https://uniaogeek.com.br/
-  Python-First. Pure Python — pip install industrialxpl
+  Python-First. Pure Python — 
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    
   Type 'help' for commands.  simulate=True by default (safe mode).
 """.format(version=VERSION)
 
@@ -87,14 +90,28 @@ MODULE COMMANDS (after 'use'):
 GLOBAL OPTIONS:
   setg <option> <value>         Set for all modules (persists until unsetg)
   unsetg <option>               Clear a global option
-  show global                   Show all global options and current values
+  show global                   Show all global options with current values
   global                        Alias: show global
 
-  setg loglevel debug           debug | info | warning | error
-  setg verbose true             Alias for loglevel=debug
-  setg threads 20               Parallel threads (default 10)
-  setg timeout 10               Socket timeout in seconds (default 5)
-  setg target 10.0.0.1          Default target for all modules
+  Output:    setg LOGLEVEL debug | info | warning | error
+             setg VERBOSE true            (alias: loglevel=debug)
+             setg OUTPUT /tmp/scan.txt    (tee to file)
+             setg REPORT_FMT json | html | markdown | csv
+
+  Scan:      setg TIMING T3               (T0-T5 or slug: normal, polite, aggressive...)
+             setg THREADS 5               (parallel probes, default 5)
+             setg HOST_TIMEOUT 30         (seconds per host, like nmap --host-timeout)
+             setg MAX_RETRIES 2           (TCP retries, like nmap --max-retries)
+             setg SCAN_DELAY 300          (ms between probes, like nmap --scan-delay)
+             setg MAX_RATE 10             (probes/sec cap, like nmap --max-rate)
+             setg PROBE_LEVEL 2           (1-5 detection depth, like nmap --version-intensity)
+             setg PING_FIRST true         (TCP alive check before scan, default true)
+             setg SKIP_PING false         (skip alive check, like nmap -Pn)
+
+  Target:    setg TARGET 10.0.0.1         (default target applied when module TARGET is empty)
+
+  NOTE: PORT and UNIT_ID are protocol-specific — set them per module, not globally.
+  Help:  help host_timeout | help max_retries | help scan_delay | help probe_level | help max_rate
 
 SIMULATE vs DESTRUCTIVE:
   simulate=true   (DEFAULT)     Print planned actions only — no packets sent
@@ -366,42 +383,83 @@ class IXFInterpreter(BaseInterpreter):
         print_info("        search type=exploit")
         print_info("        search type=assessment\n")
 
+    # Global option defaults — safe and conservative for OT environments
+    _GLOBAL_DEFAULTS = {
+        "loglevel":       "info",
+        "verbose":        "false",
+        "timing":         "T3",
+        "threads":        "5",
+        "host_timeout":   "30",
+        "max_retries":    "2",
+        "min_retries":    "0",
+        "scan_delay":     "300",
+        "max_rate":       "10",
+        "probe_level":    "2",
+        "ping_first":     "true",
+        "skip_ping":      "false",
+        "target":         "",
+        "output":         "",
+        "report_fmt":     "markdown",
+    }
+
+    def _get_global(self, key: str) -> str:
+        return str(self._global_opts.get(key, self._GLOBAL_DEFAULTS.get(key, "")))
+
     def _help_global(self) -> None:
-        rows = [
-            ("loglevel",   str(self._global_opts.get("loglevel", "info")),
+        # Section 1: Output / Verbosity
+        out_rows = [
+            ("LOGLEVEL",   self._get_global("loglevel"),
              "debug | info | warning | error"),
-            ("verbose",    str(self._global_opts.get("verbose", "false")),
+            ("VERBOSE",    self._get_global("verbose"),
              "true | false  (alias: loglevel=debug)"),
-            ("timing",     str(self._global_opts.get("timing", "T3")),
-             "T0..T5 or paranoid/sneaky/polite/normal/aggressive/insane"),
-            ("threads",    str(self._global_opts.get("threads", "10")),
-             "integer >= 1  (parallel threads)"),
-            ("timeout",    str(self._global_opts.get("timeout", "0")),
-             "integer seconds  (0 = use timing default)"),
-            ("target",     str(self._global_opts.get("target", "")),
-             "IP / hostname  (default target for all modules)"),
-            ("port",       str(self._global_opts.get("port", "")),
-             "502 | 502,510 | 500-510  (port or range)"),
-            ("unit_id",    str(self._global_opts.get("unit_id", "1")),
-             "0-247  (Modbus slave/unit ID)"),
-            ("output",     str(self._global_opts.get("output", "")),
-             "filepath  (save output to file)"),
-            ("report_fmt", str(self._global_opts.get("report_fmt", "markdown")),
+            ("OUTPUT",     self._get_global("output"),
+             "filepath  (tee output to file)"),
+            ("REPORT_FMT", self._get_global("report_fmt"),
              "json | html | markdown | csv"),
         ]
-        print_table(
-            ["Option", "Current Value", "Accepted Values / Description"],
-            rows,
-            title="Global Options  —  setg <option> <value>  |  unsetg <option>",
-        )
+        # Section 2: Scan Behavior
+        scan_rows = [
+            ("TIMING",       self._get_global("timing"),
+             "T0..T5  or  paranoid/sneaky/polite/normal/aggressive/insane"),
+            ("THREADS",      self._get_global("threads"),
+             "integer >= 1  (parallel probes, default 5)"),
+            ("HOST_TIMEOUT", self._get_global("host_timeout"),
+             "seconds per host before giving up (default 30, 0=no limit)"),
+            ("MAX_RETRIES",  self._get_global("max_retries"),
+             "max TCP retry attempts per probe (default 2)"),
+            ("MIN_RETRIES",  self._get_global("min_retries"),
+             "min retries before moving on (default 0)"),
+            ("SCAN_DELAY",   self._get_global("scan_delay"),
+             "ms between probes to same host (default 300ms)"),
+            ("MAX_RATE",     self._get_global("max_rate"),
+             "max probes per second across all hosts (default 10)"),
+            ("PROBE_LEVEL",  self._get_global("probe_level"),
+             "service detection depth 1-5 (like nmap --version-intensity, default 2)"),
+            ("PING_FIRST",   self._get_global("ping_first"),
+             "true=TCP-ping host before scanning (default true, safer)"),
+            ("SKIP_PING",    self._get_global("skip_ping"),
+             "true=skip alive check, scan anyway (like nmap -Pn, default false)"),
+        ]
+        # Section 3: Targeting (global convenience only — protocol options stay in modules)
+        target_rows = [
+            ("TARGET",  self._get_global("target"),
+             "IP / hostname — default target applied when module TARGET is empty"),
+        ]
+
+        print_table(["Option", "Current", "Description / Accepted Values"],
+                    out_rows, title="Global: Output & Verbosity")
+        print_table(["Option", "Current", "Description / Accepted Values"],
+                    scan_rows, title="Global: Scan Behavior  (safe OT defaults)")
+        print_table(["Option", "Current", "Description"],
+                    target_rows, title="Global: Targeting")
+
         print_info("")
-        print_info("  Type 'help <option>' for detailed help on any option:")
-        print_info("  help timing     help registers    help port    help fc")
-        print_info("  help unit_id    help timeout      help target  help threads")
+        print_info("  NOTE: PORT and UNIT_ID are protocol-specific — set them per module, not globally.")
         print_info("")
-        print_info("  setg loglevel debug     setg timing T2     setg threads 20")
-        print_info("  setg target 192.168.1.100              setg unit_id 1")
-        print_info("  unsetg target           — clear a global option")
+        print_info("  Usage:  setg TIMING T2          setg THREADS 3       setg MAX_RETRIES 1")
+        print_info("          setg PROBE_LEVEL 1      setg HOST_TIMEOUT 15  setg SCAN_DELAY 500")
+        print_info("          setg TARGET 10.0.0.1    unsetg TARGET")
+        print_info("  Help:   help timing   help probe_level   help max_retries   help scan_delay")
 
     def _help_simulate(self) -> None:
         print_info("""
@@ -494,9 +552,17 @@ Tip: 'modules' or 'modules <category>' browses the full tree.
             "destructive": self._help_option_destructive,
             "loglevel":    self._help_loglevel,
             "verbose":     self._help_loglevel,
-            "threads":     self._help_option_threads,
-            "output":      self._help_option_output,
-            "report_fmt":  self._help_option_report_fmt,
+            "threads":      self._help_option_threads,
+            "host_timeout": self._help_option_host_timeout,
+            "max_retries":  self._help_option_retries,
+            "min_retries":  self._help_option_retries,
+            "scan_delay":   self._help_option_scan_delay,
+            "max_rate":     self._help_option_max_rate,
+            "probe_level":  self._help_option_probe_level,
+            "ping_first":   self._help_option_ping,
+            "skip_ping":    self._help_option_ping,
+            "output":       self._help_option_output,
+            "report_fmt":   self._help_option_report_fmt,
         }
 
     def _help_option_timing(self) -> None:
@@ -794,6 +860,157 @@ Examples:
   setg threads 1             — single-threaded (max stealth)
 """)
 
+    def _help_option_host_timeout(self) -> None:
+        print_info("""
+Option: HOST_TIMEOUT  (global only — setg)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Type     : integer (seconds)
+Default  : 30
+Nmap eq. : --host-timeout 30s
+
+Maximum time in seconds IXF will spend on a single host.
+When the limit is reached, the host is skipped and marked as timed-out.
+
+Recommended values by environment:
+  Fast LAN          : 10-15
+  Corporate WAN     : 30-60   (default)
+  Serial/slow RTUs  : 60-120
+  0                 : no limit (not recommended for large networks)
+
+Examples:
+  setg HOST_TIMEOUT 30       — 30-second cap per host (default)
+  setg HOST_TIMEOUT 60       — slower/distant OT devices
+  setg HOST_TIMEOUT 0        — no cap (use with care)
+""")
+
+    def _help_option_retries(self) -> None:
+        print_info("""
+Options: MAX_RETRIES / MIN_RETRIES  (global only — setg)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Type     : integer >= 0
+Defaults : MAX_RETRIES=2, MIN_RETRIES=0
+Nmap eq. : --max-retries 2
+
+MAX_RETRIES: how many times to retry a probe before giving up.
+MIN_RETRIES: minimum attempts regardless of response.
+
+Tuning for OT environments:
+  Max=0: single attempt only — fastest, but misses intermittent devices
+  Max=1: one retry — good for stable networks
+  Max=2: two retries — default, balances reliability and speed
+  Max=3: three retries — for noisy serial links or slow PLCs
+
+Caution: high retries may hammer fragile OT devices or trigger alarms.
+
+Examples:
+  setg MAX_RETRIES 2         — default (safe)
+  setg MAX_RETRIES 1         — lean scans on stable networks
+  setg MIN_RETRIES 0         — always at least 1 attempt
+""")
+
+    def _help_option_scan_delay(self) -> None:
+        print_info("""
+Option: SCAN_DELAY  (global only — setg)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Type     : integer (milliseconds)
+Default  : 300
+Nmap eq. : --scan-delay 300ms
+
+Minimum delay between consecutive probes to the same host.
+This is the primary control to reduce scan aggression on OT devices.
+
+PLCs and RTUs are often single-threaded — rapid back-to-back requests
+can cause buffer overflows, CPU spikes, or communication hangs.
+
+Guidance:
+  0-100 ms  : only for lab environments with modern equipment
+  300 ms    : default — conservative for most OT environments
+  500-1000  : for slow serial bridges, energy meters, older PLCs
+  1000+     : for very sensitive RTUs (water/gas treatment plants)
+
+Examples:
+  setg SCAN_DELAY 300        — default
+  setg SCAN_DELAY 1000       — 1 second between probes (very gentle)
+  setg SCAN_DELAY 0          — no delay (not recommended for OT)
+""")
+
+    def _help_option_max_rate(self) -> None:
+        print_info("""
+Option: MAX_RATE  (global only — setg)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Type     : integer (probes per second, >= 1)
+Default  : 10
+Nmap eq. : --max-rate 10
+
+Global cap on how many probes IXF sends per second across all threads.
+Prevents flooding the network segment even with high THREADS settings.
+
+Safe values for OT:
+  1-5    : critical infrastructure, nuclear, water treatment
+  5-10   : industrial automation, building management (default)
+  10-20  : IT-managed OT segments with modern firewalls
+  50+    : lab environments only
+
+Examples:
+  setg MAX_RATE 10           — default (safe for most OT)
+  setg MAX_RATE 2            — very gentle, for critical systems
+  setg MAX_RATE 50           — lab/fast network only
+""")
+
+    def _help_option_probe_level(self) -> None:
+        print_info("""
+Option: PROBE_LEVEL  (global only — setg)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Type     : integer 1-5
+Default  : 2
+Nmap eq. : --version-intensity 0-9 (mapped to 1-5 here)
+
+Controls how deeply modules probe for service/version information.
+Higher levels send more packets but extract richer fingerprints.
+
+  1   Minimal   — TCP banner only, no active FC probes
+  2   Light     — FC43/MEI + FC17, no coil/register reads   [default]
+  3   Standard  — FC43/MEI + FC17 + FC1/FC3 register reads
+  4   Deep      — All FCs, full object ID enumeration, unit_id sweep
+  5   Exhaustive— All of level 4 + brute-force FC codes, full MEI tree
+
+OT guidance: keep at 1-2 for production environments.
+Level 3+ may cause unexpected behavior on older PLCs.
+
+Examples:
+  setg PROBE_LEVEL 2         — default (safe for OT)
+  setg PROBE_LEVEL 1         — read-banner-only (safest)
+  setg PROBE_LEVEL 4         — deep assessment (lab/authorized only)
+""")
+
+    def _help_option_ping(self) -> None:
+        print_info("""
+Options: PING_FIRST / SKIP_PING  (global only — setg)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Type     : bool (true/false)
+Defaults : PING_FIRST=true, SKIP_PING=false
+Nmap eq. : -Pn (skip ping) | default (ping first)
+
+PING_FIRST=true (default):
+  IXF performs a lightweight TCP connection check on the target port
+  before running any module. If the host doesn't respond, it is skipped.
+  This avoids wasting time and sending probes to dead hosts.
+
+SKIP_PING=true (like nmap -Pn):
+  Skips the alive check and scans regardless. Use when:
+  - The host filters ICMP/TCP but still runs Modbus
+  - You are certain the host is up
+  - Scanning through a NAT or jump host
+
+Note: PING_FIRST and SKIP_PING are opposites. Setting SKIP_PING=true
+overrides PING_FIRST regardless of its value.
+
+Examples:
+  setg PING_FIRST true       — default (safer, avoids dead hosts)
+  setg SKIP_PING true        — scan even if host appears down
+  setg PING_FIRST false      — alias for skip_ping=true
+""")
+
     def _help_option_output(self) -> None:
         print_info("""
 Option: output (global)
@@ -982,19 +1199,25 @@ Example:
         try:
             cls = import_exploit(full_path)
             self.current_module = cls()
-            # Apply any global options
+            # Apply global options to module where names match
+            _SKIP_GLOBAL = {"unit_id", "port", "loglevel", "verbose",
+                            "output", "report_fmt", "threads"}
             for key, val in self._global_opts.items():
+                if key in _SKIP_GLOBAL:
+                    continue
                 if key in self.current_module.options:
                     try:
                         setattr(self.current_module, key, val)
                     except Exception:
                         pass
-                # timeout global also applies to modules that have it
-                if key == "timeout" and "timeout" in self.current_module.options:
-                    try:
-                        setattr(self.current_module, "timeout", val)
-                    except Exception:
-                        pass
+            # Always propagate target if module has it and global is set
+            g_target = self._global_opts.get("target", "")
+            if g_target and "target" in self.current_module.options:
+                try:
+                    if not getattr(self.current_module, "target", ""):
+                        setattr(self.current_module, "target", g_target)
+                except Exception:
+                    pass
             # Warn if poly language requires external runtime
             info = self.current_module.get_info()
             poly_lang = info.get("poly_language", "python")
@@ -1005,6 +1228,18 @@ Example:
                     print_warning(
                         "[opt] Runtime '{}' not found — Python fallback will be used.".format(poly_lang)
                     )
+            # Inject global scan opts into Modbus modules
+            _SCAN_KEYS = {"host_timeout", "max_retries", "min_retries",
+                          "scan_delay", "max_rate", "probe_level",
+                          "ping_first", "skip_ping"}
+            scan_opts = {k: v for k, v in self._global_opts.items() if k in _SCAN_KEYS}
+            # Fill defaults for any unset scan keys
+            for k, dv in self._GLOBAL_DEFAULTS.items():
+                if k in _SCAN_KEYS and k not in scan_opts:
+                    scan_opts[k] = dv
+            if hasattr(self.current_module, "_apply_global_scan_opts"):
+                self.current_module._apply_global_scan_opts(scan_opts)
+
             print_success("Module loaded: {}".format(info.get("name", module_path)))
         except IXFException as exc:
             print_error(str(exc))
@@ -1077,9 +1312,57 @@ Example:
                 if t < 1:
                     raise ValueError
                 self._global_opts["threads"] = str(t)
+                print_success("[global] threads => {}".format(t))
+                return
             except ValueError:
                 print_error("threads must be a positive integer, got: {}".format(value))
                 return
+
+        if key in ("host_timeout", "max_retries", "min_retries", "scan_delay", "max_rate"):
+            try:
+                v = int(value)
+                if v < 0:
+                    raise ValueError
+                self._global_opts[key] = str(v)
+                print_success("[global] {} => {}".format(key, v))
+                return
+            except ValueError:
+                print_error("{} must be a non-negative integer, got: {}".format(key, value))
+                return
+
+        if key == "probe_level":
+            try:
+                v = int(value)
+                if not 1 <= v <= 5:
+                    raise ValueError
+                self._global_opts[key] = str(v)
+                print_success("[global] probe_level => {} (service detection depth)".format(v))
+                return
+            except ValueError:
+                print_error("probe_level must be 1-5, got: {}".format(value))
+                return
+
+        if key in ("ping_first", "skip_ping"):
+            from industrialxpl.core.exploit.option import OptBool
+            _TRUE = {"true", "yes", "1", "on"}
+            _FALSE = {"false", "no", "0", "off"}
+            lv = value.lower().strip()
+            if lv in _TRUE:
+                self._global_opts[key] = "true"
+            elif lv in _FALSE:
+                self._global_opts[key] = "false"
+            else:
+                print_error("{} must be true/false, got: {}".format(key, value))
+                return
+            print_success("[global] {} => {}".format(key, self._global_opts[key]))
+            return
+
+        if key in ("unit_id", "port"):
+            print_warning(
+                "'{}' is protocol-specific and cannot be set globally. "
+                "Use 'set {} <value>' inside a loaded module.".format(key.upper(), key.upper())
+            )
+            return
 
         if key in ("timing", "scan_timing"):
             try:
@@ -1744,7 +2027,10 @@ Example:
         malware = sum(1 for m in mods if "malware" in m or m.startswith("cve.apt."))
         print_info(f"Vendors covered: {len(vendors)} | Malware TTPs: {malware}")
         print_info(f"MITRE ATT&CK for ICS: 12 tactics, 103 techniques mapped")
-        print_info("PyPI: pip install industrialxpl | GitHub: github.com/mrhenrike/IndustrialXPL-Forge")
+        print_info("PyPI: 
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+     | GitHub: github.com/mrhenrike/IndustrialXPL-Forge")
 
     def command_vendors(self, args: str = "", **kwargs) -> None:
         """List all OT/ICS vendors covered with module count. Usage: vendors [filter]"""

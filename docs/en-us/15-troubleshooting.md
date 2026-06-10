@@ -6,7 +6,10 @@ Common issues and solutions for IndustrialXPL-Forge.
 
 ## Installation Issues
 
-### `pip install industrialxpl` fails
+### `
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    ` fails
 
 **Symptom:** pip reports build error or dependency conflict.
 
@@ -16,7 +19,10 @@ Common issues and solutions for IndustrialXPL-Forge.
 python -m pip install --upgrade pip
 
 # Install with verbose output to see exact error
-pip install industrialxpl -v
+
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+     -v
 
 # If scapy fails on Windows, install Npcap first
 # https://npcap.com/

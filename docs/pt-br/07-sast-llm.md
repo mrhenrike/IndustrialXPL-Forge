@@ -1068,7 +1068,10 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install IXF
-        run: pip install industrialxpl
+        run: 
+        $extras = $args[0].Groups[1].Value
+        "pip install industrialxpl-forge$extras"
+    
 
       - name: Run PLC SAST
         env:
