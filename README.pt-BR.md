@@ -22,10 +22,7 @@
 ## Início Rápido
 
 ```bash
-
-        $extras = $args[0].Groups[1].Value
-        "pip install industrialxpl-forge$extras"
-    
+pip install industrialxpl-forge
 ixf
 ```
 
@@ -34,8 +31,10 @@ Ou a partir do código-fonte:
 ```bash
 git clone https://github.com/mrhenrike/IndustrialXPL-Forge
 cd IndustrialXPL-Forge
-pip install -r requirements.txt
-python ixf.py
+python3 -m venv .venv && source .venv/bin/activate   # Linux/Mac
+# .venv\Scripts\activate                              # Windows
+pip install -e .
+ixf
 ```
 
 ---
@@ -51,10 +50,7 @@ OSINT → Descoberta → Fingerprint → Verificação de Vulnerabilidade → Ex
 ```
 
 **Funcionalidades principais:**
-- **Python-First**: toda a funcionalidade central funciona com `
-        $extras = $args[0].Groups[1].Value
-        "pip install industrialxpl-forge$extras"
-    ` - runtimes externos (C, Go, Java) são aceleradores opcionais com fallback Python embutido
+- **Python-First**: toda a funcionalidade central funciona com `pip install industrialxpl-forge` - runtimes externos (C, Go, Java) são aceleradores opcionais com fallback Python embutido
 - **SafeMode por padrão**: todo módulo executa em modo simulação - imprime o payload sem enviar
 - **MITRE ATT&CK for ICS v19**: 79 técnicas mapeadas, sintaxe `ttp T0843 192.168.1.100`
 - **Cobertura de CVEs**: 3.300+ CVEs ICS/OT de CVSS 0,1 a 10,0
@@ -114,6 +110,58 @@ Níveis de impacto exigem confirmação proporcional:
 - `CATASTROPHIC`: digitar string + aguardar 10 segundos
 
 Todas as operações destrutivas são registradas em `.log/destructive_ops_AAAA-MM-DD.log`.
+
+---
+
+## Nível de Ruído em Ambientes OT
+
+O IXF foi projetado para ser o scanner **menos agressivo** para ativos OT/ICS. Diferente do Nmap — que gera pacotes SYN, probes de detecção de OS e múltiplos PDUs de script por porta — o IXF envia um único PDU de protocolo bem formado, idêntico ao que uma workstation de engenharia legítima enviaria.
+
+```
+Ferramenta / Modo        Ruído    Risco em ambientes OT
+---------------------------------------------------------
+tcpdump (passivo)        1/5  ||||                Zero — apenas escuta
+Wireshark (passivo)      1/5  ||||                Zero — apenas escuta
+IXF check()              2/5  ||||||||            1 conn TCP, 1 PDU valido
+IXF run() simulate=true  2/5  ||||||||            Identico ao check() — sem escrita
+nmap -sS -T1             3/5  ||||||||||||        SYN scan lento, TCP half-open
+IXF run() simulate=false 3/5  ||||||||||||        1 conn, 1 PDU de leitura (FC03/FC43)
+nmap -sS -T2 (OT)        3/5  ||||||||||||        Aceitavel com timing conservador
+nmap -sV -T3             4/5  ||||||||||||||||    Probes de versao por porta
+nmap --script modbus-*   4/5  ||||||||||||||||    Scripts enviam multiplos PDUs
+nmap -A (agressivo)      5/5  ||||||||||||||||||||  OS detect + scripts — EVITAR em OT
+nmap -T4 / -T5           5/5  ||||||||||||||||||||  NUNCA em OT. Pode derrubar ativos.
+```
+
+**As opcoes globais de timing do IXF mapeiam diretamente para os flags `-T` do Nmap:**
+
+| Nmap | IXF | Timeout | Delay | Quando usar |
+|------|-----|---------|-------|-------------|
+| `-T0` | `setg TIMING paranoid` | 5s | 10s | Stealth absoluto |
+| `-T1` | `setg TIMING sneaky` | 3s | 5s | ICS muito lentos |
+| `-T2` | `setg TIMING polite` | 2s | 1s | **Recomendado para OT** |
+| `-T3` | `setg TIMING normal` | 1s | 300ms | Padrao (seguro para maioria) |
+| `-T4` | `setg TIMING aggressive` | 0.5s | 50ms | Lab / redes rapidas apenas |
+| `-T5` | `setg TIMING insane` | 0.2s | 0ms | Nunca em OT producao |
+
+Outros flags Nmap como opcoes globais do IXF:
+
+```bash
+# nmap --max-retries 1 --host-timeout 30s --max-rate 10 --scan-delay 500ms
+setg MAX_RETRIES 1
+setg HOST_TIMEOUT 30
+setg MAX_RATE 10
+setg SCAN_DELAY 500
+
+# nmap --version-intensity 2
+setg PROBE_LEVEL 2
+
+# nmap -Pn
+setg SKIP_PING true
+
+# nmap -oN saida.txt
+setg OUTPUT saida.txt
+```
 
 ---
 

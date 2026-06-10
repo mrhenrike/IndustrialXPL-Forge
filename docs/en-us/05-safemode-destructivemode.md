@@ -928,7 +928,74 @@ For every HIGH, CRITICAL, or CATASTROPHIC module, know the recovery procedure be
 - CRITICAL: Know how to restore firmware/PLC program from backup
 - CATASTROPHIC: Know the physical recovery procedure (may require vendor support)
 
-The simulation output for each module includes recovery guidance — read it in simulate mode before going live.
+The simulation output for each module includes recovery guidance -- read it in simulate mode before going live.
+
+---
+
+## Noise Level Comparison: IXF vs Nmap
+
+IXF is designed to be the **least aggressive** active scanner for OT/ICS environments. Unlike Nmap, which sends SYN packets, OS detection probes, and multiple script PDUs per port, IXF sends a single well-formed protocol PDU -- identical to what a legitimate engineering workstation sends during normal operations.
+
+```
+Tool / Mode              Noise    OT risk
+---------------------------------------------------------
+tcpdump (passive)        1/5  ||||                Zero -- listen only, no packets sent
+Wireshark (passive)      1/5  ||||                Zero -- listen only, no packets sent
+IXF check()              2/5  ||||||||            1 TCP connection, 1 valid PDU, 1 response
+IXF run() simulate=true  2/5  ||||||||            Identical to check() -- no writes
+nmap -sS -T1             3/5  ||||||||||||        SYN scan (slow), half-open TCP
+IXF run() simulate=false 3/5  ||||||||||||        1 conn, 1 read PDU (FC03/FC43)
+nmap -sS -T2 (OT-safe)   3/5  ||||||||||||        Acceptable with conservative timing
+nmap -sV -T3             4/5  ||||||||||||||||    Version probes per open port
+nmap --script modbus-*   4/5  ||||||||||||||||    Multiple PDUs per port
+nmap -A (aggressive)     5/5  ||||||||||||||||||||  OS detect + scripts -- AVOID in OT
+nmap -T4 / -T5           5/5  ||||||||||||||||||||  NEVER in OT -- may crash PLCs/RTUs
+```
+
+### IXF Timing vs Nmap -T
+
+| Nmap flag | IXF equivalent | Timeout | Delay | Retries | Use case |
+|-----------|---------------|---------|-------|---------|----------|
+| `-T0` | `setg TIMING paranoid` | 5.0s | 10s | 1 | Maximum stealth |
+| `-T1` | `setg TIMING sneaky` | 3.0s | 5s | 1 | Very slow ICS |
+| `-T2` | `setg TIMING polite` | 2.0s | 1s | 2 | **Recommended for OT** |
+| `-T3` | `setg TIMING normal` | 1.0s | 300ms | 3 | Default -- safe for most OT |
+| `-T4` | `setg TIMING aggressive` | 0.5s | 50ms | 2 | Lab / fast networks only |
+| `-T5` | `setg TIMING insane` | 0.2s | 0ms | 1 | Never in production OT |
+
+### Nmap Flags as IXF Global Options
+
+```bash
+# nmap -T2 --max-retries 1 --host-timeout 30s --max-rate 10 --scan-delay 500ms
+setg TIMING T2
+setg MAX_RETRIES 1
+setg HOST_TIMEOUT 30
+setg MAX_RATE 10
+setg SCAN_DELAY 500
+
+# nmap --version-intensity 2
+setg PROBE_LEVEL 2
+
+# nmap -Pn
+setg SKIP_PING true
+
+# nmap -oN output.txt
+setg OUTPUT output.txt
+
+# nmap -v
+setg VERBOSE true
+```
+
+### Why IXF is Safer than Nmap for OT
+
+| Aspect | Nmap | IXF |
+|--------|------|-----|
+| TCP handshake | SYN-only (half-open) | Full connect (complete handshake) |
+| Payload | Generic probes + banner grab | Protocol-correct PDU (Modbus/S7/ENIP) |
+| PDUs per port | 1-20+ (scripts, version probes) | 1 per check, 1-3 with PROBE_LEVEL 1-2 |
+| OT-awareness | None | Designed for OT protocols |
+| Rate limiting | Manual flags | Built-in defaults (MAX_RATE=10, DELAY=300ms) |
+| Write protection | None | Requires `destructive=true` + confirmation |
 
 ---
 

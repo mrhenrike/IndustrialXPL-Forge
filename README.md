@@ -22,10 +22,7 @@
 ## Quick Start
 
 ```bash
-
-        $extras = $args[0].Groups[1].Value
-        "pip install industrialxpl-forge$extras"
-    
+pip install industrialxpl-forge
 ixf
 ```
 
@@ -34,8 +31,10 @@ Or from source:
 ```bash
 git clone https://github.com/mrhenrike/IndustrialXPL-Forge
 cd IndustrialXPL-Forge
-pip install -r requirements.txt
-python ixf.py
+python3 -m venv .venv && source .venv/bin/activate   # Linux/Mac
+# .venv\Scripts\activate                              # Windows
+pip install -e .
+ixf
 ```
 
 ---
@@ -51,10 +50,7 @@ OSINT → Discovery → Fingerprint → Vulnerability Check → Exploit → Repo
 ```
 
 **Key features:**
-- **Python-First**: all core functionality works with `
-        $extras = $args[0].Groups[1].Value
-        "pip install industrialxpl-forge$extras"
-    ` — external runtimes (C, Go, Java) are optional accelerators with Python fallbacks built in
+- **Python-First**: all core functionality works with `pip install industrialxpl-forge` — external runtimes (C, Go, Java) are optional accelerators with Python fallbacks built in
 - **SafeMode by default**: every module runs in simulate mode — prints payload without sending
 - **MITRE ATT&CK for ICS v19**: 79 techniques mapped, `ttp T0843 192.168.1.100` syntax
 - **CVE coverage**: 3,300+ ICS/OT CVEs from CVSS 0.1 to 10.0
@@ -141,6 +137,60 @@ Impact levels require proportional confirmation:
 - `CATASTROPHIC`: type string + wait 10 seconds
 
 All destructive operations are logged to `.log/destructive_ops_YYYY-MM-DD.log`.
+
+---
+
+## Noise Level in OT Environments
+
+IXF is designed to be the **least aggressive scanner** for OT/ICS assets. Unlike Nmap, which generates SYN packets, OS detection probes, and multiple script PDUs per port, IXF sends a single well-formed protocol PDU — identical to what a legitimate engineering workstation would send.
+
+```
+Tool / Mode              Noise    Risk in OT environments
+---------------------------------------------------------
+tcpdump (passive)        1/5  ||||                Zero — listen only
+Wireshark (passive)      1/5  ||||                Zero — listen only
+IXF check()              2/5  ||||||||            1 TCP conn, 1 valid PDU
+IXF run() simulate=true  2/5  ||||||||            Identical to check() — no writes
+nmap -sS -T1             3/5  ||||||||||||        SYN scan, half-open TCP
+IXF run() simulate=false 3/5  ||||||||||||        1 conn, 1 read PDU (FC03/FC43)
+nmap -sS -T2 (OT safe)   3/5  ||||||||||||        Acceptable with conservative timing
+nmap -sV -T3             4/5  ||||||||||||||||    Version probes per port
+nmap --script modbus-*   4/5  ||||||||||||||||    Scripts send multiple PDUs
+nmap -A (aggressive)     5/5  ||||||||||||||||||||  OS detect + scripts — AVOID in OT
+nmap -T4 / -T5           5/5  ||||||||||||||||||||  NEVER in OT. May crash assets.
+```
+
+**IXF global timing options map directly to Nmap `-T` flags:**
+
+| Nmap | IXF | Socket timeout | Delay | Use case |
+|------|-----|---------------|-------|----------|
+| `-T0` | `setg TIMING paranoid` | 5s | 10s | Absolute stealth |
+| `-T1` | `setg TIMING sneaky` | 3s | 5s | Slow ICS environments |
+| `-T2` | `setg TIMING polite` | 2s | 1s | **Recommended for OT** |
+| `-T3` | `setg TIMING normal` | 1s | 300ms | Default (safe for most OT) |
+| `-T4` | `setg TIMING aggressive` | 0.5s | 50ms | Lab / fast networks only |
+| `-T5` | `setg TIMING insane` | 0.2s | 0ms | Never use in production OT |
+
+Other Nmap flags as IXF global options:
+
+```bash
+# nmap --max-retries 1 --host-timeout 30s --max-rate 10
+setg MAX_RETRIES 1
+setg HOST_TIMEOUT 30
+setg MAX_RATE 10
+
+# nmap --scan-delay 500ms
+setg SCAN_DELAY 500
+
+# nmap --version-intensity 2
+setg PROBE_LEVEL 2
+
+# nmap -Pn (skip ping)
+setg SKIP_PING true
+
+# nmap -oN output.txt
+setg OUTPUT output.txt
+```
 
 ---
 

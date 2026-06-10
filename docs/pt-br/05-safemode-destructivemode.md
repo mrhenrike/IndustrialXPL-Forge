@@ -1019,4 +1019,71 @@ ixf > setg simulate false   # Libera modo ao vivo (com cautela)
 
 ---
 
+## Comparativo de Nivel de Ruido: IXF vs Nmap
+
+O IXF foi projetado para ser o scanner ativo **menos agressivo** para ambientes OT/ICS. Diferente do Nmap, que gera pacotes SYN, probes de deteccao de OS e multiplos PDUs de script por porta, o IXF envia um unico PDU de protocolo bem formado -- identico ao que uma workstation de engenharia legitima envia durante operacoes normais.
+
+```
+Ferramenta / Modo        Ruido    Risco em OT
+---------------------------------------------------------
+tcpdump (passivo)        1/5  ||||                Zero -- apenas escuta, nenhum pacote enviado
+Wireshark (passivo)      1/5  ||||                Zero -- apenas escuta, nenhum pacote enviado
+IXF check()              2/5  ||||||||            1 conn TCP, 1 PDU valido, 1 resposta
+IXF run() simulate=true  2/5  ||||||||            Identico ao check() -- sem escrita
+nmap -sS -T1             3/5  ||||||||||||        SYN scan lento, TCP half-open
+IXF run() simulate=false 3/5  ||||||||||||        1 conn, 1 PDU de leitura (FC03/FC43)
+nmap -sS -T2 (OT safe)   3/5  ||||||||||||        Aceitavel com timing conservador
+nmap -sV -T3             4/5  ||||||||||||||||    Probes de versao por porta aberta
+nmap --script modbus-*   4/5  ||||||||||||||||    Multiplos PDUs por porta
+nmap -A (agressivo)      5/5  ||||||||||||||||||||  OS detect + scripts -- EVITAR em OT
+nmap -T4 / -T5           5/5  ||||||||||||||||||||  NUNCA em OT -- pode derrubar PLCs/RTUs
+```
+
+### Timing do IXF vs Nmap -T
+
+| Flag Nmap | IXF equivalente | Timeout | Delay | Retries | Quando usar |
+|-----------|----------------|---------|-------|---------|-------------|
+| `-T0` | `setg TIMING paranoid` | 5.0s | 10s | 1 | Stealth maximo |
+| `-T1` | `setg TIMING sneaky` | 3.0s | 5s | 1 | ICS muito lentos |
+| `-T2` | `setg TIMING polite` | 2.0s | 1s | 2 | **Recomendado para OT** |
+| `-T3` | `setg TIMING normal` | 1.0s | 300ms | 3 | Padrao -- seguro para maioria do OT |
+| `-T4` | `setg TIMING aggressive` | 0.5s | 50ms | 2 | Lab / redes rapidas apenas |
+| `-T5` | `setg TIMING insane` | 0.2s | 0ms | 1 | Nunca em OT producao |
+
+### Flags do Nmap como Opcoes Globais do IXF
+
+```bash
+# nmap -T2 --max-retries 1 --host-timeout 30s --max-rate 10 --scan-delay 500ms
+setg TIMING T2
+setg MAX_RETRIES 1
+setg HOST_TIMEOUT 30
+setg MAX_RATE 10
+setg SCAN_DELAY 500
+
+# nmap --version-intensity 2
+setg PROBE_LEVEL 2
+
+# nmap -Pn
+setg SKIP_PING true
+
+# nmap -oN saida.txt
+setg OUTPUT saida.txt
+
+# nmap -v
+setg VERBOSE true
+```
+
+### Por que o IXF e mais Seguro que o Nmap em OT
+
+| Aspecto | Nmap | IXF |
+|---------|------|-----|
+| Handshake TCP | SYN-only (half-open) | Full connect (handshake completo) |
+| Payload | Probes genericos + banner | PDU correto do protocolo (Modbus/S7/ENIP) |
+| PDUs por porta | 1 a 20+ (scripts, version probes) | 1 por check, 1-3 com PROBE_LEVEL 1-2 |
+| Consciencia de OT | Nenhuma | Projetado para protocolos OT |
+| Rate limiting | Flags manuais | Defaults conservadores (MAX_RATE=10, DELAY=300ms) |
+| Protecao de escrita | Nenhuma | Exige `destructive=true` + confirmacao explicita |
+
+---
+
 *Anterior: [Sistema de Módulos](04-sistema-modulos.md) | Próximo: [MITRE ATT&CK for ICS](06-mitre-attack-ics.md)*
