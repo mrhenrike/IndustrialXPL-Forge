@@ -121,6 +121,66 @@ class ModbusTCPSocket:
         pdu = struct.pack(">BHH", 0x06, address, value & 0xFFFF)
         return self.send_pdu(pdu)
 
+    def write_multiple_coils(self, address: int, values: List[bool]) -> Optional[bytes]:
+        """FC15 Write Multiple Coils."""
+        count = len(values)
+        byte_count = (count + 7) // 8
+        coil_bytes = bytearray(byte_count)
+        for i, v in enumerate(values):
+            if v:
+                coil_bytes[i // 8] |= (1 << (i % 8))
+        pdu = struct.pack(">BHH B", 0x0F, address, count, byte_count) + bytes(coil_bytes)
+        return self.send_pdu(pdu)
+
+    def write_multiple_registers(self, address: int, values: List[int]) -> Optional[bytes]:
+        """FC16 Write Multiple Registers."""
+        count = len(values)
+        byte_count = count * 2
+        regs = struct.pack(">{}H".format(count), *[v & 0xFFFF for v in values])
+        pdu = struct.pack(">BHH B", 0x10, address, count, byte_count) + regs
+        return self.send_pdu(pdu)
+
+    def mask_write_register(self, address: int, and_mask: int, or_mask: int) -> Optional[bytes]:
+        """FC22 Mask Write Register -- modifies bits without full overwrite."""
+        pdu = struct.pack(">BHH H", 0x16, address, and_mask & 0xFFFF, or_mask & 0xFFFF)
+        return self.send_pdu(pdu)
+
+    def read_write_registers(
+        self, read_addr: int, read_qty: int, write_addr: int, values: List[int]
+    ) -> Optional[bytes]:
+        """FC23 Read/Write Multiple Registers -- atomic read+write in one PDU."""
+        count = len(values)
+        byte_count = count * 2
+        regs = struct.pack(">{}H".format(count), *[v & 0xFFFF for v in values])
+        pdu = (
+            struct.pack(">B H H H H B", 0x17, read_addr, read_qty,
+                        write_addr, count, byte_count) + regs
+        )
+        return self.send_pdu(pdu)
+
+    def diagnostic(self, sub_function: int, data: int = 0x0000) -> Optional[bytes]:
+        """FC8 Diagnostics -- sub-functions include restart, flush queues, etc."""
+        pdu = struct.pack(">B H H", 0x08, sub_function, data)
+        return self.send_pdu(pdu)
+
+    def get_com_event_counter(self) -> Optional[bytes]:
+        """FC11 Get Com Event Counter -- read communication event counter."""
+        pdu = struct.pack(">B", 0x0B)
+        return self.send_pdu(pdu)
+
+    def write_file_record(self, file_number: int, record_number: int, data: bytes) -> Optional[bytes]:
+        """FC21 Write File Record -- used for firmware/configuration write on some PLCs."""
+        record_data_len = len(data)
+        subreq = struct.pack(">B H H H", 0x06, file_number, record_number,
+                             record_data_len // 2) + data
+        pdu = struct.pack(">B B", 0x15, 7 + record_data_len) + subreq
+        return self.send_pdu(pdu)
+
+    def encapsulated_interface_transport(self, mei_type: int, payload: bytes) -> Optional[bytes]:
+        """FC43 Encapsulated Interface Transport -- MEI type 13 = CANopen, 14 = DeviceID."""
+        pdu = struct.pack(">B B", 0x2B, mei_type) + payload
+        return self.send_pdu(pdu)
+
     def report_server_id(self) -> Optional[bytes]:
         pdu = struct.pack(">B", 0x11)
         return self.send_pdu(pdu)
