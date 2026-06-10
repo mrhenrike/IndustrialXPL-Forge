@@ -50,7 +50,7 @@ Continuar o **Bloco 2** portando os modulos SCADA para Python:
 ### Ambiente necessario
 
 - Python 3.9+
-- pip install industrialxpl (ou pip install -e . no diretorio do projeto)
+- pip install industrialxpl-forge (ou pip install -e . no diretorio do projeto)
 - pymodbus, scapy, rich, requests, paramiko, pysnmp, asyncua (instalados via pip)
 - Runtimes externos sao opcionais (Python sempre disponivel como fallback)
 
@@ -824,3 +824,31 @@ python tools/env_doctor.py
 ### Paths importantes
 - Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\IndustrialXPL-Forge
 - Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/IndustrialXPL-Forge
+
+## [2026-06-08 16:45] -- Wiki PT-BR: 5 paginas faltantes criadas
+
+### Estado ao encerrar
+- Criadas 5 paginas PT-BR completas na wiki (GitHub wiki repo)
+- Configuracao-Laboratorio.md (traducao de Lab-Setup.md)
+- Ataques-Modbus.md (traducao de Modbus-Attacks.md)
+- Purple-Team-ptBR.md (traducao de Purple-Team.md)
+- Simulacao-Ransomware.md (traducao de Ransomware-Simulation.md)
+- Solucao-de-Problemas.md (traducao de Troubleshooting.md)
+- Home.md e Home-pt-BR.md atualizados com links para as novas paginas
+- Todas as paginas tem aviso legal em pt-BR, sem em-dash, sem chaves de API expostas
+- Commits: 63c5b0c (novas paginas EN) + 534f322 (security fix API key)
+- Wiki repo sincronizado com origin/master
+
+### Proximo passo imediato
+- Nenhuma pendencia critica. Wiki bilingue completa.
+
+### Pendencias conhecidas
+- [ ] Verificar se a wiki renderiza corretamente no GitHub (links [[WikiLink]] vs [texto](pagina))
+
+### Ambiente necessario
+- Wiki repo: .tmp/ixf_wiki/ (git repo separado para o GitHub Wiki)
+- Remote: https://github.com/mrhenrike/IndustrialXPL-Forge.wiki.git
+
+### Paths importantes
+- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\IndustrialXPL-Forge\.tmp\ixf_wiki
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/IndustrialXPL-Forge/.tmp/ixf_wiki

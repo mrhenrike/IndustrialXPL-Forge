@@ -28,7 +28,7 @@ from typing import Optional
 from industrialxpl.core.exploit.exceptions import IXFException
 from industrialxpl.core.exploit.printer import (
     print_error, print_info, print_status, print_success, print_table, print_warning,
-    pprint_dict_in_order, printer_queue,
+    pprint_dict_in_order, printer_queue, set_log_level, get_log_level,
 )
 from industrialxpl.core.exploit.safety import DestructiveGate, IMPACT_LEVELS
 from industrialxpl.core.exploit.utils import (
@@ -54,67 +54,72 @@ _BANNER = r"""
 _GLOBAL_HELP = """
 IndustrialXPL-Forge (IXF) v{version}
 
-GLOBAL COMMANDS:
-  help                          Show this help menu
-  use <module>                  Load a module (e.g. use scanners/ics/modbus_detect)
-  search <term>                 Search by keyword, vendor, CVE, or protocol
-  search type=<category>        Filter by type: scanner, exploit, cve, assessment, creds
-  search sector=<sector>        Filter by sector: energy, oilgas, water, manufacturing...
-  modules                       Browse all categories with module counts
-  modules <category>            Drill-down: modules scanners / modules assessment
-  info                          Alias for 'show info' (when module loaded)
-  options                       Alias for 'show options' (when module loaded)
-  exec <shell_cmd>              Execute a shell command
-  discover <CIDR>               Discover OT/ICS assets on a network
+NAVIGATION:
+  help                          This menu
+  help <term|module>            Contextual help: help sector / help modbus / help simulate
+  help sector                   List all industry sectors (search sector=...)
+  help type                     List all module types (search type=...)
+  help global                   List global options and current values
+  use <module>                  Load a module  (e.g. use scanners/ics/modbus_detect)
+  back                          Deselect current module
   exit                          Exit IXF
 
+DISCOVERY:
+  search <keyword>              Search by keyword, vendor, CVE, protocol
+  search type=<category>        Filter: scanner | exploit | cve | assessment | creds
+  search sector=<name>          Industry filter: energy | oilgas | water | manufacturing ...
+  modules                       Browse categories with module counts
+  modules <category>            Drill-down: modules scanners / modules assessment / modules cve
+  show sectors                  List sectors (alias: help sector)
+  show types                    List module types (alias: help type)
+
 MODULE COMMANDS (after 'use'):
-  run                           Execute the current module
-  check                         Run check() only — read-only fingerprint
-  back                          Deselect current module
-  set <option> <value>          Set a module option (case-insensitive option names)
-  setg <option> <value>         Set a global option (applies to all modules)
+  run                           Execute current module
+  check                         Read-only fingerprint check
+  set <option> <value>          Set module option (case-insensitive)
+  show info                     Module details, CVE, CVSS, MITRE
+  show options                  Current option values
+  info                          Alias: show info
+  options                       Alias: show options
+
+GLOBAL OPTIONS:
+  setg <option> <value>         Set for all modules (persists until unsetg)
   unsetg <option>               Clear a global option
-  show [info|options|devices]   Show module information
-  info                          Shortcut for 'show info'
-  options                       Shortcut for 'show options'
+  show global                   Show all global options and current values
+  global                        Alias: show global
+
+  setg loglevel debug           debug | info | warning | error
+  setg verbose true             Alias for loglevel=debug
+  setg threads 20               Parallel threads (default 10)
+  setg timeout 10               Socket timeout in seconds (default 5)
+  setg target 10.0.0.1          Default target for all modules
 
 SIMULATE vs DESTRUCTIVE:
-  simulate=true   (default)     Print planned actions — no packets sent, fully safe.
-  simulate=false                Execute actions, but only for read-only/INFO modules.
-  destructive=true              Enable write/exploit execution — requires confirmation.
-  Assessment/INFO modules run on simulate=false without needing destructive=true.
+  simulate=true   (DEFAULT)     Print planned actions only — no packets sent
+  simulate=false                Execute reads/scans — safe for INFO/assessment modules
+  destructive=true              Enable exploits/writes — requires typed confirmation
+  help simulate                 Full explanation of modes
 
-CVE COMMANDS:
-  cve <CVE-ID>                  Load module for a specific CVE
-  cve-scan <CIDR>               Discover assets and test all applicable CVEs
-  report [json|html|markdown]   Generate assessment report for current session
-
-MITRE ATT&CK FOR ICS COMMANDS:
-  mitre <TID>                   Show modules covering a technique (e.g. mitre T0843)
-  mitre-list [tactic]           List all techniques [filtered by tactic]
-  mitre-scan <tactic|TID> <target>  Execute all modules for a tactic/technique
-  mitre-coverage                Show coverage percentage per tactic
-
-TTP COMMANDS:
-  ttp <TID> <target>            Execute all modules for a TTP-ID against target
-  ttp-check <TID> <target>      Run check() only — read-only, always safe
-  ttp-simulate <TID> <target>   Force simulate mode — no packets sent
-  ttp-list [--tactic <name>]    List all TTP-IDs with module counts
-
-SECTORS AVAILABLE FOR search sector=<name>:
-  energy, oilgas, water, manufacturing, building, automotive, maritime,
-  aviation, mining, railway, chemical, hospital, datacenter, smart_grid
+CVE / MITRE / TTP:
+  cve <CVE-ID>                  Load module for a CVE (e.g. cve CVE-2022-29953)
+  mitre <TID>                   Modules covering technique (e.g. mitre T0843)
+  mitre-list [tactic]           List all 79 ICS techniques
+  mitre-scan <tactic> <target>  Run all modules for a tactic
+  ttp <TID> <target>            Execute all modules for a TTP-ID
+  help mitre                    Full MITRE command reference
 
 EXAMPLES:
-  ixf > search sector=energy           — find energy sector modules
-  ixf > search type=scanner            — list all scanners
-  ixf > modules                        — browse all categories
-  ixf > modules assessment             — show assessment subcategories
+  ixf > search sector=energy
+  ixf > search type=scanner
+  ixf > modules assessment
+  ixf > setg loglevel debug
+  ixf > setg threads 20
   ixf > use scanners/ics/modbus_detect
-  ixf > set TARGET 192.168.1.100       — case-insensitive
+  ixf > set TARGET 192.168.1.100
+  ixf > set simulate false
   ixf > run
-  ixf > cve CVE-2022-29953
+  ixf > help zone_conduit_audit
+  ixf > help modbus
 """.format(version=VERSION)
 
 _MODULE_HELP = """
@@ -241,14 +246,241 @@ class IXFInterpreter(BaseInterpreter):
 
     # ── Global commands ────────────────────────────────────────────────────
 
+    # Known terms that have dedicated help pages
+    _HELP_TOPICS = {
+        "sector", "sectors", "type", "types", "global", "globals",
+        "simulate", "destructive", "loglevel", "verbose", "threads",
+        "search", "modules", "mitre", "ttp", "cve", "assess", "assessment",
+    }
+
     def command_help(self, args: str = "", **kwargs) -> None:
+        term = args.strip().lower()
+
+        # help <term> — topic-based help
+        if term:
+            if term in ("sector", "sectors"):
+                self._help_sectors()
+                return
+            if term in ("type", "types", "category", "categories"):
+                self._help_types()
+                return
+            if term in ("global", "globals", "global_options"):
+                self._help_global()
+                return
+            if term in ("simulate", "simulation"):
+                self._help_simulate()
+                return
+            if term in ("loglevel", "verbose", "verbosity"):
+                self._help_loglevel()
+                return
+            if term in ("search",):
+                self._help_search()
+                return
+            if term in ("mitre", "ttp"):
+                self._help_mitre()
+                return
+            # Try to load the module and print its options
+            module_path = pythonize_path(term)
+            full_path = "industrialxpl.modules.{}".format(module_path)
+            try:
+                cls = import_exploit(full_path)
+                tmp = cls()
+                info = tmp.get_info()
+                pprint_dict_in_order(info, header="Module Information — {}".format(info.get("name", term)))
+                rows = [
+                    (k, str(v[0]), "yes" if not v[2] else "adv", v[1])
+                    for k, v in tmp.exploit_attributes.items()
+                    if not v[2]
+                ]
+                print_table(
+                    ["Option", "Default", "Required", "Description"],
+                    rows,
+                    title="Options — {}".format(info.get("name", term)),
+                )
+                return
+            except Exception:
+                pass
+            # Search for modules matching the term and show a mini help
+            results = [m for m in self.modules if term in m.lower()]
+            if results:
+                print_success("{} module(s) match '{}':".format(len(results), term))
+                for m in results[:20]:
+                    print_info("  use {}".format(humanize_path(m)))
+                if len(results) > 20:
+                    print_info("  … and {} more. Use: search {}".format(len(results) - 20, term))
+                print_info("\nTip: 'help <full/module/path>' shows that module's options.")
+                return
+            print_info("No help topic or module found for '{}'. Known topics:".format(term))
+            print_info("  " + "  ".join(sorted(self._HELP_TOPICS)))
+            return
+
+        # Default: context-sensitive help
         if self.current_module:
             print(_MODULE_HELP)
         else:
             print(_GLOBAL_HELP)
 
+    def _help_sectors(self) -> None:
+        print_info("\nAvailable sectors for 'search sector=<name>':\n")
+        rows = []
+        for sector in sorted(self._SECTOR_ALIASES.keys()):
+            aliases = self._SECTOR_ALIASES[sector]
+            count = len(set(
+                m for alias in aliases for m in self.modules if alias in m.lower()
+            ))
+            rows.append((sector, str(count), ", ".join(aliases[:4]) + ("…" if len(aliases) > 4 else "")))
+        print_table(
+            ["Sector", "~Modules", "Matched keywords"],
+            rows,
+            title="Sectors — search sector=<name>",
+        )
+        print_info("\nUsage:  search sector=energy")
+        print_info("        search sector=oilgas")
+        print_info("        search sector=manufacturing\n")
+
+    def _help_types(self) -> None:
+        _CAT_MAP = {
+            "scanner":    "scanners/",
+            "exploit":    "exploits/",
+            "cve":        "cve/",
+            "assessment": "assessment/",
+            "creds":      "creds/",
+        }
+        print_info("\nModule categories for 'search type=<name>':\n")
+        rows = []
+        for cat, prefix in sorted(_CAT_MAP.items()):
+            count = len([m for m in self.modules if prefix in m.lower()])
+            rows.append((cat, str(count), "search type={}".format(cat)))
+        print_table(["Type", "Modules", "Usage"], rows, title="Module Types")
+        print_info("\nUsage:  search type=scanner")
+        print_info("        search type=exploit")
+        print_info("        search type=assessment\n")
+
+    def _help_global(self) -> None:
+        rows = [
+            ("loglevel",     str(self._global_opts.get("loglevel", "info")),
+             "debug | info | warning | error   — verbosity of IXF output"),
+            ("verbose",      str(self._global_opts.get("verbose", "false")),
+             "true | false                      — alias for loglevel=debug"),
+            ("threads",      str(self._global_opts.get("threads", "10")),
+             "integer >= 1                      — parallel threads for multi-host ops"),
+            ("timeout",      str(self._global_opts.get("timeout", "5")),
+             "integer seconds                   — socket timeout for all modules"),
+            ("target",       str(self._global_opts.get("target", "")),
+             "IP / hostname / CIDR              — default target for all modules"),
+            ("port",         str(self._global_opts.get("port", "")),
+             "integer 1-65535                   — override default port"),
+            ("output",       str(self._global_opts.get("output", "")),
+             "filepath                          — save output to file"),
+            ("report_fmt",   str(self._global_opts.get("report_fmt", "markdown")),
+             "json | html | markdown            — report format for 'report' cmd"),
+        ]
+        print_table(
+            ["Option", "Current", "Description"],
+            rows,
+            title="Global Options (setg / unsetg)",
+        )
+        print_info("\nUsage:  setg loglevel debug")
+        print_info("        setg threads 20")
+        print_info("        setg target 192.168.1.0/24")
+        print_info("        unsetg target\n")
+        print_info("Global options are applied to every module loaded after 'setg'.")
+
+    def _help_simulate(self) -> None:
+        print_info("""
+simulate — Safe Execution Mode
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  simulate=true  (DEFAULT)
+    - No packets are sent to the target.
+    - The module prints what it WOULD do: payloads, expected responses,
+      MITRE technique, CVE, CVSS, and rationale for the vulnerability.
+    - 100% safe for any environment.
+
+  simulate=false
+    - Sends real probes / reads against the target.
+    - For INFO/READ modules (scanners, assessments): runs immediately.
+    - For LOW/MEDIUM risk modules: runs after brief warning.
+    - For HIGH/CRITICAL/CATASTROPHIC modules: requires destructive=true
+      AND typed confirmation with the target hostname.
+
+  destructive=true
+    - Enables write, exploit, DoS, or configuration-change operations.
+    - Always prompts for explicit typed confirmation before execution.
+    - Audit log written to .log/destructive_ops_YYYY-MM-DD.log
+
+Usage:
+  set simulate false          — probe target (safe reads)
+  set simulate false          — then set destructive true for exploits
+  setg simulate false         — apply to all subsequent modules
+""")
+
+    def _help_loglevel(self) -> None:
+        print_info("""
+loglevel / verbose — Output Verbosity
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Levels (setg loglevel <level>):
+    debug     — all internal messages, raw packets, socket events
+    info      — standard output (default)
+    warning   — only warnings and errors
+    error     — only fatal errors
+
+  Shorthand:
+    setg verbose true    — equivalent to setg loglevel debug
+    setg verbose false   — equivalent to setg loglevel info
+
+Usage:
+  setg loglevel debug
+  setg verbose true
+""")
+
+    def _help_search(self) -> None:
+        print_info("""
+search — Module Discovery
+━━━━━━━━━━━━━━━━━━━━━━━━━
+  search <keyword>           — keyword in module path or name
+  search sector=<name>       — all modules for an industry sector
+  search type=<category>     — filter by type: scanner, exploit, cve, assessment, creds
+  search cve_2022            — find modules for a CVE year
+  search <vendor>            — e.g. search siemens, search schneider, search abb
+
+Sector examples:
+  search sector=energy       search sector=oilgas     search sector=water
+  search sector=manufacturing  search sector=building  search sector=maritime
+
+Type examples:
+  search type=scanner        search type=exploit      search type=assessment
+
+Tip: 'modules' or 'modules <category>' browses the full tree.
+""")
+
+    def _help_mitre(self) -> None:
+        print_info("""
+MITRE ATT&CK for ICS — Commands
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  mitre <TID>                        — load module(s) for technique T0843
+  mitre-list [tactic]                — list all ICS techniques
+  mitre-scan <tactic|TID> <target>   — run all modules for a tactic/technique
+  mitre-coverage                     — show coverage % per tactic
+  use assessment/mitre_ics/full_mitre_sweep   — run all 12 tactics against target
+
+Tactics: initial_access, execution, persistence, privilege_escalation,
+         evasion, discovery, lateral_movement, collection,
+         command_and_control, inhibit_response, impair_process_control, impact
+
+Example:
+  ixf > mitre-scan discovery 192.168.1.100
+  ixf > use assessment/mitre_ics/full_mitre_sweep
+  ixf > set target 10.0.0.1
+  ixf > set simulate false
+  ixf > run
+""")
+
     # Aliases for common typos / shortcuts
     def command_info(self, args: str = "", **kwargs) -> None:
+        term = args.strip()
+        if term:
+            self.command_help(term)
+            return
         if self.current_module:
             self.command_show("info")
         else:
@@ -258,7 +490,20 @@ class IXFInterpreter(BaseInterpreter):
         if self.current_module:
             self.command_show("options")
         else:
-            print_error("No module loaded. Use 'use <module_path>' first.")
+            self._help_global()
+
+    def command_global(self, args: str = "", **kwargs) -> None:
+        """Show or manage global options (alias: show global)."""
+        sub = args.strip().lower()
+        if sub in ("", "show", "list"):
+            self._help_global()
+        else:
+            # Treat as 'setg' shorthand: global loglevel debug
+            parts = sub.split(None, 1)
+            if len(parts) == 2:
+                self.command_setg("{} {}".format(parts[0], parts[1]))
+            else:
+                self._help_global()
 
     def command_exit(self, args: str = "", **kwargs) -> None:
         print_info("Exiting IndustrialXPL-Forge. Stay safe.")
@@ -318,11 +563,36 @@ class IXFInterpreter(BaseInterpreter):
         parts = args.split(None, 1)
         if len(parts) < 2:
             print_error("Usage: setg <option> <value>")
+            self._help_global()
             return
-        key, value = parts[0], parts[1]
+        key, value = parts[0].lower(), parts[1].strip()
         self._global_opts[key] = value
+
+        # Apply well-known global options immediately
+        if key in ("loglevel", "log_level"):
+            set_log_level(value)
+            print_success("[global] loglevel => {}".format(value))
+            return
+        if key == "verbose":
+            set_log_level("debug" if value.lower() in ("true", "1", "on", "yes") else "info")
+            self._global_opts["loglevel"] = get_log_level()
+            print_success("[global] verbose => {}  (loglevel={})".format(value, get_log_level()))
+            return
+        if key == "threads":
+            try:
+                t = int(value)
+                if t < 1:
+                    raise ValueError
+                self._global_opts["threads"] = str(t)
+            except ValueError:
+                print_error("threads must be a positive integer, got: {}".format(value))
+                return
+
         if self.current_module and key in self.current_module.options:
-            setattr(self.current_module, key, value)
+            try:
+                setattr(self.current_module, key, value)
+            except Exception:
+                pass
         print_success("[global] {} => {}".format(key, value))
 
     def command_unsetg(self, args: str, **kwargs) -> None:
@@ -335,14 +605,37 @@ class IXFInterpreter(BaseInterpreter):
 
     def command_show(self, args: str = "", **kwargs) -> None:
         sub = args.strip().lower() or "options"
+
+        # Context-free show commands (work without module)
+        if sub in ("global", "globals", "global_options"):
+            self._help_global()
+            return
+        if sub in ("sector", "sectors"):
+            self._help_sectors()
+            return
+        if sub in ("type", "types", "category", "categories"):
+            self._help_types()
+            return
+        if sub in ("simulate", "simulation"):
+            self._help_simulate()
+            return
+        if sub in ("loglevel", "verbose"):
+            self._help_loglevel()
+            return
+        if sub in ("mitre", "ttp"):
+            self._help_mitre()
+            return
+
         if not self.current_module:
-            if sub in ("modules", "all", ""):
+            if sub in ("modules", "all", "options", ""):
                 print_status("{} modules indexed. Use 'search <keyword>' to find modules.".format(len(self.modules)))
-                print_info("  search modbus       — find Modbus modules")
-                print_info("  search siemens      — find Siemens modules")
-                print_info("  search assessment   — find assessment modules")
-                print_info("  search cve          — find CVE modules")
-                print_info("  show modules        — list all categories")
+                print_info("  search modbus       — keyword search")
+                print_info("  search sector=energy — sector filter")
+                print_info("  search type=scanner — type filter")
+                print_info("  modules             — browse categories")
+                print_info("  show global         — global options")
+                print_info("  show sectors        — available sectors")
+                print_info("  show types          — module categories")
             else:
                 print_error("No module loaded. Use 'use <module_path>' first.")
             return
@@ -460,7 +753,6 @@ class IXFInterpreter(BaseInterpreter):
         "chemical": ["modbus", "profinet", "siemens", "safety", "triton"],
         "nuclear": ["modbus", "profinet", "siemens", "plc"],
         "hospital": ["modbus", "bacnet", "bms", "ics"],
-        "hospital": ["modbus", "bacnet", "bms"],
         "datacenter": ["modbus", "bacnet", "bms", "hvac", "ups"],
         "smart_grid": ["dnp3", "iec104", "iec61850", "modbus"],
         "scada": ["scada", "hmi", "historian", "opc"],

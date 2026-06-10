@@ -22,7 +22,7 @@
 ## Quick Start
 
 ```bash
-pip install industrialxpl
+pip install industrialxpl-forge
 ixf
 ```
 
@@ -48,7 +48,7 @@ OSINT → Discovery → Fingerprint → Vulnerability Check → Exploit → Repo
 ```
 
 **Key features:**
-- **Python-First**: all core functionality works with `pip install industrialxpl` — external runtimes (C, Go, Java) are optional accelerators with Python fallbacks built in
+- **Python-First**: all core functionality works with `pip install industrialxpl-forge` — external runtimes (C, Go, Java) are optional accelerators with Python fallbacks built in
 - **SafeMode by default**: every module runs in simulate mode — prints payload without sending
 - **MITRE ATT&CK for ICS v19**: 79 techniques mapped, `ttp T0843 192.168.1.100` syntax
 - **CVE coverage**: 3,300+ ICS/OT CVEs from CVSS 0.1 to 10.0

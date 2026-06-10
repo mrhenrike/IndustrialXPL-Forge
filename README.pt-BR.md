@@ -22,7 +22,7 @@
 ## Início Rápido
 
 ```bash
-pip install industrialxpl
+pip install industrialxpl-forge
 ixf
 ```
 
@@ -48,7 +48,7 @@ OSINT → Descoberta → Fingerprint → Verificação de Vulnerabilidade → Ex
 ```
 
 **Funcionalidades principais:**
-- **Python-First**: toda a funcionalidade central funciona com `pip install industrialxpl` - runtimes externos (C, Go, Java) são aceleradores opcionais com fallback Python embutido
+- **Python-First**: toda a funcionalidade central funciona com `pip install industrialxpl-forge` - runtimes externos (C, Go, Java) são aceleradores opcionais com fallback Python embutido
 - **SafeMode por padrão**: todo módulo executa em modo simulação - imprime o payload sem enviar
 - **MITRE ATT&CK for ICS v19**: 79 técnicas mapeadas, sintaxe `ttp T0843 192.168.1.100`
 - **Cobertura de CVEs**: 3.300+ CVEs ICS/OT de CVSS 0,1 a 10,0
