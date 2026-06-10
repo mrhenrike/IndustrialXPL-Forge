@@ -36,7 +36,7 @@ from industrialxpl.core.exploit.utils import (
     module_required, MODULES_DIR,
 )
 
-VERSION = "1.0.34"
+VERSION = "1.0.35"
 
 _BANNER = r"""
  ___           _           _        _       ___  ______  _          _____
@@ -1834,76 +1834,56 @@ Example:
         "sap": ["sap", "netweaver", "cve_2025_31324", "s4hana"],
     }
 
+    def _get_search_engine(self):
+        """Return a cached multilingual SearchEngine."""
+        if not hasattr(self, "_search_engine") or self._search_engine is None:
+            from industrialxpl.core.search.engine import SearchEngine
+            self._search_engine = SearchEngine(self.modules)
+        return self._search_engine
+
     def command_search(self, args: str, **kwargs) -> None:
-        term = args.strip().lower()
+        """Multilingual search: supports PT-BR, EN-US, ES, accents, sector/type filters."""
+        term = args.strip()
         if not term:
             print_error("Usage: search <keyword>")
-            print_info("  search modbus          -- keyword search")
-            print_info("  search sector=energy   -- modules for energy sector")
-            print_info("  search type=scanner    -- filter by category (scanner/exploit/cve/assessment/creds)")
+            print_info("  search modbus              -- keyword (English)")
+            print_info("  search mineracao           -- PT-BR term (maps to mining)")
+            print_info("  search minerio             -- without accent, same result")
+            print_info("  search minério             -- with accent, also works")
+            print_info("  search sector=mining       -- sector filter (English)")
+            print_info("  search sector=mineracao    -- sector filter (PT-BR)")
+            print_info("  search sector=energia      -- sector filter (PT-BR/ES)")
+            print_info("  search type=scanner        -- filter by module type")
+            print_info("  search type=varredura      -- PT-BR type filter")
+            print_info("  help search                -- full multilingual guide")
             return
 
-        # Sector filter: search sector=energy
-        if term.startswith("sector="):
-            sector = term[7:].strip()
-            aliases = self._SECTOR_ALIASES.get(sector, [sector])
-            results = set()
-            for alias in aliases:
-                for m in self.modules:
-                    if alias in m.lower():
-                        results.add(m)
-            results = sorted(results)
-            if not results:
-                known = ", ".join(sorted(self._SECTOR_ALIASES.keys()))
-                print_info("No modules for sector '{}'. Known sectors: {}".format(sector, known))
-                return
-            print_success("{} module(s) for sector '{}':".format(len(results), sector))
-            for m in results[:50]:
+        engine = self._get_search_engine()
+        result = engine.search(term)
+
+        if result.found:
+            label = result.display_name or term
+            print_success("{} module(s) for '{}':".format(len(result), label))
+            for m in result.modules[:50]:
                 print_info("  use {}".format(humanize_path(m)))
-            if len(results) > 50:
-                print_info("  … and {} more. Refine your search.".format(len(results) - 50))
+            if len(result.modules) > 50:
+                print_info("  ... and {} more. Refine your search.".format(
+                    len(result.modules) - 50
+                ))
+            if result.expansion_note:
+                print_info("  [i] {}".format(result.expansion_note))
             return
 
-        # Type/category filter: search type=scanner
-        if term.startswith("type="):
-            category = term[5:].strip()
-            _CAT_MAP = {
-                "scanner": "scanners/",
-                "scanners": "scanners/",
-                "exploit": "exploits/",
-                "exploits": "exploits/",
-                "cve": "cve/",
-                "assessment": "assessment/",
-                "creds": "creds/",
-                "credentials": "creds/",
-            }
-            prefix = _CAT_MAP.get(category, category + "/")
-            results = [m for m in self.modules if prefix in m.lower()]
-            if not results:
-                known = ", ".join(sorted(_CAT_MAP.keys()))
-                print_info("No modules for type '{}'. Known types: {}".format(category, known))
-                return
-            print_success("{} module(s) of type '{}':".format(len(results), category))
-            for m in results[:50]:
-                print_info("  use {}".format(humanize_path(m)))
-            if len(results) > 50:
-                print_info("  … and {} more. Refine your search.".format(len(results) - 50))
-            return
-
-        # Standard keyword search
-        results = [m for m in self.modules if term in m.lower()]
-        if not results:
-            # Suggest sector search if term looks like an industry
-            if term in self._SECTOR_ALIASES:
-                print_info("No modules matched keyword '{}'. Try: search sector={}".format(term, term))
-            else:
-                print_info("No modules found for '{}'.".format(term))
-            return
-        print_success("{} module(s) found:".format(len(results)))
-        for m in results[:50]:
-            print_info("  use {}".format(humanize_path(m)))
-        if len(results) > 50:
-            print_info("  … and {} more. Refine your search.".format(len(results) - 50))
+        # No results found
+        print_info("No modules found for '{}'.".format(term))
+        if result.suggestions:
+            print_info("  Did you mean: {}".format(", ".join(result.suggestions)))
+            print_info("  Try: search {}".format(result.suggestions[0]))
+        if result.multilingual_hint:
+            print_info("  {}".format(result.multilingual_hint))
+        if result.hint:
+            print_info("  {}".format(result.hint))
+        print_info("  Tip: search sector=<name>  |  search type=<category>  |  help search")
 
     def command_modules(self, args: str = "", **kwargs) -> None:
         """Drill-down module browser by top-level category."""
