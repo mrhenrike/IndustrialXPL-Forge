@@ -1,0 +1,20 @@
+# IXF Resource File — MITRE ATT&CK for ICS full sweep
+# Usage: ixf -r resources/rc/mitre_ics_sweep.rc -x
+#
+# Runs all 917 MITRE ICS modules against a target in simulate mode.
+# Generates ATT&CK Navigator layer JSON at the end.
+
+# --- Global settings ---
+setg TIMING T2
+setg PROBE_LEVEL 1
+setg SCAN_DELAY 300
+
+# --- Full MITRE sweep ---
+use assessment/mitre_ics/full_mitre_sweep
+set TARGET 192.168.1.100
+set SIMULATE true
+set OUTPUT_FMT layer
+set RATE_LIMIT 300
+run
+
+back

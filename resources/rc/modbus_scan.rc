@@ -1,0 +1,40 @@
+# IXF Resource File — Modbus TCP full scan
+# Usage: ixf -r resources/rc/modbus_scan.rc
+# Usage: ixf -r resources/rc/modbus_scan.rc -x   (non-interactive, just run and exit)
+#
+# Edit TARGET and PORT before running.
+
+# --- Global options ---
+setg TIMING T2
+setg THREADS 3
+setg MAX_RETRIES 2
+setg SCAN_DELAY 500
+setg HOST_TIMEOUT 30
+
+# --- Device Identification ---
+use scanners/asset/modbus_scan
+set TARGET 192.168.1.100
+set PORT 502
+set UNIT_ID 1
+run
+
+# --- ICS Scanner (coils + holding registers) ---
+use scanners/ics/modbus_scanner
+set TARGET 192.168.1.100
+set PORT 502
+set REGISTERS 40001-40020
+run
+
+# --- Banner Grabbing ---
+use scanners/ics/modbus_banner_grabbing
+set TARGET 192.168.1.100
+run
+
+# --- Unit ID Discovery ---
+# use scanners/ics/modbus_id_fuzzer
+# set TARGET 192.168.1.100
+# set START_ID 1
+# set END_ID 50
+# run
+
+back

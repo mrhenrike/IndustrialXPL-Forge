@@ -36,7 +36,7 @@ from industrialxpl.core.exploit.utils import (
     module_required, MODULES_DIR,
 )
 
-VERSION = "1.0.26"
+VERSION = "1.0.27"
 
 _BANNER = r"""
  ___           _           _        _       ___  ______  _          _____
@@ -127,17 +127,37 @@ CVE / MITRE / TTP:
   ttp <TID> <target>            Execute all modules for a TTP-ID
   help mitre                    Full MITRE command reference
 
+RESOURCE FILE MODE (like Metasploit -r):
+  ixf -r scan.rc                Run resource file, then drop into interactive shell
+  ixf -r scan.rc -x             Run resource file and exit (for CI/CD pipelines)
+  ixf -r setup.rc -r scan.rc   Chain multiple resource files in order
+  ixf -e "setg TARGET 10.0.0.1; use scanners/ics/modbus_scanner; run" -x
+  ixf -q -r scan.rc -x         Quiet (no banner) + resource file + exit
+  ixf --loglevel debug -r scan.rc
+  ixf -o /tmp/scan.log -r scan.rc -x
+
+Resource file format (plain text, one command per line):
+  # Comments start with #
+  setg TIMING T2
+  setg TARGET 192.168.1.100
+  use scanners/ics/modbus_scanner
+  set PORT 502
+  run
+  back
+
+Templates in resources/rc/:  modbus_scan.rc  ot_discovery.rc  mitre_ics_sweep.rc
+
 EXAMPLES:
   ixf > search sector=energy
   ixf > search type=scanner
   ixf > modules assessment
   ixf > setg loglevel debug
-  ixf > setg threads 20
+  ixf > setg timing T2
   ixf > use scanners/ics/modbus_detect
   ixf > set TARGET 192.168.1.100
   ixf > set simulate false
   ixf > run
-  ixf > help zone_conduit_audit
+  ixf > help timing
   ixf > help modbus
 """.format(version=VERSION)
 
@@ -200,9 +220,54 @@ class BaseInterpreter:
             raise IXFException("Unknown command: '{}'".format(command))
         return handler
 
-    def start(self) -> None:
-        print(_BANNER)
-        printer_q_thread = None
+    def _dispatch(self, raw: str) -> bool:
+        """Parse and execute one command line. Returns False if 'exit' was issued."""
+        raw = raw.strip()
+        if not raw:
+            return True
+        command, args, kwargs = self.parse_line(raw)
+        if not command:
+            return True
+        if command in ("exit", "quit"):
+            return False
+        try:
+            handler = self.get_command_handler(command)
+            handler(args, **kwargs)
+        except IXFException as exc:
+            print_error(str(exc))
+        except Exception as exc:
+            print_error("Unexpected error: {}".format(exc))
+        return True
+
+    def run_resource_lines(self, lines: list, echo: bool = True) -> None:
+        """Execute a list of command strings (resource file or -e inline).
+
+        Args:
+            lines: Raw text lines (comments, blank lines, commands).
+            echo:  Print each command before executing (like msfconsole -r).
+        """
+        for raw in lines:
+            line = raw.strip()
+            # Skip blank lines and comments
+            if not line or line.startswith("#"):
+                continue
+            if echo:
+                # Show what is being executed, similar to msfconsole resource echo
+                prompt = self.prompt
+                print("{}{}\033[0m".format(prompt, line))
+            keep_going = self._dispatch(line)
+            if not keep_going:
+                break
+
+    def start(self, show_banner: bool = True) -> None:
+        """Start the interactive REPL loop.
+
+        Args:
+            show_banner: Print the ASCII banner (default True). Set False when
+                         the banner was already printed by __main__.py.
+        """
+        if show_banner:
+            print(_BANNER)
         try:
             while True:
                 try:
@@ -220,17 +285,9 @@ class BaseInterpreter:
                     except OSError:
                         pass
 
-                command, args, kwargs = self.parse_line(raw)
-                if not command:
-                    continue
-
-                try:
-                    handler = self.get_command_handler(command)
-                    handler(args, **kwargs)
-                except IXFException as exc:
-                    print_error(str(exc))
-                except Exception as exc:
-                    print_error("Unexpected error: {}".format(exc))
+                keep_going = self._dispatch(raw)
+                if not keep_going:
+                    break
         finally:
             if _HAS_READLINE and readline is not None:
                 try:
@@ -239,7 +296,7 @@ class BaseInterpreter:
                     pass
 
     def nonInteractive(self, argv: list) -> None:
-        """Execute a single command from command-line arguments."""
+        """Execute a single command from command-line arguments (legacy mode)."""
         if len(argv) < 2:
             return
         cmd = argv[1].lower().replace("-", "_")
