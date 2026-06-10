@@ -88,16 +88,29 @@ class ModbusTiming:
 
     @staticmethod
     def describe_all() -> str:
-        lines = ["Modbus Timing Profiles (set timing T<n>):"]
+        lines = [
+            "Modbus Timing Profiles — accepted as T<n> OR slug name:",
+            "",
+            "  Level  Slug          Timeout   Delay     Retries  Notes",
+            "  -----  ------------  --------  --------  -------  -----",
+        ]
         for lvl, p in TIMING_PROFILES.items():
             lines.append(
-                "  T{:d}  {:10s}  timeout={:.1f}s  delay={:>5}ms  retries={}{}".format(
+                "  T{:d}    {:12s}  {:>6.1f}s   {:>5}ms   {:d}        {}".format(
                     lvl,
-                    p.name,
+                    p.name.lower(),
                     p.socket_timeout,
                     int(p.inter_request_delay * 1000),
                     p.retries,
-                    "  [default]" if lvl == 3 else "",
+                    "[default]" if lvl == 3 else "",
                 )
             )
+        lines += [
+            "",
+            "  Both forms accepted everywhere:",
+            "    set TIMING T3           set TIMING normal",
+            "    set TIMING T4           set TIMING aggressive",
+            "    setg timing T2          setg timing polite",
+            "    setg timing 0           setg timing paranoid",
+        ]
         return "\n".join(lines)
