@@ -1,4 +1,4 @@
-# Quick Start
+﻿# Quick Start
 
 This guide walks through ten complete annotated terminal sessions that demonstrate the core IXF workflow from first launch to advanced assessment operations. Every command is shown with its full terminal output.
 
@@ -21,7 +21,7 @@ $ ixf
                                                                               |___/
   IndustrialXPL-Forge v1.0.12 — OT/ICS/SCADA Security Assessment Framework
   Author: André Henrique (@mrhenrike) | União Geek | https://uniaogeek.com.br/
-  Python-First. Pure Python — install with pip install industrialxpl-forge.
+  Python-First. Pure Python — install with pip install industrialxpl.
   Type 'help' for commands.  simulate=True by default (safe mode).
 
 ixf >

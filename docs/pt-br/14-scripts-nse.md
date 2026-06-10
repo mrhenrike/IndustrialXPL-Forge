@@ -1,4 +1,4 @@
-# Scripts NSE
+﻿# Scripts NSE
 
 O IXF inclui 8 scripts NSE (Nmap Scripting Engine) para descoberta e fingerprint de dispositivos ICS industriais. Eles integram as capacidades de varredura do IXF diretamente no ecossistema Nmap, permitindo workflows de reconhecimento combinados.
 
@@ -31,7 +31,7 @@ Os scripts NSE do IXF são scripts Lua compatíveis com o Nmap Scripting Engine.
 | Requisito | Versão Mínima | Instalação |
 |-----------|--------------|------------|
 | Nmap | 7.80+ | `apt install nmap` / `brew install nmap` |
-| IXF | 2.0+ | `pip install industrialxpl-forge` |
+| IXF | 2.0+ | `pip install industrialxpl` |
 | Python | 3.9+ | Pré-requisito do IXF |
 | Lua | 5.3+ | Incluído no Nmap |
 | Permissão root/admin | — | Necessária para pacotes raw (alguns scripts) |

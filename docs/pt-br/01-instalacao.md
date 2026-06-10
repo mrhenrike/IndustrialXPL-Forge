@@ -1,4 +1,4 @@
-# Instalação
+﻿# Instalação
 
 Este documento cobre todos os métodos de instalação do IndustrialXPL-Forge (IXF), requisitos de sistema, dependências opcionais, notas por plataforma e procedimentos de verificação e desinstalação.
 
@@ -73,7 +73,7 @@ Versões anteriores ao Python 3.9 **não são suportadas**. Recursos de tipagem 
 A instalação mais simples e rápida. Instala automaticamente todas as dependências do Tier 1.
 
 ```bash
-pip install industrialxpl-forge
+pip install industrialxpl
 ```
 
 Após a instalação, o comando CLI `ixf` estará disponível globalmente no seu `PATH`:
@@ -96,7 +96,7 @@ Saída esperada na primeira execução:
                                                                               |___/
   IndustrialXPL-Forge v1.0.12 — OT/ICS/SCADA Security Assessment Framework
   Author: André Henrique (@mrhenrike) | União Geek | https://uniaogeek.com.br/
-  Python-First. Pure Python — install with pip install industrialxpl-forge.
+  Python-First. Pure Python — install with pip install industrialxpl.
   Type 'help' for commands.  simulate=True by default (safe mode).
 
 ixf >
@@ -115,8 +115,8 @@ pip3 install industrialxpl-forge
 Garante que o pacote é instalado para o interpretador Python correto:
 
 ```bash
-python -m pip install industrialxpl-forge
-python3 -m pip install industrialxpl-forge
+python -m pip install industrialxpl
+python3 -m pip install industrialxpl
 ```
 
 ---
@@ -195,7 +195,7 @@ source ixf-env/bin/activate
 ixf-env\Scripts\activate.bat
 
 # Instalar IXF no ambiente virtual
-pip install industrialxpl-forge
+pip install industrialxpl
 
 # Verificar instalação
 ixf
@@ -207,7 +207,7 @@ ixf
 # Criar ambiente conda com Python 3.11
 conda create -n ixf python=3.11 -y
 conda activate ixf
-pip install industrialxpl-forge
+pip install industrialxpl
 ixf
 ```
 
@@ -232,7 +232,7 @@ poetry run ixf
 
 ## Extras de Dependências Opcionais
 
-O IXF segue um **modelo de dependências em tiers**. A instalação básica via `pip install industrialxpl-forge` cobre automaticamente os Tiers 0 e 1.
+O IXF segue um **modelo de dependências em tiers**. A instalação básica via `pip install industrialxpl` cobre automaticamente os Tiers 0 e 1.
 
 ### Tier 0 — Biblioteca Padrão do Python (sempre disponível)
 
@@ -261,7 +261,7 @@ Módulos da biblioteca padrão do Python usados pelo IXF. Nenhuma instalação a
 
 ### Tier 1 — Dependências pip principais (instaladas automaticamente)
 
-Instaladas automaticamente com `pip install industrialxpl-forge`.
+Instaladas automaticamente com `pip install industrialxpl`.
 
 | Pacote | Versão Mínima | Versão Máxima | Uso no IXF |
 |--------|---------------|---------------|-----------|
@@ -281,7 +281,7 @@ Instalados explicitamente com extras do pacote. Cada extra adiciona suporte a ca
 #### Extra `[ot]` — Bibliotecas de protocolo OT/ICS
 
 ```bash
-pip install industrialxpl-forge[ot]
+pip install industrialxpl[ot]
 ```
 
 Instala:
@@ -299,7 +299,7 @@ ixf > use exploits/protocols/modbus/modbus_client
 #### Extra `[fieldbus]` — Barramento de campo industrial
 
 ```bash
-pip install industrialxpl-forge[fieldbus]
+pip install industrialxpl[fieldbus]
 ```
 
 Instala:
@@ -310,7 +310,7 @@ Requer hardware CAN ou adaptador USB-CAN (SocketCAN, Peak PCAN, Kvaser, etc.).
 #### Extra `[sast]` — Análise LLM para SAST
 
 ```bash
-pip install industrialxpl-forge[sast]
+pip install industrialxpl[sast]
 ```
 
 Instala:
@@ -322,7 +322,7 @@ O IXF também suporta Google Gemini via `requests` (já no Tier 1) e DeepSeek/Gr
 #### Extra `[full]` — Tudo
 
 ```bash
-pip install industrialxpl-forge[full]
+pip install industrialxpl[full]
 ```
 
 Equivalente a `[ot]` + `[fieldbus]` + `[sast]`. Instala todas as dependências opcionais.
@@ -515,7 +515,7 @@ Para Arch Linux / Manjaro:
 
 ```bash
 sudo pacman -S python python-pip libpcap
-pip install industrialxpl-forge
+pip install industrialxpl
 ```
 
 ### macOS
@@ -557,12 +557,12 @@ Kali e Parrot são distribuições de pentest preferidas para uso do IXF. Scapy 
 
 ```bash
 # Kali / Parrot — Python3 e pip já disponíveis
-pip install industrialxpl-forge
+pip install industrialxpl
 
 # Ou em ambiente virtual (para isolar de pacotes do sistema Kali)
 python3 -m venv ~/ixf-env
 source ~/ixf-env/bin/activate
-pip install industrialxpl-forge
+pip install industrialxpl
 ixf
 ```
 
@@ -575,7 +575,7 @@ Para uso em contêiner, isolamento de laboratório ou CI/CD:
 ```dockerfile
 FROM python:3.11-slim
 
-RUN pip install industrialxpl-forge
+RUN pip install industrialxpl
 
 # Para módulos que precisam de ferramentas de rede
 RUN apt-get update && apt-get install -y nmap libpcap-dev && rm -rf /var/lib/apt/lists/*
@@ -599,7 +599,7 @@ version: "3.8"
 services:
   ixf:
     image: python:3.11-slim
-    command: bash -c "pip install industrialxpl-forge && ixf"
+    command: bash -c "pip install industrialxpl && ixf"
     stdin_open: true
     tty: true
     network_mode: host
@@ -667,7 +667,7 @@ Saída esperada:
 
   Vendors covered: 150 | Malware TTPs: 26
   MITRE ATT&CK for ICS: 12 táticas, 103 técnicas mapeadas
-  PyPI: pip install industrialxpl-forge | GitHub: github.com/mrhenrike/IndustrialXPL-Forge
+  PyPI: pip install industrialxpl | GitHub: github.com/mrhenrike/IndustrialXPL-Forge
 ```
 
 ---
@@ -788,7 +788,7 @@ which python3
 python3 -m pip show industrialxpl-forge
 
 # Se não encontrado, reinstalar no Python atual
-python3 -m pip install industrialxpl-forge
+python3 -m pip install industrialxpl
 ```
 
 ### Erro: `ImportError: cannot import name 'scapy'`
@@ -835,7 +835,7 @@ pip install --upgrade industrialxpl-forge
 python3 -m venv ixf-clean-env
 source ixf-clean-env/bin/activate  # Linux/macOS
 # ou: ixf-clean-env\Scripts\activate  (Windows)
-pip install industrialxpl-forge
+pip install industrialxpl
 ```
 
 ### Erro: `No modules found` ao executar `search`

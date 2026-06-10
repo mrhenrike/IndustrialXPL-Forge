@@ -1,4 +1,4 @@
-# Complete Module Catalog
+﻿# Complete Module Catalog
 
 This document provides a comprehensive catalog of all 976+ modules in IndustrialXPL-Forge, organized by category. Use this as the definitive reference for understanding what modules exist and how to use them.
 
@@ -1564,7 +1564,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install IXF
-        run: pip install industrialxpl-forge
+        run: pip install industrialxpl
 
       - name: Run compliance assessment
         run: |

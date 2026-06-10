@@ -1,4 +1,4 @@
-# HANDOFF — IndustrialXPL-Forge (IXF)
+﻿# HANDOFF — IndustrialXPL-Forge (IXF)
 
 ## [2026-05-29 21:30] — Sessao de criacao inicial (Bloco 1 + Bloco 2 parcial)
 
@@ -50,7 +50,7 @@ Continuar o **Bloco 2** portando os modulos SCADA para Python:
 ### Ambiente necessario
 
 - Python 3.9+
-- pip install industrialxpl-forge (ou pip install -e . no diretorio do projeto)
+- pip install industrialxpl (ou pip install -e . no diretorio do projeto)
 - pymodbus, scapy, rich, requests, paramiko, pysnmp, asyncua (instalados via pip)
 - Runtimes externos sao opcionais (Python sempre disponivel como fallback)
 
@@ -250,7 +250,7 @@ python tools/env_doctor.py
 - pyproject.toml atualizado: name=industrialxpl-forge, urls=mrhenrike, extras=[sast]
 - Todas as referências Uniao-Geek substituídas por mrhenrike (13 arquivos)
 - Pacote publicado no PyPI: https://pypi.org/project/industrialxpl-forge/1.0.0/
-- pip install industrialxpl-forge funcional (631 módulos indexados via pip)
+- pip install industrialxpl funcional (631 módulos indexados via pip)
 - CVE Wave 3: 49 novos módulos (Rockwell, Siemens, Schneider, ABB, Omron, GE, SAP, ActiveMQ)
 - Malwares: 26 TTPs — incluindo KillDisk.c, NotPetya.cpp, EKANS.py, CosmicEnergy.py nativos
 - No-CVE Wave 2: 15 módulos (IEC61850 GOOSE, OPC UA, CC-Link, S7 clock, serial gateway)
@@ -282,7 +282,7 @@ python tools/env_doctor.py
 
 ### Ambiente necessário
 - Python 3.9+
-- pip install industrialxpl-forge (publicado no PyPI)
+- pip install industrialxpl (publicado no PyPI)
 - Para SAST: GOOGLE_AI_STUDIO_API_KEY ou OPENAI_API_KEY
 - Git remote: https://github.com/mrhenrike/IndustrialXPL-Forge.git
 
@@ -325,7 +325,7 @@ python tools/env_doctor.py
 - [ ] MITRE ATT&CK for ICS coverage: atingir 100% das 103 tecnicas mapeadas
 
 ### Ambiente necessario
-- Python 3.9+ | pip install industrialxpl-forge
+- Python 3.9+ | pip install industrialxpl
 - GOOGLE_AI_STUDIO_API_KEY ou OPENAI_API_KEY para SAST offline
 - git hook: .git/hooks/commit-msg strips Co-authored-by automatically
 
@@ -554,7 +554,7 @@ python tools/env_doctor.py
 
 ### Ambiente necessário
 - Python 3.13+
-- pip install industrialxpl-forge
+- pip install industrialxpl
 
 ### Paths importantes
 - Windows: D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge\docs\en-us\
@@ -583,7 +583,7 @@ python tools/env_doctor.py
 
 ### Ambiente necessário
 - Python 3.9+
-- pip install industrialxpl-forge
+- pip install industrialxpl
 
 ### Paths importantes
 - Windows: D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge\docs\en-us\
@@ -618,7 +618,7 @@ python tools/env_doctor.py
 
 ### Ambiente necessário
 - Python 3.9+
-- pip install industrialxpl-forge
+- pip install industrialxpl
 
 ### Paths importantes
 - Windows: `D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge\docs\pt-br\`
@@ -658,7 +658,7 @@ python tools/env_doctor.py
 - Versões: sincronizadas
 
 ### Ambiente necessário
-- Python 3.9+ | pip install industrialxpl-forge
+- Python 3.9+ | pip install industrialxpl
 - GOOGLE_AI_STUDIO_API_KEY ou OPENAI_API_KEY para SAST offline
 - git hook .git/hooks/commit-msg ativo (remove Co-authored-by)
 

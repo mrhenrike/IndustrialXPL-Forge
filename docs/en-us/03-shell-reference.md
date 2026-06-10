@@ -1,4 +1,4 @@
-# Shell Reference
+﻿# Shell Reference
 
 Complete reference for all 36 IXF interactive shell commands (35 original + `nse`).
 
@@ -2037,7 +2037,7 @@ ixf > stats
   GE / GE Vernova         18 modules
   Emerson                 16 modules
 
-  PyPI: pip install industrialxpl-forge
+  PyPI: pip install industrialxpl
   GitHub: https://github.com/mrhenrike/IndustrialXPL-Forge
 ```
 
