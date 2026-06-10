@@ -1,9 +1,8 @@
-# IXF Resource File — OT/ICS protocol discovery sweep
-# Usage: ixf -r resources/rc/ot_discovery.rc -x
+# IXF Resource File -- OT/ICS protocol discovery sweep
+# Usage: ixf -e "setg TARGET 192.168.10.10" -r resources/rc/ot_discovery.rc -x
 #
 # Scans common OT ports across multiple protocols.
-# Set TARGET before running or pass via -e:
-#   ixf -e "setg TARGET 10.0.0.1" -r resources/rc/ot_discovery.rc -x
+# REQUIRED: Set TARGET before running (pass via -e or uncomment setg below)
 
 # --- Global scan settings (conservative for OT) ---
 setg TIMING T2
@@ -12,23 +11,23 @@ setg MAX_RETRIES 1
 setg HOST_TIMEOUT 15
 setg PROBE_LEVEL 1
 
-# Set TARGET before running (edit this or use: ixf -e "setg TARGET x.x.x.x" -r this.rc -x)
+# Set TARGET (required -- uncomment and edit, or use: ixf -e "setg TARGET x.x.x.x" -r ...)
 # setg TARGET 192.168.10.10
 
 # --- Modbus/TCP (port 502) ---
 use scanners/ics/modbus_detect
-# run   # uncomment after setting TARGET
+# run   -- uncomment after setting TARGET
 
 # --- S7comm / ISO-on-TCP (port 102) ---
 use scanners/ics/s7comm_plus_scanner
-run
+# run   -- uncomment after setting TARGET
 
 # --- EtherNet/IP (port 44818) ---
 use scanners/ics/enip_scanner
-run
+# run   -- uncomment after setting TARGET
 
 # --- OT Port Sweep (all common OT ports) ---
 use scanners/ics/ot_port_sweep
-run
+# run   -- uncomment after setting TARGET
 
 back
