@@ -304,16 +304,6 @@ class IXFInterpreter(BaseInterpreter):
         key_raw, value = parts[0], parts[1]
         # Case-insensitive option matching
         key = key_raw.lower()
-
-        # #region agent log
-        import json as _json, time as _time
-        try:
-            with open("debug-acd082.log", "a") as _f:
-                _f.write(_json.dumps({"sessionId":"acd082","runId":"run1","hypothesisId":"H5","location":"interpreter.py:command_set","message":"set called","data":{"key_raw":key_raw,"key_norm":key,"value":value,"available_options":list(self.current_module.options.keys()) if self.current_module else []},"timestamp":int(_time.time()*1000)}) + "\n")
-        except Exception:
-            pass
-        # #endregion
-
         if key not in self.current_module.options:
             print_error("Unknown option: '{}'".format(key_raw))
             return
@@ -383,15 +373,6 @@ class IXFInterpreter(BaseInterpreter):
         mod = self.current_module
         info = mod.get_info()
         impact = info.get("impact", "LOW")
-
-        # #region agent log
-        import json as _json, time as _time
-        try:
-            with open("debug-acd082.log", "a") as _f:
-                _f.write(_json.dumps({"sessionId":"acd082","runId":"run1","hypothesisId":"H3","location":"interpreter.py:command_run","message":"command_run called","data":{"simulate":str(mod.simulate),"destructive":str(mod.destructive),"impact":impact,"module":info.get("name","?")},"timestamp":int(_time.time()*1000)}) + "\n")
-        except Exception:
-            pass
-        # #endregion
 
         # Simulate mode (default)
         if mod.simulate:
