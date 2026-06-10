@@ -11,10 +11,10 @@ setg SCAN_DELAY 300
 
 # --- Full MITRE sweep ---
 use assessment/mitre_ics/full_mitre_sweep
-set TARGET 192.168.1.100
+# set TARGET 192.168.1.100   # edit and uncomment before running
 set SIMULATE true
 set OUTPUT_FMT layer
 set RATE_LIMIT 300
-run
+# run   # uncomment after setting TARGET
 
 back

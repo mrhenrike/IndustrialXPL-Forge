@@ -12,9 +12,12 @@ setg MAX_RETRIES 1
 setg HOST_TIMEOUT 15
 setg PROBE_LEVEL 1
 
+# Set TARGET before running (edit this or use: ixf -e "setg TARGET x.x.x.x" -r this.rc -x)
+# setg TARGET 192.168.10.10
+
 # --- Modbus/TCP (port 502) ---
 use scanners/ics/modbus_detect
-run
+# run   # uncomment after setting TARGET
 
 # --- S7comm / ISO-on-TCP (port 102) ---
 use scanners/ics/s7comm_plus_scanner

@@ -36,7 +36,7 @@ from industrialxpl.core.exploit.utils import (
     module_required, MODULES_DIR,
 )
 
-VERSION = "1.0.35"
+VERSION = "1.0.36"
 
 _BANNER = r"""
  ___           _           _        _       ___  ______  _          _____
@@ -1886,45 +1886,61 @@ Example:
         print_info("  Tip: search sector=<name>  |  search type=<category>  |  help search")
 
     def command_modules(self, args: str = "", **kwargs) -> None:
-        """Drill-down module browser by top-level category."""
+        """Drill-down module browser by top-level category.
+
+        Module paths from index_modules() are relative: assessment.detection.module_name
+        Parts: [category, subcategory, module_name]
+        """
         sub = args.strip().lower()
         from collections import defaultdict
         tree: dict = defaultdict(lambda: defaultdict(list))
         for m in self.modules:
             parts = m.split(".")
-            # parts example: industrialxpl.modules.scanners.ics.modbus_scan
-            if len(parts) >= 5:
-                cat = parts[3]      # e.g. scanners
-                subcat = parts[4]   # e.g. ics
-                tree[cat][subcat].append(parts[-1])
-            elif len(parts) >= 4:
-                cat = parts[3]
-                tree[cat][""].append(parts[-1])
+            if len(parts) >= 3:
+                cat    = parts[0]   # e.g. scanners, assessment, cve, exploits
+                subcat = parts[1]   # e.g. ics, mining, detection
+                name   = ".".join(parts[2:])
+                tree[cat][subcat].append(name)
+            elif len(parts) == 2:
+                cat, name = parts
+                tree[cat][""].append(name)
+            elif len(parts) == 1:
+                tree[parts[0]][""].append(parts[0])
 
         if not sub:
-            print_success("Top-level categories ({} total):".format(len(tree)))
+            print_success("Top-level categories ({} total, {} modules):".format(
+                len(tree), len(self.modules)
+            ))
             for cat in sorted(tree.keys()):
-                subcats = sorted(tree[cat].keys())
+                subcats = sorted(s for s in tree[cat].keys() if s)
                 total = sum(len(v) for v in tree[cat].values())
                 print_info("  {:20s} {:4d} modules  subcats: {}".format(
-                    cat, total, ", ".join(s for s in subcats if s)))
-            print_info("\nDrill down: modules <category>  (e.g. modules scanners)")
+                    cat, total, ", ".join(subcats[:8]) + ("..." if len(subcats) > 8 else "")
+                ))
+            print_info("")
+            print_info("Drill down: modules <category>  (e.g. 'modules scanners', 'modules assessment')")
             return
 
         if sub not in tree:
-            print_error("Category '{}' not found. Run 'modules' to see categories.".format(sub))
+            similar = [c for c in tree.keys() if sub in c or c in sub]
+            print_error("Category '{}' not found.".format(sub))
+            if similar:
+                print_info("  Did you mean: {}".format(", ".join(similar)))
+            else:
+                cats = ", ".join(sorted(tree.keys()))
+                print_info("  Available: {}".format(cats))
             return
 
-        print_success("Category: {} ({} subcategories)".format(sub, len(tree[sub])))
+        print_success("Category '{}' -- {} subcategory/subcategories:".format(sub, len(tree[sub])))
         for subcat in sorted(tree[sub].keys()):
             mods = tree[sub][subcat]
             label = "{}/{}".format(sub, subcat) if subcat else sub
-            print_info("  [{:3d}] {}".format(len(mods), label))
-            for modname in sorted(mods)[:8]:
-                path = "{}/{}/{}".format(sub, subcat, modname).replace("//" , "/")
-                print_info("          use {}".format(path))
-            if len(mods) > 8:
-                print_info("          … and {} more -- search {} to list all".format(len(mods) - 8, subcat))
+            print_info("  [{:3d}]  {}".format(len(mods), label))
+            for modname in sorted(mods)[:6]:
+                path = humanize_path("{}.{}.{}".format(sub, subcat, modname)) if subcat else humanize_path("{}.{}".format(sub, modname))
+                print_info("           use {}".format(path))
+            if len(mods) > 6:
+                print_info("           ... and {} more -- use: search {}".format(len(mods) - 6, subcat or sub))
 
     def command_exec(self, args: str, **kwargs) -> None:
         if not args.strip():
