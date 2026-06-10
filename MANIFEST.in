@@ -1,0 +1,17 @@
+# MANIFEST.in — controls what goes into the PyPI sdist (source distribution)
+#
+# contrib/native-payloads/ is intentionally EXCLUDED from PyPI.
+# It is available only via git clone from GitHub.
+# See contrib/native-payloads/USAGE.md for legal requirements.
+
+include README.md
+include README.pt-BR.md
+include LICENSE
+include pyproject.toml
+
+recursive-include industrialxpl *.py *.json *.txt *.nse
+recursive-include resources *.json *.txt *.nse *.md
+
+# Explicitly exclude native payloads from PyPI distribution
+prune contrib
+global-exclude contrib/*
