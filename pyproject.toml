@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "industrialxpl-forge"
-version = "1.0.25"
+version = "1.0.26"
 description = "IndustrialXPL-Forge (IXF) — OT/ICS/SCADA/HMI/IIoT Security Assessment & Exploitation Framework. Python-First, 972+ modules, 79 MITRE ATT&CK for ICS techniques, 26 ICS malware TTPs, 150+ vendors, 50+ protocols."
 readme = { file = "README.md", content-type = "text/markdown" }
 license = { text = "MIT" }
@@ -100,6 +100,9 @@ Changelog     = "https://github.com/mrhenrike/IndustrialXPL-Forge/releases"
 ixf              = "industrialxpl.__main__:main"
 industrialxpl    = "industrialxpl.__main__:main"
 ixf-nse-install  = "industrialxpl.core.nse.nse_manager:_nse_install_entry"
+
+[tool.setuptools]
+license-files = []
 
 [tool.setuptools.packages.find]
 where   = ["."]
