@@ -14,7 +14,6 @@ on:
           - testpypi
           - pypi
 
-# No id-token permission — forces classic API token auth only
 permissions:
   contents: read
 
@@ -60,14 +59,21 @@ jobs:
           name: dist
           path: dist/
 
-      - name: Publish to TestPyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          repository-url: https://test.pypi.org/legacy/
-          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
-          attestations: false
-          skip-existing: true
-          verbose: true
+      - name: Install twine
+        run: pip install --upgrade twine
+
+      - name: Publish to TestPyPI via twine
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
+        run: |
+          if [ -z "$TWINE_PASSWORD" ]; then
+            echo "::error::TEST_PYPI_API_TOKEN secret is not set."
+            echo "Go to: https://test.pypi.org/manage/account/token/"
+            echo "Add it via: GitHub Settings > Secrets > Actions > New repository secret"
+            exit 1
+          fi
+          twine upload --repository testpypi --skip-existing dist/*
 
   publish-pypi:
     name: Publish to PyPI
@@ -84,10 +90,18 @@ jobs:
           name: dist
           path: dist/
 
-      - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          password: ${{ secrets.PYPI_API_TOKEN }}
-          attestations: false
-          skip-existing: true
-          verbose: true
+      - name: Install twine
+        run: pip install --upgrade twine
+
+      - name: Publish to PyPI via twine
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+        run: |
+          if [ -z "$TWINE_PASSWORD" ]; then
+            echo "::error::PYPI_API_TOKEN secret is not set."
+            echo "1. Go to https://pypi.org/manage/account/token/ and create a token for 'industrialxpl'"
+            echo "2. Run: gh secret set PYPI_API_TOKEN --repo mrhenrike/IndustrialXPL-Forge"
+            exit 1
+          fi
+          twine upload --skip-existing dist/*
