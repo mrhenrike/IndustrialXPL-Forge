@@ -41,9 +41,11 @@ industrialxpl/modules/cve/_native/*.o
 .idea/
 *.swp
 
-# Environment files
+# Environment files — never commit real secrets
 .env
 .env.*
 *.env
 .env.server
+# Allow the example template (no real values)
+!.env.example
 
