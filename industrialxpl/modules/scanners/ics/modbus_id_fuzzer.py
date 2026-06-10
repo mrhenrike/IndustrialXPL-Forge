@@ -1,73 +1,34 @@
-# Author: André Henrique (LinkedIn/X: @mrhenrike)
-"""Modbus Unit ID Fuzzer — brute-force slave ID discovery on TCP/502.
+# Author: Andre Henrique (@mrhenrike) | Uniao Geek
+"""Modbus Unit ID Fuzzer — brute-force slave ID discovery.
 
-Scans all 256 possible Modbus Unit IDs (slave addresses) on a target
-Modbus gateway or multi-drop converter. Many Modbus-to-TCP gateways bridge
-multiple serial Modbus devices, each identified by a unique Unit ID (1-255).
+Scans all (or a subset of) Modbus Unit IDs on a target Modbus gateway
+to discover which slave addresses have active devices.
 
-This fuzzer sends a minimal Modbus read request for each Unit ID and checks
-if the device responds with valid Modbus data (not an exception or silence).
-Unit IDs that respond indicate a physical device at that slave address.
-
-Default Unit ID is typically 1, but in multi-device installations you may
-find PLCs, RTUs, and energy meters scattered across IDs 1-255.
-
-Protocol: Modbus/TCP, port 502
-References:
-  - Modbus Application Protocol Specification V1.1b3
-  - MITRE ATT&CK ICS: T0846 (Remote System Discovery)
-  - Ported from ModBusSploit auxiliary/scanner/id_fuzzer.py
-
-Version: 1.0.0
+Supports port ranges and T0-T5 timing profiles.
 """
 
-import socket
-import struct
-import time
 from typing import List
 
-from industrialxpl.core.exploit import *
-from industrialxpl.core.exploit.exploit import BaseExploit
+from industrialxpl.core.exploit import (
+    OptInteger, mute, print_error, print_info, print_status, print_success,
+)
+from industrialxpl.core.modbus.base import ModbusBaseExploit
+from industrialxpl.core.modbus.transport import ModbusTCPSocket, modbus_connect
+import struct
 
 
-def _probe_unit_id(host: str, port: int, unit_id: int, timeout: float) -> bool:
-    """Send a minimal Modbus read request and check for valid response on given Unit ID."""
-    # Diagnostic query: XID=0x1821, ProtocolID=0x0000, Length=2, UnitID=<id>, FC=1 (ReadCoils null)
-    request = b"\x18\x21\x00\x00\x00\x02" + bytes([unit_id]) + b"\x01"
-    try:
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        sock.settimeout(timeout)
-        sock.connect((host, port))
-        sock.send(request)
-        resp = sock.recv(256)
-        sock.close()
-        # Valid response: starts with our XID and has data
-        if len(resp) > 0 and resp[0:4] == b"\x18\x21\x00\x00":
-            return True
-        return False
-    except Exception:
-        return False
-
-
-class Exploit(BaseExploit):
-    """Modbus Unit ID Fuzzer — discover all active Modbus slaves on a gateway.
-
-    Author: André Henrique (LinkedIn/X: @mrhenrike)
-    Version: 1.0.0
-    """
+class Exploit(ModbusBaseExploit):
+    """Modbus Unit ID Fuzzer — discovers active slave IDs on a Modbus gateway."""
 
     __info__ = {
         "name": "Modbus Unit ID Fuzzer (Slave Discovery)",
         "description": (
-            "Probes all 256 Modbus Unit IDs on a target to discover which slave IDs "
-            "have active Modbus devices. Useful for mapping Modbus-to-TCP gateways "
-            "that bridge multiple serial PLCs/RTUs. "
-            "Ported from ModBusSploit auxiliary/scanner/id_fuzzer.py."
+            "Probes Modbus Unit IDs on a gateway to find active slave addresses. "
+            "Supports port ranges and T0-T5 timing profiles."
         ),
         "authors": (
             "ModBusSploit contributors",
-            "André Henrique (@mrhenrike) — EmbedXPL-Forge port",
+            "Andre Henrique (@mrhenrike) | Uniao Geek",
         ),
         "references": (
             "https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf",
@@ -78,43 +39,65 @@ class Exploit(BaseExploit):
             "Modbus multi-drop serial network bridge",
             "Any Modbus/TCP server with multiple slave IDs",
         ),
+        "impact":   "READ",
+        "severity": "INFO",
+        "mitre":    ["T0846"],
     }
 
-    target = OptIP("", "Target Modbus gateway IPv4 address")
-    port = OptPort(502, "Modbus TCP port (default 502)")
-    start_id = OptInteger(0, "Starting Unit ID (0-255)")
-    end_id = OptInteger(255, "Ending Unit ID (0-255)")
-    delay = OptFloat(0.2, "Delay between probes in seconds")
-    timeout = OptFloat(1.0, "Socket timeout per probe (seconds)")
+    _DEFAULT_FC   = 1
+    _DEFAULT_REGS = "0-7"
+
+    start_id = OptInteger(0,   "Starting Unit ID to fuzz (0-255)", min_value=0, max_value=255)
+    end_id   = OptInteger(247, "Ending Unit ID to fuzz (0-255)",   min_value=0, max_value=255)
 
     def run(self) -> None:
-        """Fuzz all Unit IDs and report responding devices."""
-        print_status(f"[Modbus ID Fuzzer] Scanning {self.target}:{self.port} Unit IDs {self.start_id}–{self.end_id}...")
+        ports  = self._get_ports()
+        timing = self._get_timing()
+        addresses = self._get_addresses()
+        fc      = self._resolve_fc(addresses.implied_fc)
+        start_a, qty = addresses.as_bulk()
 
-        found: List[int] = []
-        total = self.end_id - self.start_id + 1
+        print_info("  Target  : {}".format(self.target))
+        print_info("  Port(s) : {}".format(", ".join(str(p) for p in ports)))
+        print_info("  UID range: {}-{}".format(self.start_id, self.end_id))
+        self._print_timing()
+        self._print_address_plan(addresses, fc)
+        print_info("")
 
-        for unit_id in range(self.start_id, self.end_id + 1):
-            progress = unit_id - self.start_id + 1
-            print(f"\r[*] Testing ID: {unit_id:3d} ({progress}/{total})", end="", flush=True)
-            if _probe_unit_id(self.target, self.port, unit_id, self.timeout):
-                found.append(unit_id)
-                print(f"\r                              ")
-                print_success(f"[Modbus ID Fuzzer] Active Unit ID: {unit_id}")
-            time.sleep(self.delay)
+        for port in ports:
+            found: List[int] = []
+            total = self.end_id - self.start_id + 1
+            print_status("Fuzzing {}:{} UIDs {}-{} ({} total)...".format(
+                self.target, port, self.start_id, self.end_id, total
+            ))
+            for uid in range(self.start_id, self.end_id + 1):
+                print("\r[*] Testing UID {:3d} ({}/{})".format(uid, uid - self.start_id + 1, total), end="", flush=True)
+                with ModbusTCPSocket(self.target, port, uid, timing) as sock:
+                    if not sock._sock:
+                        timing.sleep()
+                        continue
+                    resp = sock.send_fc(fc, start_a, min(qty, 8))
+                    if resp and len(resp) >= 7 and not (resp[7] & 0x80 and resp[8] == 0x0B):
+                        found.append(uid)
+                        print("\r" + " " * 40, end="\r")
+                        print_success("  Active UID {:3d}: FC{:02d} responded".format(uid, fc))
+                timing.sleep()
+            print("\r" + " " * 40, end="\r")
 
-        print()
-        if found:
-            print_success(f"[Modbus ID Fuzzer] Found {len(found)} active Unit ID(s): {found}")
-        else:
-            print_error(f"[Modbus ID Fuzzer] No active Modbus devices found on {self.target}:{self.port}")
+            if found:
+                print_success("Found {} active Unit ID(s) on {}:{}: {}".format(
+                    len(found), self.target, port, found
+                ))
+            else:
+                print_info("No active UIDs found on {}:{}".format(self.target, port))
 
     @mute
     def check(self) -> bool:
-        """Return True if TCP/502 is reachable."""
-        try:
-            sock = socket.create_connection((self.target, self.port), timeout=3)
-            sock.close()
-            return True
-        except Exception:
-            return False
+        ports  = self._get_ports()
+        timing = self._get_timing()
+        for port in ports:
+            sock = modbus_connect(self.target, port, timing.socket_timeout)
+            if sock:
+                sock.close()
+                return True
+        return False

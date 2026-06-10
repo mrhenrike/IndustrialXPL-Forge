@@ -36,7 +36,7 @@ from industrialxpl.core.exploit.utils import (
     module_required, MODULES_DIR,
 )
 
-VERSION = "1.0.18"
+VERSION = "1.0.19"
 
 _BANNER = r"""
  ___           _           _        _       ___  ______  _          _____
@@ -56,7 +56,7 @@ IndustrialXPL-Forge (IXF) v{version}
 
 NAVIGATION:
   help                          This menu
-  help <term|module>            Contextual help: help sector / help modbus / help simulate
+  help <term|module>            Contextual help: help sector / help modbus / help timing
   help sector                   List all industry sectors (search sector=...)
   help type                     List all module types (search type=...)
   help global                   List global options and current values
@@ -275,6 +275,9 @@ class IXFInterpreter(BaseInterpreter):
             if term in ("loglevel", "verbose", "verbosity"):
                 self._help_loglevel()
                 return
+            if term in ("timing", "t0", "t1", "t2", "t3", "t4", "t5", "nmap"):
+                self._help_timing()
+                return
             if term in ("search",):
                 self._help_search()
                 return
@@ -453,6 +456,24 @@ Type examples:
   search type=scanner        search type=exploit      search type=assessment
 
 Tip: 'modules' or 'modules <category>' browses the full tree.
+""")
+
+    def _help_timing(self) -> None:
+        from industrialxpl.core.modbus.timing import ModbusTiming
+        print_info(ModbusTiming.describe_all())
+        print_info("""
+Usage (in any Modbus module):
+  set timing T3            — Normal (default, similar to Nmap -T3)
+  set timing T0            — Paranoid: 5s timeout, 10s between requests
+  set timing T5            — Insane: 0.2s timeout, no inter-request delay
+  set timeout 2            — Override socket timeout only (keeps timing retries/delays)
+
+  setg timing T2           — Apply timing globally to all Modbus modules
+  setg timeout 3           — Global socket timeout override
+
+Timing interacts with:
+  port    — each port in a range is probed individually with the chosen timing
+  registers  — each bulk read uses timing.socket_timeout per FC call
 """)
 
     def _help_mitre(self) -> None:

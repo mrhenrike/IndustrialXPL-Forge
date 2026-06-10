@@ -1,32 +1,28 @@
-# Author: Andre Henrique (LinkedIn/X: @mrhenrike)
+# Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """Modbus TCP Device Identification Scanner.
 
-Scans Modbus TCP slaves using FC 17 (Report Server ID) and FC 43/14
-(Read Device Identification) to extract vendor name, product code,
-major/minor revision, and additional device metadata. Port 502.
+Probes Modbus TCP slaves using FC 17 (Report Server ID) and
+FC 43/14 (Read Device Identification) to extract vendor, product code,
+revision and device metadata.
 
-Constructs Modbus ADU frames manually using struct.pack for each
-function code probe.
-
-References:
-  - Modbus Application Protocol Specification V1.1b3
-  - Modbus Implementation Guide (FC 43 MEI)
-
-Version: 1.0.0
+Supports:
+  - Custom register/coil address expressions (individual, range, Modicon notation)
+  - FC override (FC1-FC4)
+  - Port ranges
+  - T0-T5 timing profiles
 """
 
-import socket
 import struct
 
-from industrialxpl.core.exploit import *
+from industrialxpl.core.exploit import (
+    mute, print_error, print_info, print_status, print_success,
+)
+from industrialxpl.core.modbus.base import ModbusBaseExploit
+from industrialxpl.core.modbus.transport import ModbusTCPSocket, modbus_connect
 
 
-class Exploit(Exploit):
-    """Modbus TCP Device Identification Scanner.
-
-    Author: Andre Henrique (LinkedIn/X: @mrhenrike)
-    Version: 1.0.0
-    """
+class Exploit(ModbusBaseExploit):
+    """Modbus TCP Device Identification Scanner."""
 
     __info__ = {
         "name": "Modbus TCP Device Identification Scanner",
@@ -34,7 +30,8 @@ class Exploit(Exploit):
             "Probes Modbus TCP devices using FC 17 (Report Server ID) and "
             "FC 43/14 (Read Device Identification) to extract vendor, product "
             "code, revision, and device metadata. Identifies PLC/RTU models "
-            "and firmware versions on TCP/502."
+            "and firmware versions. Supports custom address expressions, "
+            "FC override, port ranges, and T0-T5 timing profiles."
         ),
         "authors": ("Andre Henrique (@mrhenrike)",),
         "references": (
@@ -48,210 +45,121 @@ class Exploit(Exploit):
             "Wago 750 series",
             "ABB AC500",
         ),
+        "impact":   "READ",
         "severity": "info",
-        "mitre": ["T0846"],
-        "status": "confirmed",
+        "mitre":    ["T0846"],
+        "status":   "confirmed",
     }
 
-    target = OptIP("", "Target Modbus TCP device IP")
-    port = OptPort(502, "Modbus TCP port")
-    timeout = OptInteger(3, "Socket timeout in seconds")
-    unit_id = OptInteger(1, "Modbus Unit ID (slave address)")
-    scan_range = OptBool(False, "Scan unit IDs 1-247")
+    _DEFAULT_FC   = 43
+    _DEFAULT_REGS = "0"
 
-    _FC_REPORT_SERVER_ID = 0x11
-    _FC_MEI = 0x2B
-    _MEI_TYPE_READ_DEVICE_ID = 0x0E
-    _PROTOCOL_ID = 0x0000
+    # Unit ID range scan
+    scan_range = __import__("industrialxpl.core.exploit.option", fromlist=["OptBool"]).OptBool(
+        False, "Scan all Unit IDs 1-247"
+    )
 
-    def _next_tx_id(self) -> int:
-        if not hasattr(self, "_tx_counter"):
-            self._tx_counter = 0
-        self._tx_counter = (self._tx_counter + 1) & 0xFFFF
-        return self._tx_counter
+    def _probe_device(self, sock: ModbusTCPSocket) -> bool:
+        """Run FC43/MEI and FC17 probes. Returns True if device responded."""
+        found = False
 
-    def _build_report_server_id(self, unit: int) -> bytes:
-        """Build FC 17 (Report Server ID) request."""
-        pdu = struct.pack(">B", self._FC_REPORT_SERVER_ID)
-        mbap = struct.pack(
-            ">HHHB", self._next_tx_id(), self._PROTOCOL_ID, len(pdu) + 1, unit
-        )
-        return mbap + pdu
+        # FC43/MEI
+        resp = sock.read_device_identification()
+        if resp and len(resp) > 8:
+            fc_resp = resp[7]
+            if fc_resp == 0x2B:
+                found = True
+                print_success("  FC43 Device Identification:")
+                obj_labels = {
+                    0x00: "VendorName", 0x01: "ProductCode",
+                    0x02: "Revision",   0x03: "VendorURL",
+                    0x04: "ProductName", 0x05: "ModelName",
+                }
+                off = 9
+                try:
+                    obj_count = resp[off + 2]
+                    off += 3
+                    for _ in range(obj_count):
+                        if off + 2 > len(resp):
+                            break
+                        oid = resp[off]
+                        olen = resp[off + 1]
+                        oval = resp[off + 2: off + 2 + olen].decode("ascii", errors="replace")
+                        print_info("    {:20s}: {}".format(obj_labels.get(oid, "ObjID_0x{:02X}".format(oid)), oval))
+                        off += 2 + olen
+                except Exception:
+                    pass
+            elif fc_resp & 0x80:
+                exc = resp[8] if len(resp) > 8 else "?"
+                print_status("  FC43 exception {} — MEI not supported, device present".format(exc))
+                found = True
 
-    def _build_read_device_id(self, unit: int, obj_id: int = 0x00) -> bytes:
-        """Build FC 43/14 (Read Device Identification) request.
+        # FC17 Report Server ID
+        resp17 = sock.report_server_id()
+        if resp17 and len(resp17) > 8 and resp17[7] == 0x11:
+            found = True
+            payload = resp17[9:].decode("ascii", errors="replace").strip("\x00")
+            if payload:
+                print_success("  FC17 Server ID  : {}".format(payload))
 
-        Object IDs:
-          0x00 = VendorName
-          0x01 = ProductCode
-          0x02 = MajorMinorRevision
-          0x03 = VendorUrl
-          0x04 = ProductName
-          0x05 = ModelName
-          0x06 = UserApplicationName
-        """
-        pdu = struct.pack(
-            ">BBB B",
-            self._FC_MEI,
-            self._MEI_TYPE_READ_DEVICE_ID,
-            0x01,  # read device ID code: basic (objects 0x00-0x02)
-            obj_id,
-        )
-        mbap = struct.pack(
-            ">HHHB", self._next_tx_id(), self._PROTOCOL_ID, len(pdu) + 1, unit
-        )
-        return mbap + pdu
+        return found
 
-    def _send_modbus(self, frame: bytes) -> bytes:
-        """Send Modbus TCP frame and return response."""
-        try:
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.settimeout(float(self.timeout))
-            sock.connect((self.target, self.port))
-            sock.sendall(frame)
-            resp = sock.recv(260)
-            sock.close()
-            return resp
-        except (socket.error, OSError):
-            return b""
+    def run(self) -> None:
+        ports   = self._get_ports()
+        timing  = self._get_timing()
+        addresses = self._get_addresses()
+        fc      = self._resolve_fc(addresses.implied_fc)
 
-    def _parse_server_id(self, resp: bytes) -> dict:
-        """Parse FC 17 Report Server ID response."""
-        result = {}
-        if len(resp) < 9:
-            return result
+        print_info("  Target  : {}".format(self.target))
+        print_info("  Port(s) : {}".format(", ".join(str(p) for p in ports)))
+        self._print_timing()
+        self._print_address_plan(addresses, fc)
 
-        fc = resp[7]
-        if fc == self._FC_REPORT_SERVER_ID:
-            byte_count = resp[8]
-            if byte_count > 0 and len(resp) > 9:
-                server_id = resp[9:9 + byte_count]
-                result["server_id"] = server_id.decode("ascii", errors="replace").rstrip("\x00")
-                # Run status is last byte
-                if len(resp) > 9 + byte_count:
-                    result["run_status"] = "ON" if resp[9 + byte_count] == 0xFF else "OFF"
-        elif fc == (self._FC_REPORT_SERVER_ID | 0x80):
-            exc = resp[8] if len(resp) > 8 else 0
-            result["error"] = "Exception code {}".format(exc)
+        unit_ids = range(1, 248) if self.scan_range else [self.unit_id]
 
-        return result
+        for port in ports:
+            for uid in unit_ids:
+                with ModbusTCPSocket(self.target, port, uid, timing) as sock:
+                    if not sock._sock:
+                        if not self.scan_range:
+                            print_error("  Cannot connect to {}:{}".format(self.target, port))
+                        continue
 
-    def _parse_device_id(self, resp: bytes) -> dict:
-        """Parse FC 43/14 Read Device Identification response."""
-        result = {}
-        if len(resp) < 14:
-            return result
+                    print_status("Probing {}:{} unit_id={}".format(self.target, port, uid))
+                    found = self._probe_device(sock)
 
-        fc = resp[7]
-        if fc == self._FC_MEI:
-            # Response: FC(1) + MEI_type(1) + DeviceIdCode(1) + ConformityLevel(1) +
-            #           MoreFollows(1) + NextObjectId(1) + NumObjects(1) + objects...
-            if len(resp) < 15:
-                return result
+                    # Additional register read with selected FC
+                    if fc in (1, 2, 3, 4):
+                        start, qty = addresses.as_bulk()
+                        resp = sock.send_fc(fc, start, min(qty, 125))
+                        if resp and len(resp) > 8 and not (resp[7] & 0x80):
+                            payload = resp[9:]
+                            if fc in (1, 2):
+                                bits = ""
+                                for byte in payload:
+                                    bits += "{:08b}".format(byte)[::-1]
+                                print_success("  FC{:02d} addr {:5d}-{:5d}: {}".format(
+                                    fc, start, start + qty - 1, bits[:qty]
+                                ))
+                            elif fc in (3, 4):
+                                regs = []
+                                for i in range(0, len(payload) - 1, 2):
+                                    regs.append(struct.unpack(">H", payload[i: i + 2])[0])
+                                print_success("  FC{:02d} addr {:5d}-{:5d}: {}".format(
+                                    fc, start, start + qty - 1,
+                                    ["{} (0x{:04X})".format(v, v) for v in regs]
+                                ))
 
-            num_objects = resp[14]
-            offset = 15
-            obj_names = {
-                0x00: "vendor_name",
-                0x01: "product_code",
-                0x02: "revision",
-                0x03: "vendor_url",
-                0x04: "product_name",
-                0x05: "model_name",
-                0x06: "user_app_name",
-            }
-
-            for _ in range(num_objects):
-                if offset + 2 > len(resp):
-                    break
-                obj_id = resp[offset]
-                obj_len = resp[offset + 1]
-                offset += 2
-                if offset + obj_len > len(resp):
-                    break
-                obj_val = resp[offset:offset + obj_len].decode("ascii", errors="replace")
-                key = obj_names.get(obj_id, "object_0x{:02x}".format(obj_id))
-                result[key] = obj_val
-                offset += obj_len
-        elif fc == (self._FC_MEI | 0x80):
-            exc = resp[8] if len(resp) > 8 else 0
-            result["error"] = "Exception code {}".format(exc)
-
-        return result
-
-    def _scan_unit(self, unit: int) -> dict:
-        """Scan a single unit ID with both FC 17 and FC 43/14."""
-        info = {"unit_id": unit}
-
-        # FC 17: Report Server ID
-        resp = self._send_modbus(self._build_report_server_id(unit))
-        if resp:
-            server_info = self._parse_server_id(resp)
-            info.update(server_info)
-
-        # FC 43/14: Read Device Identification (basic)
-        resp = self._send_modbus(self._build_read_device_id(unit, 0x00))
-        if resp:
-            device_info = self._parse_device_id(resp)
-            info.update(device_info)
-
-        return info
+                    if not found and not self.scan_range:
+                        print_error("  No Modbus response from {}:{}".format(self.target, port))
 
     @mute
     def check(self) -> bool:
-        """Verify Modbus TCP port is open."""
-        try:
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.settimeout(float(self.timeout))
-            sock.connect((self.target, self.port))
-            sock.close()
-            return True
-        except (socket.error, OSError):
-            return False
-
-    @multi
-    def run(self) -> None:
-        """Execute Modbus device identification scan."""
-        print_status(
-            "Scanning Modbus TCP at {}:{}".format(self.target, self.port)
-        )
-
-        if not self.check():
-            print_error("Modbus TCP port not accessible")
-            return
-
-        print_success("Modbus TCP port open")
-
-        if self.scan_range:
-            print_info("Scanning unit IDs 1-247...")
-            found = 0
-            for uid in range(1, 248):
-                info = self._scan_unit(uid)
-                if "vendor_name" in info or "server_id" in info:
-                    found += 1
-                    self._print_device_info(info)
-            print_info("Scan complete: {} device(s) found".format(found))
-        else:
-            info = self._scan_unit(self.unit_id)
-            if "error" in info and not any(
-                k for k in info if k not in ("unit_id", "error")
-            ):
-                print_error("Unit ID {} - {}".format(self.unit_id, info["error"]))
-            else:
-                self._print_device_info(info)
-
-    def _print_device_info(self, info: dict) -> None:
-        """Format and print discovered device information."""
-        print_success("Device at Unit ID {}:".format(info.get("unit_id", "?")))
-        if "vendor_name" in info:
-            print_info("  Vendor:   {}".format(info["vendor_name"]))
-        if "product_code" in info:
-            print_info("  Product:  {}".format(info["product_code"]))
-        if "revision" in info:
-            print_info("  Revision: {}".format(info["revision"]))
-        if "model_name" in info:
-            print_info("  Model:    {}".format(info["model_name"]))
-        if "server_id" in info:
-            print_info("  Server ID: {}".format(info["server_id"]))
-        if "run_status" in info:
-            print_info("  Status:   {}".format(info["run_status"]))
+        ports  = self._get_ports()
+        timing = self._get_timing()
+        for port in ports:
+            sock = modbus_connect(self.target, port, timing.socket_timeout)
+            if sock:
+                sock.close()
+                return True
+        return False
