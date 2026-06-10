@@ -36,7 +36,7 @@ from industrialxpl.core.exploit.utils import (
     module_required, MODULES_DIR,
 )
 
-VERSION = "1.0.20"
+VERSION = "1.0.21"
 
 _BANNER = r"""
  ___           _           _        _       ___  ______  _          _____
@@ -481,6 +481,8 @@ Tip: 'modules' or 'modules <category>' browses the full tree.
             "scan_timing": self._help_option_timing,
             "registers":   self._help_option_registers,
             "register":    self._help_option_registers,
+            "coils":       self._help_option_coils,
+            "coil":        self._help_option_coils,
             "port":        self._help_option_port,
             "ports":       self._help_option_port,
             "fc":          self._help_option_fc,
@@ -565,6 +567,45 @@ Examples:
   set registers 0-9                 — first 10 addresses with module default FC
   set registers 10,14-20,100        — sparse list, 3 groups
   set registers 00001-00100         — 100 coils starting at 1 (FC1)
+""")
+
+    def _help_option_coils(self) -> None:
+        print_info("""
+Option: COILS
+━━━━━━━━━━━━━
+Type     : address expression string
+Default  : (empty — not used)
+Scope    : per-module (set)
+Priority : COILS takes precedence over REGISTERS when both are set
+
+Use COILS for coil (FC1) and discrete input (FC2) reads.
+Use REGISTERS for holding (FC3) and input register (FC4) reads.
+
+Accepted notations:
+  Decimal offset (0-based):
+    0                — single coil at offset 0
+    0-7              — 8 coils starting at 0
+    0-100            — 101 coils
+    10,20-30,100     — sparse list
+
+  Modicon 5-digit (auto-implies FC):
+    00001            — coil 1 (implies FC1)
+    00001-00100      — coils 1-100 (implies FC1)
+    10001            — discrete input 1 (implies FC2)
+    10001-10100      — discrete inputs 1-100 (implies FC2)
+
+Notes:
+  - When COILS is set, FC is automatically 1 unless overridden by the FC option
+  - Decimal offsets with COILS are treated as coil addresses (FC1)
+  - Max 2000 coils per single Modbus request
+
+Examples:
+  set COILS 0-7                     — read 8 coils starting at 0 (FC1)
+  set COILS 0-100                   — read 101 coils
+  set COILS 10,20-30,50             — sparse coil list
+  set COILS 00001-00100             — Modicon notation, 100 coils
+  set COILS 10001-10020             — 20 discrete inputs (FC2)
+  set COILS 0-7                     — then set FC 2 to read as discrete inputs
 """)
 
     def _help_option_port(self) -> None:
@@ -1114,14 +1155,14 @@ Example:
             pprint_dict_in_order(info, header="Module Information")
         elif sub in ("options", "advanced"):
             rows = [
-                (k, str(v[0]), "yes" if not v[2] else "adv", v[1])
+                (k.upper(), str(v[0]), "yes" if not v[2] else "adv", v[1])
                 for k, v in mod.exploit_attributes.items()
                 if sub == "advanced" or not v[2]
             ]
             print_table(["Option", "Value", "Required", "Description"], rows,
                         title="Options — {}".format(info.get("name", str(mod))))
-            print_info("  Tip: 'set <option> ?' or 'help <option>' for per-option help")
-            print_info("       'set <option> <value>' to configure  |  'run' to execute")
+            print_info("  Options are case-insensitive: SET TARGET, set target, and Set Target all work.")
+            print_info("  Type 'set OPTION ?' or 'help OPTION' for detailed help on any option.")
         elif sub == "devices":
             devices = info.get("devices", [])
             print_info("Devices: {}".format(", ".join(devices) if devices else "Any"))

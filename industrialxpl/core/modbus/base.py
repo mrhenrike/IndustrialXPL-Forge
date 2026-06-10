@@ -1,13 +1,16 @@
-"""ModbusBaseExploit — base class for all IXF Modbus scanner/exploit modules.
+"""ModbusBaseExploit - base class for all IXF Modbus scanner/exploit modules.
 
-Provides common options:
-  target     — IP / hostname
-  port       — single port OR range (502, 500-510, 502,510)
-  unit_id    — Modbus Unit ID / slave address (1-247)
-  registers  — address expression: 10, 14-20, 40001-40010, 40001,41000
-  fc         — function code override (0 = use module default)
-  timing     — T0-T5 timing profile (default T3 = Normal, like Nmap -T3)
-  timeout    — per-socket timeout in seconds (overrides timing.socket_timeout)
+Common options (all displayed in UPPERCASE in show options):
+  TARGET     - IP / hostname of the Modbus device
+  PORT       - single port or range: 502 | 502,510 | 500-510
+  UNIT_ID    - Modbus Unit ID / slave address (0-247)
+  REGISTERS  - register/holding address expression: 0-9 | 40001-40010 | 10,14-20
+  COILS      - coil/discrete-input address expression: 0-7 | 00001-00100
+  FC         - function code override (0=auto, 1-4=read, 5-6=write)
+  TIMING     - T0-T5 scan timing profile (like Nmap -T<n>)
+  TIMEOUT    - socket timeout override in seconds (0=use TIMING default)
+
+Options are case-insensitive: 'set TARGET', 'set target', and 'set Target' all work.
 """
 
 from __future__ import annotations
@@ -95,28 +98,35 @@ class ModbusBaseExploit(Exploit):
     _DEFAULT_FC:   int = 3    # FC3 Read Holding Registers
     _DEFAULT_REGS: str = "0-9"
 
-    # ── Options ───────────────────────────────────────────────────────────────
+    # --- Options (displayed in UPPERCASE by the CLI) ---
     target    = OptIP("",    "Target Modbus TCP device IP or hostname")
     port      = _OptPortExpr("502",
-                    "Port(s): single (502), list (502,510), range (500-510)")
+                    "Port(s): 502 | 502,510 | 500-510 (set PORT ? for help)")
     unit_id   = OptInteger(1,
-                    "Modbus Unit ID / slave address (1-247)",
+                    "Modbus Unit ID / slave address 0-247 (set UNIT_ID ? for help)",
                     min_value=0, max_value=247)
     registers = _OptRegisterExpr("",
-                    "Register/coil address(es): 0-9, 40001-40010, 10,14-20,100\n"
-                    "           Schneider/Modicon notation accepted (40001 = HR1, 00001 = coil1)\n"
-                    "           Empty = use module default range")
+                    "Holding/input register addresses: 0-9 | 40001-40010 | 10,14-20\n"
+                    "           Modicon 5-digit notation: 40001=HR1(FC3), 30001=IR1(FC4)\n"
+                    "           Empty = module default  (set REGISTERS ? for full syntax)")
+    coils     = _OptRegisterExpr("",
+                    "Coil / discrete-input addresses: 0-7 | 0-100 | 10,20-30\n"
+                    "           Modicon notation: 00001=coil1(FC1), 10001=DI1(FC2)\n"
+                    "           When set, FC is forced to 1 (or 2 for discrete inputs)\n"
+                    "           Takes precedence over REGISTERS if both are set\n"
+                    "           Empty = not used  (set COILS ? for full syntax)")
     fc        = OptInteger(0,
-                    "Function code override (0 = module default):\n"
+                    "Function code override (0=auto):\n"
                     "           FC1=Read Coils  FC2=Discrete Inputs  FC3=Hold Regs  FC4=Input Regs\n"
-                    "           FC5=Write Coil  FC6=Write Register")
+                    "           FC5=Write Coil  FC6=Write Register   (set FC ? for help)")
     timing    = _OptTiming("T3",
-                    "Timing profile T0-T5 (like Nmap -T<n>):\n"
-                    "           T0=Paranoid T1=Sneaky T2=Polite T3=Normal T4=Aggressive T5=Insane")
+                    "Scan timing T0-T5 (like Nmap -T<n>):\n"
+                    "           T0=Paranoid T1=Sneaky T2=Polite T3=Normal T4=Aggressive T5=Insane\n"
+                    "           (set TIMING ? for full profile table)")
     timeout   = OptInteger(0,
-                    "Socket timeout override in seconds (0 = use timing profile default)")
+                    "Socket timeout override in seconds (0 = use TIMING profile default)")
 
-    # ── Helpers ───────────────────────────────────────────────────────────────
+    # --- Helpers ---
 
     def _get_timing(self) -> TimingProfile:
         """Resolve timing profile and apply timeout override if set."""
@@ -136,11 +146,27 @@ class ModbusBaseExploit(Exploit):
         return parse_port_expression(str(self.port))
 
     def _get_addresses(self, default: str = "") -> ModbusAddressSet:
-        """Parse register expression; fall back to module or caller default."""
-        expr = str(self.registers).strip()
-        if not expr:
-            expr = default or self._DEFAULT_REGS
-        return parse_modbus_addresses(expr)
+        """Resolve address set from COILS or REGISTERS option.
+
+        COILS takes precedence when set; implied FC is 1 (coils).
+        Falls back to REGISTERS, then module default.
+        """
+        coils_expr = str(self.coils).strip()
+        if coils_expr:
+            addr_set = parse_modbus_addresses(coils_expr)
+            # Force implied FC to 1 if not already specified by notation
+            if addr_set.implied_fc is None:
+                for a in addr_set.addresses:
+                    if a.implied_fc is None:
+                        a.implied_fc = 1
+                        a.data_type = "coil"
+                addr_set.implied_fc = 1
+            return addr_set
+
+        reg_expr = str(self.registers).strip()
+        if not reg_expr:
+            reg_expr = default or self._DEFAULT_REGS
+        return parse_modbus_addresses(reg_expr)
 
     def _resolve_fc(self, implied_fc: Optional[int] = None) -> int:
         """Return the effective function code.
@@ -159,16 +185,20 @@ class ModbusBaseExploit(Exploit):
 
     def _print_address_plan(self, addr_set: ModbusAddressSet, fc: int) -> None:
         start, qty = addr_set.as_bulk()
-        print_info(
-            "  FC{:02d}    : addresses {} ({} addr), bulk start={} qty={}".format(
-                fc,
-                ", ".join(str(a.offset) for a in list(addr_set)[:8])
-                + ("…" if len(addr_set) > 8 else ""),
-                len(addr_set),
-                start,
-                qty,
-            )
-        )
+        _FC_NAMES = {
+            1: "Read Coils",           2: "Read Discrete Inputs",
+            3: "Read Holding Regs",    4: "Read Input Regs",
+            5: "Write Single Coil",    6: "Write Single Register",
+            17: "Report Server ID",    43: "Read Device ID (MEI)",
+        }
+        src = "COILS" if str(self.coils).strip() else "REGISTERS"
+        fc_label = _FC_NAMES.get(fc, "FC{:02d}".format(fc))
+        addr_preview = ", ".join(str(a.offset) for a in list(addr_set)[:8])
+        if len(addr_set) > 8:
+            addr_preview += "..."
+        print_info("  FC{:02d} ({}) via {}: {} addresses [{}], start={} qty={}".format(
+            fc, fc_label, src, len(addr_set), addr_preview, start, qty
+        ))
 
     @staticmethod
     def timing_help() -> str:

@@ -14,9 +14,9 @@ on:
           - testpypi
           - pypi
 
+# No id-token permission — forces classic API token auth only
 permissions:
   contents: read
-  id-token: write
 
 jobs:
   build:
@@ -60,11 +60,12 @@ jobs:
           name: dist
           path: dist/
 
-      - name: Publish to TestPyPI (API token)
+      - name: Publish to TestPyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           repository-url: https://test.pypi.org/legacy/
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          attestations: false
           skip-existing: true
           verbose: true
 
@@ -83,9 +84,10 @@ jobs:
           name: dist
           path: dist/
 
-      - name: Publish to PyPI (API token)
+      - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
+          attestations: false
           skip-existing: true
           verbose: true
