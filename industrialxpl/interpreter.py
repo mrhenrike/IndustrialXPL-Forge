@@ -36,7 +36,7 @@ from industrialxpl.core.exploit.utils import (
     module_required, MODULES_DIR,
 )
 
-VERSION = "1.0.29"
+VERSION = "1.0.30"
 
 _BANNER = r"""
  ___           _           _        _       ___  ______  _          _____
@@ -1604,6 +1604,13 @@ Example:
         "firepower": ["schneider", "rockwell", "siemens", "plc"],
         "dcs": ["dcs", "yokogawa", "emerson", "abb", "honeywell"],
         "rtu": ["rtu", "modbus", "dnp3"],
+        "mining": ["mining", "fms", "minestar", "wenco", "komatsu", "caterpillar",
+                   "lorawan", "gnss", "ahs", "dispatch", "pitram", "modular"],
+        "mineracao": ["mining", "fms", "minestar", "wenco", "caterpillar",
+                      "lorawan", "gnss", "ahs", "pitram"],
+        "mineradora": ["mining", "fms", "minestar", "wenco", "caterpillar",
+                       "lorawan", "gnss", "sap"],
+        "sap": ["sap", "netweaver", "cve_2025_31324", "s4hana"],
     }
 
     def command_search(self, args: str, **kwargs) -> None:
