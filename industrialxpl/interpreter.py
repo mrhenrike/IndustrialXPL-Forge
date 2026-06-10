@@ -36,7 +36,7 @@ from industrialxpl.core.exploit.utils import (
     module_required, MODULES_DIR,
 )
 
-VERSION = "1.0.17"
+VERSION = "1.0.18"
 
 _BANNER = r"""
   ___           _           _       _  __  ______  _       ______
@@ -47,7 +47,7 @@ _BANNER = r"""
                                                                               |___/
   IndustrialXPL-Forge v{version} — OT/ICS/SCADA Security Assessment Framework
   Author: André Henrique (@mrhenrike) | União Geek | https://uniaogeek.com.br/
-  Python-First. Pure Python — install with pip install industrialxpl-forge.
+  Python-First. Pure Python — install with pip install industrialxpl.
   Type 'help' for commands.  simulate=True by default (safe mode).
 """.format(version=VERSION)
 
@@ -62,6 +62,8 @@ NAVIGATION:
   help global                   List global options and current values
   use <module>                  Load a module  (e.g. use scanners/ics/modbus_detect)
   back                          Deselect current module
+  update                        Check for updates and optionally upgrade
+  upgrade                       Alias for update
   exit                          Exit IXF
 
 DISCOVERY:
@@ -504,6 +506,92 @@ Example:
                 self.command_setg("{} {}".format(parts[0], parts[1]))
             else:
                 self._help_global()
+
+    def command_update(self, args: str = "", **kwargs) -> None:
+        """Check for IXF updates and optionally upgrade."""
+        import importlib.metadata
+        import urllib.request
+        import json as _json
+
+        current = VERSION
+        print_status("Checking for updates…")
+        print_info("  Installed version : {}".format(current))
+
+        # Fetch latest version from PyPI
+        try:
+            url = "https://pypi.org/pypi/industrialxpl/json"
+            req = urllib.request.Request(
+                url,
+                headers={"User-Agent": "IXF/{} update-check".format(current)},
+            )
+            with urllib.request.urlopen(req, timeout=8) as resp:
+                data = _json.loads(resp.read().decode())
+            latest = data["info"]["version"]
+            release_url = data["info"]["project_urls"].get(
+                "Changelog", "https://github.com/mrhenrike/IndustrialXPL-Forge/releases"
+            )
+        except Exception as exc:
+            print_error("Could not reach PyPI: {}".format(exc))
+            print_info("  Manual check: https://pypi.org/project/industrialxpl/")
+            return
+
+        print_info("  Latest version    : {}".format(latest))
+
+        # Compare versions using tuple comparison
+        def _v(s: str):
+            try:
+                return tuple(int(x) for x in s.split("."))
+            except ValueError:
+                return (0,)
+
+        current_t = _v(current)
+        latest_t  = _v(latest)
+
+        if current_t >= latest_t:
+            print_success("IXF is up to date (v{}).".format(current))
+            return
+
+        # Update available
+        print_warning("New version available: v{} -> v{}".format(current, latest))
+        print_info("  Release notes: {}".format(release_url))
+
+        # Module count diff is not easily queryable from PyPI, skip for now
+        print_info("")
+        print_info("  What will be upgraded:")
+        print_info("    - IndustrialXPL-Forge core CLI and interpreter")
+        print_info("    - Module library (new CVEs, protocols, MITRE mappings)")
+        print_info("    - Documentation and help system")
+        print_info("")
+
+        # Ask user
+        try:
+            answer = input("  Proceed with upgrade? [Y/n]: ").strip().lower()
+        except (EOFError, KeyboardInterrupt):
+            print()
+            print_info("Upgrade cancelled.")
+            return
+
+        if answer in ("", "y", "yes"):
+            print_status("Running: pip install --upgrade industrialxpl")
+            import subprocess as _sp
+            try:
+                result = _sp.run(
+                    [sys.executable, "-m", "pip", "install", "--upgrade", "industrialxpl"],
+                    capture_output=False,
+                    text=True,
+                )
+                if result.returncode == 0:
+                    print_success("Upgrade complete. Restart IXF to use v{}.".format(latest))
+                else:
+                    print_error("pip exited with code {}. Check the output above.".format(result.returncode))
+            except Exception as exc:
+                print_error("Upgrade failed: {}".format(exc))
+        else:
+            print_info("Upgrade skipped. Run 'update' again when ready.")
+
+    # Alias
+    def command_upgrade(self, args: str = "", **kwargs) -> None:
+        self.command_update(args, **kwargs)
 
     def command_exit(self, args: str = "", **kwargs) -> None:
         print_info("Exiting IndustrialXPL-Forge. Stay safe.")
@@ -1227,7 +1315,7 @@ Example:
         malware = sum(1 for m in mods if "malware" in m or m.startswith("cve.apt."))
         print_info(f"Vendors covered: {len(vendors)} | Malware TTPs: {malware}")
         print_info(f"MITRE ATT&CK for ICS: 12 tactics, 103 techniques mapped")
-        print_info(f"PyPI: pip install industrialxpl-forge | GitHub: github.com/mrhenrike/IndustrialXPL-Forge")
+        print_info("PyPI: pip install industrialxpl | GitHub: github.com/mrhenrike/IndustrialXPL-Forge")
 
     def command_vendors(self, args: str = "", **kwargs) -> None:
         """List all OT/ICS vendors covered with module count. Usage: vendors [filter]"""

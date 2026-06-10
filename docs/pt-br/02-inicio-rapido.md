@@ -1,4 +1,4 @@
-# Início Rápido
+﻿# Início Rápido
 
 Este guia percorre uma sessão completa do IXF, do lançamento ao primeiro exploit real, cobrindo modo de simulação, carregamento de módulos, configuração de opções, o portão SafeMode/DestructiveMode, exploração CVE, varredura MITRE ATT&CK for ICS e geração de relatórios.
 
@@ -47,7 +47,7 @@ $ ixf
                                                                               |___/
   IndustrialXPL-Forge v1.0.12 — OT/ICS/SCADA Security Assessment Framework
   Author: André Henrique (@mrhenrike) | União Geek | https://uniaogeek.com.br/
-  Python-First. Pure Python — install with pip install industrialxpl-forge.
+  Python-First. Pure Python — install with pip install industrialxpl.
   Type 'help' for commands.  simulate=True by default (safe mode).
 
 ixf >
@@ -177,7 +177,7 @@ ixf > stats
 
   Vendors covered: 150 | Malware TTPs: 26
   MITRE ATT&CK for ICS: 12 táticas, 103 técnicas mapeadas
-  PyPI: pip install industrialxpl-forge | GitHub: github.com/mrhenrike/IndustrialXPL-Forge
+  PyPI: pip install industrialxpl | GitHub: github.com/mrhenrike/IndustrialXPL-Forge
 ```
 
 ```

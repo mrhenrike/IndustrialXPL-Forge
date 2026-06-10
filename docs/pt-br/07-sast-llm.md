@@ -1,4 +1,4 @@
-# SAST / Análise LLM
+﻿# SAST / Análise LLM
 
 O IXF inclui um módulo de Análise Estática de Segurança de Aplicações (SAST) offline alimentado por LLMs. Ele analisa código-fonte PLC/RTU para vulnerabilidades de segurança, setpoints inseguros, lacunas de autenticação e vetores de ataque específicos de processo — sem fazer upload do código para serviços externos de forma não intencional.
 
@@ -1068,7 +1068,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install IXF
-        run: pip install industrialxpl-forge
+        run: pip install industrialxpl
 
       - name: Run PLC SAST
         env:

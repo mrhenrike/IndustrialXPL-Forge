@@ -1,4 +1,4 @@
-# IndustrialXPL-Forge — Documentação
+﻿# IndustrialXPL-Forge — Documentação
 
 > **O Maior Framework de Assessment e Exploração de Segurança OT/ICS/SCADA do Mundo**
 
@@ -40,7 +40,7 @@ O IndustrialXPL-Forge (IXF) é um framework Python modular para assessment de se
 
 **Princípios de design:**
 
-- **Python-First** — toda a funcionalidade essencial roda com `pip install industrialxpl-forge`; sem ferramentas externas obrigatórias
+- **Python-First** — toda a funcionalidade essencial roda com `pip install industrialxpl`; sem ferramentas externas obrigatórias
 - **SafeMode por padrão** — todo módulo começa com `simulate=True`; nenhum pacote é enviado até habilitação explícita
 - **Autorize antes de agir** — projetado exclusivamente para testes autorizados, pesquisa e educação
 

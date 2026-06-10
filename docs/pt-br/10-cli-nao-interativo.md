@@ -1,4 +1,4 @@
-# CLI Não-Interativo
+﻿# CLI Não-Interativo
 
 O IXF pode ser usado sem o shell interativo passando comandos diretamente na linha de comando. Os comandos são processados sequencialmente e então o processo termina. Isso habilita scripting, automação, integração CI/CD e fluxos de trabalho de testes de penetração repetíveis em uma linha.
 
@@ -517,7 +517,7 @@ log "Log: $LOG_FILE"
 
 # Verificar que IXF está instalado
 if ! command -v ixf &>/dev/null; then
-    error "IXF não encontrado. Instale com: pip install industrialxpl-forge"
+    error "IXF não encontrado. Instale com: pip install industrialxpl"
     exit 1
 fi
 
@@ -989,8 +989,8 @@ jobs:
 
       - name: Instalar IXF
         run: |
-          pip install industrialxpl-forge
-          pip install industrialxpl-forge[extras]
+          pip install industrialxpl
+          pip install industrialxpl[extras]
 
       - name: Verificar instalação IXF
         run: ixf stats

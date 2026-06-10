@@ -1,4 +1,4 @@
-# Troubleshooting
+﻿# Troubleshooting
 
 Common issues and solutions for IndustrialXPL-Forge.
 
@@ -6,7 +6,7 @@ Common issues and solutions for IndustrialXPL-Forge.
 
 ## Installation Issues
 
-### `pip install industrialxpl-forge` fails
+### `pip install industrialxpl` fails
 
 **Symptom:** pip reports build error or dependency conflict.
 
@@ -16,7 +16,7 @@ Common issues and solutions for IndustrialXPL-Forge.
 python -m pip install --upgrade pip
 
 # Install with verbose output to see exact error
-pip install industrialxpl-forge -v
+pip install industrialxpl -v
 
 # If scapy fails on Windows, install Npcap first
 # https://npcap.com/

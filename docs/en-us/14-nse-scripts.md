@@ -1,4 +1,4 @@
-# Nmap NSE Scripts
+﻿# Nmap NSE Scripts
 
 IXF bundles 8 custom Nmap Scripting Engine (NSE) scripts for OT/ICS network reconnaissance and security assessment. These scripts extend Nmap's capabilities to understand industrial protocols and device types that standard Nmap scripts do not cover.
 
@@ -22,7 +22,7 @@ NSE scripts run within Nmap's sandboxed Lua environment, making them safe to dep
 
 - **Nmap 7.80 or later** (7.95+ recommended for full NSE library compatibility)
 - **Root/Administrator privileges** for raw socket scans (`-sS`) and Layer 2 scripts
-- **IXF installed** (`pip install industrialxpl-forge`) — provides the NSE scripts
+- **IXF installed** (`pip install industrialxpl`) — provides the NSE scripts
 - Scripts work on Linux, macOS, and Windows
 
 **Verify Nmap version:**

@@ -1,4 +1,4 @@
-# Frequently Asked Questions (FAQ)
+﻿# Frequently Asked Questions (FAQ)
 
 ## General
 
@@ -66,13 +66,13 @@ On Windows, Scapy may also require [Npcap](https://npcap.com/).
 pymodbus is a Tier 2 optional dependency for live Modbus modules:
 
 ```bash
-pip install industrialxpl-forge[ot]
+pip install industrialxpl[ot]
 ```
 
 ### How do I install ALL optional dependencies?
 
 ```bash
-pip install industrialxpl-forge[full]
+pip install industrialxpl[full]
 ```
 
 ---
