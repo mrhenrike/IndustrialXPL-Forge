@@ -36,7 +36,7 @@ from industrialxpl.core.exploit.utils import (
     module_required, MODULES_DIR,
 )
 
-VERSION = "1.0.21"
+VERSION = "1.0.22"
 
 _BANNER = r"""
  ___           _           _        _       ___  ______  _          _____
@@ -373,7 +373,7 @@ class IXFInterpreter(BaseInterpreter):
             ("verbose",    str(self._global_opts.get("verbose", "false")),
              "true | false  (alias: loglevel=debug)"),
             ("timing",     str(self._global_opts.get("timing", "T3")),
-             "T0 T1 T2 T3 T4 T5  (Modbus/OT scan speed)"),
+             "T0..T5 or paranoid/sneaky/polite/normal/aggressive/insane"),
             ("threads",    str(self._global_opts.get("threads", "10")),
              "integer >= 1  (parallel threads)"),
             ("timeout",    str(self._global_opts.get("timeout", "0")),
@@ -511,22 +511,28 @@ Applies  : all Modbus/OT scanner and exploit modules
 
 {}
 
-Accepted values:
-  T0  paranoid      — T0
-  T1  sneaky        — T1
-  T2  polite        — T2
-  T3  normal        — T3  (default)
-  T4  aggressive    — T4
-  T5  insane        — T5
+Both the T<n> number AND the slug name are accepted everywhere:
 
-Examples:
-  set timing T3              — single module
-  setg timing T2             — all modules loaded after this
-  setg timing paranoid       — name form also accepted
+  Level  Slug          set / setg syntax examples
+  -----  ------------  ------------------------------------------
+  T0     paranoid      set TIMING T0   |  set TIMING paranoid
+  T1     sneaky        set TIMING T1   |  set TIMING sneaky
+  T2     polite        set TIMING T2   |  set TIMING polite
+  T3     normal        set TIMING T3   |  set TIMING normal     [default]
+  T4     aggressive    set TIMING T4   |  set TIMING aggressive
+  T5     insane        set TIMING T5   |  set TIMING insane
 
-Related:
-  set timeout 5              — override socket timeout only
-  setg timeout 10            — global socket timeout override
+{}
+
+Global vs per-module:
+  setg timing T2             — applies to ALL modules loaded after this command
+  set TIMING T4              — applies only to the current module
+  setg timing paranoid       — slug form works globally too
+  setg timing 0              — numeric form also accepted (no T prefix)
+
+Related options:
+  set TIMEOUT 5              — override socket timeout only (keeps timing delays/retries)
+  setg timeout 0             — 0 = use timing profile default (recommended)
 """.format(ModbusTiming.describe_all()))
 
     def _help_option_registers(self) -> None:

@@ -120,9 +120,10 @@ class ModbusBaseExploit(Exploit):
                     "           FC1=Read Coils  FC2=Discrete Inputs  FC3=Hold Regs  FC4=Input Regs\n"
                     "           FC5=Write Coil  FC6=Write Register   (set FC ? for help)")
     timing    = _OptTiming("T3",
-                    "Scan timing T0-T5 (like Nmap -T<n>):\n"
-                    "           T0=Paranoid T1=Sneaky T2=Polite T3=Normal T4=Aggressive T5=Insane\n"
-                    "           (set TIMING ? for full profile table)")
+                    "Scan timing: T<n> number OR slug name (like Nmap -T<n>):\n"
+                    "           T0/paranoid  T1/sneaky  T2/polite  T3/normal  T4/aggressive  T5/insane\n"
+                    "           Both 'set TIMING T3' and 'set TIMING normal' are accepted.\n"
+                    "           (set TIMING ? for full table)")
     timeout   = OptInteger(0,
                     "Socket timeout override in seconds (0 = use TIMING profile default)")
 
