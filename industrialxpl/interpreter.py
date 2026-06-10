@@ -39,15 +39,15 @@ from industrialxpl.core.exploit.utils import (
 VERSION = "1.0.18"
 
 _BANNER = r"""
-  ___           _           _       _  __  ______  _       ______
- |_ _|_ __   __| |_   _ ___| |_ _ __(_) \ \/ / _ \| |     |  ___|__  _ __ __ _  ___
-  | || '_ \ / _` | | | / __| __| '__| |  \  /|  __/| |     | |_ / _ \| '__/ _` |/ _ \
-  | || | | | (_| | |_| \__ \ |_| |  | |  /  \| |   | |___  |  _| (_) | | | (_| |  __/
- |___|_| |_|\__,_|\__,_|___/\__|_|  |_| /_/\_\_|   |_____| |_|  \___/|_|  \__, |\___|
-                                                                              |___/
+ ___           _           _        _       ___  ______  _          _____
+|_ _|_ __   __| |_   _ ___| |_ _ __(_) __ _| \ \/ /  _ \| |        |  ___|__  _ __ __ _  ___
+ | || '_ \ / _` | | | / __| __| '__| |/ _` | |\  /| |_) | |   _____| |_ / _ \| '__/ _` |/ _ \
+ | || | | | (_| | |_| \__ \ |_| |  | | (_| | |/  \|  __/| |__|_____|  _| (_) | | | (_| |  __/
+|___|_| |_|\__,_|\__,_|___/\__|_|  |_|\__,_|_/_/\_\_|   |_____|    |_|  \___/|_|  \__, |\___|
+                                                                                     |___/
   IndustrialXPL-Forge v{version} — OT/ICS/SCADA Security Assessment Framework
-  Author: André Henrique (@mrhenrike) | União Geek | https://uniaogeek.com.br/
-  Python-First. Pure Python — install with pip install industrialxpl.
+  Author: Andre Henrique (@mrhenrike) | Uniao Geek | https://uniaogeek.com.br/
+  Python-First. Pure Python — pip install industrialxpl
   Type 'help' for commands.  simulate=True by default (safe mode).
 """.format(version=VERSION)
 
