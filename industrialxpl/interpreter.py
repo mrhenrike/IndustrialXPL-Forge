@@ -36,7 +36,7 @@ from industrialxpl.core.exploit.utils import (
     module_required, MODULES_DIR,
 )
 
-VERSION = "1.0.33"
+VERSION = "1.0.34"
 
 _BANNER = r"""
  ___           _           _        _       ___  ______  _          _____
@@ -110,11 +110,23 @@ GLOBAL OPTIONS:
   NOTE: PORT and UNIT_ID are protocol-specific -- set them per module, not globally.
   Help:  help host_timeout | help max_retries | help scan_delay | help probe_level | help max_rate
 
-SIMULATE vs DESTRUCTIVE:
-  simulate=true   (DEFAULT)     Print planned actions only -- no packets sent
-  simulate=false                Execute reads/scans -- safe for INFO/assessment modules
-  destructive=true              Enable exploits/writes -- requires typed confirmation
-  help simulate                 Full explanation of modes
+EXECUTION MODES (see 'help safemode' for full matrix and Modbus FC reference):
+  SAFEMODE=true   (GLOBAL default)  Master kill-switch. Blocks ALL real reads/writes.
+  SAFEMODE=false                    Unlocks simulate=false and destructive=true.
+  simulate=true   (module default)  check() + SIMULATED realistic output. Zero real reads.
+  simulate=false                    REAL reads (FC1-4, FC17, FC43). Writes still blocked.
+  destructive=true                  Real reads + WRITES (FC5/6/15/16). May be irreversible.
+
+  Mode matrix:
+    SAFEMODE | simulate | destructive | Result
+    true     | any      | any         | check + SIMULATED output    [SAFE]
+    false    | true     | any         | check + SIMULATED output    [SAFE]
+    false    | false    | false       | Real reads, writes BLOCKED  [READ-ONLY]
+    false    | false    | true        | Real reads + writes         [DESTRUCTIVE]
+
+  setg SAFEMODE false    -- allow real reads/writes (authorize first!)
+  setg SAFEMODE true     -- restore protection (always do this when done)
+  help safemode          -- full explanation with Modbus FC table
 
 CVE / MITRE / TTP:
   cve <CVE-ID>                  Load module for a CVE (e.g. cve CVE-2022-29953)
@@ -379,6 +391,9 @@ class IXFInterpreter(BaseInterpreter):
             if term in ("global", "globals", "global_options"):
                 self._help_global()
                 return
+            if term in ("safemode", "safe_mode", "safety"):
+                self._help_safemode()
+                return
             if term in ("simulate", "simulation"):
                 self._help_simulate()
                 return
@@ -480,6 +495,7 @@ class IXFInterpreter(BaseInterpreter):
     _GLOBAL_DEFAULTS = {
         "loglevel":       "info",
         "verbose":        "false",
+        "safemode":       "true",    # SAFEMODE: blocks simulate=false globally (CIA protection)
         "timing":         "T3",
         "threads":        "5",
         "host_timeout":   "30",
@@ -499,6 +515,14 @@ class IXFInterpreter(BaseInterpreter):
         return str(self._global_opts.get(key, self._GLOBAL_DEFAULTS.get(key, "")))
 
     def _help_global(self) -> None:
+        # Section 0: Safety
+        safety_rows = [
+            ("SAFEMODE",   self._get_global("safemode"),
+             "true (default) | false -- see 'help safemode' for full explanation"),
+        ]
+        print_table(["Option", "Current", "Description"],
+                    safety_rows, title="Global: Safety (most important)")
+
         # Section 1: Output / Verbosity
         out_rows = [
             ("LOGLEVEL",   self._get_global("loglevel"),
@@ -554,32 +578,122 @@ class IXFInterpreter(BaseInterpreter):
         print_info("          setg TARGET 10.0.0.1    unsetg TARGET")
         print_info("  Help:   help timing   help probe_level   help max_retries   help scan_delay")
 
-    def _help_simulate(self) -> None:
+    def _help_safemode(self) -> None:
+        safemode_current = self._get_global("safemode")
         print_info("""
-simulate -- Safe Execution Mode
-------------------------------
-  simulate=true  (DEFAULT)
-    - No packets are sent to the target.
-    - The module prints what it WOULD do: payloads, expected responses,
-      MITRE technique, CVE, CVSS, and rationale for the vulnerability.
-    - 100% safe for any environment.
+Option: SAFEMODE  (global only -- setg)
+----------------------------------------
+Type    : bool (true/false)
+Default : true
+Current : {}
 
-  simulate=false
-    - Sends real probes / reads against the target.
-    - For INFO/READ modules (scanners, assessments): runs immediately.
-    - For LOW/MEDIUM risk modules: runs after brief warning.
-    - For HIGH/CRITICAL/CATASTROPHIC modules: requires destructive=true
-      AND typed confirmation with the target hostname.
+SAFEMODE is the master safety switch for IXF. It controls whether real
+protocol operations can affect the CIA triad of tested assets.
 
-  destructive=true
-    - Enables write, exploit, DoS, or configuration-change operations.
-    - Always prompts for explicit typed confirmation before execution.
-    - Audit log written to .log/destructive_ops_YYYY-MM-DD.log
+  SAFEMODE=true  (default -- recommended for all production assessments)
+    - Forces simulate=true regardless of per-module settings
+    - Blocks simulate=false even if explicitly set on the module
+    - Zero risk of affecting Confidentiality, Integrity, or Availability
+    - Safe to run against any network, including live production systems
+    - Per-module simulate/destructive options are IGNORED (simulate=true wins)
+
+  SAFEMODE=false  (use only with explicit written authorization)
+    - Allows simulate=false for real reads (FC1/2/3/4/17/43 in Modbus)
+    - Allows destructive=true for writes (FC5/6/15/16 in Modbus)
+    - Responsibility for any impact falls entirely on the operator
+
+Mode Matrix (what actually executes):
+
+  SAFEMODE | simulate | destructive | Result
+  ---------|----------|-------------|------------------------------------------
+  true     | true     | any         | check() + simulated output  [SAFE]
+  true     | false    | any         | OVERRIDDEN to simulate=true [SAFE]
+  false    | true     | any         | check() + simulated output  [SAFE]
+  false    | false    | false       | Real reads, NO writes       [READ-ONLY]
+  false    | false    | true        | Real reads + writes         [DESTRUCTIVE]
+
+Modbus FC reference:
+  FC1/2  Read Coils/Discrete Inputs  -- allowed in READ mode
+  FC3/4  Read Hold/Input Registers   -- allowed in READ mode
+  FC17   Report Server ID            -- allowed in READ mode
+  FC43   Read Device ID (MEI)        -- allowed in READ mode
+  FC5    Write Single Coil           -- BLOCKED unless destructive=true
+  FC6    Write Single Register       -- BLOCKED unless destructive=true
+  FC15   Write Multiple Coils        -- BLOCKED unless destructive=true
+  FC16   Write Multiple Registers    -- BLOCKED unless destructive=true
 
 Usage:
-  set simulate false          -- probe target (safe reads)
-  set simulate false          -- then set destructive true for exploits
-  setg simulate false         -- apply to all subsequent modules
+  setg SAFEMODE false     -- enable real reads (authorize first!)
+  setg SAFEMODE true      -- re-enable protection (recommended after assessment)
+
+  # Typical authorized assessment workflow:
+  setg SAFEMODE false
+  use scanners/ics/modbus_scanner
+  set TARGET 192.168.10.10
+  set SIMULATE false
+  set DESTRUCTIVE false
+  run                     -- real reads, no writes
+
+  set DESTRUCTIVE true
+  run                     -- real reads + writes (requires confirmation)
+
+  setg SAFEMODE true      -- always restore when done
+""".format(safemode_current))
+
+    def _help_simulate(self) -> None:
+        print_info("""
+Option: SIMULATE  (per-module)
+-------------------------------
+Type    : bool (true/false)
+Default : true
+
+IMPORTANT: SAFEMODE=true (global default) overrides this. Set 'setg SAFEMODE false' first.
+
+  simulate=true  (default)
+    - Lightweight check() probe (1 TCP connection, 1 PDU).
+    - If VULNERABLE: shows SIMULATED realistic values (fake data showing
+      what WOULD be returned). Not real operational data.
+    - Zero reads/writes of real device data.
+    - Output: [SIMULATE] FC3 would return: [1234, 5678, ...]
+    - Safe for any production environment.
+
+  simulate=false  (requires 'setg SAFEMODE false' first)
+    - Executes REAL protocol reads against the target.
+    - Returns ACTUAL data from the device.
+    - For Modbus: FC1/FC2 (real coils), FC3/FC4 (real registers),
+      FC17 (real Server ID), FC43 (real device identification).
+    - Write operations (FC5/FC6/FC15/FC16) BLOCKED unless destructive=true.
+    - No availability/integrity impact -- read-only.
+
+Mode matrix (SAFEMODE + simulate + destructive):
+  SAFEMODE | simulate | destructive | What executes
+  ---------|----------|-------------|----------------------------------------
+  true     | true     | any         | check() + SIMULATED output      [SAFE]
+  true     | false    | any         | OVERRIDDEN to simulate=true     [SAFE]
+  false    | true     | any         | check() + SIMULATED output      [SAFE]
+  false    | false    | false       | Real reads, writes BLOCKED      [READ]
+  false    | false    | true        | Real reads + writes, confirmed  [WRITE]
+
+Modbus examples by mode:
+  simulate=true:
+    [SIMULATE] FC3 Holding Registers: [1234, 5678, 9012, ...]  (generated)
+    [SIMULATE] FC43 VendorName: Schneider Electric              (generated)
+
+  simulate=false, destructive=false:
+    [+] FC43 VendorName: Schneider Electric                     (REAL)
+    [+] FC3 addr 40001: 1500 (0x05DC)                          (REAL)
+    [+] FC1 addr 00001: ON                                      (REAL)
+
+  simulate=false, destructive=true:
+    [+] FC6 Write addr 40001 value 0 -> ACK                    (REAL WRITE)
+    [+] FC5 Write coil 0 -> OFF                                (REAL WRITE)
+
+Usage:
+  set SIMULATE true           -- default, safe
+  setg SAFEMODE false         -- unlock real operations
+  set SIMULATE false          -- enable real reads
+  set DESTRUCTIVE true        -- also enable writes
+  help safemode               -- full explanation of the safety model
 """)
 
     def _help_loglevel(self) -> None:
@@ -641,6 +755,7 @@ Tip: 'modules' or 'modules <category>' browses the full tree.
             "unitid":      self._help_option_unit_id,
             "timeout":     self._help_option_timeout,
             "target":      self._help_option_target,
+            "safemode":    self._help_safemode,
             "simulate":    self._help_simulate,
             "destructive": self._help_option_destructive,
             "loglevel":    self._help_loglevel,
@@ -1425,6 +1540,21 @@ Example:
                 print_error("probe_level must be 1-5, got: {}".format(value))
                 return
 
+        if key == "safemode":
+            _TRUE = {"true", "yes", "1", "on"}
+            _FALSE = {"false", "no", "0", "off"}
+            lv = value.lower().strip()
+            if lv in _TRUE:
+                self._global_opts["safemode"] = "true"
+                print_success("[global] SAFEMODE => true  (CIA protection ON -- simulate=false blocked globally)")
+            elif lv in _FALSE:
+                self._global_opts["safemode"] = "false"
+                print_warning("[global] SAFEMODE => false  (CIA protection OFF -- real reads/writes enabled)")
+                print_warning("  Ensure you have authorization for all targeted assets.")
+            else:
+                print_error("SAFEMODE must be true or false, got: {}".format(value))
+            return
+
         if key in ("ping_first", "skip_ping"):
             from industrialxpl.core.exploit.option import OptBool
             _TRUE = {"true", "yes", "1", "on"}
@@ -1546,57 +1676,109 @@ Example:
 
     @module_required
     def command_run(self, args: str = "", **kwargs) -> None:
+        """Execute the current module.
+
+        Mode decision matrix:
+          SAFEMODE=true (global default)
+            Blocks simulate=false. Forces simulate=true. No CIA impact possible.
+
+          simulate=true  [default]
+            check() fingerprint + simulated realistic output.
+            Shows what data WOULD look like if device is vulnerable.
+            Zero real reads/writes.
+
+          simulate=false + destructive=false + SAFEMODE=false
+            Full READ mode: real protocol reads (FC1/2/3/4/17/43 for Modbus).
+            Returns real device data. Write operations (FC5/6/15/16) BLOCKED.
+            No availability/integrity impact.
+
+          destructive=true + SAFEMODE=false
+            Full READ+WRITE: all protocol operations active.
+            May cause irreversible changes. Requires explicit confirmation.
+        """
         mod = self.current_module
         info = mod.get_info()
-        impact = info.get("impact", "LOW")
+        impact = info.get("impact", "LOW").upper()
+        name = info.get("name", str(mod))
 
-        # Simulate mode (default)
+        # Resolve global SAFEMODE
+        safemode_raw = self._get_global("safemode")
+        safemode = safemode_raw.lower() in ("true", "1", "yes", "on", "")
+        mod._safemode = safemode
+
+        def _exec(label):
+            try:
+                mod.run()
+            except NotImplementedError:
+                print_warning("Module run() not yet implemented.")
+
+        # MODE 1: simulate=true -- check + simulated output
         if mod.simulate:
             mod._simulate_mode = True
-            print_status("Running {} in SIMULATE mode…".format(info.get("name", str(mod))))
-            try:
-                mod.run()
-            except NotImplementedError:
-                print_warning("Module run() not yet implemented.")
+            mod._destructive_mode = False
+            print_status("{} [SIMULATE] -- check + simulated realistic output".format(name))
+            _exec("simulate")
             return
 
-        # Destructive mode -- gate check
-        if not mod.simulate and mod.destructive:
-            if impact in ("HIGH", "CRITICAL", "CATASTROPHIC"):
-                target = str(getattr(mod, "target", "unknown"))
-                description = info.get(
-                    "destructive_description",
-                    "This operation may cause irreversible damage to the target system.",
-                )
-                confirmed = DestructiveGate.require_confirmation(
-                    module_name=info.get("name", str(mod)),
-                    target=target,
-                    impact_level=impact,
-                    description=description,
-                )
-                if not confirmed:
-                    return
-            mod._simulate_mode = False
-            print_status("Running {} [DESTRUCTIVE MODE]…".format(info.get("name", str(mod))))
-            try:
-                mod.run()
-            except NotImplementedError:
-                print_warning("Module run() not yet implemented.")
+        # SAFEMODE guard: blocks simulate=false
+        if safemode:
+            print_warning("SAFEMODE is ON (setg SAFEMODE false to enable real reads).")
+            print_info("  SAFEMODE=true: protects CIA of all tested assets.")
+            print_info("  Behavior: running in SIMULATE mode instead.")
+            print_info("")
+            mod._simulate_mode = True
+            mod._destructive_mode = False
+            _exec("safemode-forced-simulate")
             return
 
-        # simulate=false + destructive=false -> run for INFO/assessment modules, check() for risky ones
-        impact = info.get("impact", "LOW").upper()
-        if impact in ("INFO", "READ"):
-            # Assessment/read-only modules: run directly without destructive gate
+        # MODE 2: simulate=false + destructive=false -- REAL READS, NO WRITES
+        if not mod.destructive:
             mod._simulate_mode = False
-            print_status("Running {}…".format(info.get("name", str(mod))))
-            try:
-                mod.run()
-            except NotImplementedError:
-                print_warning("Module run() not yet implemented.")
+            mod._destructive_mode = False
+            print_status("{} [READ MODE] -- real probes, reads only, writes BLOCKED".format(name))
+            print_info("  simulate=false: real protocol operations active")
+            print_info("  destructive=false: FC5/FC6/FC15/FC16 and all writes blocked")
+            print_info("")
+            _exec("read")
             return
-        print_warning("simulate=false but destructive=false -- running check() only.")
-        self.command_check(args, **kwargs)
+
+        # MODE 3: destructive=true -- FULL READ+WRITE with confirmation gate
+        target_str = str(getattr(mod, "target", "unknown"))
+        description = info.get(
+            "destructive_description",
+            "This operation sends write commands to the target device "
+            "and may cause irreversible changes to operational state.",
+        )
+        if impact in ("HIGH", "CRITICAL", "CATASTROPHIC"):
+            confirmed = DestructiveGate.require_confirmation(
+                module_name=name,
+                target=target_str,
+                impact_level=impact,
+                description=description,
+            )
+            if not confirmed:
+                return
+        else:
+            try:
+                ans = input(
+                    "[!] destructive=true on '{}' (impact={}). Target: {}. Proceed? [y/N]: ".format(
+                        name, impact, target_str
+                    )
+                ).strip().lower()
+            except (EOFError, KeyboardInterrupt):
+                print()
+                print_info("Aborted.")
+                return
+            if ans not in ("y", "yes"):
+                print_info("Aborted.")
+                return
+
+        mod._simulate_mode = False
+        mod._destructive_mode = True
+        print_status("{} [DESTRUCTIVE] -- read+write, all operations enabled".format(name))
+        print_warning("  Write operations ACTIVE. Device state may change irreversibly.")
+        print_info("")
+        _exec("destructive")
 
     @module_required
     def command_check(self, args: str = "", **kwargs) -> None:
