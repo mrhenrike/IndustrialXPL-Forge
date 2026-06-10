@@ -36,7 +36,7 @@ from industrialxpl.core.exploit.utils import (
     module_required, MODULES_DIR,
 )
 
-VERSION = "1.0.30"
+VERSION = "1.0.31"
 
 _BANNER = r"""
  ___           _           _        _       ___  ______  _          _____
@@ -256,6 +256,42 @@ class BaseInterpreter:
             if not keep_going:
                 break
 
+    def _startup_update_check(self) -> None:
+        """Check PyPI for a newer version and notify the user non-intrusively."""
+        import urllib.request
+        import json as _json
+        try:
+            req = urllib.request.Request(
+                "https://pypi.org/pypi/industrialxpl-forge/json",
+                headers={"User-Agent": "IXF/{}/startup-check".format(VERSION)},
+            )
+            with urllib.request.urlopen(req, timeout=4) as resp:
+                data = _json.loads(resp.read().decode())
+            latest = data["info"]["version"]
+
+            def _v(s):
+                try:
+                    return tuple(int(x) for x in s.split("."))
+                except ValueError:
+                    return (0,)
+
+            if _v(latest) > _v(VERSION):
+                print_warning(
+                    "New version available: v{} -> v{}  (run 'update' to upgrade)".format(
+                        VERSION, latest
+                    )
+                )
+                notes_url = data["info"]["project_urls"].get(
+                    "Changelog", "https://github.com/mrhenrike/IndustrialXPL-Forge/releases"
+                )
+                print_info("  Release notes: {}".format(notes_url))
+                print_info("  'update' -- check details and upgrade interactively")
+                print_info("  'update --silent' -- upgrade without confirmation")
+                print_info("")
+        except Exception:
+            # Update check failures are silent -- never block startup
+            pass
+
     def start(self, show_banner: bool = True) -> None:
         """Start the interactive REPL loop.
 
@@ -265,6 +301,9 @@ class BaseInterpreter:
         """
         if show_banner:
             print(_BANNER)
+
+        # Non-blocking update check (best-effort, 4s timeout, silent on error)
+        self._startup_update_check()
         try:
             while True:
                 try:
