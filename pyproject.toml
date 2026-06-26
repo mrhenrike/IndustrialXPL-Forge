@@ -1,0 +1,123 @@
+# Author: André Henrique (@mrhenrike) | https://github.com/mrhenrike
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "industrialxpl-forge"
+version = "1.0.40"
+description = "IndustrialXPL-Forge (IXF) — OT/ICS/SCADA/HMI/IIoT Security Assessment & Exploitation Framework. Python-First, 972+ modules, 79 MITRE ATT&CK for ICS techniques, 26 ICS malware TTPs, 150+ vendors, 50+ protocols."
+readme = { file = "README.md", content-type = "text/markdown" }
+license = { text = "MIT" }
+authors = [
+    { name = "André Henrique", email = "henrique.santos@uniaogeek.com.br" },
+]
+maintainers = [
+    { name = "André Henrique", email = "henrique.santos@uniaogeek.com.br" },
+]
+keywords = [
+    "security", "pentesting", "ics", "scada", "ot-security", "plc", "hmi",
+    "modbus", "s7comm", "enip", "dnp3", "bacnet", "profinet", "iec61850",
+    "opc-ua", "industrial-control-systems", "red-team", "exploit",
+    "vulnerability-scanner", "cve", "mitre-attack", "ot-ics", "iiot",
+    "xpl-forge", "firewall-xpl", "embed-xpl", "industrial-exploit",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: System Administrators",
+    "Natural Language :: English",
+    "Natural Language :: Portuguese (Brazilian)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Security",
+    "Topic :: System :: Networking",
+    "Topic :: Scientific/Engineering",
+]
+requires-python = ">=3.9"
+dependencies = [
+    "requests>=2.31.0,<3.0",
+    "urllib3>=1.26.0,<3.0",
+    "paramiko>=3.0",
+    "pysnmp>=6.1",
+    "scapy>=2.5",
+    "rich>=13.0",
+    "psutil>=5.9",
+    "pyreadline3>=3.4; sys_platform == 'win32'",
+]
+
+[project.optional-dependencies]
+ot = [
+    "pymodbus>=3.5",
+    "asyncua>=1.0",
+    "cpppo>=4.3",
+]
+fieldbus = [
+    "python-can>=4.3",
+]
+mes = [
+    "requests>=2.32",
+    "paramiko>=3.0",
+]
+sast = [
+    "openai>=1.0",
+    "anthropic>=0.20",
+]
+dev = [
+    "pytest>=7.0",
+    "ruff>=0.4",
+    "bandit>=1.7",
+    "pip-audit>=2.6",
+    "build>=1.0",
+    "twine>=5.0",
+]
+full = [
+    "pymodbus>=3.5",
+    "asyncua>=1.0",
+    "cpppo>=4.3",
+    "python-can>=4.3",
+    "openai>=1.0",
+    "anthropic>=0.20",
+]
+
+[project.urls]
+Homepage      = "https://github.com/mrhenrike/IndustrialXPL-Forge"
+Repository    = "https://github.com/mrhenrike/IndustrialXPL-Forge"
+Documentation = "https://github.com/mrhenrike/IndustrialXPL-Forge/wiki"
+"Bug Tracker" = "https://github.com/mrhenrike/IndustrialXPL-Forge/issues"
+Changelog     = "https://github.com/mrhenrike/IndustrialXPL-Forge/releases"
+
+[project.scripts]
+ixf              = "industrialxpl.__main__:main"
+industrialxpl    = "industrialxpl.__main__:main"
+ixf-nse-install  = "industrialxpl.core.nse.nse_manager:_nse_install_entry"
+
+[tool.setuptools]
+license-files = []
+
+[tool.setuptools.packages.find]
+where   = ["."]
+include = ["industrialxpl*"]
+
+[tool.setuptools.package-data]
+"industrialxpl.resources" = [
+    "wordlists/**/*.txt",
+    "wordlists/*.txt",
+    "cve/*.json",
+    "compliance/*.json",
+    "risk/*.json",
+    "osint/*.json",
+    "**/*.json",
+]
+"industrialxpl.modules.cve._native" = ["*.c", "*.cpp", "*.go", "*.rb"]
+"industrialxpl.resources.nse_scripts" = ["*.nse"]
+

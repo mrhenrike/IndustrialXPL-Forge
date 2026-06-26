@@ -6,6 +6,13 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 
 ---
 
+## [1.0.40] - 2026-06-25
+
+### Added
+- Global CLI flags via `tools/xpl_cli.py`: `-h`/`--help`, `-V`/`--version`, `-i`/`--interactive`, `--doctor`/`--check`
+
+---
+
 ## [1.0.39] - 2026-06-16
 
 ### Added - Rockwell Automation ICS Wave (ICSA-26-167-01 through 05)
