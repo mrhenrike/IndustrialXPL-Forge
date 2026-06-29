@@ -6,6 +6,14 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 
 ---
 
+## [1.0.41] - 2026-06-29
+
+### Fixed
+- `modbus_detect`: respect `FC` and `REGISTERS`/`COILS` options instead of always sending FC04
+- Modbus scanners: honor `SIMULATE` mode (TCP check only, no Modbus PDU on the wire)
+
+---
+
 ## [1.0.40] - 2026-06-25
 
 ### Added

@@ -14,7 +14,6 @@ from industrialxpl.core.exploit import (
 )
 from industrialxpl.core.modbus.base import ModbusBaseExploit
 from industrialxpl.core.modbus.transport import ModbusTCPSocket, modbus_connect
-import struct
 
 
 class Exploit(ModbusBaseExploit):
@@ -57,12 +56,28 @@ class Exploit(ModbusBaseExploit):
         fc      = self._resolve_fc(addresses.implied_fc)
         start_a, qty = addresses.as_bulk()
 
+        sim = getattr(self, "_simulate_mode", self.simulate)
+
         print_info("  Target  : {}".format(self.target))
         print_info("  Port(s) : {}".format(", ".join(str(p) for p in ports)))
         print_info("  UID range: {}-{}".format(self.start_id, self.end_id))
         self._print_timing()
         self._print_address_plan(addresses, fc)
         print_info("")
+
+        if sim:
+            total = self.end_id - self.start_id + 1
+            print_info("[SIMULATE] Would fuzz {} Unit IDs on {} port(s) with FC{:02d} (TCP check only)".format(
+                total, len(ports), fc
+            ))
+            for port in ports:
+                sock = modbus_connect(self.target, port, timing.socket_timeout)
+                if sock:
+                    sock.close()
+                    print_success("[SIMULATE] {}:{} — port open".format(self.target, port))
+                else:
+                    print_info("[SIMULATE] {}:{} — closed / no response".format(self.target, port))
+            return
 
         for port in ports:
             found: List[int] = []

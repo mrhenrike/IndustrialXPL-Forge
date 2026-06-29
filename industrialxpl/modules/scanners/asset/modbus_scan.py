@@ -105,10 +105,11 @@ class Exploit(ModbusBaseExploit):
         return found
 
     def run(self) -> None:
-        ports   = self._get_ports()
-        timing  = self._get_timing()
+        ports     = self._get_ports()
+        timing    = self._get_timing()
         addresses = self._get_addresses()
-        fc      = self._resolve_fc(addresses.implied_fc)
+        fc        = self._resolve_fc(addresses.implied_fc)
+        sim       = getattr(self, "_simulate_mode", self.simulate)
 
         print_info("  Target  : {}".format(self.target))
         print_info("  Port(s) : {}".format(", ".join(str(p) for p in ports)))
@@ -116,6 +117,21 @@ class Exploit(ModbusBaseExploit):
         self._print_address_plan(addresses, fc)
 
         unit_ids = range(1, 248) if self.scan_range else [self.unit_id]
+
+        if sim:
+            for port in ports:
+                sock = modbus_connect(self.target, port, timing.socket_timeout)
+                if sock:
+                    sock.close()
+                    print_success("[SIMULATE] {}:{} — would probe FC43/FC17".format(self.target, port))
+                    if fc in (1, 2, 3, 4):
+                        start, qty = addresses.as_bulk()
+                        print_info("[SIMULATE]   plus FC{:02d} read addr {} qty {}".format(
+                            fc, start, min(qty, 125)
+                        ))
+                elif not self.scan_range:
+                    print_info("[SIMULATE] {}:{} — closed / no response".format(self.target, port))
+            return
 
         for port in ports:
             for uid in unit_ids:

@@ -90,12 +90,25 @@ class Exploit(ModbusBaseExploit):
 
         ports  = self._get_ports()
         timing = self._get_timing()
+        sim    = getattr(self, "_simulate_mode", self.simulate)
 
         print_info("  Target  : {}".format(self.target))
         print_info("  Port(s) : {}".format(", ".join(str(p) for p in ports)))
         print_info("  Unit ID : {}".format(self.unit_id))
         self._print_timing()
         print_info("")
+
+        if sim:
+            for port in ports:
+                sock = modbus_connect(self.target, port, timing.socket_timeout)
+                if sock:
+                    sock.close()
+                    print_success("[SIMULATE] {}:{} — would send FC43/MEI Read Device Identification".format(
+                        self.target, port
+                    ))
+                else:
+                    print_info("[SIMULATE] {}:{} — cannot connect".format(self.target, port))
+            return
 
         for port in ports:
             with ModbusTCPSocket(self.target, port, self.unit_id, timing) as sock:
