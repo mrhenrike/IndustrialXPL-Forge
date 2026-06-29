@@ -57,7 +57,8 @@ industrialxpl/modules/cve/_native/*.o
 !.env.example
 
 
-# Local-only: packaging, CI/CD and contributor metadata kept out of the public tree
+# Local vendor trees (clone via submodules; do not push multi-GB trees)
+industrialxpl/resources/vendor/
 .github/workflows/
 .github/dependabot.yml
 .github/CODEOWNERS

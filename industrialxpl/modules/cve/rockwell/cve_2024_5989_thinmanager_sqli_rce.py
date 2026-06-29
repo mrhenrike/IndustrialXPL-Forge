@@ -103,7 +103,7 @@ class Exploit(Exploit):
     target = OptIP("", "Target ThinManager server IP")
     port = OptPort(_THINSERVER_PORT, "ThinServer port (default 2031/TCP)")
     timeout = OptInteger(8, "Socket timeout in seconds")
-    simulate = OptBool(True, "Simulate mode (default: True)")
+    simulate = OptBool(False, "Simulate mode (default: True)")
     destructive = OptBool(False, "Enable destructive execution")
 
     @mute

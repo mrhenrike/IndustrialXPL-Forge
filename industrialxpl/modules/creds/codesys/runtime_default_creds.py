@@ -17,7 +17,7 @@ class Exploit(Exploit):
     }
     target = OptIP("", "Target IP")
     port   = OptPort(1217, "CODESYS port")
-    simulate = OptBool(True, "Simulate")
+    simulate = OptBool(False, "Simulate")
     destructive = OptBool(False, "Live")
     CREDS = [('admin', 'admin'), ('', ''), ('CODESYS', 'CODESYS'), ('guest', 'guest')]
     @mute

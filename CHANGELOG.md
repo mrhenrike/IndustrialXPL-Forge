@@ -6,6 +6,61 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 
 ---
 
+## [1.0.44] - 2026-06-29
+
+### Added
+- Full EmbedXPL utility port (83 files):
+  - `core/ics/` — native S7, S7+, CIP, Modbus, WDB2 clients
+  - `core/shells/` — covert shell handlers
+  - `core/session.py`, `core/pool.py` — session and connection pool
+  - `core/exploit/{shell,shell_stager,payloads,encoders,char_by_char}.py`
+  - `modules/payloads/` (42) and `modules/encoders/` (17) — multi-arch payloads
+- Malware family TTP modules (12 families) under `cve/malware/families/`
+- `core/malware/family_ttp.py` — shared base for native malware research modules
+- Root `SECURITY.md` and `DISCLAIMER.md`
+
+### Changed
+- Module catalog: 1160+ indexed modules
+- Documentation aligned: `simulate=false` default; use `set simulate true` or `setg simulate true` for SafeMode
+- README/wiki updated with malware CLI, payloads, encoders, and network globals (`setg PORT/TRANSPORT/UNIT_ID`)
+
+---
+
+## [1.0.43] - 2026-06-29
+
+### Added
+- Native malware framework expansion:
+  - `core/malware/compiler.py` — cross-compile IXF native + vendor (Mirai, Akaja, Bashlite)
+  - `core/malware/tristation.py` — TriStation/TCM client ported from TRISIS decompiled sources
+  - `core/malware/botnet_network.py` — telnet/ICS port scan and credential probe helpers
+- New modules:
+  - `assessment/malware/malware_native_compiler`
+  - `scanners/malware_research/mirai_telnet_ics_scanner`
+  - `scanners/malware_research/botnet_network_mapper`
+  - `cve/malware/triton_tristation_native`
+- CLI command `malware` — list, analyze, plan, compile families
+
+### Changed
+- Malware orchestrator routes families to new native IXF modules
+- Gap analysis vs EmbedXPL: payloads/shells/GPU remain future work; references/ is empty
+
+---
+
+## [1.0.42] - 2026-06-29
+
+### Added
+- Global `setg PORT`, `setg TRANSPORT`, `setg UNIT_ID` — applied automatically when loading modules
+- `OptTransport` and `OptPortExpr` option types in core
+- `industrialxpl/core/network/` — shared TCP/UDP probe helpers and default OT ports
+- New scanner `scanners/ics/ot_multi_probe` — multi-protocol discovery (modbus, dnp3, bacnet, s7, enip, opcua)
+
+### Changed
+- `dnp3_scanner`: respects `transport` option (tcp | udp | both)
+- `ModbusBaseExploit`: explicit `transport` option (tcp-only for Modbus/TCP)
+- SIMULATE default remains `false` — execution follows module options without global override
+
+---
+
 ## [1.0.41] - 2026-06-29
 
 ### Fixed

@@ -41,7 +41,7 @@ class Exploit(Exploit):
 
     target   = OptIP("", "Target Siemens S7-1200/1500 TIA Portal IP")
     port     = OptPort(102, "Target service port")
-    simulate = OptBool(True, "Simulate attack (default: True)")
+    simulate = OptBool(False, "Simulate attack (default: True)")
     destructive = OptBool(False, "Enable live exploitation — requires authorization")
 
     @mute

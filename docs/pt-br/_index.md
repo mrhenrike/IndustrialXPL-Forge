@@ -5,7 +5,7 @@
 [![PyPI](https://img.shields.io/pypi/v/industrialxpl-forge?color=red&label=PyPI)](https://pypi.org/project/industrialxpl-forge/)
 [![Python](https://img.shields.io/pypi/pyversions/industrialxpl-forge?color=blue&label=Python)](https://pypi.org/project/industrialxpl-forge/)
 [![Licença: MIT](https://img.shields.io/badge/Licen%C3%A7a-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Módulos](https://img.shields.io/badge/M%C3%B3dulos-976%2B-brightgreen)](https://github.com/mrhenrike/IndustrialXPL-Forge)
+[![Módulos](https://img.shields.io/badge/M%C3%B3dulos-1160%2B-brightgreen)](https://github.com/mrhenrike/IndustrialXPL-Forge)
 
 ---
 

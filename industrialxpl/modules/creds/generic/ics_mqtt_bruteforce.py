@@ -198,7 +198,7 @@ class Exploit(_Exploit):
     delay = OptInteger(0, "Delay in milliseconds between attempts (0 = no delay)")
     timeout = OptInteger(5, "Connection timeout per attempt in seconds")
     max_attempts = OptInteger(0, "Max attempts (0 = no limit)")
-    simulate = OptBool(True, "Simulate mode: show what credentials would be tried (default: True)")
+    simulate = OptBool(False, "Simulate mode: show what credentials would be tried (default: True)")
     destructive = OptBool(False, "Enable real bruteforce attempts against target broker")
 
     @mute

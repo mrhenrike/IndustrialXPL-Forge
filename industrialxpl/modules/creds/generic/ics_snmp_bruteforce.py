@@ -193,7 +193,7 @@ class Exploit(_Exploit):
     timeout = OptInteger(2, "UDP socket timeout per attempt in seconds")
     stop_on_success = OptBool(True, "Stop after finding the first valid community string")
     wordlist = OptString("", "Path to community string wordlist (empty = use built-in list)")
-    simulate = OptBool(True, "Simulate mode (default: True)")
+    simulate = OptBool(False, "Simulate mode (default: True)")
     destructive = OptBool(False, "Enable bruteforce")
 
     def _load_communities(self) -> List[str]:

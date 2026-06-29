@@ -60,7 +60,7 @@ class Exploit(Exploit):
     address  = OptInteger(100, "Alarm threshold register address (default 100)")
     suppress_value = OptInteger(65535, "Value to write for suppression (default 65535 = max)")
     timeout  = OptInteger(5, "Socket timeout")
-    simulate = OptBool(True, "Simulate mode (default: True — read only)")
+    simulate = OptBool(False, "Simulate mode (default: True — read only)")
     destructive = OptBool(False, "Enable alarm suppression write (HIGH impact)")
 
     @mute

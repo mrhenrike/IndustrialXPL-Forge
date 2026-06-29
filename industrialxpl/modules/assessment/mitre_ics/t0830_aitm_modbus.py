@@ -61,7 +61,7 @@ class Exploit(Exploit):
     port     = OptPort(502, "Modbus TCP port")
     duration = OptInteger(30, "ARP poisoning duration in seconds")
     capture  = OptInteger(100, "Number of Modbus packets to capture")
-    simulate = OptBool(True, "Simulate mode (default: True)")
+    simulate = OptBool(False, "Simulate mode (default: True)")
     destructive = OptBool(False, "Enable ARP poisoning (HIGH impact)")
 
     @mute

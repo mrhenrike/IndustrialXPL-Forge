@@ -17,7 +17,7 @@ class Exploit(Exploit):
     }
     target = OptIP("", "Target IP")
     port   = OptPort(44818, "EtherNet/IP port")
-    simulate = OptBool(True, "Simulate")
+    simulate = OptBool(False, "Simulate")
     destructive = OptBool(False, "Live")
     CREDS = [('admin', 'admin'), ('', ''), ('omron', 'omron'), ('user', 'user')]
     @mute

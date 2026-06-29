@@ -232,7 +232,7 @@ class Exploit(_Exploit):
     iface = OptString("eth0", "Network interface (Linux only)")
     interval = OptInteger(2, "ARP poison re-send interval in seconds")
     duration = OptInteger(60, "Total poisoning duration in seconds (0 = until Ctrl+C)")
-    simulate = OptBool(True, "Simulate mode: describe without sending packets (default: True)")
+    simulate = OptBool(False, "Simulate mode: describe without sending packets (default: True)")
     destructive = OptBool(False, "Enable real ARP poisoning")
 
     def run(self) -> None:

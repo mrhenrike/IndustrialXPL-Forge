@@ -18,7 +18,7 @@ class Exploit(Exploit):
     target  = OptIP("", "Target IP")
     port    = OptPort(5094, "HART-IP port")
     timeout = OptInteger(5, "Timeout (sec)")
-    simulate = OptBool(True, "Simulate (default: True)")
+    simulate = OptBool(False, "Simulate (default: True)")
     destructive = OptBool(False, "Live")
     @mute
     def check(self):

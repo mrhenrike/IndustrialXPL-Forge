@@ -17,7 +17,7 @@ class Exploit(Exploit):
     }
     target = OptIP("", "Target IP")
     port   = OptPort(4840, "OPC UA port")
-    simulate = OptBool(True, "Simulate (default: True)")
+    simulate = OptBool(False, "Simulate (default: True)")
     destructive = OptBool(False, "Live")
     CREDS = [('', ''), ('admin', 'admin'), ('pilz', 'pilz'), ('safety', 'safety')]
     @mute

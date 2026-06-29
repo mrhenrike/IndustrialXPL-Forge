@@ -41,7 +41,7 @@ class Exploit(Exploit):
 
     target   = OptIP("", "Target Omron CJ2M PLC (FINS) IP")
     port     = OptPort(9600, "Target service port")
-    simulate = OptBool(True, "Simulate attack (default: True)")
+    simulate = OptBool(False, "Simulate attack (default: True)")
     destructive = OptBool(False, "Enable live exploitation — requires authorization")
 
     @mute

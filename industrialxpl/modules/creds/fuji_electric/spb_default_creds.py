@@ -17,7 +17,7 @@ class Exploit(Exploit):
     }
     target = OptIP("", "Target IP")
     port   = OptPort(80, "HTTP port")
-    simulate = OptBool(True, "Simulate (default: True)")
+    simulate = OptBool(False, "Simulate (default: True)")
     destructive = OptBool(False, "Live")
     CREDS = [('admin', 'admin'), ('fuji', 'fuji'), ('eng', ''), ('user', 'user')]
     @mute

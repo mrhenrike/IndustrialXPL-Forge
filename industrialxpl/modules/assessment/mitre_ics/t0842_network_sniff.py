@@ -65,7 +65,7 @@ class Exploit(Exploit):
     iface    = OptString("", "Network interface (e.g. eth0; blank = default)")
     count    = OptInteger(500, "Number of packets to capture")
     duration = OptInteger(60, "Capture duration in seconds")
-    simulate = OptBool(True, "Simulate mode")
+    simulate = OptBool(False, "Simulate mode")
     destructive = OptBool(False, "N/A — passive only")
 
     @mute

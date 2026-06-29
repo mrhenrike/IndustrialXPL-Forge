@@ -17,7 +17,7 @@ class Exploit(Exploit):
     }
     target = OptIP("", "Target IP")
     port   = OptPort(502, "Modbus TCP port")
-    simulate = OptBool(True, "Simulate (default: True)")
+    simulate = OptBool(False, "Simulate (default: True)")
     destructive = OptBool(False, "Live")
     CREDS = [('admin', 'altus'), ('', ''), ('eng', 'altus2020'), ('admin', '')]
     @mute

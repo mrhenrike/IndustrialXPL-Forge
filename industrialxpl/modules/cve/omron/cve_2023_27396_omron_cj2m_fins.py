@@ -146,7 +146,7 @@ class Exploit(Exploit):
     target = OptIP("", "Target Omron CJ2M PLC IP")
     port = OptPort(_FINS_PORT, "FINS UDP port (default 9600)")
     timeout = OptInteger(5, "UDP timeout in seconds")
-    simulate = OptBool(True, "Simulate mode (default: True)")
+    simulate = OptBool(False, "Simulate mode (default: True)")
     destructive = OptBool(False, "Enable destructive execution")
 
     @mute

@@ -23,7 +23,7 @@ class Exploit(Exploit):
     }
     target = OptIP("", "Target IP")
     port = OptPort(4592, "Port")
-    simulate = OptBool(True, "Simulate (default: True)")
+    simulate = OptBool(False, "Simulate (default: True)")
     destructive = OptBool(False, "Live exploitation")
     @mute
     def check(self):

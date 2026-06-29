@@ -297,7 +297,7 @@ class Exploit(Exploit):
         "mitre_tactics": ["Discovery"],
     }
 
-    simulate = OptBool(True, "Simulate mode (default: True)")
+    simulate = OptBool(False, "Simulate mode (default: True)")
     destructive = OptBool(False, "Enable destructive execution")
 
     @mute

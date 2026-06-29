@@ -41,7 +41,7 @@ class Exploit(Exploit):
 
     target   = OptIP("", "Target GE CIMPLICITY HMI (BlackEnergy vector) IP")
     port     = OptPort(80, "Target service port")
-    simulate = OptBool(True, "Simulate attack (default: True)")
+    simulate = OptBool(False, "Simulate attack (default: True)")
     destructive = OptBool(False, "Enable live exploitation — requires authorization")
 
     @mute

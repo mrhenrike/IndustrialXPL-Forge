@@ -31,7 +31,7 @@ class Exploit(Exploit):
     target = OptIP("", "Target OSIsoft device IP")
     port = OptPort(135, "Target service port")
     timeout = OptInteger(5, "Timeout seconds")
-    simulate = OptBool(True, "Simulate mode (default: True)")
+    simulate = OptBool(False, "Simulate mode (default: True)")
     destructive = OptBool(False, "Enable real execution gate")
 
     @mute

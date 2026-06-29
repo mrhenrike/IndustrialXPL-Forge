@@ -17,8 +17,8 @@ class MitreTacticSweeper:
     Args:
         target:           Target IP address or CIDR.
         port:             Optional port override (0 = use module default).
-        simulate:         If True (default), print payloads without sending.
-        destructive:      If True, enable real execution (requires confirmation).
+        simulate:         If True, print payloads without sending.
+        destructive:      If True, enable real write/destructive execution.
         rate_limit_ms:    Milliseconds between modules (default 500ms — OT safe).
         stop_on_first_vuln: Stop after first VULNERABLE result.
         check_only:       If True, only run check() — never run().
@@ -29,7 +29,7 @@ class MitreTacticSweeper:
         self,
         target: str = "",
         port: int = 0,
-        simulate: bool = True,
+        simulate: bool = False,
         destructive: bool = False,
         rate_limit_ms: int = 500,
         stop_on_first_vuln: bool = False,

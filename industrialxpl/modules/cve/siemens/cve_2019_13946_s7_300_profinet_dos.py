@@ -128,7 +128,7 @@ class Exploit(Exploit):
     target = OptIP("", "Target S7-300 PLC IP")
     port = OptPort(_S7_PORT, "ISO-on-TCP port (default 102)")
     timeout = OptInteger(5, "Socket timeout in seconds")
-    simulate = OptBool(True, "Simulate mode (default: True)")
+    simulate = OptBool(False, "Simulate mode (default: True)")
     destructive = OptBool(False, "Enable destructive execution")
 
     @mute

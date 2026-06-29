@@ -195,7 +195,7 @@ class Exploit(_Exploit):
     usernames = OptString("", "Username wordlist path (file://path or name) or empty for defaults")
     passwords = OptString("", "Password wordlist path (file://path or name) or empty for defaults")
     stop_on_success = OptBool(True, "Stop after first valid credential pair found")
-    simulate = OptBool(True, "Simulate mode (default: True)")
+    simulate = OptBool(False, "Simulate mode (default: True)")
     destructive = OptBool(False, "Enable bruteforce")
 
     def run(self) -> None:

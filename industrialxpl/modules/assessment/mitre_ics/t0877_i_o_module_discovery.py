@@ -21,7 +21,7 @@ class Exploit(Exploit):
     }
     target = OptIP("", "Target PLC IP")
     port   = OptPort(44818, "EtherNet/IP port")
-    simulate = OptBool(True, "Simulate")
+    simulate = OptBool(False, "Simulate")
     destructive = OptBool(False, "Live")
     @mute
     def check(self): return bool(self.target)

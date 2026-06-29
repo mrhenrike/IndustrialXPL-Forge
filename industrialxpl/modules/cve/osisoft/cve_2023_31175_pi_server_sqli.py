@@ -41,7 +41,7 @@ class Exploit(Exploit):
 
     target   = OptIP("", "Target OSIsoft/AVEVA PI Server (Historian) IP")
     port     = OptPort(5450, "Target service port")
-    simulate = OptBool(True, "Simulate attack (default: True)")
+    simulate = OptBool(False, "Simulate attack (default: True)")
     destructive = OptBool(False, "Enable live exploitation — requires authorization")
 
     @mute

@@ -21,7 +21,7 @@ class Exploit(Exploit):
     }
     target = OptIP("", "Target ICS device IP")
     port   = OptPort(80, "Protocol port")
-    simulate = OptBool(True, "Simulate (default: True)")
+    simulate = OptBool(False, "Simulate (default: True)")
     destructive = OptBool(False, "Live execution")
     @mute
     def check(self): return bool(self.target)

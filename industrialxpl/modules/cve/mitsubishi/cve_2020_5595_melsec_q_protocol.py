@@ -41,7 +41,7 @@ class Exploit(Exploit):
 
     target   = OptIP("", "Target Mitsubishi Electric MELSEC-Q Series PLC IP")
     port     = OptPort(5007, "Target service port")
-    simulate = OptBool(True, "Simulate attack (default: True)")
+    simulate = OptBool(False, "Simulate attack (default: True)")
     destructive = OptBool(False, "Enable live exploitation — requires authorization")
 
     @mute

@@ -22,6 +22,13 @@ IndustrialXPL-Forge is an offensive and defensive security research framework fo
 - Submitting modules designed to cause unauthorized harm
 - Targeting critical infrastructure without authorization
 - Distributing credentials, keys, or proprietary exploit code in contributions
+- Compiling or deploying incorporated malware artifacts outside isolated lab environments
+
+## Malware Research
+
+IXF includes native modules for 12 incorporated malware families (Mirai, TRISIS/TRITON, Bashlite, Akaja, and others). These exist for **defensive TTP mapping and detection engineering**. See [DISCLAIMER.md](DISCLAIMER.md) and [SECURITY.md](SECURITY.md).
+
+---
 
 ## Responsible Disclosure
 

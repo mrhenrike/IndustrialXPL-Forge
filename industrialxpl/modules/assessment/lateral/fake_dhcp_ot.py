@@ -232,7 +232,7 @@ class Exploit(_Exploit):
     client_gateway = OptIP("192.168.1.1", "Gateway to advertise (set to your IP for MITM)")
     client_dns = OptIP("192.168.1.1", "DNS server to advertise")
     listen_timeout = OptInteger(60, "How long to listen for DHCP requests (seconds, 0 = indefinite)")
-    simulate = OptBool(True, "Simulate mode: describe without sending packets (default: True)")
+    simulate = OptBool(False, "Simulate mode: describe without sending packets (default: True)")
     destructive = OptBool(False, "Enable real DHCP spoofing")
 
     _ip_pool: Dict[str, str] = {}

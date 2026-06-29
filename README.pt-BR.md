@@ -9,7 +9,7 @@
 [![Python](https://img.shields.io/pypi/pyversions/industrialxpl-forge?color=blue&label=Python)](https://pypi.org/project/industrialxpl-forge/)
 [![Licença: MIT](https://img.shields.io/badge/Licen%C3%A7a-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![CI](https://img.shields.io/github/actions/workflow/status/mrhenrike/IndustrialXPL-Forge/ci.yml?branch=master&label=CI)](https://github.com/mrhenrike/IndustrialXPL-Forge/actions)
-[![Módulos](https://img.shields.io/badge/M%C3%B3dulos-1000%2B-brightgreen)](https://github.com/mrhenrike/IndustrialXPL-Forge)
+[![Módulos](https://img.shields.io/badge/M%C3%B3dulos-1160%2B-brightgreen)](https://github.com/mrhenrike/IndustrialXPL-Forge)
 [![Vendors](https://img.shields.io/badge/Vendors-150%2B-orange)](https://github.com/mrhenrike/IndustrialXPL-Forge)
 [![Protocolos](https://img.shields.io/badge/Protocolos-50%2B-blue)](https://github.com/mrhenrike/IndustrialXPL-Forge)
 [![MITRE ATT&CK ICS](https://img.shields.io/badge/MITRE%20ATT%26CK%20ICS-v19-red)](https://attack.mitre.org/matrices/ics/)
@@ -51,7 +51,7 @@ OSINT → Descoberta → Fingerprint → Verificação de Vulnerabilidade → Ex
 
 **Funcionalidades principais:**
 - **Python-First**: toda a funcionalidade central funciona com `pip install industrialxpl-forge` - runtimes externos (C, Go, Java) são aceleradores opcionais com fallback Python embutido
-- **SafeMode por padrão**: todo módulo executa em modo simulação - imprime o payload sem enviar
+- **SafeMode opt-in**: use `set simulate true` ou `setg simulate true` — imprime payload sem enviar; padrão é `simulate=false`
 - **MITRE ATT&CK for ICS v19**: 79 técnicas mapeadas, sintaxe `ttp T0843 192.168.1.100`
 - **Cobertura de CVEs**: 3.300+ CVEs ICS/OT de CVSS 0,1 a 10,0
 - **50 vendors**: Siemens, Schneider, Rockwell, ABB, Honeywell, WEG, NOVA Smar, e mais
@@ -95,14 +95,17 @@ ixf > mitre-report layer               # Layer JSON para ATT&CK Navigator
 
 ## SafeMode / DestructiveMode
 
-**Todo módulo é executado em modo simulação por padrão** - imprime o que FARIA sem enviar nenhum pacote.
+**Padrão `simulate=false`** — probes de leitura podem ir à rede. Ative SafeMode explicitamente:
 
 ```
+ixf (FrostyGoop) > set simulate true
 ixf (FrostyGoop) > run                 # SIMULAÇÃO: imprime payload, não envia
 ixf (FrostyGoop) > set simulate false
 ixf (FrostyGoop) > set destructive true
 ixf (FrostyGoop) > run                 # AO VIVO: exibe banner + exige confirmação
 ```
+
+SafeMode global: `setg simulate true`
 
 Níveis de impacto exigem confirmação proporcional:
 - `INFO/READ`: automático

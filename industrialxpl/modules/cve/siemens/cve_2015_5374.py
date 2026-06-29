@@ -40,7 +40,7 @@ class Exploit(Exploit):
     target  = OptIP("", "Target Siemens device IP")
     port    = OptPort(502, "Target port")
     timeout = OptInteger(5, "Socket timeout")
-    simulate = OptBool(True, "Simulate mode (default: True)")
+    simulate = OptBool(False, "Simulate mode (default: True)")
     destructive = OptBool(False, "Enable destructive execution")
 
     @mute

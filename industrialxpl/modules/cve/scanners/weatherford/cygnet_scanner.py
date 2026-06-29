@@ -18,7 +18,7 @@ class Exploit(Exploit):
     target  = OptIP("", "Target IP")
     port    = OptPort(20001, "CygNet Protocol")
     timeout = OptInteger(5, "Timeout")
-    simulate = OptBool(True, "Simulate")
+    simulate = OptBool(False, "Simulate")
     destructive = OptBool(False, "Active")
     @mute
     def check(self):

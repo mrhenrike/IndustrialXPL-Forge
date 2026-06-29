@@ -17,7 +17,7 @@ class Exploit(Exploit):
     }
     target = OptIP("", "Target IP")
     port   = OptPort(5450, "PI SDK port")
-    simulate = OptBool(True, "Simulate")
+    simulate = OptBool(False, "Simulate")
     destructive = OptBool(False, "Live")
     CREDS = [('PIAdmin', 'admin'), ('admin', 'admin'), ('guest', ''), ('OSIsoft', 'OSIsoft')]
     @mute

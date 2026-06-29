@@ -9,7 +9,7 @@
 [![Python](https://img.shields.io/pypi/pyversions/industrialxpl-forge?color=blue&label=Python)](https://pypi.org/project/industrialxpl-forge/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![CI](https://img.shields.io/github/actions/workflow/status/mrhenrike/IndustrialXPL-Forge/ci.yml?branch=master&label=CI)](https://github.com/mrhenrike/IndustrialXPL-Forge/actions)
-[![Modules](https://img.shields.io/badge/Modules-1000%2B-brightgreen)](https://github.com/mrhenrike/IndustrialXPL-Forge)
+[![Modules](https://img.shields.io/badge/Modules-1160%2B-brightgreen)](https://github.com/mrhenrike/IndustrialXPL-Forge)
 [![Vendors](https://img.shields.io/badge/Vendors-150%2B-orange)](https://github.com/mrhenrike/IndustrialXPL-Forge)
 [![Protocols](https://img.shields.io/badge/Protocols-50%2B-blue)](https://github.com/mrhenrike/IndustrialXPL-Forge)
 [![MITRE ATT&CK ICS](https://img.shields.io/badge/MITRE%20ATT%26CK%20ICS-v19-red)](https://attack.mitre.org/matrices/ics/)
@@ -51,7 +51,7 @@ OSINT → Discovery → Fingerprint → Vulnerability Check → Exploit → Repo
 
 **Key features:**
 - **Python-First**: all core functionality works with `pip install industrialxpl-forge` — external runtimes (C, Go, Java) are optional accelerators with Python fallbacks built in
-- **SafeMode by default**: every module runs in simulate mode — prints payload without sending
+- **SafeMode opt-in**: `set simulate true` or `setg simulate true` — prints payload without sending; live probes use `simulate=false` (default)
 - **MITRE ATT&CK for ICS v19**: 79 techniques mapped, `ttp T0843 192.168.1.100` syntax
 - **CVE coverage**: 3,300+ ICS/OT CVEs from CVSS 0.1 to 10.0
 - **50 vendors**: Siemens, Schneider, Rockwell, ABB, Honeywell, Emerson, WEG, and more
@@ -75,6 +75,12 @@ OSINT → Discovery → Fingerprint → Vulnerability Check → Exploit → Repo
 | `assessment/` | ~35 | IEC 62443, NIST 800-82r3, MITRE ICS, risk scoring, IR playbook |
 | `assessment/detection/` | ~8 | Modbus PCAP analyzer, Suricata/Zeek rule generators, Conpot detection |
 | `scanners/ot/` | ~10 | Nmap OT scanner with ICS-specific scripts and service detection |
+| `payloads/` | 42 | Multi-arch stagers (x86, x64, ARM, MIPS, PPC, SPARC, …) |
+| `encoders/` | 17 | Payload encoders (x86/shikata, alpha, xor, …) |
+| `cve/malware/` | 16+ | Native malware TTP modules (12 families + TRITON TriStation) |
+| `scanners/malware_research/` | 4+ | Mirai telnet probe, botnet mapper, Shodan hunter, orchestrator |
+
+See [DISCLAIMER.md](DISCLAIMER.md) and [SECURITY.md](SECURITY.md) before using malware research modules.
 
 ---
 
@@ -84,10 +90,23 @@ OSINT → Discovery → Fingerprint → Vulnerability Check → Exploit → Repo
 # Open the IXF interactive shell
 ixf
 
-# Load and run a module (simulate mode by default — safe)
+# Load and run a module (use simulate true for SafeMode)
 ixf > use scanners/ics/modbus_detect
 ixf > set target 192.168.1.100
+ixf > set simulate true
 ixf > check
+
+# Global network options
+ixf > setg PORT 502
+ixf > setg TRANSPORT tcp
+ixf > setg UNIT_ID 1
+
+# Malware research (authorized lab only)
+ixf > malware list
+ixf > malware analyze mirai-iot-botnet
+ixf > use cve/malware/families/mirai_iot_botnet_ttp
+ixf > set analyze_only true
+ixf > run
 
 # Search for modules
 ixf > search siemens
@@ -119,14 +138,17 @@ ixf > mitre-report layer               # ATT&CK Navigator JSON layer
 
 ## SafeMode / DestructiveMode
 
-**Every module defaults to simulate mode** — it prints what it WOULD do without sending any packets.
+**Modules default to `simulate=false`** — read probes and protocol checks may hit the wire on `check()` / `run()`. Enable SafeMode explicitly:
 
 ```
+ixf (FrostyGoop) > set simulate true
 ixf (FrostyGoop) > run                 # SIMULATE: prints payload, no send
 ixf (FrostyGoop) > set simulate false
 ixf (FrostyGoop) > set destructive true
 ixf (FrostyGoop) > run                 # LIVE: shows banner + requires confirmation
 ```
+
+Global SafeMode: `setg simulate true`
 
 Impact levels require proportional confirmation:
 - `INFO/READ`: automatic

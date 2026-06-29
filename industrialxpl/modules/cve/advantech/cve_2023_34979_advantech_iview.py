@@ -145,7 +145,7 @@ class Exploit(Exploit):
     port = OptPort(_DEFAULT_PORT, "iView web port (default 80)")
     command = OptString("id", "OS command for RCE check (simulate only)")
     timeout = OptInteger(10, "HTTP timeout in seconds")
-    simulate = OptBool(True, "Simulate mode (default: True)")
+    simulate = OptBool(False, "Simulate mode (default: True)")
     destructive = OptBool(False, "Enable destructive execution")
 
     @mute

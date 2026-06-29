@@ -155,7 +155,7 @@ class Exploit(Exploit):
     aggressive = OptBool(False, "Enable aggressive scan mode (-A)")
     timeout_s = OptInteger(120, "Scan timeout in seconds")
     output_file = OptString("", "Save Nmap output to file (empty = don't save)")
-    simulate = OptBool(True, "Simulate: show nmap command without executing")
+    simulate = OptBool(False, "Simulate: show nmap command without executing")
 
     def _build_nmap_args(self) -> List[str]:
         """Build Nmap argument list based on scan_mode.

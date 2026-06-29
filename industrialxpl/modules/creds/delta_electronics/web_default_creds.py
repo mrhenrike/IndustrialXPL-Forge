@@ -17,7 +17,7 @@ class Exploit(Exploit):
     }
     target = OptIP("", "Target IP")
     port   = OptPort(8080, "HTTP port")
-    simulate = OptBool(True, "Simulate (default: True)")
+    simulate = OptBool(False, "Simulate (default: True)")
     destructive = OptBool(False, "Live")
     CREDS = [('admin', 'admin'), ('delta', 'delta'), ('user', '1234'), ('admin', '')]
     @mute

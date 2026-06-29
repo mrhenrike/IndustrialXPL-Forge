@@ -49,7 +49,7 @@ class Exploit(Exploit):
     }
 
     output_format = OptString("layer", "Output format: layer (Navigator JSON) | text | table")
-    simulate = OptBool(True, "Simulate mode (default: True)")
+    simulate = OptBool(False, "Simulate mode (default: True)")
     destructive = OptBool(False, "Enable destructive execution")
 
     @mute

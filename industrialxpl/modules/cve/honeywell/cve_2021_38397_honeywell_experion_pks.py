@@ -131,7 +131,7 @@ class Exploit(Exploit):
     target = OptIP("", "Target Experion PKS server IP")
     port = OptPort(_EXPERION_WEB_PORT, "HTTP port for Experion API (default 8080)")
     timeout = OptInteger(8, "HTTP request timeout in seconds")
-    simulate = OptBool(True, "Simulate mode (default: True)")
+    simulate = OptBool(False, "Simulate mode (default: True)")
     destructive = OptBool(False, "Enable destructive execution")
 
     @mute

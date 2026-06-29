@@ -41,7 +41,7 @@ class Exploit(_Exploit):
     target  = OptIP("", "Target Telnet host")
     port    = OptPort(23, "Telnet port")
     timeout = OptInteger(5, "Timeout")
-    simulate = OptBool(True, "Simulate mode")
+    simulate = OptBool(False, "Simulate mode")
     destructive = OptBool(False, "Enable bruteforce")
 
     @mute

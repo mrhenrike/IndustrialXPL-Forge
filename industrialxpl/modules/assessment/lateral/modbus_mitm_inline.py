@@ -258,7 +258,7 @@ class Exploit(_Exploit):
     inject_fc = OptInteger(3, "Function code to intercept for injection (3=FC03, 4=FC04)")
     inject_register = OptInteger(0, "Zero-based register index in response to tamper with")
     inject_value = OptInteger(0, "Value to inject at the target register (0-65535)")
-    simulate = OptBool(True, "Simulate mode: show what would be proxied without binding (default: True)")
+    simulate = OptBool(False, "Simulate mode: show what would be proxied without binding (default: True)")
     destructive = OptBool(False, "Enable real proxy with optional value injection")
 
     @mute

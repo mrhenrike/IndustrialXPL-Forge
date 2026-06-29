@@ -36,7 +36,7 @@ from industrialxpl.core.exploit.utils import (
     module_required, MODULES_DIR,
 )
 
-VERSION = "1.0.38"
+VERSION = "1.0.44"
 
 _BANNER = r"""
  ___           _           _        _       ___  ______  _          _____
@@ -48,7 +48,7 @@ _BANNER = r"""
   IndustrialXPL-Forge v{version} -- OT/ICS/SCADA Security Assessment Framework
   Author: Andre Henrique (@mrhenrike) | Uniao Geek | https://uniaogeek.com.br/
   Python-First. Pure Python -- pip install industrialxpl-forge
-  Type 'help' for commands.  simulate=True by default (safe mode).
+  Type 'help' for commands.  simulate=false by default — set SIMULATE true for dry-run.
 """.format(version=VERSION)
 
 _GLOBAL_HELP = """
@@ -110,23 +110,15 @@ GLOBAL OPTIONS:
   NOTE: PORT and UNIT_ID are protocol-specific -- set them per module, not globally.
   Help:  help host_timeout | help max_retries | help scan_delay | help probe_level | help max_rate
 
-EXECUTION MODES (see 'help safemode' for full matrix and Modbus FC reference):
-  SAFEMODE=true   (GLOBAL default)  Master kill-switch. Blocks ALL real reads/writes.
-  SAFEMODE=false                    Unlocks simulate=false and destructive=true.
-  simulate=true   (module default)  check() + SIMULATED realistic output. Zero real reads.
-  simulate=false                    REAL reads (FC1-4, FC17, FC43). Writes still blocked.
-  destructive=true                  Real reads + WRITES (FC5/6/15/16). May be irreversible.
+EXECUTION MODES (see 'help simulate' and 'help destructive'):
+  simulate=false  (module default)  Real protocol operations per module logic.
+  simulate=true                     Dry-run / simulated output only.
+  destructive=false (default)       Read-oriented behavior in modules that support it.
+  destructive=true                  Enables write/destructive paths when module supports it.
 
-  Mode matrix:
-    SAFEMODE | simulate | destructive | Result
-    true     | any      | any         | check + SIMULATED output    [SAFE]
-    false    | true     | any         | check + SIMULATED output    [SAFE]
-    false    | false    | false       | Real reads, writes BLOCKED  [READ-ONLY]
-    false    | false    | true        | Real reads + writes         [DESTRUCTIVE]
-
-  setg SAFEMODE false    -- allow real reads/writes (authorize first!)
-  setg SAFEMODE true     -- restore protection (always do this when done)
-  help safemode          -- full explanation with Modbus FC table
+  set SIMULATE true|false           -- per module
+  set DESTRUCTIVE true|false        -- per module
+  help simulate                     -- full explanation
 
 CVE / MITRE / TTP:
   cve <CVE-ID>                  Load module for a CVE (e.g. cve CVE-2022-29953)
@@ -135,6 +127,15 @@ CVE / MITRE / TTP:
   mitre-scan <tactic> <target>  Run all modules for a tactic
   ttp <TID> <target>            Execute all modules for a TTP-ID
   help mitre                    Full MITRE command reference
+
+MALWARE RESEARCH (lab only):
+  malware list                  Incorporated families (Mirai, TRISIS, Akaja, ...)
+  malware analyze <slug>        Vendor source deep-dive + attack vectors
+  malware compile list          Native + vendor compile targets
+  malware compile <target>      Build to .tmp/malware_builds/
+  use assessment/malware/malware_native_compiler
+  use scanners/malware_research/mirai_telnet_ics_scanner
+  use cve/malware/triton_tristation_native
 
 RESOURCE FILE MODE (like Metasploit -r):
   ixf -r scan.rc                Run resource file, then drop into interactive shell
@@ -495,7 +496,7 @@ class IXFInterpreter(BaseInterpreter):
     _GLOBAL_DEFAULTS = {
         "loglevel":       "info",
         "verbose":        "false",
-        "safemode":       "true",    # SAFEMODE: blocks simulate=false globally (CIA protection)
+        "safemode":       "false",   # legacy global flag; does not override module options
         "timing":         "T3",
         "threads":        "5",
         "host_timeout":   "30",
@@ -507,6 +508,9 @@ class IXFInterpreter(BaseInterpreter):
         "ping_first":     "true",
         "skip_ping":      "false",
         "target":         "",
+        "port":           "",
+        "transport":      "",
+        "unit_id":        "",
         "output":         "",
         "report_fmt":     "markdown",
     }
@@ -518,7 +522,7 @@ class IXFInterpreter(BaseInterpreter):
         # Section 0: Safety
         safety_rows = [
             ("SAFEMODE",   self._get_global("safemode"),
-             "true (default) | false -- see 'help safemode' for full explanation"),
+             "legacy flag (no longer overrides module simulate/destructive)"),
         ]
         print_table(["Option", "Current", "Description"],
                     safety_rows, title="Global: Safety (most important)")
@@ -559,8 +563,14 @@ class IXFInterpreter(BaseInterpreter):
         ]
         # Section 3: Targeting (global convenience only -- protocol options stay in modules)
         target_rows = [
-            ("TARGET",  self._get_global("target"),
-             "IP / hostname -- default target applied when module TARGET is empty"),
+            ("TARGET",    self._get_global("target"),
+             "IP / hostname — default target when module TARGET is empty"),
+            ("PORT",      self._get_global("port") or "(module default)",
+             "Port expression: 502 | 502,510 | 500-510 — applied on module load"),
+            ("TRANSPORT", self._get_global("transport") or "(module default)",
+             "tcp | udp | both — applied on module load when supported"),
+            ("UNIT_ID",   self._get_global("unit_id") or "(module default)",
+             "Modbus unit ID 0-255 — applied on module load"),
         ]
 
         print_table(["Option", "Current", "Description / Accepted Values"],
@@ -571,12 +581,10 @@ class IXFInterpreter(BaseInterpreter):
                     target_rows, title="Global: Targeting")
 
         print_info("")
-        print_info("  NOTE: PORT and UNIT_ID are protocol-specific -- set them per module, not globally.")
-        print_info("")
-        print_info("  Usage:  setg TIMING T2          setg THREADS 3       setg MAX_RETRIES 1")
-        print_info("          setg PROBE_LEVEL 1      setg HOST_TIMEOUT 15  setg SCAN_DELAY 500")
-        print_info("          setg TARGET 10.0.0.1    unsetg TARGET")
-        print_info("  Help:   help timing   help probe_level   help max_retries   help scan_delay")
+        print_info("  Usage:  setg TARGET 10.0.0.1    setg PORT 502,510    setg TRANSPORT tcp")
+        print_info("          setg UNIT_ID 1          setg TIMING T2       setg THREADS 3")
+        print_info("          unsetg PORT             unsetg TRANSPORT")
+        print_info("  Help:   help port   help transport   help timing   help probe_level")
 
     def _help_safemode(self) -> None:
         safemode_current = self._get_global("safemode")
@@ -584,60 +592,20 @@ class IXFInterpreter(BaseInterpreter):
 Option: SAFEMODE  (global only -- setg)
 ----------------------------------------
 Type    : bool (true/false)
-Default : true
+Default : false
 Current : {}
 
-SAFEMODE is the master safety switch for IXF. It controls whether real
-protocol operations can affect the CIA triad of tested assets.
+SAFEMODE is a legacy global flag. It no longer overrides per-module
+SIMULATE or DESTRUCTIVE options. Execution follows what you set on
+each module:
 
-  SAFEMODE=true  (default -- recommended for all production assessments)
-    - Forces simulate=true regardless of per-module settings
-    - Blocks simulate=false even if explicitly set on the module
-    - Zero risk of affecting Confidentiality, Integrity, or Availability
-    - Safe to run against any network, including live production systems
-    - Per-module simulate/destructive options are IGNORED (simulate=true wins)
+  set SIMULATE true|false
+  set DESTRUCTIVE true|false
+  run
 
-  SAFEMODE=false  (use only with explicit written authorization)
-    - Allows simulate=false for real reads (FC1/2/3/4/17/43 in Modbus)
-    - Allows destructive=true for writes (FC5/6/15/16 in Modbus)
-    - Responsibility for any impact falls entirely on the operator
-
-Mode Matrix (what actually executes):
-
-  SAFEMODE | simulate | destructive | Result
-  ---------|----------|-------------|------------------------------------------
-  true     | true     | any         | check() + simulated output  [SAFE]
-  true     | false    | any         | OVERRIDDEN to simulate=true [SAFE]
-  false    | true     | any         | check() + simulated output  [SAFE]
-  false    | false    | false       | Real reads, NO writes       [READ-ONLY]
-  false    | false    | true        | Real reads + writes         [DESTRUCTIVE]
-
-Modbus FC reference:
-  FC1/2  Read Coils/Discrete Inputs  -- allowed in READ mode
-  FC3/4  Read Hold/Input Registers   -- allowed in READ mode
-  FC17   Report Server ID            -- allowed in READ mode
-  FC43   Read Device ID (MEI)        -- allowed in READ mode
-  FC5    Write Single Coil           -- BLOCKED unless destructive=true
-  FC6    Write Single Register       -- BLOCKED unless destructive=true
-  FC15   Write Multiple Coils        -- BLOCKED unless destructive=true
-  FC16   Write Multiple Registers    -- BLOCKED unless destructive=true
-
-Usage:
-  setg SAFEMODE false     -- enable real reads (authorize first!)
-  setg SAFEMODE true      -- re-enable protection (recommended after assessment)
-
-  # Typical authorized assessment workflow:
-  setg SAFEMODE false
-  use scanners/ics/modbus_scanner
-  set TARGET 192.168.10.10
-  set SIMULATE false
-  set DESTRUCTIVE false
-  run                     -- real reads, no writes
-
-  set DESTRUCTIVE true
-  run                     -- real reads + writes (requires confirmation)
-
-  setg SAFEMODE true      -- always restore when done
+Use simulate=true when you want dry-run behavior on a specific module.
+Use destructive=true when the module supports writes and you intend
+to execute them.
 """.format(safemode_current))
 
     def _help_simulate(self) -> None:
@@ -645,55 +613,21 @@ Usage:
 Option: SIMULATE  (per-module)
 -------------------------------
 Type    : bool (true/false)
-Default : true
+Default : false
 
-IMPORTANT: SAFEMODE=true (global default) overrides this. Set 'setg SAFEMODE false' first.
+  simulate=false  (default)
+    - Module runs real protocol logic (reads/writes per module design).
+    - Combine with DESTRUCTIVE for write-capable modules.
 
-  simulate=true  (default)
-    - Lightweight check() probe (1 TCP connection, 1 PDU).
-    - If VULNERABLE: shows SIMULATED realistic values (fake data showing
-      what WOULD be returned). Not real operational data.
-    - Zero reads/writes of real device data.
-    - Output: [SIMULATE] FC3 would return: [1234, 5678, ...]
-    - Safe for any production environment.
-
-  simulate=false  (requires 'setg SAFEMODE false' first)
-    - Executes REAL protocol reads against the target.
-    - Returns ACTUAL data from the device.
-    - For Modbus: FC1/FC2 (real coils), FC3/FC4 (real registers),
-      FC17 (real Server ID), FC43 (real device identification).
-    - Write operations (FC5/FC6/FC15/FC16) BLOCKED unless destructive=true.
-    - No availability/integrity impact -- read-only.
-
-Mode matrix (SAFEMODE + simulate + destructive):
-  SAFEMODE | simulate | destructive | What executes
-  ---------|----------|-------------|----------------------------------------
-  true     | true     | any         | check() + SIMULATED output      [SAFE]
-  true     | false    | any         | OVERRIDDEN to simulate=true     [SAFE]
-  false    | true     | any         | check() + SIMULATED output      [SAFE]
-  false    | false    | false       | Real reads, writes BLOCKED      [READ]
-  false    | false    | true        | Real reads + writes, confirmed  [WRITE]
-
-Modbus examples by mode:
-  simulate=true:
-    [SIMULATE] FC3 Holding Registers: [1234, 5678, 9012, ...]  (generated)
-    [SIMULATE] FC43 VendorName: Schneider Electric              (generated)
-
-  simulate=false, destructive=false:
-    [+] FC43 VendorName: Schneider Electric                     (REAL)
-    [+] FC3 addr 40001: 1500 (0x05DC)                          (REAL)
-    [+] FC1 addr 00001: ON                                      (REAL)
-
-  simulate=false, destructive=true:
-    [+] FC6 Write addr 40001 value 0 -> ACK                    (REAL WRITE)
-    [+] FC5 Write coil 0 -> OFF                                (REAL WRITE)
+  simulate=true
+    - Dry-run: module shows what it would do without sending payloads
+      (when the module implements simulate handling).
 
 Usage:
-  set SIMULATE true           -- default, safe
-  setg SAFEMODE false         -- unlock real operations
-  set SIMULATE false          -- enable real reads
-  set DESTRUCTIVE true        -- also enable writes
-  help safemode               -- full explanation of the safety model
+  set SIMULATE true           -- enable dry-run on this module
+  set SIMULATE false          -- real execution (default)
+  set DESTRUCTIVE true        -- enable write/destructive paths (module-dependent)
+  help destructive            -- write/destructive option reference
 """)
 
     def _help_loglevel(self) -> None:
@@ -750,6 +684,7 @@ Tip: 'modules' or 'modules <category>' browses the full tree.
             "coil":        self._help_option_coils,
             "port":        self._help_option_port,
             "ports":       self._help_option_port,
+            "transport":   self._help_option_transport,
             "fc":          self._help_option_fc,
             "unit_id":     self._help_option_unit_id,
             "unitid":      self._help_option_unit_id,
@@ -908,6 +843,30 @@ Examples:
   set port 502,510           -- two ports
   set port 500-510           -- scan range of 11 ports
   setg port 502              -- global default port
+""")
+
+    def _help_option_transport(self) -> None:
+        print_info("""
+Option: transport
+-----------------
+Type     : string
+Default  : module-specific (tcp for Modbus, both for DNP3)
+Scope    : per-module (set) or global (setg)
+
+Accepted values:
+  tcp   -- TCP only
+  udp   -- UDP only
+  both  -- try TCP then UDP (where protocol supports both)
+
+Protocol notes:
+  Modbus/TCP  -- tcp only
+  DNP3        -- tcp and/or udp (default port 20000)
+  BACnet/IP   -- udp only (47808)
+  S7comm      -- tcp only (102)
+
+Examples:
+  set transport tcp
+  setg transport both
 """)
 
     def _help_option_fc(self) -> None:
@@ -1398,14 +1357,21 @@ Example:
             cls = import_exploit(full_path)
             self.current_module = cls()
             # Apply global options to module where names match
-            _SKIP_GLOBAL = {"unit_id", "port", "loglevel", "verbose",
-                            "output", "report_fmt", "threads"}
+            _SKIP_GLOBAL = {"loglevel", "verbose", "output", "report_fmt", "threads"}
             for key, val in self._global_opts.items():
                 if key in _SKIP_GLOBAL:
                     continue
                 if key in self.current_module.options:
                     try:
                         setattr(self.current_module, key, val)
+                    except Exception:
+                        pass
+            # Explicit globals for targeting (port/transport/unit_id override module defaults)
+            for gkey in ("port", "transport", "unit_id"):
+                gval = self._global_opts.get(gkey, "")
+                if gval and gkey in self.current_module.options:
+                    try:
+                        setattr(self.current_module, gkey, gval)
                     except Exception:
                         pass
             # Always propagate target if module has it and global is set
@@ -1546,11 +1512,10 @@ Example:
             lv = value.lower().strip()
             if lv in _TRUE:
                 self._global_opts["safemode"] = "true"
-                print_success("[global] SAFEMODE => true  (CIA protection ON -- simulate=false blocked globally)")
+                print_success("[global] SAFEMODE => true  (legacy flag; does not override module options)")
             elif lv in _FALSE:
                 self._global_opts["safemode"] = "false"
-                print_warning("[global] SAFEMODE => false  (CIA protection OFF -- real reads/writes enabled)")
-                print_warning("  Ensure you have authorization for all targeted assets.")
+                print_info("[global] SAFEMODE => false  (legacy flag; module options control execution)")
             else:
                 print_error("SAFEMODE must be true or false, got: {}".format(value))
             return
@@ -1570,12 +1535,61 @@ Example:
             print_success("[global] {} => {}".format(key, self._global_opts[key]))
             return
 
-        if key in ("unit_id", "port"):
-            print_warning(
-                "'{}' is protocol-specific and cannot be set globally. "
-                "Use 'set {} <value>' inside a loaded module.".format(key.upper(), key.upper())
-            )
+        if key == "port":
+            try:
+                from industrialxpl.core.modbus.transport import parse_port_expression
+                expr = value.strip()
+                if expr.isdigit():
+                    p = int(expr)
+                    if not 1 <= p <= 65535:
+                        raise ValueError
+                else:
+                    parse_port_expression(expr)
+                self._global_opts["port"] = expr
+                print_success("[global] PORT => {}".format(expr))
+                if self.current_module and "port" in self.current_module.options:
+                    try:
+                        setattr(self.current_module, "port", expr)
+                    except Exception:
+                        pass
+                return
+            except (ValueError, Exception) as exc:
+                print_error("Invalid port expression: {} ({})".format(value, exc))
+                self._help_option_port()
+                return
+
+        if key == "transport":
+            allowed = {"tcp", "udp", "both"}
+            lv = value.lower().strip()
+            if lv not in allowed:
+                print_error("TRANSPORT must be tcp, udp, or both, got: {}".format(value))
+                self._help_option_transport()
+                return
+            self._global_opts["transport"] = lv
+            print_success("[global] TRANSPORT => {}".format(lv))
+            if self.current_module and "transport" in self.current_module.options:
+                try:
+                    setattr(self.current_module, "transport", lv)
+                except Exception:
+                    pass
             return
+
+        if key == "unit_id":
+            try:
+                uid = int(value)
+                if not 0 <= uid <= 255:
+                    raise ValueError
+                self._global_opts["unit_id"] = str(uid)
+                print_success("[global] UNIT_ID => {}".format(uid))
+                if self.current_module and "unit_id" in self.current_module.options:
+                    try:
+                        setattr(self.current_module, "unit_id", uid)
+                    except Exception:
+                        pass
+                return
+            except ValueError:
+                print_error("UNIT_ID must be 0-255, got: {}".format(value))
+                return
 
         if key in ("timing", "scan_timing"):
             try:
@@ -1676,109 +1690,29 @@ Example:
 
     @module_required
     def command_run(self, args: str = "", **kwargs) -> None:
-        """Execute the current module.
-
-        Mode decision matrix:
-          SAFEMODE=true (global default)
-            Blocks simulate=false. Forces simulate=true. No CIA impact possible.
-
-          simulate=true  [default]
-            check() fingerprint + simulated realistic output.
-            Shows what data WOULD look like if device is vulnerable.
-            Zero real reads/writes.
-
-          simulate=false + destructive=false + SAFEMODE=false
-            Full READ mode: real protocol reads (FC1/2/3/4/17/43 for Modbus).
-            Returns real device data. Write operations (FC5/6/15/16) BLOCKED.
-            No availability/integrity impact.
-
-          destructive=true + SAFEMODE=false
-            Full READ+WRITE: all protocol operations active.
-            May cause irreversible changes. Requires explicit confirmation.
-        """
+        """Execute the current module using per-module simulate/destructive options."""
         mod = self.current_module
         info = mod.get_info()
-        impact = info.get("impact", "LOW").upper()
         name = info.get("name", str(mod))
 
-        # Resolve global SAFEMODE
-        safemode_raw = self._get_global("safemode")
-        safemode = safemode_raw.lower() in ("true", "1", "yes", "on", "")
-        mod._safemode = safemode
+        sim = bool(mod.simulate)
+        destr = bool(mod.destructive)
+        mod._simulate_mode = sim
+        mod._destructive_mode = destr
+        mod._safemode = False
 
-        def _exec(label):
-            try:
-                mod.run()
-            except NotImplementedError:
-                print_warning("Module run() not yet implemented.")
-
-        # MODE 1: simulate=true -- check + simulated output
-        if mod.simulate:
-            mod._simulate_mode = True
-            mod._destructive_mode = False
-            print_status("{} [SIMULATE] -- check + simulated realistic output".format(name))
-            _exec("simulate")
-            return
-
-        # SAFEMODE guard: blocks simulate=false
-        if safemode:
-            print_warning("SAFEMODE is ON (setg SAFEMODE false to enable real reads).")
-            print_info("  SAFEMODE=true: protects CIA of all tested assets.")
-            print_info("  Behavior: running in SIMULATE mode instead.")
-            print_info("")
-            mod._simulate_mode = True
-            mod._destructive_mode = False
-            _exec("safemode-forced-simulate")
-            return
-
-        # MODE 2: simulate=false + destructive=false -- REAL READS, NO WRITES
-        if not mod.destructive:
-            mod._simulate_mode = False
-            mod._destructive_mode = False
-            print_status("{} [READ MODE] -- real probes, reads only, writes BLOCKED".format(name))
-            print_info("  simulate=false: real protocol operations active")
-            print_info("  destructive=false: FC5/FC6/FC15/FC16 and all writes blocked")
-            print_info("")
-            _exec("read")
-            return
-
-        # MODE 3: destructive=true -- FULL READ+WRITE with confirmation gate
-        target_str = str(getattr(mod, "target", "unknown"))
-        description = info.get(
-            "destructive_description",
-            "This operation sends write commands to the target device "
-            "and may cause irreversible changes to operational state.",
-        )
-        if impact in ("HIGH", "CRITICAL", "CATASTROPHIC"):
-            confirmed = DestructiveGate.require_confirmation(
-                module_name=name,
-                target=target_str,
-                impact_level=impact,
-                description=description,
-            )
-            if not confirmed:
-                return
+        if sim:
+            print_status("{} [SIMULATE] -- dry-run per module option".format(name))
+        elif destr:
+            print_status("{} [DESTRUCTIVE] -- reads and writes per module option".format(name))
+            print_warning("  Destructive mode enabled. Device state may change.")
         else:
-            try:
-                ans = input(
-                    "[!] destructive=true on '{}' (impact={}). Target: {}. Proceed? [y/N]: ".format(
-                        name, impact, target_str
-                    )
-                ).strip().lower()
-            except (EOFError, KeyboardInterrupt):
-                print()
-                print_info("Aborted.")
-                return
-            if ans not in ("y", "yes"):
-                print_info("Aborted.")
-                return
+            print_status("{} [LIVE] -- real execution per module options".format(name))
 
-        mod._simulate_mode = False
-        mod._destructive_mode = True
-        print_status("{} [DESTRUCTIVE] -- read+write, all operations enabled".format(name))
-        print_warning("  Write operations ACTIVE. Device state may change irreversibly.")
-        print_info("")
-        _exec("destructive")
+        try:
+            mod.run()
+        except NotImplementedError:
+            print_warning("Module run() not yet implemented.")
 
     @module_required
     def command_check(self, args: str = "", **kwargs) -> None:
@@ -2048,7 +1982,7 @@ Example:
             return
         tactic_or_tid, target = parts[0], parts[1]
         destructive = "--destructive" in parts
-        simulate = not destructive
+        simulate = "--simulate" in parts
         from industrialxpl.core.mitre.sweeper import MitreTacticSweeper
         sweeper = MitreTacticSweeper(
             target=target, simulate=simulate, destructive=destructive,
@@ -2065,8 +1999,8 @@ Example:
             print_error("Usage: mitre-all <target>")
             return
         from industrialxpl.core.mitre.sweeper import MitreTacticSweeper
-        print_status("[mitre-all] Full MITRE ICS sweep on {} (simulate=True)".format(target))
-        MitreTacticSweeper(target=target, simulate=True).sweep_all()
+        print_status("[mitre-all] Full MITRE ICS sweep on {} (live; use --simulate in mitre-scan for dry-run)".format(target))
+        MitreTacticSweeper(target=target, simulate=False).sweep_all()
 
     def command_mitre_coverage(self, args: str, **kwargs) -> None:
         from industrialxpl.core.mitre.index import build_index, TACTIC_INDEX, TECHNIQUE_INDEX
@@ -2111,13 +2045,14 @@ Example:
             return
         tid, target = parts[0].upper(), parts[1]
         destructive = "--destructive" in parts
+        simulate = "--simulate" in parts
         stop_first = "--stop-on-first" in parts
         output_file = parts[parts.index("--output") + 1] if "--output" in parts else None
         rate_ms = int(parts[parts.index("--rate-limit") + 1]) if "--rate-limit" in parts else 500
         from industrialxpl.core.mitre.sweeper import MitreTacticSweeper
         sweeper = MitreTacticSweeper(
             target=target,
-            simulate=not destructive,
+            simulate=simulate,
             destructive=destructive,
             rate_limit_ms=rate_ms,
             stop_on_first_vuln=stop_first,
@@ -2135,7 +2070,7 @@ Example:
             return
         tid, target = parts[0].upper(), parts[1]
         from industrialxpl.core.mitre.sweeper import MitreTacticSweeper
-        MitreTacticSweeper(target=target, simulate=True, check_only=True).sweep_technique(tid)
+        MitreTacticSweeper(target=target, simulate=False, check_only=True).sweep_technique(tid)
 
     def command_ttp_simulate(self, args: str, **kwargs) -> None:
         parts = args.strip().split()
@@ -2164,6 +2099,100 @@ Example:
             rows.append((tid, str(len(mods)), humanize_path(mods[0]) if mods else ""))
         title = "TTP-IDs{}".format(" -- {}".format(tactic_filter) if tactic_filter else " (all)")
         print_table(["TTP-ID", "# Modules", "Primary Module"], rows, title=title)
+
+    # -- Malware research commands -------------------------------------------
+
+    def command_malware(self, args: str, **kwargs) -> None:
+        """Malware family analysis, compilation, and orchestration."""
+        parts = args.strip().split()
+        sub = (parts[0].lower() if parts else "help")
+
+        from industrialxpl.core.malware import MalwareCatalog, MalwareOrchestrator, MalwareCompiler
+
+        if sub in ("help", "?", ""):
+            print_info("""
+Malware commands (lab / authorized research):
+
+  malware list              List incorporated malware families
+  malware analyze <slug>    Deep-dive vendor source + attack vectors
+  malware plan <slug>       Build orchestration plan for family
+  malware compile list      List compile targets (IXF native + vendor)
+  malware compile <target>  Compile artifact to .tmp/malware_builds/
+  malware compile all       Compile all available targets
+
+Examples:
+  malware list
+  malware analyze mirai-iot-botnet
+  malware compile mirai_bot_debug
+  use assessment/malware/malware_native_compiler
+  use scanners/malware_research/mirai_telnet_ics_scanner
+""")
+            return
+
+        if sub == "list":
+            catalog = MalwareCatalog()
+            rows = [(s, catalog.get(s).label if catalog.get(s) else s) for s in catalog.list_slugs()]
+            print_table(["Slug", "Family"], rows, title="Incorporated Malware Families")
+            return
+
+        if sub == "analyze" and len(parts) >= 2:
+            slug = parts[1]
+            orch = MalwareOrchestrator()
+            info = orch.analyze(slug)
+            if info.get("error"):
+                print_error(info["error"])
+                return
+            print_success("{} — {} source files, {} ELF".format(
+                info["family"], info["source_files"], len(info.get("elf_binaries", []))
+            ))
+            if info.get("attack_vectors"):
+                print_info("Vectors: {}".format(", ".join(info["attack_vectors"][:12])))
+            if info.get("ixf_module"):
+                print_info("IXF module: use {}".format(info["ixf_module"]))
+            return
+
+        if sub == "plan" and len(parts) >= 2:
+            slug = parts[1]
+            plan = MalwareOrchestrator().build_plan(slug)
+            if plan.get("error"):
+                print_error(plan["error"])
+                return
+            print_table(
+                ["Phase", "Action", "Detail"],
+                [(s["phase"], s["action"], s["detail"][:55]) for s in plan.get("plan_steps", [])],
+                title="Plan: {}".format(plan.get("family", slug)),
+            )
+            return
+
+        if sub == "compile":
+            compiler = MalwareCompiler()
+            compiler.refresh()
+            if len(parts) >= 2 and parts[1] == "list":
+                rows = [(t.name, t.family, t.lang, t.impact) for t in compiler.list_targets()]
+                print_table(["Target", "Family", "Lang", "Impact"], rows, title="Compile Targets")
+                tc = compiler.detect_toolchains()
+                print_info("Toolchains: {}".format(", ".join(k for k, v in tc.items() if v)))
+                return
+            if len(parts) >= 2 and parts[1] == "all":
+                for t in compiler.list_targets():
+                    r = compiler.compile(t.name)
+                    if r.get("success"):
+                        print_success("{} -> {}".format(t.name, r.get("output")))
+                    else:
+                        print_error("{}: {}".format(t.name, r.get("error", "")[:80]))
+                return
+            if len(parts) >= 2:
+                r = compiler.compile(parts[1])
+                if r.get("success"):
+                    print_success("Built: {} ({} bytes)".format(r.get("output"), r.get("size", 0)))
+                else:
+                    print_error(r.get("error", "compile failed"))
+                return
+            print_error("Usage: malware compile list | <target> | all")
+            return
+
+        print_error("Unknown subcommand: {}".format(sub))
+        self.command_malware("help")
 
     def command_assess(self, args: str, **kwargs) -> None:
         module_path = args.strip()

@@ -117,7 +117,7 @@ class Exploit(Exploit):
     target = OptIP("", "Target ControlEdge UOC IP")
     port = OptPort(_HTTP_PORT, "HTTP port (default 80)")
     timeout = OptInteger(8, "HTTP request timeout in seconds")
-    simulate = OptBool(True, "Simulate mode (default: True)")
+    simulate = OptBool(False, "Simulate mode (default: True)")
     destructive = OptBool(False, "Enable destructive execution")
 
     @mute

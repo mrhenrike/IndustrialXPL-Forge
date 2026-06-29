@@ -41,7 +41,7 @@ class Exploit(Exploit):
 
     target   = OptIP("", "Target Schneider Electric Modicon M340/M580 IP")
     port     = OptPort(502, "Target service port")
-    simulate = OptBool(True, "Simulate attack (default: True)")
+    simulate = OptBool(False, "Simulate attack (default: True)")
     destructive = OptBool(False, "Enable live exploitation — requires authorization")
 
     @mute

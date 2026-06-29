@@ -52,7 +52,7 @@ class Exploit(Exploit):
     target  = OptIP("255.255.255.255", "Target IP (255.255.255.255 for broadcast)")
     port    = OptPort(4800, "Moxa ADDP UDP port (default 4800)")
     timeout = OptInteger(3, "Listen timeout (seconds)")
-    simulate = OptBool(True, "Simulate mode (default: True)")
+    simulate = OptBool(False, "Simulate mode (default: True)")
     destructive = OptBool(False, "Enable destructive execution")
 
     # Moxa ADDP identify probe: function code 0x01

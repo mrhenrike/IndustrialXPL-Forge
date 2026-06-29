@@ -90,7 +90,7 @@ class Exploit(Exploit):
     vendor   = OptString("all", "Vendor filter: all | rockwell | sel | siemens | generic")
     timeout  = OptInteger(5, "HTTP timeout per path")
     use_https = OptBool(False, "Use HTTPS")
-    simulate = OptBool(True, "Simulate mode (default: True)")
+    simulate = OptBool(False, "Simulate mode (default: True)")
     destructive = OptBool(False, "Enable real HTTP probing")
 
     @mute

@@ -49,7 +49,7 @@ class Exploit(_Exploit):
     target   = OptIP("", "Target SSH host")
     port     = OptPort(22, "SSH port")
     timeout  = OptInteger(5, "SSH timeout")
-    simulate = OptBool(True, "Simulate mode (default: True)")
+    simulate = OptBool(False, "Simulate mode (default: True)")
     destructive = OptBool(False, "Enable credential bruteforce")
 
     @mute

@@ -17,7 +17,7 @@ class Exploit(Exploit):
     }
     target = OptIP("", "Target IP")
     port   = OptPort(48898, "ADS/AMS port")
-    simulate = OptBool(True, "Simulate")
+    simulate = OptBool(False, "Simulate")
     destructive = OptBool(False, "Live")
     CREDS = [('', ''), ('admin', '1'), ('Administrator', ''), ('beckhoff', 'beckhoff')]
     @mute

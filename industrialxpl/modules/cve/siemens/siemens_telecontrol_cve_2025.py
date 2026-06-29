@@ -157,7 +157,7 @@ class Exploit(Exploit):
     port = OptPort(8000, "TeleControl Server Basic web management port (default: 8000)")
     timeout = OptInteger(8, "Socket timeout in seconds")
     check_traversal = OptBool(True, "Also check for path traversal (CVE-2025-28391)")
-    simulate = OptBool(True, "Simulate mode: describe checks without connecting (default: True)")
+    simulate = OptBool(False, "Simulate mode: describe checks without connecting (default: True)")
     destructive = OptBool(False, "Enable real HTTP probing against target")
 
     _AUTH_BYPASS_PATHS = [

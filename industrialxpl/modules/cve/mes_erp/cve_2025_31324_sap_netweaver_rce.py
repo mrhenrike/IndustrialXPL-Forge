@@ -41,7 +41,7 @@ class Exploit(Exploit):
 
     target   = OptIP("", "Target SAP NetWeaver AS Java (Visual Composer) IP")
     port     = OptPort(50000, "Target service port")
-    simulate = OptBool(True, "Simulate attack (default: True)")
+    simulate = OptBool(False, "Simulate attack (default: True)")
     destructive = OptBool(False, "Enable live exploitation — requires authorization")
 
     @mute

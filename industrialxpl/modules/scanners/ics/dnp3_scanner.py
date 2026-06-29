@@ -120,11 +120,19 @@ class Exploit(BaseExploit):
 
     target = OptIP("", "Target IPv4 or IPv6 address")
     port = OptPort(_DNP3_TCP_PORT, "DNP3 port (default 20000)")
+    transport = OptTransport("both", "Transport: tcp | udp | both")
     timeout = OptInteger(5, "Socket timeout in seconds")
 
     def run(self) -> None:
         found = False
-        for proto_name, udp in [("TCP", False), ("UDP", True)]:
+        try:
+            from industrialxpl.core.network.transport import resolve_transports
+            transports = resolve_transports(self.transport)
+        except ValueError as exc:
+            print_error(str(exc))
+            return
+
+        for proto_name, udp in transports:
             port = self.port
             print_status("Probing DNP3 on {}:{} ({})...".format(self.target, port, proto_name))
             resp = _dnp3_probe(self.target, port, _DNP3_LINK_STATUS_REQ, udp, self.timeout)

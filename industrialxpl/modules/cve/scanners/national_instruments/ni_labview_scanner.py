@@ -22,7 +22,7 @@ class Exploit(Exploit):
     target  = OptIP("", "Target IP")
     port    = OptPort(3537, "NI Protocol port")
     timeout = OptInteger(5, "Timeout (seconds)")
-    simulate = OptBool(True, "Simulate (default: True)")
+    simulate = OptBool(False, "Simulate (default: True)")
     destructive = OptBool(False, "Active checks")
     @mute
     def check(self):

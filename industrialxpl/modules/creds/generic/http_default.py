@@ -49,7 +49,7 @@ class Exploit(_Exploit):
     port     = OptPort(80, "HTTP port")
     path     = OptString("/", "Login path")
     timeout  = OptInteger(5, "HTTP timeout")
-    simulate = OptBool(True, "Simulate mode")
+    simulate = OptBool(False, "Simulate mode")
     destructive = OptBool(False, "Enable bruteforce")
 
     @mute

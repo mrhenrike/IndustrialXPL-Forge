@@ -193,7 +193,7 @@ class Exploit(Exploit):
     target = OptIP("255.255.255.255", "Target IP or broadcast (default: 255.255.255.255)")
     port = OptPort(_BACNET_PORT, "BACnet/UDP port (default 47808)")
     timeout = OptInteger(5, "Listen timeout in seconds after Who-Is")
-    simulate = OptBool(True, "Simulate mode (default: True)")
+    simulate = OptBool(False, "Simulate mode (default: True)")
     destructive = OptBool(False, "Enable destructive execution")
 
     @mute

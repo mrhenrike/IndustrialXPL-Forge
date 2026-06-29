@@ -19,7 +19,7 @@ from typing import List, Optional
 
 from industrialxpl.core.exploit.exploit import Exploit
 from industrialxpl.core.exploit.option import (
-    OptIP, OptString, OptInteger, OptBool,
+    OptIP, OptString, OptInteger, OptBool, OptTransport,
 )
 from industrialxpl.core.exploit.printer import print_info, print_warning
 from industrialxpl.core.modbus.address import (
@@ -126,6 +126,9 @@ class ModbusBaseExploit(Exploit):
                     "           (set TIMING ? for full table)")
     timeout   = OptInteger(0,
                     "Socket timeout override in seconds (0 = use TIMING profile default)")
+    transport = OptTransport("tcp",
+                    "Transport layer (Modbus/TCP is TCP-only)",
+                    allowed=("tcp",))
 
     # --- Helpers ---
 

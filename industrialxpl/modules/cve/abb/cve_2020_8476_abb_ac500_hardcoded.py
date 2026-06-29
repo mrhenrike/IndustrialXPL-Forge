@@ -141,7 +141,7 @@ class Exploit(Exploit):
     port = OptPort(_HTTP_PORT, "HTTP management port (default 80)")
     modbus_port = OptPort(_MODBUS_PORT, "Modbus TCP port (default 502)")
     timeout = OptInteger(5, "Socket timeout in seconds")
-    simulate = OptBool(True, "Simulate mode (default: True)")
+    simulate = OptBool(False, "Simulate mode (default: True)")
     destructive = OptBool(False, "Enable destructive execution")
 
     @mute

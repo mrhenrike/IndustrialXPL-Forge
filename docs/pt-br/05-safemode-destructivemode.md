@@ -23,11 +23,11 @@ O IXF é projetado para ser **seguro por padrão**. Todo módulo começa em modo
 
 ## Os Dois Modos
 
-### SafeMode (Padrão)
+### SafeMode (Opt-in)
 
-Todo módulo tem `simulate=True` por padrão. Neste modo:
+Por padrão `simulate=false` — módulos podem enviar probes de leitura na rede. Para SafeMode:
 
-- **Nenhum pacote é enviado** ao alvo
+- **`set simulate true`** ou **`setg simulate true`** — nenhum payload de exploit é enviado
 - `run()` chama `DestructiveGate.print_simulation()` que imprime o que *aconteceria*
 - A saída mostra o payload exato, técnicas MITRE e o fluxo de ataque passo a passo
 - Seguro para uso em testes de detecção SIEM/IDS sem impactar sistemas de produção

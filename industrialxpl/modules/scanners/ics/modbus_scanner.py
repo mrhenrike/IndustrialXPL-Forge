@@ -1,22 +1,18 @@
 # Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """Modbus/TCP ICS Scanner — device identification and register/coil enumeration.
 
-Modes:
-  simulate=true  (default, SAFEMODE always blocks otherwise)
+Modes (set explicitly on the module):
+  simulate=true
     - Lightweight TCP check + SIMULATED realistic output.
-    - FC43/FC17 probe only. Returns synthetic register/coil values.
     - Zero real reads. Output labeled [SIMULATE].
 
-  simulate=false + destructive=false  (requires setg SAFEMODE false)
+  simulate=false + destructive=false  (default)
     - Real FC43/FC17/FC1/FC2/FC3/FC4 reads.
-    - Returns ACTUAL device data.
-    - Write operations (FC5/FC6/FC15/FC16) BLOCKED.
+    - Write operations (FC5/FC6/FC15/FC16) BLOCKED by module logic.
 
-  simulate=false + destructive=true  (requires setg SAFEMODE false)
-    - Full read + write operations.
-    - FC5 (write coil), FC6 (write register), FC15/FC16 (batch).
-    - Requires explicit confirmation. May alter device state irreversibly.
-    - Set WRITE_VALUE to specify value for write operations.
+  simulate=false + destructive=true
+    - Full read + write operations when WRITE_VALUE is set.
+    - May alter device state irreversibly.
 
 References:
   - Modbus Application Protocol Specification V1.1b3
@@ -146,7 +142,7 @@ class Exploit(ModbusBaseExploit):
                             fc, label, start, start + qty - 1, bits
                         ))
                     print_info("")
-                    print_warning("  To read REAL values: setg SAFEMODE false && set SIMULATE false && run")
+                    print_warning("  To read REAL values: set SIMULATE false && run")
                 except Exception:
                     print_info("  [SIMULATE] {}:{} no response (closed or filtered)".format(
                         self.target, port

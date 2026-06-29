@@ -160,7 +160,7 @@ class Exploit(Exploit):
     target = OptIP("", "Target Unitronics PLC IP address")
     port = OptPort(_PCOM_PORT, "PCOM TCP port (default 20256)")
     timeout = OptInteger(5, "Socket timeout in seconds")
-    simulate = OptBool(True, "Simulate mode (default: True)")
+    simulate = OptBool(False, "Simulate mode (default: True)")
     destructive = OptBool(False, "Enable destructive execution")
 
     @mute

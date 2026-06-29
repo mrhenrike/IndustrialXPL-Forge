@@ -53,7 +53,7 @@ class Exploit(Exploit):
     target   = OptIP("", "Target Phoenix Contact device IP")
     port     = OptPort(_DEFAULT_PORT, "Target service port")
     timeout  = OptInteger(5, "Socket timeout seconds")
-    simulate = OptBool(True, "Simulate mode (default: True)")
+    simulate = OptBool(False, "Simulate mode (default: True)")
     destructive = OptBool(False, "Enable real execution (requires gate confirmation)")
 
     @mute

@@ -1,0 +1,10 @@
+#!/bin/sh
+# Strip tool/AI co-author trailers from commit messages.
+# Author: André Henrique (@mrhenrike) | Uniao Geek
+f="$1"
+[ -f "$f" ] || exit 0
+grep -viE '^[[:space:]]*Co-authored-by:[[:space:]].*(cursor|cursoragent|assistant|copilot|chatgpt|claude|gemini|\bAI\b|LLM)|^[[:space:]]*Made-with:[[:space:]].*[Cc]ursor|^[[:space:]]*Generated with Cursor' "$f" \
+  | awk '{lines[NR]=$0} END{n=NR; while(n>0 && lines[n]==""){n--}; for(i=1;i<=n;i++) print lines[i]}' > "$f.clean" 2>/dev/null \
+  || cp "$f" "$f.clean"
+mv "$f.clean" "$f"
+exit 0
