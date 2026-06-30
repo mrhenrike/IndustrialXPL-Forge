@@ -1987,6 +1987,7 @@ print('check() is silent. Result:', result)
 
 Save this as `.tmp/gen_module.py` to scaffold new modules:
 
+{% raw %}
 ```python
 #!/usr/bin/env python3
 """IXF Module Template Generator — creates a new module skeleton.
@@ -2184,6 +2185,7 @@ def main() -> None:
 if __name__ == "__main__":
     main()
 ```
+{% endraw %}
 
 **Usage:**
 

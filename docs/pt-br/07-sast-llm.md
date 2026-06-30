@@ -1047,6 +1047,7 @@ ixf > sast /opt/plc/code.st --offline
 
 ### Integração com Pipeline CI/CD
 
+{% raw %}
 ```yaml
 # Exemplo de integração em pipeline CI/CD
 # .github/workflows/plc-sast.yml
@@ -1088,6 +1089,7 @@ jobs:
             exit 1
           fi
 ```
+{% endraw %}
 
 ### Comparação de Provedores LLM para SAST ICS
 

@@ -973,6 +973,7 @@ full_assessment("192.168.1.100", "/reports/assessment_q2/")
 
 ## GitHub Actions Workflow (Complete)
 
+{% raw %}
 ```yaml
 # .github/workflows/ics_security_scan.yml
 name: ICS Security Assessment
@@ -1058,6 +1059,7 @@ jobs:
           fi
           echo "ICS assessment complete."
 ```
+{% endraw %}
 
 ---
 

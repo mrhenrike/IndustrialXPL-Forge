@@ -961,6 +961,7 @@ print(f"Baseline salvo: {len(cobertura_atual)} técnicas cobertas")
 
 ### GitHub Actions (arquivo .yml completo)
 
+{% raw %}
 ```yaml
 # .github/workflows/ixf-ot-security-assessment.yml
 name: IXF OT Security Assessment
@@ -1053,6 +1054,7 @@ jobs:
           echo "Assessment OT detectou problemas críticos"
           echo "Verificar artefatos em: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
 ```
+{% endraw %}
 
 ---
 
