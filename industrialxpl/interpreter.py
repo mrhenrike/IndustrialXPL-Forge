@@ -40,7 +40,7 @@ from industrialxpl.core.exploit.utils import (
     module_required, MODULES_DIR,
 )
 
-VERSION = "1.0.57"
+VERSION = "1.1.0"
 
 _BANNER = r"""
  ___           _           _        _       ___  ______  _          _____

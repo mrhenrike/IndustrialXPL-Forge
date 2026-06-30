@@ -176,6 +176,277 @@ def step_otscan_smoke() -> list[str]:
     return []
 
 
+def step_aim3_modules() -> list[str]:
+    try:
+        from industrialxpl.core.malware.aim3_helpers import aim3_status
+
+        st = aim3_status()
+        if not st.get("all_ok"):
+            missing = [k for k, v in st.get("present", {}).items() if not v]
+            return ["F-AIM3 deepen missing: {}".format(", ".join(missing))]
+        if not (ROOT / "industrialxpl/modules/cve/malware/stuxnet_analyze.py").is_file():
+            return ["stuxnet_analyze.py missing"]
+    except Exception as exc:
+        return ["aim3_modules: {}".format(exc)]
+    return []
+
+
+def step_s7scan_smoke() -> list[str]:
+    try:
+        from industrialxpl.core.ics.s7_llc import build_cotp_connection, parse_cotp_response, rack_scan_plan
+
+        pkt = build_cotp_connection(0, 2)
+        if len(pkt) < 20:
+            return ["s7_llc packet too short"]
+        plan = rack_scan_plan("127.0.0.1")
+        if plan.get("count", 0) < 1:
+            return ["rack_scan_plan empty"]
+        parse_cotp_response(pkt[:22] + b"\xd0\x00")
+    except Exception as exc:
+        return ["s7scan_smoke: {}".format(exc)]
+    return []
+
+
+def step_vendors_smoke() -> list[str]:
+    try:
+        from industrialxpl.core.ics.vendors import VENDOR_NAMES, simulate_all
+
+        if len(VENDOR_NAMES) < 7:
+            return ["vendors < 7"]
+        if not simulate_all().get("success"):
+            return ["vendors simulate failed"]
+    except Exception as exc:
+        return ["vendors_smoke: {}".format(exc)]
+    return []
+
+
+def step_bacnet_smoke() -> list[str]:
+    try:
+        from industrialxpl.core.ics.bacnet_offensive import simulate_campaign
+        from industrialxpl.core.ics_tools import IcsToolsCatalog
+        from industrialxpl.core.ics_tools.native_handlers import run_native
+
+        camp = simulate_campaign()
+        if len(camp.get("frames", {})) < 3:
+            return ["bacnet frames < 3"]
+        if "bacteria" not in IcsToolsCatalog().list_slugs():
+            return ["bacteria not in catalog"]
+        if not run_native("bacteria", simulate=True):
+            return ["bacteria native failed"]
+    except Exception as exc:
+        return ["bacnet_smoke: {}".format(exc)]
+    return []
+
+
+def step_iec104_smoke() -> list[str]:
+    try:
+        from industrialxpl.core.ics.iec104_stack import simulate_session
+
+        sess = simulate_session()
+        if not sess.get("frames", {}).get("startdt_act"):
+            return ["iec104 startdt missing"]
+    except Exception as exc:
+        return ["iec104_smoke: {}".format(exc)]
+    return []
+
+
+def step_isf_port_smoke() -> list[str]:
+    try:
+        from industrialxpl.core.ics.isf_port import PROTOCOL_HANDLERS, simulate_inventory
+
+        if len(PROTOCOL_HANDLERS) < 5:
+            return ["isf_port protocols < 5"]
+        if not simulate_inventory().get("success"):
+            return ["isf_port inventory failed"]
+    except Exception as exc:
+        return ["isf_port_smoke: {}".format(exc)]
+    return []
+
+
+def step_mozi_smoke() -> list[str]:
+    try:
+        from industrialxpl.core.malware.mozi_dht import mozi_inventory
+        from industrialxpl.core.malware.family_capabilities import get_capability
+        from industrialxpl.core.malware.native_actions import run_native_action
+
+        if "mozi-p2p" not in __import__(
+            "industrialxpl.core.malware.catalog", fromlist=["MalwareCatalog"]
+        ).MalwareCatalog().list_slugs():
+            return ["mozi-p2p not in MalwareCatalog"]
+        if not get_capability("mozi-p2p"):
+            return ["mozi-p2p capability missing"]
+        if not mozi_inventory().get("success"):
+            return ["mozi_inventory failed"]
+        nat = run_native_action("mozi-p2p")
+        if not nat.get("success"):
+            return ["mozi native_action failed"]
+    except Exception as exc:
+        return ["mozi_smoke: {}".format(exc)]
+    return []
+
+
+def step_ricnar_smoke() -> list[str]:
+    try:
+        from industrialxpl.core.ics.ricnar_pocs import get_poc, list_pocs
+
+        if len(list_pocs()) < 1:
+            return ["ricnar pocs empty"]
+        if not get_poc("seig_modbus_dos").get("payload_hex"):
+            return ["seig poc missing"]
+    except Exception as exc:
+        return ["ricnar_smoke: {}".format(exc)]
+    return []
+
+
+def step_icsforge_smoke() -> list[str]:
+    try:
+        from industrialxpl.core.assessment.detection.icsforge_scenarios import export_sigma_rule, inventory
+
+        inv = inventory()
+        if inv.get("count", 0) < 5:
+            return ["icsforge scenarios < 5"]
+        if not export_sigma_rule(inv["ids"][0]).get("sigma"):
+            return ["sigma export failed"]
+    except Exception as exc:
+        return ["icsforge_smoke: {}".format(exc)]
+    return []
+
+
+def step_ot_audit_smoke() -> list[str]:
+    try:
+        from industrialxpl.core.ics.ot_audit import diff_vs_otscan, run_audit
+        from industrialxpl.core.ics.otscan import PROTOCOLS
+
+        if not run_audit(simulate=True).get("success"):
+            return ["ot_audit failed"]
+        if not diff_vs_otscan(list(PROTOCOLS)).get("overlap_ok"):
+            return ["ot_audit overlap check failed"]
+    except Exception as exc:
+        return ["ot_audit_smoke: {}".format(exc)]
+    return []
+
+
+def step_modbus_toolkit_smoke() -> list[str]:
+    try:
+        from industrialxpl.core.ics.modbus_toolkit import simulate_toolkit
+
+        if not simulate_toolkit().get("frames"):
+            return ["modbus_toolkit empty"]
+    except Exception as exc:
+        return ["modbus_toolkit_smoke: {}".format(exc)]
+    return []
+
+
+def step_mirai_loader_smoke() -> list[str]:
+    try:
+        from industrialxpl.core.malware.compiler import MalwareCompiler
+
+        comp = MalwareCompiler()
+        comp.refresh()
+        r = comp.compile("mirai_loader_smoke")
+        if not r.get("success"):
+            return ["mirai_loader_smoke compile: {}".format((r.get("error") or "")[:80])]
+    except Exception as exc:
+        return ["mirai_loader_smoke: {}".format(exc)]
+    return []
+
+
+def step_incontroller_smoke() -> list[str]:
+    try:
+        from industrialxpl.core.malware.incontroller_protocols import PROTOCOLS, simulate_suite
+
+        if len(PROTOCOLS) < 5:
+            return ["incontroller protocols < 5"]
+        if not simulate_suite().get("modules"):
+            return ["incontroller suite empty"]
+    except Exception as exc:
+        return ["incontroller_smoke: {}".format(exc)]
+    return []
+
+
+def step_frostygoop_json_smoke() -> list[str]:
+    try:
+        from industrialxpl.core.malware.frostygoop_json import simulate_parse
+
+        r = simulate_parse()
+        if r.get("task_count", 0) < 1:
+            return ["frostygoop tasks < 1"]
+    except Exception as exc:
+        return ["frostygoop_json_smoke: {}".format(exc)]
+    return []
+
+
+def step_edb_smoke() -> list[str]:
+    try:
+        from industrialxpl.core.ics.s7_packets import packet_inventory
+        from industrialxpl.core.malware.compiler import MalwareCompiler
+
+        inv = packet_inventory()
+        if not inv.get("packets", {}).get("stop"):
+            return ["s7_packets stop missing"]
+        comp = MalwareCompiler()
+        comp.refresh()
+        r = comp.compile("modbus_seig_dos")
+        if not r.get("success"):
+            return ["modbus_seig_dos: {}".format((r.get("error") or "")[:80])]
+    except Exception as exc:
+        return ["edb_smoke: {}".format(exc)]
+    return []
+
+
+def step_openplc_smoke() -> list[str]:
+    overlay = ROOT / "industrialxpl/lab_overlays/openplc/docker-compose.override.yml"
+    if not overlay.is_file():
+        return ["openplc overlay missing"]
+    return []
+
+
+def step_s2opc_smoke() -> list[str]:
+    try:
+        from industrialxpl.core.lab.s2opc_lab import s2opc_status
+
+        if not s2opc_status().get("success"):
+            return ["s2opc status failed"]
+    except Exception as exc:
+        return ["s2opc_smoke: {}".format(exc)]
+    return []
+
+
+def step_open_plc_smoke() -> list[str]:
+    try:
+        from industrialxpl.core.ics.open_plc_utils import open_plc_status
+
+        if not open_plc_status().get("success"):
+            return ["open_plc status failed"]
+    except Exception as exc:
+        return ["open_plc_smoke: {}".format(exc)]
+    return []
+
+
+def step_nse_quickdraw_smoke() -> list[str]:
+    try:
+        from industrialxpl.core.assessment.detection.quickdraw_suricata import nse_inventory
+
+        inv = nse_inventory()
+        if len(inv.get("catalog", [])) < 8:
+            return ["nse catalog < 8"]
+        if "alert" not in inv.get("sample_rule", ""):
+            return ["suricata rule sample missing"]
+    except Exception as exc:
+        return ["nse_quickdraw_smoke: {}".format(exc)]
+    return []
+
+
+def step_corpus_smoke() -> list[str]:
+    corpus = ROOT / "industrialxpl/resources/corpus/torii_hajime.json"
+    if not corpus.is_file():
+        return ["torii_hajime corpus missing"]
+    data = json.loads(corpus.read_text(encoding="utf-8"))
+    if len(data.get("families", {})) < 2:
+        return ["corpus families < 2"]
+    return []
+
+
 STEP_RUNNERS = {
     "env_doctor": step_env_doctor,
     "verify_family_matrix": step_verify_family_matrix,
@@ -186,6 +457,26 @@ STEP_RUNNERS = {
     "aim2_modules": step_aim2_modules,
     "fuzz_compile": step_fuzz_compile,
     "otscan_smoke": step_otscan_smoke,
+    "aim3_modules": step_aim3_modules,
+    "s7scan_smoke": step_s7scan_smoke,
+    "vendors_smoke": step_vendors_smoke,
+    "bacnet_smoke": step_bacnet_smoke,
+    "iec104_smoke": step_iec104_smoke,
+    "isf_port_smoke": step_isf_port_smoke,
+    "mozi_smoke": step_mozi_smoke,
+    "ricnar_smoke": step_ricnar_smoke,
+    "icsforge_smoke": step_icsforge_smoke,
+    "ot_audit_smoke": step_ot_audit_smoke,
+    "modbus_toolkit_smoke": step_modbus_toolkit_smoke,
+    "mirai_loader_smoke": step_mirai_loader_smoke,
+    "incontroller_smoke": step_incontroller_smoke,
+    "frostygoop_json_smoke": step_frostygoop_json_smoke,
+    "edb_smoke": step_edb_smoke,
+    "openplc_smoke": step_openplc_smoke,
+    "s2opc_smoke": step_s2opc_smoke,
+    "open_plc_smoke": step_open_plc_smoke,
+    "nse_quickdraw_smoke": step_nse_quickdraw_smoke,
+    "corpus_smoke": step_corpus_smoke,
 }
 
 

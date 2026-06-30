@@ -10,6 +10,27 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 
 ---
 
+---
+
+## [1.1.0] - 2026-06-28
+
+### Added
+- **F03–F21** incorporação nativa MIT completa (gates `verify_incorporation_gate.py --phase ALL`)
+- F03 `s7_llc.py` + `s7scan_native`; F04 `core/ics/vendors/` (7 vendors)
+- F05 BACnet `bacnet_offensive.py` + handler `bacteria`; F06 `iec104_stack.py`
+- F07 `isf_port.py` (DNP3/ENIP/OPC-UA/Profinet/VxWorks); F08 família `mozi-p2p` + `mozi_dht.py`
+- F09 `ricnar_pocs.py`; F10 ICSForge cenários + `detection-lab` extra
+- F11 `ot_audit.py`; F12 `modbus_toolkit.py`; F13 `mirai_loader_smoke` compile
+- F14 `incontroller_protocols.py`; F15 `frostygoop_json.py` + fixture
+- F16 `s7_packets.py` + `modbus_seig_dos.c`; F17 OpenPLC lab overlay
+- F18 `s2opc_lab.py`; F19 `open_plc_utils.py`; F20 Quickdraw/Suricata + NSE catalog
+- F21 corpus Torii/Hajime analyze; **F-AIM3** `aim3_helpers.py`; **F-AIM2e** `stuxnet_analyze.py`
+- Extras PyPI: `bacnet-lab`, `detection-lab`, `mozi-lab`, `ot-audit`
+
+### Changed
+- Remote `origin` → `https://github.com/mrhenrike/IndustrialXPL-Forge.git`
+- `incorporation_gates.json` v2 — fases F00–F21 + F-AIM3
+
 ## [1.0.57] - 2026-06-28
 
 ### Added

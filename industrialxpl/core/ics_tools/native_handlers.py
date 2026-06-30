@@ -364,6 +364,35 @@ def handle_otscan(vendor: Path, extra: list[str] | None, simulate: bool) -> dict
     }
 
 
+def handle_bacteria(vendor: Path, extra: list[str] | None, simulate: bool) -> dict[str, Any]:
+    from industrialxpl.core.ics.bacnet_offensive import simulate_campaign, whois_probe
+
+    parsed = _parse_args(extra)
+    host = _host_from_args(parsed, "-t")
+    if simulate:
+        camp = simulate_campaign(host or "127.0.0.1")
+        return {**camp, "simulate": True, "would_run": "BACnet Who-Is/I-Am on {}".format(host or "<target>")}
+    if not host:
+        camp = simulate_campaign("127.0.0.1")
+        return {
+            "success": True,
+            "mode": "native-bacteria-inventory",
+            "stdout": "BACteria (IXF MIT). Frames: {}.\nLive: ics_tools run bacteria -t <ip>".format(
+                ", ".join(camp.get("frames", {}).keys()),
+            ),
+            "frames": camp.get("frames"),
+            "returncode": 0,
+        }
+    r = whois_probe(host)
+    return {
+        "success": True,
+        "mode": "native-bacteria",
+        "stdout": "BACnet Who-Is {} — detected={}".format(host, r.get("detected")),
+        "result": r,
+        "returncode": 0,
+    }
+
+
 NATIVE_HANDLERS: dict[str, Callable[..., dict[str, Any]]] = {
     "scadapass": handle_scadapass,
     "redpoint": handle_redpoint,
@@ -373,6 +402,7 @@ NATIVE_HANDLERS: dict[str, Callable[..., dict[str, Any]]] = {
     "attkfinder": handle_attkfinder,
     "ics-forensics-tools": handle_ics_forensics,
     "otscan": handle_otscan,
+    "bacteria": handle_bacteria,
 }
 
 

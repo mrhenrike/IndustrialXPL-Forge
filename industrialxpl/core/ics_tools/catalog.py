@@ -51,6 +51,7 @@ class IcsToolsCatalog:
         "scadapass": "scanners/ics_tools_research/ics_tools_ops",
         "sixnet-tools": "scanners/ics_tools_research/ics_tools_ops",
         "otscan": "scanners/ics/otscan_native",
+        "bacteria": "scanners/ics/bacnet_offensive_native",
     }
 
     # IXF-native tools without vendor submodule tree
@@ -59,6 +60,11 @@ class IcsToolsCatalog:
             "label": "OTscan unified OT scanner (IXF MIT)",
             "vendor_path": PKG_ROOT / "core" / "ics" / "otscan",
             "source_repo": "IXF native (otscan-inspired)",
+        },
+        "bacteria": {
+            "label": "BACteria BACnet offensive (IXF MIT)",
+            "vendor_path": PKG_ROOT / "core" / "ics" / "bacnet_lab",
+            "source_repo": "IXF native (BACteria-inspired)",
         },
     }
 

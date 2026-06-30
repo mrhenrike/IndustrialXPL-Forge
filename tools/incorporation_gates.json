@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "phases": {
     "F00": {
       "label": "Gate infrastructure smoke",
@@ -22,6 +22,10 @@
       "steps": ["env_doctor", "verify_family_matrix", "aim2_modules"],
       "min_aim2_modules": 4
     },
+    "F-AIM3": {
+      "label": "awesome-ics-malware deepen existing modules",
+      "steps": ["env_doctor", "verify_family_matrix", "aim3_modules"]
+    },
     "F01": {
       "label": "Fuzzing native",
       "steps": ["env_doctor", "verify_family_matrix", "fuzz_compile"],
@@ -31,6 +35,82 @@
       "label": "otscan native",
       "steps": ["env_doctor", "verify_family_matrix", "otscan_smoke"],
       "min_otscan_protocols": 10
+    },
+    "F03": {
+      "label": "s7scan LLC rack",
+      "steps": ["env_doctor", "verify_family_matrix", "s7scan_smoke"]
+    },
+    "F04": {
+      "label": "OT vendor probes MIT",
+      "steps": ["env_doctor", "verify_family_matrix", "vendors_smoke"]
+    },
+    "F05": {
+      "label": "BACteria BACnet offensive",
+      "steps": ["env_doctor", "verify_family_matrix", "bacnet_smoke"]
+    },
+    "F06": {
+      "label": "IEC104 stack MIT",
+      "steps": ["env_doctor", "verify_family_matrix", "iec104_smoke"]
+    },
+    "F07": {
+      "label": "ISF/icssploit port MIT",
+      "steps": ["env_doctor", "verify_family_matrix", "isf_port_smoke"]
+    },
+    "F08": {
+      "label": "Mozi P2P lab",
+      "steps": ["env_doctor", "verify_family_matrix", "mozi_smoke"]
+    },
+    "F09": {
+      "label": "Ricnar PoCs MIT",
+      "steps": ["env_doctor", "verify_family_matrix", "ricnar_smoke"]
+    },
+    "F10": {
+      "label": "ICSForge detection scenarios",
+      "steps": ["env_doctor", "verify_family_matrix", "icsforge_smoke"]
+    },
+    "F11": {
+      "label": "OT audit partial",
+      "steps": ["env_doctor", "verify_family_matrix", "ot_audit_smoke"]
+    },
+    "F12": {
+      "label": "ModBusPwn toolkit",
+      "steps": ["env_doctor", "verify_family_matrix", "modbus_toolkit_smoke"]
+    },
+    "F13": {
+      "label": "Mirai loader smoke",
+      "steps": ["env_doctor", "verify_family_matrix", "mirai_loader_smoke"]
+    },
+    "F14": {
+      "label": "INCONTROLLER protocols",
+      "steps": ["env_doctor", "verify_family_matrix", "incontroller_smoke"]
+    },
+    "F15": {
+      "label": "FrostyGoop JSON tasks",
+      "steps": ["env_doctor", "verify_family_matrix", "frostygoop_json_smoke"]
+    },
+    "F16": {
+      "label": "EDB S7/SEIG ports",
+      "steps": ["env_doctor", "verify_family_matrix", "edb_smoke"]
+    },
+    "F17": {
+      "label": "OpenPLC docker lab",
+      "steps": ["env_doctor", "verify_family_matrix", "openplc_smoke"]
+    },
+    "F18": {
+      "label": "S2OPC lab wrapper",
+      "steps": ["env_doctor", "verify_family_matrix", "s2opc_smoke"]
+    },
+    "F19": {
+      "label": "open-plc-utils wrapper",
+      "steps": ["env_doctor", "verify_family_matrix", "open_plc_smoke"]
+    },
+    "F20": {
+      "label": "NSE / Quickdraw Suricata",
+      "steps": ["env_doctor", "verify_family_matrix", "nse_quickdraw_smoke"]
+    },
+    "F21": {
+      "label": "Torii/Hajime corpus analyze",
+      "steps": ["env_doctor", "verify_family_matrix", "corpus_smoke"]
     }
   }
 }

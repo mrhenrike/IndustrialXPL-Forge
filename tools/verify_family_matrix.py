@@ -71,7 +71,7 @@ def check_ics() -> list[str]:
         if not fam or not fam.vendor_path.is_dir():
             failures.append("ics {}: vendor missing".format(slug))
             continue
-        if not fam.entry_script and slug not in ("scadapass", "otscan"):
+        if not fam.entry_script and slug not in ("scadapass", "otscan", "bacteria"):
             failures.append("ics {}: no entry_script".format(slug))
         inv = runner.run_entry(slug, simulate=False, prefer_native=True)
         if not inv.get("success") and not inv.get("simulate"):
@@ -98,6 +98,17 @@ def check_phase_registrations(phase_id: str | None = None) -> list[str]:
         ioc = ROOT / "industrialxpl/resources/ioc/awesome-ics-malware-hashes.json"
         if not ioc.is_file():
             failures.append("F-AIM1: IOC hash file missing")
+    if phase_id in (None, "F-AIM2"):
+        from industrialxpl.core.malware.aim2_helpers import aim2_family_status
+        st = aim2_family_status()
+        if not st.get("all_ok"):
+            failures.append("F-AIM2: gap modules incomplete")
+        if not st.get("stuxnet_analyze"):
+            failures.append("F-AIM2e: stuxnet_analyze missing")
+    if phase_id in (None, "F-AIM3"):
+        from industrialxpl.core.malware.aim3_helpers import aim3_status
+        if not aim3_status().get("all_ok"):
+            failures.append("F-AIM3: deepen helpers incomplete")
     return failures
 
 
