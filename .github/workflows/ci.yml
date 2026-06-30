@@ -64,10 +64,6 @@ jobs:
         if: matrix.python-version == '3.11'
         run: PYTHONPATH=. python tools/verify_github_issues.py
 
-      - name: Prepare local packaging template
-        if: matrix.python-version == '3.11'
-        run: cp pyproject.toml.example pyproject.toml
-
       - name: Build distribution package
         if: matrix.python-version == '3.11'
         run: python -m build

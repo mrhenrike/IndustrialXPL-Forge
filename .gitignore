@@ -88,7 +88,7 @@ azure-pipelines.yml
 Jenkinsfile
 .circleci/
 appveyor.yml
-pyproject.toml
+# pyproject.toml is versioned; example stays local-only for PyPI publish tweaks
 setup.py
 setup.cfg
 MANIFEST.in

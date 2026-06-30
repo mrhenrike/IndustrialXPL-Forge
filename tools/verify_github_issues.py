@@ -55,11 +55,19 @@ def check_issue_5() -> list[str]:
         "prosoft", "ptc", "ruggedcom", "sel", "sick_ag", "belden_hirschmann",
     )
     missing = []
+    import importlib
     for v in vendors:
         p = ROOT / "industrialxpl/modules/creds/{}/default_creds.py".format(v)
         if not p.is_file():
             missing.append(v)
-    return ["#5 missing creds: {}".format(", ".join(missing))] if missing else []
+            continue
+        try:
+            mod = importlib.import_module("industrialxpl.modules.creds.{}.default_creds".format(v))
+            if not mod.Exploit().get_info().get("name"):
+                missing.append("{} (bad __info__)".format(v))
+        except Exception as exc:
+            missing.append("{} ({})".format(v, exc))
+    return ["#5 creds issue: {}".format(", ".join(missing))] if missing else []
 
 
 def check_issue_6() -> list[str]:

@@ -1,13 +1,22 @@
 """Default credentials — sick_ag (issue #5)."""
+from industrialxpl.core.exploit import OptPort
 from industrialxpl.modules.creds.generic.http_default import Exploit as HttpDefault
 
 
 class Exploit(HttpDefault):
     __info__ = {
-        **HttpDefault.__info__,
         "name": "SICK Sensor Default Credentials",
+        "description": "Tests common default HTTP credentials against SICK Sensor.",
+        "authors": ("Andre Henrique (@mrhenrike)",),
+        "references": (),
         "devices": ("SICK Sensor",),
+        "impact": "MEDIUM",
+        "exploit_type": "Default Credentials",
+        "cve": "N/A",
+        "cvss": "N/A",
+        "severity": "MEDIUM",
+        "mitre_techniques": ["T1694.001", "T0859", "T0883"],
+        "mitre_tactics": ["Initial Access"],
     }
 
-    port = HttpDefault.port
-    defaults = HttpDefault.defaults
+    port = OptPort(80, "HTTP(S) port")
