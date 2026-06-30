@@ -61,9 +61,18 @@ def test_lisa_http() -> list[str]:
 
 
 def test_fuzz_smoke() -> list[str]:
-    native = ROOT / "industrialxpl/modules/cve/malware/_native/fuzzing"
-    if not native.is_dir():
-        return []
+    from industrialxpl.core.ics.fuzz_engine import fuzz_campaign
+    from industrialxpl.core.malware.compiler import MalwareCompiler
+
+    camp = fuzz_campaign("modbus")
+    if len(camp.get("cases", [])) != 8:
+        return ["fuzz_campaign != 8 strategies"]
+    comp = MalwareCompiler()
+    comp.refresh()
+    for tname in ("fuzz_modbus_smoke", "fuzz_s7_smoke"):
+        r = comp.compile(tname)
+        if not r.get("success"):
+            return ["compile {}: {}".format(tname, (r.get("error") or "")[:80])]
     return []
 
 
@@ -119,7 +128,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--mode",
-        default="c2,bashlite,aim-manifest,forensics-ioc,aim2",
+        default="c2,bashlite,aim-manifest,forensics-ioc,aim2,fuzz-smoke",
         help="Comma-separated modes or 'all'",
     )
     parser.add_argument("--skip-lisa", action="store_true", help="Skip docker lisa test")

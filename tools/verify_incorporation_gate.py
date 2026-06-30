@@ -133,6 +133,25 @@ def step_aim2_modules() -> list[str]:
     return []
 
 
+def step_fuzz_compile() -> list[str]:
+    try:
+        from industrialxpl.core.ics.fuzz_engine import fuzz_campaign
+        from industrialxpl.core.malware.compiler import MalwareCompiler
+
+        camp = fuzz_campaign("modbus")
+        if len(camp.get("cases", [])) != 8:
+            return ["fuzz_campaign expected 8 strategies"]
+        comp = MalwareCompiler()
+        comp.refresh()
+        for tname in ("fuzz_modbus_smoke", "fuzz_s7_smoke"):
+            r = comp.compile(tname)
+            if not r.get("success"):
+                return ["compile {}: {}".format(tname, (r.get("error") or "")[:100])]
+    except Exception as exc:
+        return ["fuzz_compile: {}".format(exc)]
+    return []
+
+
 STEP_RUNNERS = {
     "env_doctor": step_env_doctor,
     "verify_family_matrix": step_verify_family_matrix,
@@ -141,6 +160,7 @@ STEP_RUNNERS = {
     "score_incorporation": step_score_incorporation,
     "forensics_ioc": step_forensics_ioc,
     "aim2_modules": step_aim2_modules,
+    "fuzz_compile": step_fuzz_compile,
 }
 
 

@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "industrialxpl-forge"
-version = "1.0.55"
+version = "1.0.56"
 description = "IndustrialXPL-Forge (IXF) — OT/ICS/SCADA lab framework (Linux only). Python-First, Mirai/C2 native ops, 1160+ modules."
 readme = { file = "README.md", content-type = "text/markdown" }
 license = { text = "MIT" }
@@ -65,6 +65,9 @@ malware-lab = [
 ]
 docker-lab = [
     # uses system docker CLI — install: docker.io + compose plugin
+]
+fuzzing = [
+    # native C fuzzers — requires gcc on PATH
 ]
 ot = [
     "pymodbus>=3.5",

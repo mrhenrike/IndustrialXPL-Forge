@@ -24,7 +24,7 @@
     },
     "F01": {
       "label": "Fuzzing native",
-      "steps": ["env_doctor", "verify_family_matrix"],
+      "steps": ["env_doctor", "verify_family_matrix", "fuzz_compile"],
       "requires": ["gcc"]
     },
     "F02": {

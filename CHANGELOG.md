@@ -6,6 +6,17 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 
 ---
 
+---
+
+## [1.0.56] - 2026-06-28
+
+### Added
+- **F01 fuzzing nativo** — `_native/fuzzing/` (mutator C + modbus/s7 smoke)
+- `core/ics/fuzz_engine.py` — 8 estratégias de mutação MIT
+- `scanners/ics/fuzz_native.py` — módulo IXF com simulate default
+- PyPI extra `fuzzing` (gcc externo)
+- Gate **F01** com step `fuzz_compile`
+
 ## [1.0.55] - 2026-06-28
 
 ### Added
