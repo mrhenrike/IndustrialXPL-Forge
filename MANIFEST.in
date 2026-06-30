@@ -1,0 +1,10 @@
+recursive-include industrialxpl/resources/wordlists *.txt
+recursive-include industrialxpl/resources/cve *.json
+recursive-include industrialxpl/resources/compliance *.json
+recursive-include industrialxpl/resources/risk *.json
+recursive-include industrialxpl/resources/osint *.json
+recursive-include industrialxpl/modules/cve/_native *.c *.cpp *.go *.rb
+recursive-include industrialxpl/resources/nse_scripts *.nse
+prune industrialxpl/resources/vendor
+# Incorporated malware + ics-tools vendor ships via GitHub only (PyPI 100 MB limit).
+# See industrialxpl/resources/vendor/README.md

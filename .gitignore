@@ -57,8 +57,13 @@ industrialxpl/modules/cve/_native/*.o
 !.env.example
 
 
-# Local vendor trees (clone via submodules; do not push multi-GB trees)
-industrialxpl/resources/vendor/
+# Vendor: OT mirrors local-only; malware + ics-tools research corpus is public in Git.
+industrialxpl/resources/vendor/*
+!industrialxpl/resources/vendor/README.md
+!industrialxpl/resources/vendor/submodules__malwares__*/
+!industrialxpl/resources/vendor/submodules__malwares__/**
+!industrialxpl/resources/vendor/submodules__ics-tools__*/
+!industrialxpl/resources/vendor/submodules__ics-tools__/**
 .github/workflows/
 .github/dependabot.yml
 .github/CODEOWNERS

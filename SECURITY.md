@@ -18,15 +18,17 @@ IXF modules — including malware analysis, compilation, and botnet research too
 
 Unauthorized use may violate computer crime laws in your jurisdiction.
 
-## Malware and Botnet Modules
+## Malware and Botnet Modules (public corpus)
 
-IXF incorporates malware family sources for **defensive research** (TTP mapping, IOC extraction, blue-team detection). These modules:
+IXF **publicly distributes** incorporated malware family sources and ICS-tool references
+for **defensive research** (TTP mapping, IOC extraction, blue-team detection). These modules:
 
 - Default to analysis/simulate modes where applicable
 - Require operator confirmation for compile or live probe actions
 - Must never be deployed against third-party networks without authorization
 
-See [DISCLAIMER.md](DISCLAIMER.md) for full legal notice.
+**Cloning this repository constitutes acceptance** that you are solely responsible for
+lawful use. See [TERMS_OF_USE.md](TERMS_OF_USE.md) and [DISCLAIMER.md](DISCLAIMER.md).
 
 ## Reporting a Vulnerability in IXF
 
@@ -59,6 +61,7 @@ If IXF helps you discover a vulnerability in deployed OT equipment:
 
 | Version | Supported |
 |---------|-----------|
+| 1.0.45  | Yes       |
 | 1.0.44  | Yes       |
 | 1.0.x   | Best effort |
 | < 1.0   | No        |

@@ -17,6 +17,10 @@
 
 **Python-First. Pure Python implementation — install and run with a single `pip install`.**
 
+> **Legal notice:** IXF publicly distributes malware and ICS-tool research corpora for
+> cybersecurity education. **You are solely responsible** for authorized, lawful use.
+> See [TERMS_OF_USE.md](TERMS_OF_USE.md) · [DISCLAIMER.md](DISCLAIMER.md) · [SECURITY.md](SECURITY.md)
+
 ---
 
 ## Quick Start
@@ -26,7 +30,7 @@ pip install industrialxpl-forge
 ixf
 ```
 
-Or from source:
+Or from source (includes full malware + ics-tools vendor corpus, ~2 GB):
 
 ```bash
 git clone https://github.com/mrhenrike/IndustrialXPL-Forge
@@ -36,6 +40,10 @@ python3 -m venv .venv && source .venv/bin/activate   # Linux/Mac
 pip install -e .
 ixf
 ```
+
+> **PyPI note:** `pip install industrialxpl-forge` ships the framework and native modules.
+> The complete vendor trees live in the Git repository under
+> `industrialxpl/resources/vendor/submodules__malwares__*` and `submodules__ics-tools__*`.
 
 ---
 

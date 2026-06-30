@@ -24,9 +24,18 @@ IndustrialXPL-Forge is an offensive and defensive security research framework fo
 - Distributing credentials, keys, or proprietary exploit code in contributions
 - Compiling or deploying incorporated malware artifacts outside isolated lab environments
 
-## Malware Research
+## Malware Research (public corpus)
 
-IXF includes native modules for 12 incorporated malware families (Mirai, TRISIS/TRITON, Bashlite, Akaja, and others). These exist for **defensive TTP mapping and detection engineering**. See [DISCLAIMER.md](DISCLAIMER.md) and [SECURITY.md](SECURITY.md).
+IXF **publicly ships** native modules and vendor trees for 12 incorporated malware families
+(Mirai, TRISIS/TRITON, Bashlite, Akaja, and others) plus ICS-tool references for
+**defensive TTP mapping and detection engineering**.
+
+**By cloning or using this repository you accept sole responsibility** for lawful,
+authorized use. See [TERMS_OF_USE.md](TERMS_OF_USE.md), [DISCLAIMER.md](DISCLAIMER.md),
+and [SECURITY.md](SECURITY.md).
+
+- Do not compile or deploy incorporated artifacts outside isolated labs without authorization
+- Do not target critical infrastructure without written permission
 
 ---
 

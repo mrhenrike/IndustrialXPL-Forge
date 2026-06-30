@@ -1,0 +1,29 @@
+{
+    "architecture": "ARM",
+    "av_labels_generation_date": "2020-08-09T22:27:35",
+    "avclass_labels": {
+        "ddos": 2,
+        "mirai": 22
+    },
+    "elf_header_info": {
+        "abi_version": 0,
+        "class": "ELF32",
+        "data": "2's complement, little endian",
+        "entrypoint": 33172,
+        "hdr_version": "1 (current)",
+        "num_prog_headers": 5,
+        "num_section_headers": 29,
+        "obj_version": "0x1",
+        "os_abi": "UNIX - System V",
+        "type": "EXEC (Executable file)"
+    },
+    "first_submission_date": "2019-05-03T17:33:08",
+    "magic": "ELF 32-bit LSB executable, ARM, version 1 (SYSV), statically linked, not stripped",
+    "magic_is_stripped": false,
+    "magic_linking": "static",
+    "md5": "9b02bc52360b34569ffa28fbbed3aa4c",
+    "sha1": "b11ccaac4b4ab5195dd307d6752047e6f285195e",
+    "sha256": "7be21d13cfa2f0609951daa77c82acf3f077bc03d21b02e5af45055dda8262da",
+    "size": 140323,
+    "tlsh": "DBD34B86AB418B13C5D62777FA9F014A3322DB5493DB330689285FF43F86B5E0E67606"
+}

@@ -1,0 +1,4 @@
+		if(!strcmp(argv[0], "iphminstall")) {
+			if (listFork()) { return; }
+				system(iphminstall);
+		}

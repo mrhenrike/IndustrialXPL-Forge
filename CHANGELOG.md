@@ -6,6 +6,21 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 
 ---
 
+## [1.0.45] - 2026-06-30
+
+### Added
+- **Public research vendor corpus** — 12 malware families + 7 ics-tools trees versioned in
+  `industrialxpl/resources/vendor/submodules__malwares__*` and `submodules__ics-tools__*`
+- [TERMS_OF_USE.md](TERMS_OF_USE.md) — user responsibility for public clone/use
+- `industrialxpl/resources/vendor/README.md` — corpus inventory and PyPI vs GitHub note
+
+### Changed
+- DISCLAIMER, SECURITY, CODE_OF_CONDUCT, README — reinforced authorized-use and sole user liability
+- `.gitignore` — incorporated malware/ics-tools vendor no longer excluded from Git
+- PyPI package remains framework-only (~100 MB limit); full corpus via `git clone`
+
+---
+
 ## [1.0.44] - 2026-06-29
 
 ### Added

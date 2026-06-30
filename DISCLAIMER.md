@@ -16,12 +16,18 @@ By using IXF you accept full legal and ethical responsibility for your actions. 
 - Do **not** condone disruption of critical infrastructure, utilities, healthcare, or safety systems
 - Are **not** liable for damages arising from misuse of this software
 
-## Malware and Incorporated Sources
+## Malware and Incorporated Sources (public research corpus)
 
-IXF includes modules and vendor trees referencing historical IoT/ICS malware (Mirai, TRISIS/TRITON, Bashlite, Akaja, and others) for **research and detection engineering only**.
+IXF **publishes** modules and vendor trees referencing historical IoT/ICS malware (Mirai,
+TRISIS/TRITON, Bashlite, Akaja, and others) and ICS tooling references for **open
+cybersecurity research and education**. This material is available on the public GitHub
+repository by deliberate maintainer decision.
+
+**You** — not the authors — bear full legal and ethical responsibility for how you use
+cloned code. See [TERMS_OF_USE.md](TERMS_OF_USE.md).
 
 - Compiled artifacts must remain in isolated lab environments
-- Distribution of weaponized binaries to third parties is prohibited
+- Running live malware against unauthorized targets is prohibited
 - Upstream malware sources retain their original licenses and attribution
 
 ## Simulations vs Live Actions
