@@ -965,7 +965,7 @@ ixf > assess mitre_ics/coverage_report
 [*] Modulo INFO -- apenas analise passiva, sem conexoes de rede
 
 [+] Layer ATT&CK Navigator gerado: ixf_mitre_layer_20260601.json
-[+] Relatorio de cobertura: 74/90 tecnicas (82%)
+[+] Relatorio de cobertura: 96/103 tecnicas (93%)
 [i] Abra o layer em: https://mitre-attack.github.io/attack-navigator/
 ```
 

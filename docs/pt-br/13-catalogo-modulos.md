@@ -488,7 +488,7 @@ Categorias:
 
 ## Scripts NSE
 
-8 scripts NSE para integração com Nmap:
+15 scripts NSE para integração com Nmap:
 
 | Script | Protocolo | Porta | Descrição |
 |--------|-----------|-------|-----------|
@@ -580,11 +580,11 @@ nmap -p 502,102,44818,47808,20000,2404,4840,9600 \
   Scripts NSE:                       8
 
   ──────────────────────────────────────────────────────────────────────
-  TOTAL GERAL:                     976+
+  TOTAL GERAL:                     1190+
 
   COBERTURA MITRE:
   ──────────────────────────────────────────────────────────────────────
-  Técnicas MITRE ATT&CK for ICS v19 cobertas:  74/90 (82%)
+  Técnicas MITRE ATT&CK for ICS v19 cobertas:  96/103 (93%)
   Táticas com 100% cobertura:                   4/12
   (Initial Access, Privilege Escalation, Lateral Movement, C2)
 
@@ -1014,7 +1014,7 @@ ixf (Shodan ICS Dork) > run
 
 ---
 
-*Versão: IXF v2.1.0 | Data: 2026-06-01 | Técnicas MITRE: v19*
+*Versão: IXF v1.1.1 | Data: 2026-06-01 | Técnicas MITRE: v19*
 
 ---
 
@@ -1140,7 +1140,7 @@ Para reportar bugs ou submeter novos modulos:
 
 ---
 
-*Fim do Catalogo de Modulos. Total: 976+ modulos cobrindo 150+ vendors, 50+ protocolos e 74/90 tecnicas MITRE ATT&CK para ICS.*
+*Fim do Catalogo de Modulos. Total: 1190+ modulos cobrindo 150+ vendors, 50+ protocolos e 96/103 tecnicas MITRE ATT&CK para ICS.*
 
 *Anterior: [Assessment e Conformidade](12-assessment-conformidade.md) | Proximo: [Scripts NSE](14-scripts-nse.md)*
 
@@ -1256,7 +1256,7 @@ ixf > stats
 
 ---
 
-*Catalogo completo do IndustrialXPL-Forge v1.0.13 -- 976+ modulos para pesquisa de seguranca OT/ICS.*
+*Catalogo completo do IndustrialXPL-Forge v1.0.13 -- 1190+ modulos para pesquisa de seguranca OT/ICS.*
 <!-- catalogo-modulos v1.0.13 -- fim -->
 
 <!-- fim -->
@@ -1421,7 +1421,7 @@ ixf sast projeto/ --mode diff --base main --head dev
 
 ---
 
-*Versão: IXF v2.1.0 | Atualizado: 2026-06-01 | Total de módulos: 976+*
+*Versão: IXF v1.1.1 | Atualizado: 2026-06-01 | Total de módulos: 1190+*
 
 ---
 
@@ -1462,11 +1462,11 @@ Estes módulos exploram vulnerabilidades que não requerem conhecimento especial
 
 ## Changelog de Módulos por Versão IXF
 
-### IXF v2.1.0 (atual — 2026-06-01)
+### IXF v1.1.1 (atual — 2026-06-01)
 - **Adicionados:** CosmicEnergy IEC 104, FrostyGoop (Go Extended), PIPEDREAM/INCONTROLLER (3 módulos)
 - **Atualizados:** Todos os módulos de assessment com formato de saída tabular melhorado
 - **Novos Scanners:** `ixf-iec104-info.nse`, `ixf-fins-info.nse`
-- **Total:** 976+ módulos
+- **Total:** 1190+ módulos
 
 ### IXF v2.0.0 (2025-11-15)
 - **Adicionados:** 47 novos módulos CVE (Schneider, Rockwell, Delta)

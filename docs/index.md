@@ -10,7 +10,7 @@ layout: default
 [![PyPI](https://img.shields.io/pypi/v/industrialxpl-forge?color=red&label=PyPI)](https://pypi.org/project/industrialxpl-forge/)
 [![Python](https://img.shields.io/pypi/pyversions/industrialxpl-forge?color=blue&label=Python)](https://pypi.org/project/industrialxpl-forge/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Modules](https://img.shields.io/badge/Modules-976%2B-brightgreen)](https://github.com/mrhenrike/IndustrialXPL-Forge)
+[![Modules](https://img.shields.io/badge/Modules-1190%2B-brightgreen)](https://github.com/mrhenrike/IndustrialXPL-Forge)
 
 ## Documentation
 
@@ -23,7 +23,7 @@ layout: default
 | 3 | [Shell Reference](en-us/03-shell-reference.md) | All 35 commands with I/O samples |
 | 4 | [Module System](en-us/04-module-system.md) | Module anatomy, `__info__`, OptXxx types |
 | 5 | [SafeMode / DestructiveMode](en-us/05-safemode-destructivemode.md) | Impact levels, confirmation flow |
-| 6 | [MITRE ATT&CK for ICS](en-us/06-mitre-attack-ics.md) | 74/90 techniques (82%) |
+| 6 | [MITRE ATT&CK for ICS](en-us/06-mitre-attack-ics.md) | 96/103 techniques (93%) |
 | 7 | [SAST / LLM Analysis](en-us/07-sast-llm.md) | Offline PLC code analysis |
 | 8 | [Protocols & Vendors](en-us/08-protocols-vendors.md) | 50 protocols, 150+ vendors |
 | 9 | [Module Development](en-us/09-module-development.md) | Writing new modules |
@@ -40,7 +40,7 @@ layout: default
 | 3 | [Referência do Shell](pt-br/03-referencia-shell.md) | Todos os 35 comandos |
 | 4 | [Sistema de Módulos](pt-br/04-sistema-modulos.md) | Anatomia do módulo |
 | 5 | [SafeMode / DestructiveMode](pt-br/05-safemode-destructivemode.md) | Níveis de impacto |
-| 6 | [MITRE ATT&CK for ICS](pt-br/06-mitre-attack-ics.md) | 74/90 técnicas |
+| 6 | [MITRE ATT&CK for ICS](pt-br/06-mitre-attack-ics.md) | 96/103 técnicas |
 | 7 | [SAST / LLM](pt-br/07-sast-llm.md) | Análise offline de código PLC |
 | 8 | [Protocolos e Vendors](pt-br/08-protocolos-vendors.md) | 50 protocolos |
 | 9 | [Desenvolvimento de Módulos](pt-br/09-desenvolvimento-modulos.md) | Escrevendo módulos |

@@ -5,7 +5,7 @@
 [![PyPI](https://img.shields.io/pypi/v/industrialxpl-forge?color=red&label=PyPI)](https://pypi.org/project/industrialxpl-forge/)
 [![Python](https://img.shields.io/pypi/pyversions/industrialxpl-forge?color=blue&label=Python)](https://pypi.org/project/industrialxpl-forge/)
 [![Licença: MIT](https://img.shields.io/badge/Licen%C3%A7a-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Módulos](https://img.shields.io/badge/M%C3%B3dulos-1160%2B-brightgreen)](https://github.com/mrhenrike/IndustrialXPL-Forge)
+[![Módulos](https://img.shields.io/badge/M%C3%B3dulos-1190%2B-brightgreen)](https://github.com/mrhenrike/IndustrialXPL-Forge)
 
 ---
 
@@ -51,11 +51,11 @@ O IndustrialXPL-Forge (IXF) é um framework Python modular para assessment de se
 
 | Métrica | Valor |
 |---------|-------|
-| Total de módulos | 972+ |
+| Total de módulos | 1190+ |
 | Módulos CVE | 3.300+ |
 | Vendors cobertos | 150+ |
 | Protocolos cobertos | 50+ |
-| Técnicas MITRE ATT&CK for ICS | 74/90 (82%) |
+| Técnicas MITRE ATT&CK for ICS | 96/103 (93%) |
 | TTPs de malware ICS | 26 (2010–2024) |
 | Linguagens PLC suportadas (SAST) | 7 |
 

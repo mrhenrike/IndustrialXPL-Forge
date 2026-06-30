@@ -374,7 +374,7 @@ ixf > llm-key openai sk-...
 
 ### IXF starts slowly (module indexing takes 10+ seconds)
 
-**Cause:** Large number of modules (976+) being indexed.
+**Cause:** Large number of modules (1190+) being indexed.
 
 **Workaround:** Indexing is cached in memory for the session. Subsequent operations are fast.
 

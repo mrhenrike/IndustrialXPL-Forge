@@ -4,7 +4,7 @@
 
 ### What is IndustrialXPL-Forge?
 
-IndustrialXPL-Forge (IXF) is a Python-native security assessment and exploitation framework for Operational Technology (OT), Industrial Control Systems (ICS), SCADA, HMI, PLC, RTU, DCS, and IIoT environments. It provides 976+ modules covering CVE exploits, protocol abuse, default credential testing, MITRE ATT&CK for ICS sweeps, and offline SAST analysis of PLC code.
+IndustrialXPL-Forge (IXF) is a Python-native security assessment and exploitation framework for Operational Technology (OT), Industrial Control Systems (ICS), SCADA, HMI, PLC, RTU, DCS, and IIoT environments. It provides 1190+ modules covering CVE exploits, protocol abuse, default credential testing, MITRE ATT&CK for ICS sweeps, and offline SAST analysis of PLC code.
 
 ### Is IXF a replacement for Metasploit?
 
@@ -159,7 +159,7 @@ ixf > ttp T0866 192.168.1.100 --output results.json
 
 ### How many modules does IXF have?
 
-976+ modules as of v1.0.13:
+1190+ modules as of v1.0.13:
 - 486 CVE modules
 - 159 exploit modules (protocol, PLC, SCADA, MES)
 - 34 credential modules
@@ -205,11 +205,11 @@ obj.run()  # runs in simulate mode
 
 ### What is the current MITRE ATT&CK for ICS coverage?
 
-74 out of 90 techniques = **82%** as of v1.0.13.
+96 out of 103 techniques = **93%** as of v1.0.13.
 
 ```
 ixf > mitre-coverage
-  TOTAL: 74/90 (82%)
+  TOTAL: 96/103 (93%)
 ```
 
 ### How do I run a complete MITRE sweep?

@@ -11,7 +11,7 @@ This guide walks through ten complete annotated terminal sessions that demonstra
 ```
 $ ixf
 [*] Indexing modules…
-[+] 976 modules indexed.
+[+] 1193 modules indexed.
 
   ___           _           _       _  __  ______  _       ______
  |_ _|_ __   __| |_   _ ___| |_ _ __(_) \ \/ / _ \| |     |  ___|__  _ __ __ _  ___
@@ -110,7 +110,7 @@ ixf > stats
   IndustrialXPL-Forge — Module Statistics
   ═══════════════════════════════════════════════════════════════════════════
 
-  Total Modules          976
+  Total Modules          1193
   ─────────────────────────────────────────────────────────────────────────
   CVE Exploit Modules    814   (by vendor, mapped to 3,300+ CVE IDs)
   Protocol Exploits      102   (exploits/protocols/)
@@ -126,7 +126,7 @@ ixf > stats
 
   MITRE ATT&CK for ICS
   ─────────────────────────────────────────────────────────────────────────
-  Techniques Covered      74 / 90  (82%)
+  Techniques Covered      96 / 103  (93%)
   Tactics Covered         12 / 12  (100%)
 
   Severity Distribution
@@ -568,7 +568,7 @@ ixf > mitre-scan 192.168.1.0/24
   Impair Process Control (TA0106)       7/10      T0806, T0836 (parameter write)
   Impact (TA0105)                       5/10      T0826 (loss of availability risk)
   ─────────────────────────────────────────────────────────────────────────
-  TOTAL                                74/90 (82%)   6 potential findings
+  TOTAL                                96/103 (93%)   6 potential findings
 
 ixf > ttp T0843 192.168.1.100
 [*] MITRE Technique: T0843 — Program Download
@@ -606,7 +606,7 @@ ixf > mitre-coverage
   Impair Process Ctrl (TA0106)          8        10       80%
   Impact              (TA0105)          6        10       60%
   ─────────────────────────────────────────────────────────────────────────
-  TOTAL                                74        90       82%
+  TOTAL                                96        103       93%
 
   Top 5 uncovered techniques:
     T0816  Device Restart/Shutdown        (impact — no module yet)
@@ -719,7 +719,7 @@ ixf > report json
     - modules_run (14 entries)
     - assessment_results (iec62443, nist_800_82, risk_scorer)
     - findings (6 potential findings)
-    - mitre_coverage (74/90)
+    - mitre_coverage (96/103)
     - recommendations (12 items)
   ═══════════════════════════════════════════════════════════════════════════
 
@@ -955,7 +955,7 @@ ixf > nse install
 [*] Copying ics-enumerate.nse        ...  OK
 [*] Copying ics-honeypot-detect.nse  ...  OK
 [*] Running nmap --script-updatedb   ...  OK
-[+] 8/8 NSE scripts installed successfully.
+[+] 8/15 NSE scripts installed successfully.
 [i] Use: nmap --script ics-sweep.nse <target>
 [i] Use: nmap --script 'ics-*' <target>   (all IXF scripts)
 

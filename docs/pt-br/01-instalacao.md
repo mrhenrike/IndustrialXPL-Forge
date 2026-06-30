@@ -86,7 +86,7 @@ Saída esperada na primeira execução:
 
 ```
 [*] Indexing modules…
-[+] 976 modules indexed.
+[+] 1193 modules indexed.
 
   ___           _           _       _  __  ______  _       ______
  |_ _|_ __   __| |_   _ ___| |_ _ __(_) \ \/ / _ \| |     |  ___|__  _ __ __ _  ___
@@ -386,7 +386,7 @@ Saída de exemplo com runtimes parcialmente disponíveis:
   nmap         7.94     OK
 
 [IXF Module Index]
-  976 módulos indexados.
+  1193 módulos indexados.
 ```
 
 ---
@@ -664,7 +664,7 @@ Saída esperada:
   creds                62     6%
   ...
   ─────────────────────────────────────────────────────
-  Total: 976 módulos
+  Total: 1193 módulos
 
   Vendors covered: 150 | Malware TTPs: 26
   MITRE ATT&CK for ICS: 12 táticas, 103 técnicas mapeadas
@@ -748,7 +748,7 @@ python tools/env_doctor.py --nse
   Scripts instalados no Nmap: 8 (em /usr/share/nmap/scripts/)
 
 [IXF Module Index]
-  976 módulos indexados  OK
+  1193 módulos indexados  OK
 
 ═══════════════════════════════════════════════════════════
   Resultado: OK (0 erros, 2 avisos — runtimes opcionais ausentes)

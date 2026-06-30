@@ -12,6 +12,29 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 
 ---
 
+## [1.1.1] - 2026-06-30
+
+### Added
+- REST API (`ixf serve`) + extra PyPI `[api]` (FastAPI/uvicorn opcional)
+- 7 NSE scripts OT (`ics-modbus-coils`, `ics-dnp3-enum`, `ics-opcua-nodes`, etc.)
+- 16 módulos `creds/<vendor>/default_creds.py`
+- `gap_technique_coverage`, `firmware_binary_analyzer`, ingest CISA 2025
+- Level A nos CVEs prioritários (#6448, #29965, #22681, #30993, #4486)
+- `docs/ARCHITECTURE.md`, `tools/sync_doc_stats.py`, `tools/verify_github_issues.py`
+- GitHub Pages Jekyll (`docs/_config.yml`, `_layouts/default.html`)
+
+### Changed
+- Documentação en-US + pt-BR + wiki sincronizadas: **1193 módulos**, **96/103 MITRE (93%)**, **15 NSE**
+- CI matrix Python 3.9–3.14; `pyproject.toml` versionado no repositório
+- Flag CLI `--no-color`; correção import cred modules (`__info__` metaclass)
+
+### Fixed
+- CI build (removido copy de `pyproject.toml.example` gitignored)
+- GitHub Pages Liquid errors em blocos de código
+- 16 cred modules com `AttributeError` em runtime
+
+---
+
 ## [1.1.0] - 2026-06-28
 
 ### Added
@@ -236,7 +259,7 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 - Root `SECURITY.md` and `DISCLAIMER.md`
 
 ### Changed
-- Module catalog: 1160+ indexed modules
+- Module catalog: 1190+ indexed modules
 - Documentation aligned: `simulate=false` default; use `set simulate true` or `setg simulate true` for SafeMode
 - README/wiki updated with malware CLI, payloads, encoders, and network globals (`setg PORT/TRANSPORT/UNIT_ID`)
 

@@ -124,7 +124,7 @@ ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > help
 ```
 ixf > help
 
-  [i] 976 modules loaded | 150 vendors | 12 MITRE tactics | 82% coverage
+  [i] 1193 modules loaded | 150 vendors | 12 MITRE tactics | 93% coverage
   ...
 ```
 
@@ -1595,7 +1595,7 @@ ixf > mitre-coverage
   Impair Process Control (TA0106)       9       11      81% ████████░░
   Impact (TA0105)                       8       11      72% ███████░░░
   ──────────────────────────────────────────────────────────────────
-  TOTAL                                74       90      82%
+  TOTAL                                96      103      93%
   ──────────────────────────────────────────────────────────────────
 [i] Export as ATT&CK Navigator JSON: mitre-report layer
 [i] ICS MITRE matrix: https://attack.mitre.org/matrices/ics/
@@ -1636,7 +1636,7 @@ ixf > mitre-report layer
 ixf > mitre-report html
 [*] Generating HTML coverage report...
 [+] Report saved: ixf_mitre_report_20260601_154315.html
-[i] Coverage: 82% (74/90 techniques)
+[i] Coverage: 93% (96/103 techniques)
 ```
 
 **Example 3 — JSON raw data:**
@@ -2005,7 +2005,7 @@ Display module statistics, vendor coverage, and MITRE ATT&CK coverage summary.
 ixf > stats
 [i] IXF Module Statistics — IndustrialXPL-Forge v1.0.13
 
-  Total Modules: 976
+  Total Modules: 1193
   ──────────────────────────────────────────────────────────────────
   Category          Count     Percentage
   cve                 486         49.8%
@@ -2022,7 +2022,7 @@ ixf > stats
   ──────────────────────────────────────────────────────────────────
   Vendors covered        : 150
   Protocols covered      : 50
-  MITRE techniques mapped: 74 / 90 (82%)
+  MITRE techniques mapped: 96 / 103 (93%)
   MITRE tactics covered  : 12 / 12 (100%)
   Malware TTPs           : 26 (KillDisk, NotPetya, FrostyGoop, EKANS, CosmicEnergy...)
   NSE scripts            : 8

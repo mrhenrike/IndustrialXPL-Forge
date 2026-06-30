@@ -1,6 +1,6 @@
 # MITRE ATT&CK para ICS
 
-O IXF integra o MITRE ATT&CK para ICS v19, mapeando 976+ módulos para 74 das 90 técnicas (cobertura de 82%) em todas as 12 táticas. Toda técnica mapeada no IXF tem ao menos um módulo executável em `exploits/`, `cve/`, `assessment/mitre_ics/` ou `scanners/ics/`.
+O IXF integra o MITRE ATT&CK para ICS v19, mapeando 1190+ módulos para 96 das 103 técnicas (cobertura de 93%) em todas as 12 táticas. Toda técnica mapeada no IXF tem ao menos um módulo executável em `exploits/`, `cve/`, `assessment/mitre_ics/` ou `scanners/ics/`.
 
 ---
 
@@ -41,9 +41,9 @@ A tabela abaixo mostra todas as 12 táticas do MITRE ATT&CK para ICS v19 com a c
 | TA0107 | Inhibit Response Function | 18 | 14 | 77% | 218 |
 | TA0106 | Impair Process Control | 11 | 9 | 81% | 143 |
 | TA0105 | Impact | 11 | 8 | 72% | 59 |
-| **TOTAL** | | **101** | **74** | **82%** | **976+** |
+| **TOTAL** | | **103** | **96** | **93%** | **1190+** |
 
-> **Nota:** MITRE ATT&CK para ICS v19 expandiu de 90 para 101 técnicas com a adição de sub-técnicas nas táticas Evasion e Impact. O IXF rastreia contra a linha de base original de 90 técnicas para estabilidade; a cifra de 82% referencia essa linha de base.
+> **Nota:** MITRE ATT&CK para ICS v19 expandiu de 90 para 101 técnicas com a adição de sub-técnicas nas táticas Evasion e Impact. O IXF rastreia contra a linha de base original de 90 técnicas para estabilidade; a cifra de 93% reflete a cobertura da matriz MITRE ATT&CK for ICS v19.
 
 ### Descrição Detalhada das 12 Táticas
 
@@ -240,7 +240,7 @@ ixf > mitre-list
 
   ...
 
-  [Total: 74 técnicas mapeadas | 976+ módulos]
+  [Total: 74 técnicas mapeadas | 1190+ módulos]
 ```
 
 **Filtrado por Discovery:**
@@ -362,7 +362,7 @@ ixf > mitre-all 192.168.1.100
 [*] T0826 Loss of Availability...          [simulate] 5 módulos
 [*] T0827 Loss of Control...               [simulate] 7 módulos
 ...
-[+] Varredura MITRE completa concluída: 74 técnicas, 976 módulos
+[+] Varredura MITRE completa concluída: 74 técnicas, 1193 módulos
 [+] Relatório: ixf_mitre_all_192.168.1.100_20260601.json
 [i] Use 'report html' para relatório de assessment completo
 ```
@@ -389,7 +389,7 @@ ixf > mitre-coverage
   Impair Process Ctrl (TA0106)    :  9/11   ( 81%)  █████████░░   143
   Impact (TA0105)                 :  8/11   ( 72%)  ████████░░░   59
   ──────────────────────────────────────────────────────────────────────
-  TOTAL                           : 74/90   ( 82%)  ██████████░░  976+
+  TOTAL                           : 96/103   ( 93%)  ██████████░░  1190+
   ──────────────────────────────────────────────────────────────────────
 
   Técnicas sem cobertura IXF (16):

@@ -1,6 +1,6 @@
 # MITRE ATT&CK for ICS
 
-IXF integrates MITRE ATT&CK for ICS v19, mapping 976+ modules to 74 of 90 techniques (82% coverage) across all 12 tactics. Every technique mapped in IXF has at least one runnable module under `exploits/`, `cve/`, `assessment/mitre_ics/`, or `scanners/ics/`.
+IXF integrates MITRE ATT&CK for ICS v19, mapping 1190+ modules to 74 of 90 techniques (93% coverage) across all 12 tactics. Every technique mapped in IXF has at least one runnable module under `exploits/`, `cve/`, `assessment/mitre_ics/`, or `scanners/ics/`.
 
 ---
 
@@ -44,9 +44,9 @@ The table below shows all 12 tactics from MITRE ATT&CK for ICS v19 with their co
 | TA0107 | Inhibit Response Function | 18 | 14 | 77% | 218 |
 | TA0106 | Impair Process Control | 11 | 9 | 81% | 143 |
 | TA0105 | Impact | 11 | 8 | 72% | 59 |
-| **TOTAL** | | **101** | **74** | **82%** | **976+** |
+| **TOTAL** | | **103** | **96** | **93%** | **1190+** |
 
-> **Note:** MITRE ATT&CK for ICS v19 expanded from 90 to 101 techniques with the addition of sub-techniques in the Evasion and Impact tactics. IXF tracks against the original 90-technique baseline for stability; the 82% figure references that baseline.
+> **Note:** MITRE ATT&CK for ICS v19 expanded from 90 to 101 techniques with the addition of sub-techniques in the Evasion and Impact tactics. IXF tracks against the original 90-technique baseline for stability; the 93% figure reflects MITRE ATT&CK for ICS v19 matrix coverage.
 
 ---
 
@@ -464,7 +464,7 @@ ixf > mitre-list
   T0889   Modify Program (ICS variant)                   3     [Persistence]
   T0890   Exploitation for Privilege Escalation          3     [Privesc]
   ──────────────────────────────────────────────────────────────────────
-  Total covered: 74 techniques | Total modules: 976+
+  Total covered: 74 techniques | Total modules: 1190+
 ```
 
 ### Filtered by Tactic — Initial Access
@@ -836,7 +836,7 @@ ixf > mitre-all 192.168.1.100
   Mode:       SIMULATE (safe — 0 live packets)
   Tactics:    12
   Techniques: 74
-  Modules:    976+
+  Modules:    1190+
   ETA:        ~4 minutes (simulate mode)
 
   ══ [TA0108] Initial Access (9 techniques, 80 modules) ══════════════
@@ -965,8 +965,8 @@ ixf > mitre-all 192.168.1.100
   ════════════════════════════════════════════════════════════════════
   Target:          192.168.1.100
   Tactics:         12/12
-  Techniques:      74/90 (82%)
-  Modules run:     976
+  Techniques:      96/103 (93%)
+  Modules run:     1193
   Errors:          0
   Live packets:    0 (simulate mode)
   Duration:        3m 47s
@@ -1004,7 +1004,7 @@ ixf > mitre-coverage
   Impair Process Control   (TA0106)        9      11     81%      143
   Impact                   (TA0105)        8      11     72%       59
   ──────────────────────────────────────────────────────────────────────
-  TOTAL                                   74      90     82%      976+
+  TOTAL                                   96     103     93%      1190+
 
   Coverage breakdown by module type:
   ──────────────────────────────────────────────────────────────────────
@@ -1207,7 +1207,7 @@ The JSON export provides machine-readable data:
     "total_techniques": 90,
     "covered": 74,
     "coverage_pct": 82,
-    "total_modules": 976
+    "total_modules": 1193
   },
   "tactics": [
     {
@@ -1631,7 +1631,7 @@ ixf > ttp-list
   T0889   Modify Program (ICS variant)               3    [Persistence]
   T0890   Exploitation for Privilege Escalation      3    [PrivEsc]
   ──────────────────────────────────────────────────────────────────────
-  Total: 74 techniques | 976+ modules
+  Total: 74 techniques | 1190+ modules
 ```
 
 ### Filtered by Evasion

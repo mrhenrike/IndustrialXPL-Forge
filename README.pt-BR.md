@@ -9,7 +9,7 @@
 [![Python](https://img.shields.io/pypi/pyversions/industrialxpl-forge?color=blue&label=Python)](https://pypi.org/project/industrialxpl-forge/)
 [![Licença: MIT](https://img.shields.io/badge/Licen%C3%A7a-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![CI](https://img.shields.io/github/actions/workflow/status/mrhenrike/IndustrialXPL-Forge/ci.yml?branch=master&label=CI)](https://github.com/mrhenrike/IndustrialXPL-Forge/actions)
-[![Módulos](https://img.shields.io/badge/M%C3%B3dulos-1160%2B-brightgreen)](https://github.com/mrhenrike/IndustrialXPL-Forge)
+[![Módulos](https://img.shields.io/badge/M%C3%B3dulos-1190%2B-brightgreen)](https://github.com/mrhenrike/IndustrialXPL-Forge)
 [![Vendors](https://img.shields.io/badge/Vendors-150%2B-orange)](https://github.com/mrhenrike/IndustrialXPL-Forge)
 [![Protocolos](https://img.shields.io/badge/Protocolos-50%2B-blue)](https://github.com/mrhenrike/IndustrialXPL-Forge)
 [![MITRE ATT&CK ICS](https://img.shields.io/badge/MITRE%20ATT%26CK%20ICS-v19-red)](https://attack.mitre.org/matrices/ics/)
@@ -25,6 +25,12 @@
 pip install industrialxpl-forge
 ixf
 ```
+
+**Terminal:** use terminal com suporte ANSI (Linux/macOS, Windows Terminal, PowerShell 7+). Em `cmd.exe` legado, use `--no-color`.
+
+**API REST:** `ixf serve --host 127.0.0.1 --port 8443` — OpenAPI opcional via `pip install industrialxpl-forge[api]`.
+
+**Arquitetura:** veja [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 Ou a partir do código-fonte:
 
@@ -52,7 +58,7 @@ OSINT → Descoberta → Fingerprint → Verificação de Vulnerabilidade → Ex
 **Funcionalidades principais:**
 - **Python-First**: toda a funcionalidade central funciona com `pip install industrialxpl-forge` - runtimes externos (C, Go, Java) são aceleradores opcionais com fallback Python embutido
 - **SafeMode opt-in**: use `set simulate true` ou `setg simulate true` — imprime payload sem enviar; padrão é `simulate=false`
-- **MITRE ATT&CK for ICS v19**: 79 técnicas mapeadas, sintaxe `ttp T0843 192.168.1.100`
+- **MITRE ATT&CK for ICS v19**: 96/103 técnicas (93%), sintaxe `ttp T0843 192.168.1.100`
 - **Cobertura de CVEs**: 3.300+ CVEs ICS/OT de CVSS 0,1 a 10,0
 - **50 vendors**: Siemens, Schneider, Rockwell, ABB, Honeywell, WEG, NOVA Smar, e mais
 - **50 protocolos**: Modbus, S7comm, EtherNet/IP, DNP3, BACnet, IEC-104, OPC UA, PROFINET, e mais
@@ -78,7 +84,7 @@ ixf > ttp-list --tactic evasion        # Listar TTP-IDs de Evasão
 # Varredura MITRE ATT&CK for ICS
 ixf > mitre-scan discovery 192.168.1.0/24
 ixf > mitre-scan evasion 192.168.1.100
-ixf > mitre-all 192.168.1.100          # Todas as 79 técnicas (simular por padrão)
+ixf > mitre-all 192.168.1.100          # Todas as 96+ técnicas (simular por padrão)
 ixf > mitre-coverage                   # % de cobertura por tática
 
 # Módulos específicos de CVE

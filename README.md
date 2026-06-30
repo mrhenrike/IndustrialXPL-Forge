@@ -9,7 +9,7 @@
 [![Python](https://img.shields.io/pypi/pyversions/industrialxpl-forge?color=blue&label=Python)](https://pypi.org/project/industrialxpl-forge/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![CI](https://img.shields.io/github/actions/workflow/status/mrhenrike/IndustrialXPL-Forge/ci.yml?branch=master&label=CI)](https://github.com/mrhenrike/IndustrialXPL-Forge/actions)
-[![Modules](https://img.shields.io/badge/Modules-1160%2B-brightgreen)](https://github.com/mrhenrike/IndustrialXPL-Forge)
+[![Modules](https://img.shields.io/badge/Modules-1190%2B-brightgreen)](https://github.com/mrhenrike/IndustrialXPL-Forge)
 [![Vendors](https://img.shields.io/badge/Vendors-150%2B-orange)](https://github.com/mrhenrike/IndustrialXPL-Forge)
 [![Protocols](https://img.shields.io/badge/Protocols-50%2B-blue)](https://github.com/mrhenrike/IndustrialXPL-Forge)
 [![MITRE ATT&CK ICS](https://img.shields.io/badge/MITRE%20ATT%26CK%20ICS-v19-red)](https://attack.mitre.org/matrices/ics/)
@@ -66,7 +66,7 @@ OSINT → Discovery → Fingerprint → Vulnerability Check → Exploit → Repo
 **Key features:**
 - **Python-First**: all core functionality works with `pip install industrialxpl-forge` — external runtimes (C, Go, Java) are optional accelerators with Python fallbacks built in
 - **SafeMode opt-in**: `set simulate true` or `setg simulate true` — prints payload without sending; live probes use `simulate=false` (default)
-- **MITRE ATT&CK for ICS v19**: 79 techniques mapped, `ttp T0843 192.168.1.100` syntax
+- **MITRE ATT&CK for ICS v19**: 96/103 techniques (93%), `ttp T0843 192.168.1.100` syntax
 - **CVE coverage**: 3,300+ ICS/OT CVEs from CVSS 0.1 to 10.0
 - **50 vendors**: Siemens, Schneider, Rockwell, ABB, Honeywell, Emerson, WEG, and more
 - **50 protocols**: Modbus, S7comm, EtherNet/IP, DNP3, BACnet, IEC-104, OPC UA, PROFINET, and more
@@ -83,7 +83,7 @@ OSINT → Discovery → Fingerprint → Vulnerability Check → Exploit → Repo
 | `exploits/mes/` | ~25 | Ignition, ThinManager, SIMATIC Historian, DELMIA Apriso |
 | `scanners/ics/` | ~50 | Protocol-specific discovery (Modbus, S7, BACnet, DNP3...) |
 | `scanners/osint/` | ~8 | Shodan queries, ELITEWOLF web dorks, OT Hunt |
-| `creds/` | ~55 | Default credentials for 50+ OT/ICS vendors |
+| `creds/` | ~71 | Default credentials for 50+ OT/ICS vendors |
 | `cve/` | 3,300+ | All CVE severity levels (CVSS 0.1-10.0), 3 implementation tiers |
 | `cve/apt/` | ~10 | APT malware TTPs: FrostyGoop, Industroyer2, TRITON, INCONTROLLER |
 | `assessment/` | ~35 | IEC 62443, NIST 800-82r3, MITRE ICS, risk scoring, IR playbook |
@@ -135,7 +135,7 @@ ixf > ttp-list --tactic evasion        # List all Evasion TTP-IDs
 # MITRE ATT&CK for ICS sweep
 ixf > mitre-scan discovery 192.168.1.0/24
 ixf > mitre-scan evasion 192.168.1.100
-ixf > mitre-all 192.168.1.100          # All 79 techniques (simulate by default)
+ixf > mitre-all 192.168.1.100          # All 96+ techniques (simulate by default)
 ixf > mitre-coverage                   # Show coverage % per tactic
 
 # CVE-specific modules

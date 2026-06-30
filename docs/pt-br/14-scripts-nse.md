@@ -1,6 +1,6 @@
 ﻿# Scripts NSE
 
-O IXF inclui 8 scripts NSE (Nmap Scripting Engine) para descoberta e fingerprint de dispositivos ICS industriais. Eles integram as capacidades de varredura do IXF diretamente no ecossistema Nmap, permitindo workflows de reconhecimento combinados.
+O IXF inclui 15 scripts NSE (Nmap Scripting Engine) para descoberta e fingerprint de dispositivos ICS industriais. Eles integram as capacidades de varredura do IXF diretamente no ecossistema Nmap, permitindo workflows de reconhecimento combinados.
 
 ---
 
@@ -81,7 +81,7 @@ Copiando scripts IXF NSE:
 Atualizando banco de dados de scripts Nmap...
 [+] nmap --script-updatedb executado com sucesso.
 
-[+] 8 scripts NSE instalados.
+[+] 15 scripts NSE instalados.
 
 Para verificar:
   nmap --script-help ixf-modbus-info

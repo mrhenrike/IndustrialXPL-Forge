@@ -1152,7 +1152,7 @@ ixf > mitre-list
   T0865   Spearphishing Attachment                   4 módulos
   T0883   Internet Accessible Device                 7 módulos
   ...
-  [Total: 74 técnicas mapeadas, 976+ módulos]
+  [Total: 74 técnicas mapeadas, 1190+ módulos]
 ```
 
 **Exemplo 2 — filtrar por tática Discovery:**
@@ -1294,7 +1294,7 @@ ixf > mitre-all 192.168.1.100
 [*] ── Impact (8 técnicas) ─────────────────────────────────────
 [*] T0813 Denial of Control...             [simulate] 8 módulos
 ...
-[+] Varredura MITRE completa concluída: 74 técnicas, 976 módulos
+[+] Varredura MITRE completa concluída: 74 técnicas, 1193 módulos
 [+] Relatório: ixf_mitre_all_192.168.1.100_20260601.json
 ```
 
@@ -1358,7 +1358,7 @@ ixf > mitre-coverage
   Impair Process Control (TA0106)     :  9/11  ( 81%)  █████████▒▒
   Impact (TA0105)                     :  8/11  ( 72%)  █████████▒▒▒
   ──────────────────────────────────────────────────────────────
-  TOTAL                               : 74/90  ( 82%)  ██████████▒▒
+  TOTAL                               : 96/103  ( 93%)  ██████████▒▒
 ```
 
 **Exemplo 2 — combinado com mitre-report:**
@@ -1812,7 +1812,7 @@ Exibe estatísticas de módulos e resumo de cobertura.
 ixf > stats
 [i] Estatísticas de Módulos IXF
 
-  Total: 976 módulos
+  Total: 1193 módulos
   ──────────────────────────────────────
   Categoria        Qtd    %
   cve               486   49%
@@ -1825,7 +1825,7 @@ ixf > stats
   ──────────────────────────────────────
 
 [i] Vendors cobertos: 150 | TTPs de malware: 26
-[i] MITRE ATT&CK para ICS: 12 táticas, 74/90 técnicas mapeadas (82%)
+[i] MITRE ATT&CK para ICS: 12 táticas, 96/103 técnicas mapeadas (93%)
 [i] Protocolos cobertos: 50
 [i] PyPI: 
         $extras = $args[0].Groups[1].Value

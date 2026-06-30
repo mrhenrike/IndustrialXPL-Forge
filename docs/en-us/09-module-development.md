@@ -1697,7 +1697,7 @@ else:
 **Expected output (all passing):**
 
 ```
-976 modules indexed | 0 errors
+1193 modules indexed | 0 errors
 All modules valid.
 ```
 

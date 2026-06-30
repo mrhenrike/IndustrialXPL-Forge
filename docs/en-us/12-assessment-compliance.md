@@ -767,10 +767,10 @@ ixf > setg simulate true
 [*] Global: simulate => True
 
 ixf > stats
-[i] Total: 976 | Vendors: 150 | MITRE: 74/90 (82%)
+[i] Total: 1193 | Vendors: 150 | MITRE: 96/103 (93%)
 
 ixf > mitre-coverage
-  TOTAL: 74/90 (82%)
+  TOTAL: 96/103 (93%)
 
 ixf > discover 192.168.1.0/24
 [*] Module loaded: Modbus TCP Device Detect

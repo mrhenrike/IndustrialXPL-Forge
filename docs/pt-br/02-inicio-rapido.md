@@ -37,7 +37,7 @@ Inicie o shell interativo com o comando `ixf`:
 ```
 $ ixf
 [*] Indexing modules…
-[+] 976 modules indexed.
+[+] 1193 modules indexed.
 
   ___           _           _       _  __  ______  _       ______
  |_ _|_ __   __| |_   _ ___| |_ _ __(_) \ \/ / _ \| |     |  ___|__  _ __ __ _  ___
@@ -57,7 +57,7 @@ ixf >
 ```
 
 **Indicadores importantes no banner:**
-- `976 modules indexed` — contagem total de módulos carregados com sucesso
+- `1193 modules indexed` — contagem total de módulos carregados com sucesso
 - `simulate=True by default (safe mode)` — confirma que o modo seguro está ativo
 
 ### Iniciar diretamente de um arquivo Python (para instalação do código-fonte)
@@ -176,7 +176,7 @@ ixf > stats
   creds                62     6%
   ...
   ─────────────────────────────────────────────────────
-  Total: 976 módulos
+  Total: 1193 módulos
 
   Vendors covered: 150 | Malware TTPs: 26
   MITRE ATT&CK for ICS: 12 táticas, 103 técnicas mapeadas

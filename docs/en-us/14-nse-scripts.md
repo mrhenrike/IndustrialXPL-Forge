@@ -82,7 +82,7 @@ python tools/nse_install.py --install
 [IXF NSE Installer]
 Nmap found: /usr/bin/nmap (7.95)
 Scripts directory: /usr/share/nmap/scripts/
-Installing 8 NSE scripts:
+Installing 15 NSE scripts:
   [+] ics-sweep.nse
   [+] ics-default-creds.nse
   [+] ics-plc-program-access.nse

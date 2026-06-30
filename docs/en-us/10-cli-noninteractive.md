@@ -34,9 +34,9 @@ ixf stats
 
 ```
 [*] Indexing modules...
-[+] 976 modules indexed.
+[+] 1193 modules indexed.
 [i] IXF Module Statistics — IndustrialXPL-Forge v1.0.13
-  Total: 976 | Vendors: 150 | Protocols: 50 | MITRE: 74/90 (82%)
+  Total: 1193 | Vendors: 150 | Protocols: 50 | MITRE: 96/103 (93%)
   cve: 486 | exploits: 159 | creds: 34 | scanners: 31 | assessment: 18
 ```
 
@@ -48,7 +48,7 @@ ixf search CVE-2021-22681
 
 ```
 [*] Indexing modules...
-[+] 976 modules indexed.
+[+] 1193 modules indexed.
 [*] Search results for: CVE-2021-22681
   use cve/siemens/cve_2021_22681_s7_1200_hardcoded_key  CRITICAL
 [*] 1 result(s) found.
@@ -62,7 +62,7 @@ ixf use scanners/ics/modbus_detect set target 192.168.1.100 run
 
 ```
 [*] Indexing modules...
-[+] 976 modules indexed.
+[+] 1193 modules indexed.
 [*] Module loaded: Modbus TCP Device Detect
 [*] target => 192.168.1.100
 
@@ -101,7 +101,7 @@ ixf mitre-coverage
   Initial Access (TA0108):           9/9   (100%)
   Execution (TA0104):                8/9   (88%)
   ...
-  TOTAL: 74/90 (82%)
+  TOTAL: 96/103 (93%)
 ```
 
 ### 6. List MITRE Techniques for a Tactic
@@ -335,7 +335,7 @@ ixf \
 ```
 
 ```
-[*] Indexing 976 modules...
+[*] Indexing 1193 modules...
 [*] Module loaded: Modbus TCP Device Detect
 [*] target => 192.168.1.100
   [SIMULATE] Modbus scan...
@@ -492,7 +492,7 @@ PROFIsafe          502/TCP     1 module
 
 ```bash
 ixf mitre-coverage | grep "TOTAL"
-# TOTAL: 74/90 (82%)
+# TOTAL: 96/103 (93%)
 ```
 
 ### 8. Extract all vendor names

@@ -1,6 +1,6 @@
 ﻿# Complete Module Catalog
 
-This document provides a comprehensive catalog of all 976+ modules in IndustrialXPL-Forge, organized by category. Use this as the definitive reference for understanding what modules exist and how to use them.
+This document provides a comprehensive catalog of all 1190+ modules in IndustrialXPL-Forge, organized by category. Use this as the definitive reference for understanding what modules exist and how to use them.
 
 ---
 
@@ -472,7 +472,7 @@ IXF ships with these native source files compiled by the PolyExploit Runner:
 ## Module Statistics
 
 ```
-Total modules: 976
+Total modules: 1193
 ─────────────────────────────────────────────────────────
 Category          Count    Percentage
 ─────────────────────────────────────────────────────────
@@ -485,7 +485,7 @@ generic            12       1.2%
 malware_ttps       26       2.7%
 others/misc       210      21.5%
 ─────────────────────────────────────────────────────────
-Total            976      100%
+Total            1193      100%
 
 By Impact Level:
 CATASTROPHIC      22       2.3%
@@ -497,7 +497,7 @@ READ              86       8.8%
 INFO              112      11.5%
 
 By MITRE Coverage:
-Techniques mapped: 74/90 (82%)
+Techniques mapped: 96/103 (93%)
 Tactics covered:   12/12 (100%)
 ```
 
@@ -863,7 +863,7 @@ for cat, count in sorted(cats.items(), key=lambda x: -x[1]):
 
 Expected output:
 ```
-Total: 976 modules
+Total: 1193 modules
   cve                              814
   exploits                         102
   scanners                          31
@@ -1107,11 +1107,11 @@ Open an issue: https://github.com/mrhenrike/IndustrialXPL-Forge/issues with the 
 
 | Metric | Value |
 |--------|-------|
-| Total modules | 976 |
+| Total modules | 1193 |
 | Vendors covered | 150+ |
 | Protocols covered | 50+ |
 | CVE IDs mapped | 3,300+ |
-| MITRE techniques covered | 74/90 (82%) |
+| MITRE techniques covered | 96/103 (93%) |
 | Malware TTPs simulated | 26 (2010–2024) |
 | ICS languages (SAST) | 7 |
 | NSE scripts | 8 |

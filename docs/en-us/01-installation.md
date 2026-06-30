@@ -169,7 +169,7 @@ After installation, launch the IXF shell:
 ```bash
 $ ixf
 [*] Indexing modules…
-[+] 976 modules indexed.
+[+] 1193 modules indexed.
 
   ___           _           _       _  __  ______  _       ______
  |_ _|_ __   __| |_   _ ___| |_ _ __(_) \ \/ / _ \| |     |  ___|__  _ __ __ _  ___
@@ -686,7 +686,7 @@ print(f'[+] {len(mods)} modules indexed.')
 
 Expected output:
 ```
-[+] 976 modules indexed.
+[+] 1193 modules indexed.
 ```
 
 ---
@@ -819,7 +819,7 @@ Use any of the following five methods to confirm IXF is installed correctly:
 ixf
 ```
 
-Expected: Banner with version `v1.0.12` and `976 modules indexed.`
+Expected: Banner with version `v1.0.12` and `1193 modules indexed.`
 
 ### Method 2: env_doctor.py — full dependency check
 
@@ -900,7 +900,7 @@ Complete expected output:
   malware/                   26 modules
   nse/                        8 modules  (NSE wrappers)
   ─────────────────────────────────────
-  TOTAL                     976 modules  ...................  OK
+  TOTAL                     1193 modules  ...................  OK
 
 [Log Paths]
   ~/.ixf_history  ..............................................  OK  (exists)
@@ -912,7 +912,7 @@ Complete expected output:
   All Tier 1 checks  PASS
   All Tier 2 checks  PASS (full extras installed)
   All Tier 3 checks  PASS (all runtimes present)
-  976 modules indexed.
+  1193 modules indexed.
 
   Status: FULLY OPERATIONAL
   Python-First: all features available.
@@ -957,7 +957,7 @@ python -c "from industrialxpl.core.exploit.utils import index_modules; print(len
 
 Expected output:
 ```
-976 modules indexed
+1193 modules indexed
 ```
 
 ### Method 4: Version and help check
@@ -1302,7 +1302,7 @@ brew install libpcap
 # Install Npcap from https://npcap.com/
 ```
 
-### `976 modules indexed` but `search` returns no results
+### `1193 modules indexed` but `search` returns no results
 
 **Cause:** Module path mismatch after a source-mode install.
 

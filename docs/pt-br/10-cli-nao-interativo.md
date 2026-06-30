@@ -56,7 +56,7 @@ ixf search modbus
 
 ```
 [*] Indexando módulos...
-[+] 976 módulos indexados.
+[+] 1193 módulos indexados.
 
 Resultados de busca para: modbus
 ──────────────────────────────────────────────────────────────────────────────
@@ -124,7 +124,7 @@ ixf use scanners/ics/modbus_detect set target 192.168.1.100 run
 
 ```
 [*] Indexando módulos...
-[+] 976 módulos indexados.
+[+] 1193 módulos indexados.
 [*] Módulo carregado: Modbus TCP Device Scanner
 [*] target => 192.168.1.100
 
@@ -155,7 +155,7 @@ ixf stats
 ```
   IXF — Estatísticas da Base de Módulos
   ══════════════════════════════════════
-  Total de módulos:     976
+  Total de módulos:     1193
   Módulos CVE:          421
   Módulos de protocolo: 214
   Scanners:              31
@@ -165,7 +165,7 @@ ixf stats
   Scripts NSE:            8
   Outros:               224
 
-  Cobertura MITRE:       74/90 técnicas (82%)
+  Cobertura MITRE:       96/103 técnicas (93%)
   Protocolos cobertos:   50
   Vendors cobertos:     150
 
