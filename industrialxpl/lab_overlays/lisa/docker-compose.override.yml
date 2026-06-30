@@ -1,0 +1,16 @@
+# IXF compose overlay — patched Dockerfiles for modern Python/toolchains
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ../../../lab_overlays/lisa/api/Dockerfile
+  worker:
+    build:
+      context: .
+      dockerfile: ../../../lab_overlays/lisa/worker/Dockerfile
+  nginx:
+    build:
+      context: .
+      dockerfile: ../../../lab_overlays/lisa/nginx/Dockerfile
+      args:
+        webhost: localhost:4242

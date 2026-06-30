@@ -1,4 +1,4 @@
-"""Run incorporated ics-tools vendor scripts from IXF."""
+"""Run incorporated ics-tools — IXF native handlers first, vendor fallback."""
 
 from __future__ import annotations
 
@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from industrialxpl.core.ics_tools.catalog import IcsToolsCatalog, IcsToolFamily
+from industrialxpl.core.ics_tools.native_handlers import run_native
 
 
 class IcsToolsRunner:
@@ -30,6 +31,7 @@ class IcsToolsRunner:
             "python_scripts": scripts,
             "nse_scripts": nse,
             "ixf_module": fam.ixf_module,
+            "native_runtime": "IXF native_handlers (vendor fallback if disabled)",
         }
 
     def run_entry(
@@ -38,10 +40,18 @@ class IcsToolsRunner:
         extra_args: list[str] | None = None,
         simulate: bool = False,
         timeout: int = 120,
+        prefer_native: bool = True,
     ) -> dict[str, Any]:
         fam = self.catalog.get(slug)
         if not fam:
             return {"error": "Unknown ics-tool: {}".format(slug)}
+
+        if prefer_native:
+            native = run_native(slug, extra_args, simulate=simulate)
+            if native is not None:
+                native.setdefault("returncode", 0 if native.get("success", simulate) else 1)
+                return native
+
         if not fam.entry_script:
             return {"error": "No entry script for {}".format(slug)}
 
@@ -54,12 +64,21 @@ class IcsToolsRunner:
             }
 
         if fam.interpreter == "nmap":
-            cmd = ["nmap", "--script", str(entry)] + (extra_args or [])
+            script = str(entry)
+            if entry.suffix == ".nse":
+                cmd = ["nmap", "-p", "47808", "--script", script] + (extra_args or [])
+            else:
+                cmd = ["nmap", "--script", script] + (extra_args or [])
             cwd = str(fam.vendor_path)
         elif fam.interpreter == "data":
             return self._load_scadapass(entry)
         elif fam.interpreter == "python2":
-            cmd = ["python2", str(entry)] + (extra_args or ["--help"])
+            py3 = shutil_which("python3")
+            py2 = shutil_which("python2")
+            interp = py2 or py3
+            if not interp:
+                return {"success": False, "error": "python2/python3 not found"}
+            cmd = [interp, str(entry)] + (extra_args or ["--help"])
             cwd = str(fam.vendor_path)
         else:
             cmd = ["python3", str(entry)] + (extra_args or ["--help"])

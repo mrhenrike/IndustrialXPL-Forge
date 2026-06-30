@@ -1,16 +1,11 @@
-"""IndustrialXPL-Forge entry point.
-
-Usage modes:
-  ixf                           — interactive shell
-  ixf -r /path/script.rc       — execute resource file, then interactive shell
-  ixf --read /path/script.rc   — same as -r
-  ixf -r /path/script.rc -x    — execute resource file, then exit (non-interactive)
-  ixf -e "use scanners/ics/modbus_scanner; set TARGET 10.0.0.1; run"
-  ixf --exec "command string"  — execute inline commands (semicolons separate)
-  ixf -q                       — quiet mode (suppress banner)
-"""
+"""IndustrialXPL-Forge entry point."""
 
 import sys
+
+from industrialxpl.core.platform import require_linux
+
+require_linux()
+
 import argparse
 from pathlib import Path
 

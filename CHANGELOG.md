@@ -6,6 +6,115 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 
 ---
 
+## [1.0.52] - 2026-06-30
+
+### Added
+- **IXF native Bashlite/Gafgyt bot** (`_native/bashlite/`) — telnet scan, wget deploy, IXF C2 arch=8
+- `bashlite_patch.py` — vendor creds embed + table patch
+- `forensics_engine.py` — S7 probe + OB mapping (stdlib, no pandas/snap7)
+- `docker_stack.py` — Lisa `malware docker lisa up|down|status`
+- `maliot_lookup.py` — Maliot JSON corpus inventory
+- PyPI extras: `forensics`, `malware-lab`, `docker-lab` (granular install)
+
+### Changed
+- **TriStationClient** — TsBase ops (upload/allocate/cancel/exploit)
+- TRITON module — `upload_probe` option
+- HTTP C2 syncs `bashlite.dbg` + `mirai.dbg` into payload root
+### Fixed
+- `bashlite_bot_debug` compile — removed broken `release_dir` reference
+- Lisa overlay — radare2 built from source; nginx Node 18 + OpenSSL legacy provider
+- `docker_stack` — auto `sudo docker` when socket permission denied
+
+### Verified
+- `tools/verify_family_matrix.py` — includes bashlite compile smoke
+- Lisa stack E2E — `http://127.0.0.1:4242` returns 200
+
+## [1.0.51] - 2026-06-30
+
+### Added
+- **`family_capabilities.py`** — per-family matrix (mode, compile targets, IXF route)
+- **`native_actions.py`** — ELF/YARA/schema inventory without vendor execution
+- **`ics_tools/native_handlers.py`** — IXF-native runtime for all 7 ics-tools (no py2neo/pandas/python2)
+- CLI `malware matrix` / `ics_tools matrix`
+- `tools/verify_family_matrix.py` — smoke test 12+7 families
+
+### Fixed
+- Mirai **`mirai_bot_debug`** via `MiraiCrossCompiler` (i586-gcc path)
+- **`iot_pnscan`** / **`iot_randomware`** compile targets
+- ICS-tools **`run`** uses native handlers first; vendor only as fallback
+- Bashlite snippet false compile targets removed (ELF corpus mode)
+
+---
+
+## [1.0.50] - 2026-06-30
+
+### Added
+- **Linux-only** runtime gate (`core/platform.py`) — IXF aborts on Windows/macOS
+- Persistent **HTTP payload daemon** (`http_payload_daemon.py`, `http_payload_manager.py`)
+- Go CNC **bot registry** → sync live bots to `botnet.db` (`bot_registry.go`)
+- `C2Config.release_dir` persisted in `c2_state.json`
+
+### Fixed
+- Mirai **handshake Python** aligned with Go (4-byte + optional source length)
+- **`hybrid`** = Go CNC + HTTP persistent (no port conflict with Python listener)
+- **`resume_on_startup`** passes full config (backend, DSN, release_dir, api_port)
+- **`c2_daemon`** supervisor without recursive spawn; health-check restarts HTTP/Go
+- Stale **PID files** auto-cleared (`go_cnc`, `http`, `python` daemon)
+- **`deploy_via_wget`** duplicate upsert removed
+- **`botnet_c2_ops`** / **`malware_full_pipeline`** parity with CLI
+- MySQL schema init statement splitting
+- Go CNC **`ensure_built`** rebuilds when `*.go` sources are newer than binary (stale handshake fix)
+
+---
+
+## [1.0.49] - 2026-06-30
+
+### Added
+- `tools/install-mirai-toolchains.sh` — download uClibc cross-compilers (Hexoral mirror)
+- `malware crosscompile install` — instala toolchains via IXF
+- `ensure_cross_path_in_env()` — PATH automático para mips-gcc, armv4l-gcc, etc.
+
+### Fixed
+- Go CNC build (`netshift` em `database_ixf.go`)
+- `c2_patch.py` regex escape para patch `table.c`
+- Host debug build via `i586-gcc` quando gcc nativo falha
+
+---
+
+## [1.0.48] - 2026-06-28
+
+### Added
+- **Go Mirai CNC** (`native/go/ixf-mirai-cnc/`) — admin telnet, bot handler, API de ataques
+- **Multi-DB** via `IXF_C2_DSN`: `sqlite://`, `mysql://`, `postgres://` + schemas SQL
+- `core/malware/go_cnc_manager.py`, `db_init.py`, `crosscompile.py`
+- `malware c2 build-go` — compila CNC Go + inicializa schema
+- `malware crosscompile list|all|mips|arm|...` — bots Mirai multi-arch
+- Propagação **arch-aware** (`uname` → mirai.mips/arm/x86...)
+- `setg C2_BACKEND auto|go|python` e `setg C2_DSN`
+- Extra PyPI `[c2]` — pymysql, psycopg2-binary
+
+### Changed
+- `malware c2 start` — auto cross-compile + Go CNC full stack (fallback Python)
+- IXF multilanguage: Python shell + backends Go/C conforme módulo
+
+---
+
+## [1.0.47] - 2026-06-28
+
+### Added
+- `core/malware/c2_server.py` — listener Mirai-compatible (handshake 0x00 0x00 0x00 + ping echo)
+- `core/malware/c2_persistence.py` — SQLite `.tmp/ixf_c2/botnet.db` + estado entre sessões IXF
+- `core/malware/c2_daemon.py` — daemon detached (C2 sobrevive ao fechar IXF)
+- `core/malware/propagator.py` — scan telnet IoT/OT, deploy wget/beacon para LHOST/LPORT
+- CLI `malware c2 start|stop|status` e `malware propagate <target>`
+- Módulo `scanners/malware_research/botnet_c2_ops`
+- Retomada automática no startup: bots reportando ao C2 após reabrir IXF (`setg C2_PERSIST true`)
+
+### Changed
+- `malware_full_pipeline` — ações `c2_start`, `c2_status`, `propagate`, `full`
+
+---
+
 ## [1.0.46] - 2026-06-30
 
 ### Added
