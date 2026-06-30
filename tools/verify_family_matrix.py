@@ -71,7 +71,7 @@ def check_ics() -> list[str]:
         if not fam or not fam.vendor_path.is_dir():
             failures.append("ics {}: vendor missing".format(slug))
             continue
-        if not fam.entry_script and slug != "scadapass":
+        if not fam.entry_script and slug not in ("scadapass", "otscan"):
             failures.append("ics {}: no entry_script".format(slug))
         inv = runner.run_entry(slug, simulate=False, prefer_native=True)
         if not inv.get("success") and not inv.get("simulate"):

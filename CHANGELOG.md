@@ -8,6 +8,17 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 
 ---
 
+---
+
+## [1.0.57] - 2026-06-28
+
+### Added
+- **F02 otscan nativo** — `core/ics/otscan/` (13 probes stdlib MIT)
+- `scanners/ics/otscan_native.py` — módulo IXF com simulate default
+- Registro `otscan` em `IcsToolsCatalog` + `handle_otscan` nativo
+- PyPI extra `ot-scan` (pymodbus opcional)
+- Gate **F02** com step `otscan_smoke`
+
 ## [1.0.56] - 2026-06-28
 
 ### Added

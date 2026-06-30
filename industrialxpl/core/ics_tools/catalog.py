@@ -50,6 +50,16 @@ class IcsToolsCatalog:
         "redpoint": "scanners/ics_tools_research/ics_tools_ops",
         "scadapass": "scanners/ics_tools_research/ics_tools_ops",
         "sixnet-tools": "scanners/ics_tools_research/ics_tools_ops",
+        "otscan": "scanners/ics/otscan_native",
+    }
+
+    # IXF-native tools without vendor submodule tree
+    NATIVE_ICS: dict[str, dict[str, str | Path]] = {
+        "otscan": {
+            "label": "OTscan unified OT scanner (IXF MIT)",
+            "vendor_path": PKG_ROOT / "core" / "ics" / "otscan",
+            "source_repo": "IXF native (otscan-inspired)",
+        },
     }
 
     def __init__(self) -> None:
@@ -74,6 +84,19 @@ class IcsToolsCatalog:
                 source_repo="submodules/ics-tools/{}".format(slug),
                 entry_script=entry if entry_path.exists() else "",
                 interpreter=interp,
+                ixf_module=self.IXF_ROUTES.get(slug, ""),
+            )
+        for slug, meta in self.NATIVE_ICS.items():
+            vpath = Path(meta["vendor_path"])
+            if not vpath.is_dir():
+                continue
+            self._families[slug] = IcsToolFamily(
+                slug=slug,
+                label=str(meta["label"]),
+                vendor_path=vpath,
+                source_repo=str(meta["source_repo"]),
+                entry_script="",
+                interpreter="python3",
                 ixf_module=self.IXF_ROUTES.get(slug, ""),
             )
         return self._families

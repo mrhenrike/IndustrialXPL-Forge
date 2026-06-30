@@ -152,6 +152,30 @@ def step_fuzz_compile() -> list[str]:
     return []
 
 
+def step_otscan_smoke() -> list[str]:
+    try:
+        from industrialxpl.core.ics.otscan import PROTOCOLS, simulate_scan
+        from industrialxpl.core.ics_tools import IcsToolsCatalog, IcsToolsRunner
+        from industrialxpl.core.ics_tools.native_handlers import run_native
+
+        if len(PROTOCOLS) < 10:
+            return ["otscan expected >= 10 protocols, got {}".format(len(PROTOCOLS))]
+        plan = simulate_scan("127.0.0.1")
+        if not plan.get("success") or plan.get("count", 0) < 10:
+            return ["otscan simulate_scan failed"]
+        if "otscan" not in IcsToolsCatalog().list_slugs():
+            return ["otscan not in IcsToolsCatalog"]
+        inv = IcsToolsRunner().run_entry("otscan", simulate=False, prefer_native=True)
+        if not inv.get("success"):
+            return ["otscan native inventory: {}".format(inv.get("error") or inv.get("stdout", "")[:80])]
+        nat = run_native("otscan", ["-t", "127.0.0.1"], simulate=True)
+        if not nat or not nat.get("simulate"):
+            return ["otscan run_native simulate failed"]
+    except Exception as exc:
+        return ["otscan_smoke: {}".format(exc)]
+    return []
+
+
 STEP_RUNNERS = {
     "env_doctor": step_env_doctor,
     "verify_family_matrix": step_verify_family_matrix,
@@ -161,6 +185,7 @@ STEP_RUNNERS = {
     "forensics_ioc": step_forensics_ioc,
     "aim2_modules": step_aim2_modules,
     "fuzz_compile": step_fuzz_compile,
+    "otscan_smoke": step_otscan_smoke,
 }
 
 

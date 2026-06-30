@@ -316,6 +316,54 @@ def handle_ics_forensics(vendor: Path, extra: list[str] | None, simulate: bool) 
     }
 
 
+def handle_otscan(vendor: Path, extra: list[str] | None, simulate: bool) -> dict[str, Any]:
+    from industrialxpl.core.ics.otscan import PROTOCOLS, scan, simulate_scan
+
+    parsed = _parse_args(extra)
+    host = _host_from_args(parsed, "-t", "-target")
+    protos_raw = parsed.get("-p", parsed.get("--protocols", "")).strip()
+    protocols = [p.strip() for p in protos_raw.split(",") if p.strip()] if protos_raw else None
+
+    if simulate:
+        plan = simulate_scan(host or "127.0.0.1", protocols)
+        return {
+            **plan,
+            "simulate": True,
+            "would_run": "otscan {} ({} protocols)".format(host or "<target>", plan.get("count", 0)),
+        }
+
+    if not host:
+        return {
+            "success": True,
+            "mode": "native-otscan-inventory",
+            "stdout": (
+                "OTscan (IXF MIT). {} protocols: {}.\n"
+                "Live: ics_tools run otscan -t <ip> [-p modbus,s7,...]"
+            ).format(len(PROTOCOLS), ", ".join(PROTOCOLS)),
+            "protocols": list(PROTOCOLS),
+            "returncode": 0,
+        }
+
+    result = scan(host, protocols, simulate=False)
+    lines = []
+    for proto, detail in result.get("results", {}).items():
+        flag = "yes" if detail.get("detected") else "no"
+        extra_d = detail.get("detail") or detail.get("error") or ""
+        lines.append("{}: {} {}".format(proto, flag, extra_d).strip())
+    return {
+        "success": True,
+        "mode": "native-otscan",
+        "stdout": "OTscan {} — {}/{} detected\n{}".format(
+            host,
+            result.get("detected_count", 0),
+            len(result.get("protocols", [])),
+            "\n".join(lines),
+        ),
+        "returncode": 0,
+        **result,
+    }
+
+
 NATIVE_HANDLERS: dict[str, Callable[..., dict[str, Any]]] = {
     "scadapass": handle_scadapass,
     "redpoint": handle_redpoint,
@@ -324,6 +372,7 @@ NATIVE_HANDLERS: dict[str, Callable[..., dict[str, Any]]] = {
     "isf-w3h": handle_isf_w3h,
     "attkfinder": handle_attkfinder,
     "ics-forensics-tools": handle_ics_forensics,
+    "otscan": handle_otscan,
 }
 
 

@@ -77,9 +77,23 @@ def test_fuzz_smoke() -> list[str]:
 
 
 def test_otscan_smoke() -> list[str]:
+    from industrialxpl.core.ics.otscan import PROTOCOLS, simulate_scan
+    from industrialxpl.core.ics_tools import IcsToolsCatalog
+    from industrialxpl.core.ics_tools.native_handlers import run_native
+
     otscan = ROOT / "industrialxpl/core/ics/otscan"
     if not otscan.is_dir():
-        return []
+        return ["otscan package missing"]
+    if len(PROTOCOLS) < 10:
+        return ["otscan protocols < 10"]
+    plan = simulate_scan("127.0.0.1")
+    if not plan.get("success"):
+        return ["simulate_scan failed"]
+    if "otscan" not in IcsToolsCatalog().list_slugs():
+        return ["otscan not registered in catalog"]
+    nat = run_native("otscan", simulate=True)
+    if not nat or not nat.get("simulate"):
+        return ["run_native otscan simulate failed"]
     return []
 
 
@@ -128,7 +142,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--mode",
-        default="c2,bashlite,aim-manifest,forensics-ioc,aim2,fuzz-smoke",
+        default="c2,bashlite,aim-manifest,forensics-ioc,aim2,fuzz-smoke,otscan-smoke",
         help="Comma-separated modes or 'all'",
     )
     parser.add_argument("--skip-lisa", action="store_true", help="Skip docker lisa test")

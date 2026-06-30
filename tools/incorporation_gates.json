@@ -29,7 +29,8 @@
     },
     "F02": {
       "label": "otscan native",
-      "steps": ["env_doctor", "verify_family_matrix"]
+      "steps": ["env_doctor", "verify_family_matrix", "otscan_smoke"],
+      "min_otscan_protocols": 10
     }
   }
 }
