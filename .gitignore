@@ -15,6 +15,7 @@ env/
 
 # IXF runtime artifacts
 .tmp/
+.ixf/
 temp/
 temps/
 tmp/
@@ -66,6 +67,10 @@ industrialxpl/resources/vendor/*
 !industrialxpl/resources/vendor/submodules__malwares__/**
 !industrialxpl/resources/vendor/submodules__ics-tools__*/
 !industrialxpl/resources/vendor/submodules__ics-tools__/**
+# Lisa Docker MariaDB runtime (compose recreates on first up)
+industrialxpl/resources/vendor/submodules__malwares__lisa/data/db/*
+!industrialxpl/resources/vendor/submodules__malwares__lisa/data/db/README.md
+industrialxpl/resources/vendor/submodules__malwares__lisa/requirements.ixf.txt
 .github/workflows/
 .github/dependabot.yml
 .github/CODEOWNERS

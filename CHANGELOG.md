@@ -26,6 +26,8 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 
 ### Fixed
 - `bashlite_bot_debug` compile — removed broken `release_dir` reference
+- **Bashlite creds parser** — vendor C-array wordlists parsed correctly (was embedding C syntax as strings)
+- **Bashlite build staging** — patches go to `.tmp/staging/`; source tree no longer dirtied on compile
 - Lisa overlay — radare2 built from source; nginx Node 18 + OpenSSL legacy provider
 - `docker_stack` — auto `sudo docker` when socket permission denied
 
