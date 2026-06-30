@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "phases": {
+    "F00": {
+      "label": "Gate infrastructure smoke",
+      "steps": ["env_doctor", "verify_family_matrix"],
+      "min_manifest_urls": 0
+    },
+    "F-AIM0": {
+      "label": "awesome-ics-malware ingest + deep study",
+      "steps": ["env_doctor", "verify_family_matrix", "ingest_awesome", "deep_study", "score_incorporation"],
+      "min_manifest_urls": 80,
+      "min_study_ok_ratio": 0.75
+    },
+    "F-AIM1": {
+      "label": "YARA/IOC forensics corpus",
+      "steps": ["env_doctor", "verify_family_matrix", "forensics_ioc"],
+      "min_ioc_hashes": 50
+    },
+    "F01": {
+      "label": "Fuzzing native",
+      "steps": ["env_doctor", "verify_family_matrix"],
+      "requires": ["gcc"]
+    },
+    "F02": {
+      "label": "otscan native",
+      "steps": ["env_doctor", "verify_family_matrix"]
+    }
+  }
+}

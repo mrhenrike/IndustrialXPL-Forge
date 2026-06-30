@@ -82,6 +82,25 @@ def check_ics() -> list[str]:
     return failures
 
 
+def check_phase_registrations(phase_id: str | None = None) -> list[str]:
+    """Optional hook for incorporation gates — extend per phase."""
+    failures: list[str] = []
+    if phase_id in (None, "F-AIM0", "F-AIM1"):
+        manifest = ROOT / "industrialxpl/resources/research/awesome-ics-malware/manifest.json"
+        if not manifest.is_file():
+            failures.append("F-AIM: manifest.json missing (run ingest_awesome_ics_malware.py)")
+        else:
+            import json
+            data = json.loads(manifest.read_text(encoding="utf-8"))
+            if len(data.get("urls", [])) < 80:
+                failures.append("F-AIM: manifest urls < 80")
+    if phase_id in (None, "F-AIM1"):
+        ioc = ROOT / "industrialxpl/resources/ioc/awesome-ics-malware-hashes.json"
+        if not ioc.is_file():
+            failures.append("F-AIM1: IOC hash file missing")
+    return failures
+
+
 def main() -> int:
     print("=== MALWARE CAPABILITY MATRIX ===")
     for row in capability_matrix():

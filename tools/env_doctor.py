@@ -11,6 +11,7 @@ import importlib
 import platform
 import shutil
 import sys
+from pathlib import Path
 
 
 def _check(label: str, ok: bool, note: str = "") -> tuple[str, str]:
@@ -73,6 +74,7 @@ def main() -> None:
         ("asyncua",    "asyncua",   "pip install asyncua          (OPC UA)"),
         ("cpppo",      "cpppo",     "pip install cpppo            (EtherNet/IP)"),
         ("python-can", "can",       "pip install python-can       (CAN/CANopen)"),
+        ("paho-mqtt",  "paho.mqtt", "pip install paho-mqtt        (ot-audit / IOCONTROL lab)"),
     ]
     for pkg, imp, install in tier2:
         ok = _check_import(pkg, imp)
@@ -93,6 +95,10 @@ def main() -> None:
         ("go",         "Go runtime — for FrostyGoop and Go-based tools"),
         ("perl",       "Perl — for legacy ICS scripts"),
         ("pwsh",       "PowerShell — for Windows EWS exploitation"),
+        ("docker",     "Docker — Lisa/OpenPLC lab stacks"),
+        ("pdftotext",  "poppler-utils — AIM deep-study PDF text extraction"),
+        ("tesseract",  "tesseract-ocr — optional PDF OCR fallback"),
+        ("nmap",       "Nmap — optional OT discovery / NSE"),
     ]
     for runtime, desc in tier3:
         found = shutil.which(runtime) is not None
@@ -108,16 +114,32 @@ def main() -> None:
     except Exception as exc:
         print("  Module indexing failed: \033[31m{}\033[0m".format(exc))
 
+    # ── Incorporation gates ─────────────────────────────────────────────
+    print("\n[Incorporation gates]")
+    gates_json = Path(__file__).resolve().parent / "incorporation_gates.json"
+    manifest = (
+        Path(__file__).resolve().parents[1]
+        / "industrialxpl/resources/research/awesome-ics-malware/manifest.json"
+    )
+    print("  incorporation_gates.json  {}".format(
+        "\033[32mOK\033[0m" if gates_json.is_file() else "\033[31mMISSING\033[0m"
+    ))
+    if manifest.is_file():
+        import json
+        try:
+            m = json.loads(manifest.read_text(encoding="utf-8"))
+            print("  awesome-ics-malware manifest  \033[32m{} URLs\033[0m".format(
+                m.get("url_count", 0)
+            ))
+        except json.JSONDecodeError:
+            print("  awesome-ics-malware manifest  \033[31mINVALID\033[0m")
+    else:
+        print("  awesome-ics-malware manifest  \033[33mnot ingested yet\033[0m")
+
     print("\n[Summary]")
     print("  Python-First mode: all IXF features work without Tier 3 runtimes.")
-    print("  Install Tier 2: 
-        $extras = $args[0].Groups[1].Value
-        "pip install industrialxpl-forge$extras"
-    ")
-    print("  Install all:    
-        $extras = $args[0].Groups[1].Value
-        "pip install industrialxpl-forge$extras"
-    ")
+    print("  Install Tier 2: pip install industrialxpl-forge[ot,forensics,malware-lab]")
+    print("  Gate smoke:     PYTHONPATH=. python3 tools/verify_incorporation_gate.py --phase F00")
     print()
 
 

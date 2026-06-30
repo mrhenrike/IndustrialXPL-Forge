@@ -266,12 +266,21 @@ def handle_attkfinder(vendor: Path, extra: list[str] | None, simulate: bool) -> 
 
 
 def handle_ics_forensics(vendor: Path, extra: list[str] | None, simulate: bool) -> dict[str, Any]:
-    from industrialxpl.core.ics_tools.forensics_engine import inventory, parse_ob_sample, scan_plc
+    from industrialxpl.core.ics_tools.forensics_engine import (
+        inventory,
+        ioc_inventory,
+        match_ioc_hash,
+        parse_ob_sample,
+        scan_plc,
+    )
 
     parsed = _parse_args(extra)
     host = _host_from_args(parsed, "-sc")
+    ioc_hash = parsed.get("-hash", "").strip()
     if simulate:
-        return {"simulate": True, "would_run": "native forensics S7/OB mapping"}
+        return {"simulate": True, "would_run": "native forensics S7/OB mapping/IOC"}
+    if ioc_hash:
+        return {"success": True, "mode": "native-forensics-ioc", "match": match_ioc_hash(ioc_hash)}
     if host and re.match(r"^[\d.]+$", host):
         s7 = scan_plc(host)
         ob = parse_ob_sample(host)
@@ -287,14 +296,22 @@ def handle_ics_forensics(vendor: Path, extra: list[str] | None, simulate: bool) 
             "returncode": 0,
         }
     inv = inventory()
+    ioc = ioc_inventory()
     return {
         "success": True,
         "mode": "native-forensics",
         "stdout": (
-            "ICS Forensics (IXF stdlib). Modules: {} | OB mapping: {} entries.\n"
-            "Scan: ics_tools run ics-forensics-tools -sc <plc_ip>"
-        ).format(len(inv.get("python_modules", [])), inv.get("ob_mapping_entries", 0)),
+            "ICS Forensics (IXF stdlib). Modules: {} | OB mapping: {} entries | IOC hashes: {} ({} families).\n"
+            "Scan: ics_tools run ics-forensics-tools -sc <plc_ip>\n"
+            "IOC:  ics_tools run ics-forensics-tools -hash <sha256>"
+        ).format(
+            len(inv.get("python_modules", [])),
+            inv.get("ob_mapping_entries", 0),
+            ioc.get("hash_count", 0),
+            ioc.get("families", 0),
+        ),
         "inventory": inv,
+        "ioc": ioc,
         "returncode": 0,
     }
 

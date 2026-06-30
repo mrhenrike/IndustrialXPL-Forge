@@ -6,6 +6,21 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 
 ---
 
+## [1.0.54] - 2026-06-28
+
+### Added
+- **Incorporation gates** — `tools/verify_incorporation_gate.py`, `tools/incorporation_gates.json`
+- **E2E lab runner** — `tools/test_e2e_lab.py` (c2, bashlite, aim-manifest, forensics-ioc)
+- **awesome-ics-malware pipeline** — `ingest_awesome_ics_malware.py`, `deep_study_external.py`, `score_incorporation.py`
+- Research corpus — `resources/research/awesome-ics-malware/manifest.json` + per-URL studies
+- **IOC forensics** — `resources/ioc/awesome-ics-malware-hashes.json` (221 hashes, 20 families)
+- `forensics_engine` — `ioc_inventory()`, `match_ioc_hash()`, `scan_file_hashes()`
+- `docs/INCORPORATION_PLAYBOOK.md` — gate protocol + licença MIT-first
+
+### Changed
+- `env_doctor.py` — docker, pdftotext, tesseract, nmap, paho-mqtt, incorporation gate status
+- `verify_family_matrix.py` — `check_phase_registrations()` hook for gates
+
 ## [1.0.52] - 2026-06-30
 
 ### Added

@@ -13,6 +13,67 @@ from industrialxpl.core.ics.s7_client import S7Client
 
 _PKG = Path(__file__).resolve().parents[2]
 _FORENSICS_VENDOR = _PKG / "resources" / "vendor" / "submodules__ics-tools__ics-forensics-tools"
+_IOC_DB = _PKG / "resources" / "ioc" / "awesome-ics-malware-hashes.json"
+_YARA_DIR = _PKG / "resources" / "ioc" / "yara"
+
+
+def _load_ioc_db() -> dict[str, Any]:
+    if not _IOC_DB.is_file():
+        return {"families": {}}
+    try:
+        return json.loads(_IOC_DB.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return {"families": {}}
+
+
+def ioc_inventory() -> dict[str, Any]:
+    db = _load_ioc_db()
+    families = db.get("families", {})
+    hash_count = sum(len(f.get("hashes", [])) for f in families.values())
+    yara_rules = sorted(p.name for p in _YARA_DIR.glob("*.yar")) if _YARA_DIR.is_dir() else []
+    return {
+        "success": True,
+        "families": len(families),
+        "hash_count": hash_count,
+        "yara_rules": yara_rules,
+        "source": str(_IOC_DB),
+    }
+
+
+def match_ioc_hash(digest: str) -> dict[str, Any]:
+    """Match SHA256/SHA1/MD5 against awesome-ics-malware IOC corpus."""
+    needle = digest.strip().lower()
+    db = _load_ioc_db()
+    for family, meta in db.get("families", {}).items():
+        for h in meta.get("hashes", []):
+            if h.get("value", "").lower() == needle:
+                return {
+                    "matched": True,
+                    "family": family,
+                    "hash_type": h.get("type", "unknown"),
+                    "label": h.get("label", ""),
+                }
+    return {"matched": False, "digest": needle}
+
+
+def scan_file_hashes(path: Path) -> dict[str, Any]:
+    """Hash a local file and check IOC DB (lab samples only)."""
+    import hashlib
+
+    if not path.is_file():
+        return {"success": False, "error": "file not found"}
+    data = path.read_bytes()
+    digests = {
+        "md5": hashlib.md5(data).hexdigest(),
+        "sha1": hashlib.sha1(data).hexdigest(),
+        "sha256": hashlib.sha256(data).hexdigest(),
+    }
+    hits = []
+    for kind, val in digests.items():
+        m = match_ioc_hash(val)
+        if m.get("matched"):
+            hits.append({"algo": kind, **m})
+    return {"success": True, "path": str(path), "hits": hits, "digests": digests}
 
 
 def _probe_s7(host: str, port: int = 102, rack: int = 0, slot: int = 2) -> dict[str, Any]:
