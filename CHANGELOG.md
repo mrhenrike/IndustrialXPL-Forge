@@ -6,6 +6,21 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 
 ---
 
+## [1.0.46] - 2026-06-30
+
+### Added
+- `core/ics_tools/` — catalog, orchestrator, runner for 7 incorporated ics-tools families
+- CLI `ics_tools list|analyze|plan|run|compile`
+- `scanners/ics_tools_research/ics_tools_ops` — unified ICS-tools module
+- `scanners/malware_research/malware_full_pipeline` — C2 build, exec, deploy, shell, firmware
+- `core/malware/build_profile.py`, `c2_patch.py`, `obfuscator.py`, `lab_ops.py`
+- CLI `malware build|exec|deploy|shell|firmware` with `setg LHOST` / `LPORT` / `OBFUSCATE` / `STEALTH`
+
+### Changed
+- `MalwareCompiler.compile()` accepts `BuildProfile` for Mirai C2 lab patching
+
+---
+
 ## [1.0.45] - 2026-06-30
 
 ### Added
