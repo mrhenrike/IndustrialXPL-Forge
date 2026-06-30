@@ -9,6 +9,9 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 ## [1.0.52] - 2026-06-30
 
 ### Added
+- **Sample lab DBs** (`resources/sql/samples/`) — `botnet.db`, `mirai.db`, `c2_state.json`
+- `malware db bootstrap|init` — cada usuário gera `.tmp/ixf_c2/` a partir dos samples
+- `botnet_registry_schema.sqlite.sql` — schema versionado do registry IXF
 - **IXF native Bashlite/Gafgyt bot** (`_native/bashlite/`) — telnet scan, wget deploy, IXF C2 arch=8
 - `bashlite_patch.py` — vendor creds embed + table patch
 - `forensics_engine.py` — S7 probe + OB mapping (stdlib, no pandas/snap7)
@@ -20,6 +23,7 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 - **TriStationClient** — TsBase ops (upload/allocate/cancel/exploit)
 - TRITON module — `upload_probe` option
 - HTTP C2 syncs `bashlite.dbg` + `mirai.dbg` into payload root
+
 ### Fixed
 - `bashlite_bot_debug` compile — removed broken `release_dir` reference
 - Lisa overlay — radare2 built from source; nginx Node 18 + OpenSSL legacy provider
