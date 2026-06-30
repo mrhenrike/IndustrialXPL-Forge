@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Author: Andre Henrique (@mrhenrike) | Uniao Geek - https://github.com/Uniao-Geek
+# Author: Andre Henrique (@mrhenrike) | Uniao Geek - https://github.com/mrhenrike
 """Rockwell Automation Logix 5370/5570 CIP Denial of Service (ICSA-26-167-03).
 
 ICSA-26-167-03 covers a class of Denial-of-Service vulnerabilities in Rockwell

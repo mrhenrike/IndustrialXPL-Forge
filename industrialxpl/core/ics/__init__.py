@@ -1,6 +1,6 @@
 """
 IndustrialXPL-Forge — ICS Protocol Client Library
-Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+Author: André Henrique (@mrhenrike) | União Geek — https://github.com/mrhenrike
 
 Reusable Python 3 raw-socket clients for ICS/OT protocols.
 Ported and modernised from ISF (ICSsploit) — original authors credited inline.

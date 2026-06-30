@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Author: Andre Henrique (@mrhenrike) | Uniao Geek - https://github.com/Uniao-Geek
+# Author: Andre Henrique (@mrhenrike) | Uniao Geek - https://github.com/mrhenrike
 """Rockwell Automation RSLinx Classic Denial of Service (ICSA-26-167-02).
 
 RSLinx Classic is a widely deployed OPC/EtherNet-IP gateway service

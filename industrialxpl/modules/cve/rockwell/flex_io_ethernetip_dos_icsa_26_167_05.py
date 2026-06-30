@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Author: Andre Henrique (@mrhenrike) | Uniao Geek - https://github.com/Uniao-Geek
+# Author: Andre Henrique (@mrhenrike) | Uniao Geek - https://github.com/mrhenrike
 """Rockwell Automation FLEX I/O EtherNet/IP Adapters DoS (ICSA-26-167-05).
 
 ICSA-26-167-05 covers two vulnerabilities in Rockwell Automation FLEX I/O

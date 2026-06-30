@@ -1,6 +1,6 @@
 """
 IndustrialXPL-Forge — Modbus/TCP Client
-Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+Author: André Henrique (@mrhenrike) | União Geek — https://github.com/mrhenrike
 
 Python 3 raw-socket implementation of the Modbus/TCP protocol.
 Ported and modernised from ISF ModbusClient (original: WenZhe Zhu / ICSsploit).

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Author: Andre Henrique (@mrhenrike) | Uniao Geek - https://github.com/Uniao-Geek
+# Author: Andre Henrique (@mrhenrike) | Uniao Geek - https://github.com/mrhenrike
 """Rockwell Automation CompactLogix - ICSA-26-167-04 (June 2026).
 
 ICSA-26-167-04 is a June 2026 advisory covering new vulnerability classes

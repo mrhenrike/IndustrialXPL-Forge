@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Author: Andre Henrique (@mrhenrike) | Uniao Geek - https://github.com/Uniao-Geek
+# Author: Andre Henrique (@mrhenrike) | Uniao Geek - https://github.com/mrhenrike
 """Rockwell Automation FactoryTalk Analytics PavilionX (ICSA-26-167-01).
 
 FactoryTalk Analytics PavilionX is a Model Predictive Control (MPC) solution

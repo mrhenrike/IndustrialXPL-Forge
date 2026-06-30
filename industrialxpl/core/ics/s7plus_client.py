@@ -1,6 +1,6 @@
 """
 IndustrialXPL-Forge — Siemens S7comm+ Client (S7-1200/1500)
-Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+Author: André Henrique (@mrhenrike) | União Geek — https://github.com/mrhenrike
 
 Python 3 raw-socket implementation of S7comm+ (TIA v13+) over ISO-on-TCP.
 Ported and modernised from ISF S7PlusClient (original: WenZhe Zhu / ICSsploit).
