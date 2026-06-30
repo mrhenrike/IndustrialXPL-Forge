@@ -30,6 +30,7 @@ class Exploit(Exploit):
         "cve":              "CVE-2022-30993",
         "cvss":             "9.8",
         "severity":         "CRITICAL",
+        "exploit_level":    "A",
         "mitre_techniques": ['T0866', 'T0882'],
         "mitre_tactics":    ['Initial Access'],
     }

@@ -87,12 +87,42 @@ Examples:
         default=False,
         help="Print version and exit",
     )
+    p.add_argument(
+        "--no-color",
+        dest="no_color",
+        action="store_true",
+        default=False,
+        help="Disable ANSI colors (legacy terminals / piping)",
+    )
     return p
+
+
+def _apply_no_color() -> None:
+    if "--no-color" in sys.argv:
+        from industrialxpl.core.exploit.printer import configure_console
+        configure_console(no_color=True)
+
+
+def _run_serve() -> None:
+    from industrialxpl.api.server import run_server
+
+    p = argparse.ArgumentParser(prog="ixf serve", description="REST API server (issue #9)")
+    p.add_argument("--host", default="127.0.0.1", help="Bind address")
+    p.add_argument("--port", type=int, default=8443, help="Listen port")
+    p.add_argument("--token", default="", help="Optional Bearer token")
+    args = p.parse_args(sys.argv[2:])
+    run_server(host=args.host, port=args.port, token=args.token)
 
 
 def main() -> None:
     """Launch IXF in the appropriate mode based on CLI arguments."""
     from industrialxpl.interpreter import IXFInterpreter, VERSION
+
+    if len(sys.argv) > 1 and sys.argv[1] == "serve":
+        _run_serve()
+        return
+
+    _apply_no_color()
 
     # Legacy: if first arg is not a flag, treat as single command (backward compat)
     if len(sys.argv) > 1 and not sys.argv[1].startswith("-"):
@@ -110,6 +140,10 @@ def main() -> None:
     interp = IXFInterpreter()
 
     # Apply CLI-level global options before any resource file runs
+    if args.no_color:
+        from industrialxpl.core.exploit.printer import configure_console
+        configure_console(no_color=True)
+
     if args.loglevel:
         from industrialxpl.core.exploit.printer import set_log_level
         set_log_level(args.loglevel)

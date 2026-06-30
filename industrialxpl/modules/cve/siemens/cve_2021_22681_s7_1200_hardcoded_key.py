@@ -35,6 +35,7 @@ class Exploit(Exploit):
         "cve":              "CVE-2021-22681",
         "cvss":             "9.8",
         "severity":         "CRITICAL",
+        "exploit_level":    "A",
         "mitre_techniques": ['T0855', 'T0830'],
         "mitre_tactics":    ['Collection'],
     }

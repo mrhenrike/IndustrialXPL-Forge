@@ -1,0 +1,97 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build-verify:
+    name: Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - python-version: "3.9"
+          - python-version: "3.10"
+          - python-version: "3.11"
+          - python-version: "3.12"
+          - python-version: "3.13"
+          - python-version: "3.14"
+            experimental: true
+
+    continue-on-error: ${{ matrix.experimental == true }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install core dependencies
+        run: |
+          pip install --upgrade pip
+          pip install requests paramiko rich psutil build
+
+      - name: Verify module index (no heavy deps)
+        run: |
+          python -c "
+          from industrialxpl.core.exploit.utils import index_modules
+          mods = index_modules()
+          print(f'Modules indexed: {len(mods)}')
+          assert len(mods) > 700, f'Expected 700+ modules, got {len(mods)}'
+          print('Module index: PASS')
+          "
+
+      - name: Verify interpreter bootstrap
+        run: |
+          python -c "
+          import sys
+          import types
+          for mod in ['scapy', 'scapy.all', 'pysnmp', 'pysnmp.hlapi',
+                      'pymodbus', 'asyncua', 'can', 'openai', 'anthropic']:
+              sys.modules.setdefault(mod, types.ModuleType(mod))
+          from industrialxpl.core.exploit.exploit import BaseExploit
+          from industrialxpl.core.exploit.safety import DestructiveGate
+          print('Core engine: PASS')
+          "
+
+      - name: Verify GitHub issue deliverables
+        if: matrix.python-version == '3.11'
+        run: PYTHONPATH=. python tools/verify_github_issues.py
+
+      - name: Prepare local packaging template
+        if: matrix.python-version == '3.11'
+        run: cp pyproject.toml.example pyproject.toml
+
+      - name: Build distribution package
+        if: matrix.python-version == '3.11'
+        run: python -m build
+
+      - name: Verify build artifacts
+        if: matrix.python-version == '3.11'
+        run: |
+          ls -la dist/
+          python -m pip install twine
+          twine check dist/*
+
+  security-scan:
+    name: Security audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install pip-audit bandit
+      - run: |
+          pip-audit -r requirements.txt \
+            --ignore-vuln PYSEC-2022-43012 \
+            --ignore-vuln PYSEC-2023-66 \
+            || true
+      - run: |
+          bandit -r industrialxpl/core/ -ll -q || true

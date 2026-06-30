@@ -30,6 +30,7 @@ class Exploit(Exploit):
         "cve":              "CVE-2023-6448",
         "cvss":             "10.0",
         "severity":         "CRITICAL",
+        "exploit_level":    "A",
         "mitre_techniques": ['T0859', 'T0813'],
         "mitre_tactics":    ['Credential Access'],
     }

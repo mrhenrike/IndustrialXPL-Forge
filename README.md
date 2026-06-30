@@ -30,6 +30,12 @@ pip install industrialxpl-forge
 ixf
 ```
 
+**Terminal output:** use a modern terminal with ANSI support (Linux/macOS, Windows Terminal, PowerShell 7+). On legacy `cmd.exe`, pass `--no-color` to disable escape sequences.
+
+**REST API:** `ixf serve --host 127.0.0.1 --port 8443` — optional OpenAPI via `pip install industrialxpl-forge[api]`.
+
+**Architecture:** see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for component diagram and data flow.
+
 Or from source (includes full malware + ics-tools vendor corpus, ~2 GB):
 
 ```bash

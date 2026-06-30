@@ -71,7 +71,8 @@ industrialxpl/resources/vendor/*
 industrialxpl/resources/vendor/submodules__malwares__lisa/data/db/*
 !industrialxpl/resources/vendor/submodules__malwares__lisa/data/db/README.md
 industrialxpl/resources/vendor/submodules__malwares__lisa/requirements.ixf.txt
-.github/workflows/
+.github/workflows/*
+!.github/workflows/ci.yml
 .github/dependabot.yml
 .github/CODEOWNERS
 CODEOWNERS
