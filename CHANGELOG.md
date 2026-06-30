@@ -6,6 +6,19 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 
 ---
 
+## [1.0.55] - 2026-06-28
+
+### Added
+- **F-AIM2 gap modules** (awesome-ics-malware 20/20 families):
+  - `fast16_simulation_sabotage.py`, `chaya_003_siemens_eng_kill.py`
+  - `dynowiper_hmi_wiper.py`, `zionsiphon_water_lab.py`
+- `aim2_helpers.py` — TTP helpers + `aim2_family_status()`
+- Gate **F-AIM2** em `incorporation_gates.json`
+
+### Changed
+- `score_incorporation.py` — gaps zerados (stuxnet parcial)
+- `test_e2e_lab.py` — modo `aim2`
+
 ## [1.0.54] - 2026-06-28
 
 ### Added

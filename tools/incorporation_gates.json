@@ -17,6 +17,11 @@
       "steps": ["env_doctor", "verify_family_matrix", "forensics_ioc"],
       "min_ioc_hashes": 50
     },
+    "F-AIM2": {
+      "label": "awesome-ics-malware gap modules",
+      "steps": ["env_doctor", "verify_family_matrix", "aim2_modules"],
+      "min_aim2_modules": 4
+    },
     "F01": {
       "label": "Fuzzing native",
       "steps": ["env_doctor", "verify_family_matrix"],

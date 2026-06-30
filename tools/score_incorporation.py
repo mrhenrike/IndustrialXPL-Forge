@@ -18,7 +18,7 @@ BACKLOG = RESEARCH / "incorporation_backlog.json"
 
 # IXF module coverage map (awesome-ics-malware families)
 IXF_COVERAGE = {
-    "fast16": {"status": "gap", "target": "modules/cve/malware/fast16_simulation_sabotage.py"},
+    "fast16": {"status": "covered", "target": "modules/cve/malware/fast16_simulation_sabotage.py"},
     "stuxnet": {"status": "partial", "target": "scanners/ics + stuxnet_analyze"},
     "night-dragon": {"status": "covered", "target": "modules/cve/malware/night_dragon_oil_gas.py"},
     "duqu": {"status": "skip", "target": "reference-only"},
@@ -35,9 +35,9 @@ IXF_COVERAGE = {
     "frostygoop": {"status": "covered", "target": "modules/cve/apt/frostygoop_modbus_heating.py"},
     "fuxnet": {"status": "covered", "target": "modules/cve/malware/fuxnet_sensor_gateway_brick.py"},
     "iocontrol": {"status": "covered", "target": "modules/cve/malware/iocontrol_iot_ot_backdoor.py"},
-    "chaya_003": {"status": "gap", "target": "modules/cve/malware/chaya_003_siemens_eng_kill.py"},
-    "dynowiper": {"status": "gap", "target": "modules/cve/malware/dynowiper_hmi_wiper.py"},
-    "zionsiphon": {"status": "gap", "target": "modules/cve/malware/zionsiphon_water_lab.py"},
+    "chaya_003": {"status": "covered", "target": "modules/cve/malware/chaya_003_siemens_eng_kill.py"},
+    "dynowiper": {"status": "covered", "target": "modules/cve/malware/dynowiper_hmi_wiper.py"},
+    "zionsiphon": {"status": "covered", "target": "modules/cve/malware/zionsiphon_water_lab.py"},
 }
 
 

@@ -119,7 +119,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--mode",
-        default="c2,bashlite,aim-manifest,forensics-ioc",
+        default="c2,bashlite,aim-manifest,forensics-ioc,aim2",
         help="Comma-separated modes or 'all'",
     )
     parser.add_argument("--skip-lisa", action="store_true", help="Skip docker lisa test")
