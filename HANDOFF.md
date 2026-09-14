@@ -907,3 +907,18 @@ Path: offsecforge/intel/industrialxpl_bridge.py (a implementar)
 ### Pendencias para PR
 - [ ] stuxnet_s7_ob_inject.py: seguir contrato IXF com simulate=True e DestructiveGate
 - [ ] Abrir issue: "feat(plc/siemens): add Stuxnet-style OB1/OB35 injection module"
+
+## [2026-09-14 17:50] -- FrostyGoop OT malware module added
+
+### Estado ao encerrar
+- Adicionado modulo frostygoop_ot_malware_detector_simulator.py
+- IOC detection (SHA256, YARA rule), Modbus anomaly detection, config parser
+- Simulation mode com DestructiveGate=False por padrao
+- YARA rule incluida no modulo para deteccao forense
+
+### Proximo passo imediato
+- Adicionar outros malwares OT: Industroyer, Triton/TRISIS, BlackEnergy ICS components
+
+### Pendencias
+- [ ] Industroyer/Crashoverride module
+- [ ] Triton/TRISIS analysis module
