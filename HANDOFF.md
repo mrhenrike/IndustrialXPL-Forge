@@ -892,3 +892,18 @@ python tools/env_doctor.py
 ### Paths importantes
 - Windows: `D:\Projetos-SafeLabs\submodules\Uniao-Geek\`
 - Linux: `/mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/`
+
+## [2026-09-14] TupaXPL-Forge - Sugestao de evolucao upstream
+
+### Origem
+TupaXPL-Forge usa IXF como motor de exploit ICS/OT.
+Path: offsecforge/intel/industrialxpl_bridge.py (a implementar)
+
+### O que TupaXPL adicionou / planeja
+- Bridge para IXF em offsecforge/intel/industrialxpl_bridge.py
+- Modulo Stuxnet S7 hook para industrialxpl/modules/exploits/plc/siemens/stuxnet_s7_ob_inject.py
+- Analise de rootkit Stuxnet em offsecforge/modules/ics_ot/stuxnet/
+
+### Pendencias para PR
+- [ ] stuxnet_s7_ob_inject.py: seguir contrato IXF com simulate=True e DestructiveGate
+- [ ] Abrir issue: "feat(plc/siemens): add Stuxnet-style OB1/OB35 injection module"
