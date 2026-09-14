@@ -43,7 +43,7 @@ jobs:
           from industrialxpl.core.exploit.utils import index_modules
           mods = index_modules()
           print(f'Modules indexed: {len(mods)}')
-          assert len(mods) > 700, f'Expected 700+ modules, got {len(mods)}'
+          assert len(mods) > 1000, f'Expected 1000+ modules, got {len(mods)}'
           print('Module index: PASS')
           "
 
