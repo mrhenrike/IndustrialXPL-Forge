@@ -1,4 +1,4 @@
-﻿<p align="center">
+<p align="center">
   <img src="docs/img/industrialxpl-forge-banner_16x9.png" alt="IndustrialXPL-Forge Banner" width="100%"/>
 </p>
 
@@ -648,3 +648,35 @@ OT/ICS systems control critical physical infrastructure. Unauthorized use may ca
 **Author:** André Henrique ([@mrhenrike](https://github.com/mrhenrike)) | [União Geek](https://uniaogeek.com.br/)
 
 Module sources: EmbedXPL-Forge (suite sibling), ISF/ICSSploit, ModBusSploit, n-days-poc-benchmark, InduGuard, ZeronTek OT Hunt research, CISA ICS-CERT advisories, Vedere Labs OT:ICEFALL, ExploitDB ICS catalog, GitHub public PoCs.
+---
+
+## Contact
+
+**Support / general inquiries:** security.research@uniaogeek.com.br
+**Security issues:** [SECURITY.md](SECURITY.md)
+
+---
+
+### André Henrique
+
+| | |
+|---|---|
+| GitHub | [@mrhenrike](https://github.com/mrhenrike) |
+| X / Twitter | [@mrhenrike](https://x.com/mrhenrike) |
+| LinkedIn | [mrhenrike](https://www.linkedin.com/in/mrhenrike/) |
+
+### União Geek
+
+| | |
+|---|---|
+| Website | [uniaogeek.com.br](https://uniaogeek.com.br/) |
+| Blog | [uniaogeek.com.br/blog](https://uniaogeek.com.br/blog/) |
+| GitHub | [Uniao-Geek](https://github.com/Uniao-Geek) |
+| Instagram | [@uniaogeek](https://www.instagram.com/uniaogeek/) |
+
+---
+
+**License:** BSD-3-Clause License - Copyright (c) 2026 União Geek
+**Created by:** André Henrique ([@mrhenrike](https://github.com/mrhenrike)) | [União Geek](https://uniaogeek.com.br/)
+
+[Leia em Português](README.pt-BR.md) - [Command coverage](docs/commands.md) - [Wiki](../../wiki)
