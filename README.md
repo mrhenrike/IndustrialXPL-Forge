@@ -1,19 +1,26 @@
-﻿![IndustrialXPL-Forge](docs/img/industrialxpl_forge-banner_16x9-en_us.png)
+﻿<p align="center">
+  <img src="docs/img/industrialxpl-forge-banner_16x9.png" alt="IndustrialXPL-Forge Banner" width="100%"/>
+</p>
+
+<p align="center">
+  [![Python](https://img.shields.io/badge/Python-3.8%2B-blue?style=flat-square&logo=python)](https://python.org)
+  [![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-informational?style=flat-square)](README.md#compatibility)
+  [![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
+  [![XPL Suite](https://img.shields.io/badge/XPL--Forge-Suite-red?style=flat-square)](https://github.com/mrhenrike)
+  [![Issues](https://img.shields.io/github/issues/mrhenrike/IndustrialXPL-Forge?style=flat-square)](https://github.com/mrhenrike/IndustrialXPL-Forge/issues)
+  [![Last Commit](https://img.shields.io/github/last-commit/mrhenrike/IndustrialXPL-Forge?style=flat-square)](https://github.com/mrhenrike/IndustrialXPL-Forge/commits)
+</p>
+
+---
+
+> **Platform Note:** This framework is designed and tested primarily on **Linux** (Debian/Ubuntu/Kali). Most hardware-dependent modules (wireless adapters, USB devices, raw socket access, firmware tools) require Linux. Running on Windows or macOS may cause errors or limited functionality in many modules. Linux is strongly recommended for maximum compatibility.
+
+---
 
 # IndustrialXPL-Forge (IXF)
 
 > **The World's Largest OT/ICS/SCADA Security Assessment & Exploitation Framework**
 > Part of the XPL-Forge suite | Author: André Henrique ([@mrhenrike](https://github.com/mrhenrike)) | [União Geek](https://uniaogeek.com.br/)
-
-[![PyPI version](https://img.shields.io/pypi/v/industrialxpl-forge?color=red&label=PyPI)](https://pypi.org/project/industrialxpl-forge/)
-[![Python](https://img.shields.io/pypi/pyversions/industrialxpl-forge?color=blue&label=Python)](https://pypi.org/project/industrialxpl-forge/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![CI](https://img.shields.io/github/actions/workflow/status/mrhenrike/IndustrialXPL-Forge/ci.yml?branch=master&label=CI)](https://github.com/mrhenrike/IndustrialXPL-Forge/actions)
-[![Modules](https://img.shields.io/badge/Modules-1190%2B-brightgreen)](https://github.com/mrhenrike/IndustrialXPL-Forge)
-[![Vendors](https://img.shields.io/badge/Vendors-150%2B-orange)](https://github.com/mrhenrike/IndustrialXPL-Forge)
-[![Protocols](https://img.shields.io/badge/Protocols-50%2B-blue)](https://github.com/mrhenrike/IndustrialXPL-Forge)
-[![MITRE ATT&CK ICS](https://img.shields.io/badge/MITRE%20ATT%26CK%20ICS-v19-red)](https://attack.mitre.org/matrices/ics/)
-[![Platform](https://img.shields.io/badge/Platform-OT%20%7C%20ICS%20%7C%20SCADA%20%7C%20IIoT-darkred)](https://github.com/mrhenrike/IndustrialXPL-Forge)
 
 **Python-First. Pure Python implementation — install and run with a single `pip install`.**
 
