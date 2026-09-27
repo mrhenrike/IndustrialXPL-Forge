@@ -1,0 +1,7 @@
+# Privacy policy
+
+We control access to the malware samples in the CUBE-MALIOT-2021 data set by including them in a password-protected archive and making the password available to interested parties via a controlled procedure. In order to complete this procedure, we request interested parties to fill and submit a form of declaration. By filling, signing, and submitting the form, interested parties declare that they will use the data set only for research and/or educational purposes and that they will take precautions when working with the malware samples in order to avoid causing any (intentional and unintentional) harm.
+
+We request interested parties to fill in some personal data (specifically, name, affiliation, address, e-mail, phone number, and web site URL) in the declaration form. We request this data for the purpose of verifying if the interested party is indeed active in research or education. We may use this data to contact the interested party for the purpose of this verification. In addition, we use the provided e-mail address to share the password to the archive containing the malware samples with the interested party. We keep all data submitted in the declaration form for 5 years, in order to keep track of the interested parties that obtained access to the malware samples of the CUBE-MALIOT-2021 data set. We do not share the submitted data with any third parties.
+
+Policy version: 2021-12-07

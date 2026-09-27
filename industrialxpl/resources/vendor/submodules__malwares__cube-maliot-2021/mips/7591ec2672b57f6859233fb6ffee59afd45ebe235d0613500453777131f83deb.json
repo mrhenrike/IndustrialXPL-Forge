@@ -1,0 +1,30 @@
+{
+    "architecture": "MIPS",
+    "av_labels_generation_date": "2020-08-07T06:53:20",
+    "avclass_labels": {
+        "ddos": 3,
+        "gafgyt": 13,
+        "mirai": 2
+    },
+    "elf_header_info": {
+        "abi_version": 0,
+        "class": "ELF32",
+        "data": "2's complement, little endian",
+        "entrypoint": 4194976,
+        "hdr_version": "1 (current)",
+        "num_prog_headers": 4,
+        "num_section_headers": 21,
+        "obj_version": "0x1",
+        "os_abi": "UNIX - System V",
+        "type": "EXEC (Executable file)"
+    },
+    "first_submission_date": "2019-07-31T10:20:20",
+    "magic": "ELF 32-bit LSB executable, MIPS, MIPS-I version 1 (SYSV), statically linked, not stripped",
+    "magic_is_stripped": false,
+    "magic_linking": "static",
+    "md5": "21637fa9bd217645293ab4b9a42487df",
+    "sha1": "2d31e5eec342ce4ab8d98ad1cd8fd3f463e2ee78",
+    "sha256": "7591ec2672b57f6859233fb6ffee59afd45ebe235d0613500453777131f83deb",
+    "size": 105231,
+    "tlsh": "67A3D917BB51CEB7C85FDE7306AA450120CEE55612986B2FB2B4DA6CF70B94E08E3D44"
+}

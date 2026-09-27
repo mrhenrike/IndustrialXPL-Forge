@@ -1,0 +1,10 @@
+# OpenPLC lab overlay — docker compose (F17)
+services:
+  openplc:
+    image: openplc/openplc:latest
+    ports:
+      - "8080:8080"
+      - "502:502"
+    environment:
+      - IXF_LAB=1
+    restart: unless-stopped

@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "scenarios": [
+    {
+      "id": "ics-modbus-unauth-write",
+      "title": "Unauthorized Modbus FC16 write",
+      "protocol": "modbus",
+      "mitre": ["T0855", "T0836"],
+      "detection": {
+        "selection": {"func_code": 16, "auth": "none"},
+        "condition": "selection"
+      }
+    },
+    {
+      "id": "ics-s7-stop-plc",
+      "title": "S7comm PLC STOP command",
+      "protocol": "s7",
+      "mitre": ["T0816", "T0806"],
+      "detection": {
+        "selection": {"pdu": "0x29", "rosctr": "job"},
+        "condition": "selection"
+      }
+    },
+    {
+      "id": "ics-iec104-startdt-flood",
+      "title": "IEC-104 STARTDT connection flood",
+      "protocol": "iec104",
+      "mitre": ["T0814"],
+      "detection": {
+        "selection": {"apci": "0x07", "rate_per_min": ">10"},
+        "condition": "selection"
+      }
+    },
+    {
+      "id": "ics-bacnet-whois-scan",
+      "title": "BACnet Who-Is discovery sweep",
+      "protocol": "bacnet",
+      "mitre": ["T0846"],
+      "detection": {
+        "selection": {"bvll": "0x81", "npdu": "who-is"},
+        "condition": "selection"
+      }
+    },
+    {
+      "id": "ics-opcua-anonymous",
+      "title": "OPC UA anonymous session",
+      "protocol": "opc-ua",
+      "mitre": ["T0886"],
+      "detection": {
+        "selection": {"token": "Anonymous", "endpoint": "4840"},
+        "condition": "selection"
+      }
+    }
+  ]
+}

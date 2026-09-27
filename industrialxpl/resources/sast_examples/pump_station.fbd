@@ -1,0 +1,36 @@
+(* IEC 61131-3 Function Block Diagram - Pump Station
+   VULNERABILITIES: Unsafe setpoints, missing interlocks *)
+
+(* FB Instance: PID_PressureControl *)
+FUNCTION_BLOCK PID_PressureControl
+VAR_INPUT
+    Setpoint : REAL := 80.0;    (* PSI - no max limit defined *)
+    ProcessValue : REAL;
+    ManualMode : BOOL;
+    (* DANGEROUS: ManualMode bypasses all PID safety limits *)
+END_VAR
+VAR_OUTPUT  
+    Output : REAL;              (* 0-100% valve position *)
+    Alarm_High : BOOL;
+    Alarm_Low : BOOL;
+END_VAR
+VAR
+    (* PID parameters - can be modified via OPC UA without auth *)
+    Kp : REAL := 2.0;
+    Ki : REAL := 0.5;
+    Kd : REAL := 0.1;
+    Output_Max : REAL := 100.0;
+    Output_Min : REAL := 0.0;
+    (* MISSING: anti-windup protection *)
+    (* MISSING: rate-of-change limiting *)
+END_VAR
+
+IF ManualMode THEN
+    (* UNSAFE: Output set directly from HMI with no limits *)
+    (* Operator can set Output to 100% instantly *)
+ELSE
+    (* PID calculation - simplified, no derivative filter *)
+    (* Integer overflow possible if large error + high Kp *)
+END_IF;
+
+END_FUNCTION_BLOCK

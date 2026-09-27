@@ -1,0 +1,20 @@
+(* IEC 61131-3 Ladder Diagram - Power Substation Control
+   Represented in textual notation for SAST analysis
+   VULNERABILITIES: Missing interlocks, hardcoded addresses *)
+
+NETWORK 1: (* Circuit Breaker Control - UNSAFE *)
+(* Missing: no operator confirmation required before tripping *)
+|---[CB_TRIP_CMD]---[/PROTECTION_BYPASS]---( CB_TRIP )---|
+(* Note: PROTECTION_BYPASS coil can be set from any source *)
+
+NETWORK 2: (* Emergency Stop - can be overridden *)
+|---[EMGCY_STOP]---[/MAINTENANCE_OVERRIDE]---( STOP_ALL )---|
+(* MAINTENANCE_OVERRIDE allows bypass via HMI or Modbus *)
+
+NETWORK 3: (* Transformer protection *)
+|---[OVERCURRENT_TRIP]---( OPEN_BREAKER )---|
+(* Missing: no alarm before trip - no time delay for coordination *)
+
+NETWORK 4: (* Hardcoded address in comment *)
+(* Remote SCADA IP: 192.168.10.5 - Admin: substation/sub2024 *)
+|---[REMOTE_CMD]---( EXECUTE_CMD )---|
