@@ -1,0 +1,11 @@
+# IXF Resource File — IEC 62443-3-2 Zone and Conduit Audit
+# Usage: ixf -r resources/rc/iec62443_audit.rc
+# (interactive by default — questionnaire requires user input)
+
+# --- Audit setup ---
+use assessment/iec62443/zone_conduit_audit
+set SIMULATE false
+set SITE_NAME "Plant-A"
+run
+
+back

