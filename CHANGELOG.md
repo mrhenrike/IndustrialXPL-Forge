@@ -12,6 +12,12 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 
 ---
 
+## [minor-sync-2026-09-26] - 2026-09-26
+
+### Changed
+- EmbedXPL v5.0.0 sync: search engine + autopwn modules deployed
+- Domain contracts updated (DOMAIN-CONTRACTS.md)
+
 ## [1.1.1] - 2026-06-30
 
 ### Added
