@@ -13,6 +13,11 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 ---
 
 
+## [1.4.1] — 2026-10-06
+
+### Changed
+- Release alignment: pyproject + interpreter VERSION synced to 1.4.1 for GitHub + PyPI (HEAD beyond v1.4.0).
+
 ## [merged-from-origin] - remote changelog entries
 
 ## [1.3.0] — 2026-09-26
