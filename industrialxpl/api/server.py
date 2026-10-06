@@ -111,7 +111,7 @@ def try_fastapi_app():
         from fastapi import FastAPI
     except ImportError:
         return None
-    app = FastAPI(title="IndustrialXPL-Forge API", version="1.1.1")
+    app = FastAPI(title="IndustrialXPL-Forge API", version="1.4.1")
 
     @app.get("/health")
     def health():
