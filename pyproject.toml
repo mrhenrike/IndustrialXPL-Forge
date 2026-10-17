@@ -54,6 +54,7 @@ dependencies = [
     "rich>=13.0",
     "psutil>=5.9",
     "pyreadline3>=3.4; sys_platform == 'win32'",  # unused — IXF is Linux-only
+    "xpl-core>=0.1.0",
 ]
 
 [project.optional-dependencies]
