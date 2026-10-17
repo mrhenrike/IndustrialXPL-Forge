@@ -101,3 +101,13 @@ packages/**/build.ps1
 *.example
 *.sample
 .coverage
+
+# === Secrets & credentials — NEVER commit ===
+.netrc
+*.crt
+*.cer
+id_rsa
+id_rsa.*
+*.credentials
+credentials.json
+secrets.json
