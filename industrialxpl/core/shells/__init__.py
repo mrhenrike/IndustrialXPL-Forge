@@ -1,44 +1,57 @@
-"""Shell transport engines for IndustrialXPL-Forge.
+"""IndustrialXPL-Forge shell shim -- re-exports from xpl-core canonical package.
 
-Provides pluggable shell transports (TCP, UDP, ICMP, DNS, MQTT, HTTP,
-Meterpreter, IWP) that share a common ShellEngine interface.
+All shell infrastructure now lives in xpl_core.shells. This module
+re-exports the public API so that existing ``from industrialxpl.core.shells
+import ...`` statements continue to work unchanged.
 
-Author: Andre Henrique (LinkedIn/X: @mrhenrike)
-Version: 0.1.0
+Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
 
-from industrialxpl.core.shells.shell_engine import (
+from xpl_core.shells import (
+    # Engine ABC + types
     ShellEngine,
     ShellError,
     ShellConnectionError,
     ShellIOError,
+    ShellTimeoutError,
     ShellMode,
     ShellStatus,
-    ShellTimeoutError,
+    # Concrete engines
+    RawTCPShell,
+    RawUDPShell,
+    ICMPCovertShell,
+    DNSTunnelShell,
+    HTTPPollShell,
+    MQTTShell,
+    MeterpreterBridge,
+    InternalShell,
+    # Handler
+    ShellHandler,
+    reverse_shell_payload,
+    tty_upgrade_commands,
+    # Stager
+    SHELL_TYPES,
+    generate_payload,
+    generate_msf_rc,
+    ShellStagingMixin,
+    # Listener
+    ReverseListener,
+    start_listener,
+    pty_interact,
+    simple_interact,
+    # Session manager (new)
+    SessionManager,
+    SessionState,
+    ShellSession,
 )
-from industrialxpl.core.shells.raw_tcp_shell import RawTCPShell
-from industrialxpl.core.shells.raw_udp_shell import RawUDPShell
-from industrialxpl.core.shells.icmp_covert_shell import ICMPCovertShell
-from industrialxpl.core.shells.dns_tunnel_shell import DNSTunnelShell
-from industrialxpl.core.shells.mqtt_shell import MQTTShell
-from industrialxpl.core.shells.http_poll_shell import HTTPPollShell
-from industrialxpl.core.shells.meterpreter_bridge import MeterpreterBridge
-from industrialxpl.core.shells.internal_shell import InternalShell
 
 __all__ = [
-    "ShellEngine",
-    "ShellError",
-    "ShellConnectionError",
-    "ShellIOError",
-    "ShellMode",
-    "ShellStatus",
-    "ShellTimeoutError",
-    "RawTCPShell",
-    "RawUDPShell",
-    "ICMPCovertShell",
-    "DNSTunnelShell",
-    "MQTTShell",
-    "HTTPPollShell",
-    "MeterpreterBridge",
-    "InternalShell",
+    "ShellEngine", "ShellError", "ShellConnectionError", "ShellIOError",
+    "ShellTimeoutError", "ShellMode", "ShellStatus",
+    "RawTCPShell", "RawUDPShell", "ICMPCovertShell", "DNSTunnelShell",
+    "HTTPPollShell", "MQTTShell", "MeterpreterBridge", "InternalShell",
+    "ShellHandler", "reverse_shell_payload", "tty_upgrade_commands",
+    "SHELL_TYPES", "generate_payload", "generate_msf_rc", "ShellStagingMixin",
+    "ReverseListener", "start_listener", "pty_interact", "simple_interact",
+    "SessionManager", "SessionState", "ShellSession",
 ]
