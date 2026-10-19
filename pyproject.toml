@@ -255,6 +255,7 @@ ignore = [
 "industrialxpl/interpreter.py" = ["F601", "F821", "F841", "E402", "SIM118"]
 "industrialxpl/__main__.py" = ["E402"]
 "tools/**" = ["F841", "E402", "B005"]
+"tests/**" = ["E402"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["industrialxpl"]
