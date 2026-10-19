@@ -7,7 +7,10 @@ CRITICAL: Can cause real-world blackouts. ONLY for authorized lab testing.
 # Standard: IEC 61850-8-1 (GOOSE operates at Ethernet Layer 2, multicast)
 """
 from __future__ import annotations
-import logging, socket, struct, time
+import logging
+import socket
+import struct
+import time
 from dataclasses import dataclass, field
 
 log = logging.getLogger(__name__)

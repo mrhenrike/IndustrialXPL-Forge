@@ -3,6 +3,7 @@
 Falls back to inline copy when the suite root is not adjacent (standalone install).
 """
 from __future__ import annotations
+
 import sys
 from pathlib import Path
 
@@ -12,8 +13,13 @@ if _SUITE_TOOLS.is_dir() and str(_SUITE_TOOLS) not in sys.path:
 
 try:
     from xpl_cli import (  # noqa: F401
-        ProductInfo, bootstrap, resolve_mode,
-        print_banner, print_help, print_version, run_doctor,
+        ProductInfo,
+        bootstrap,
+        print_banner,
+        print_help,
+        print_version,
+        resolve_mode,
+        run_doctor,
     )
 except ImportError:
     # Standalone install fallback — import from this forge's own copy

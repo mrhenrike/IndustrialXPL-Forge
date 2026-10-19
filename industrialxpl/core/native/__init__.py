@@ -6,4 +6,4 @@ contrib/native-payloads/ when present (GitHub clone only -- not in PyPI).
 
 from industrialxpl.core.native.loader import NativePayloadLoader, NativePayload
 
-__all__ = ["NativePayloadLoader", "NativePayload"]
+__all__ = ["NativePayload", "NativePayloadLoader"]

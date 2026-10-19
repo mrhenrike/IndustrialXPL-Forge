@@ -16,11 +16,13 @@ sys.path.insert(0, str(ROOT))
 
 def test_ixf_exception_hierarchy() -> None:
     from industrialxpl.core.exploit.exceptions import (
+        DestructiveOperationAborted,
+        ExploitRunError,
         IXFException,
         OptionValidationError,
+    )
+    from industrialxpl.core.exploit.exceptions import (
         ModuleNotFoundError as IXFModuleNotFound,
-        ExploitRunError,
-        DestructiveOperationAborted,
     )
     assert issubclass(OptionValidationError, IXFException)
     assert issubclass(IXFModuleNotFound, IXFException)
@@ -71,8 +73,8 @@ def test_optip_empty_allowed() -> None:
 
 
 def test_optip_invalid_raises() -> None:
-    from industrialxpl.core.exploit.option import OptIP
     from industrialxpl.core.exploit.exceptions import OptionValidationError
+    from industrialxpl.core.exploit.option import OptIP
     opt = OptIP("", "target")
     with pytest.raises(OptionValidationError):
         opt.validate("not a valid!address")
@@ -86,8 +88,8 @@ def test_optport_valid() -> None:
 
 
 def test_optport_invalid_range() -> None:
-    from industrialxpl.core.exploit.option import OptPort
     from industrialxpl.core.exploit.exceptions import OptionValidationError
+    from industrialxpl.core.exploit.option import OptPort
     opt = OptPort(502, "port")
     with pytest.raises(OptionValidationError):
         opt.validate(0)
@@ -96,8 +98,8 @@ def test_optport_invalid_range() -> None:
 
 
 def test_optinteger_bounds() -> None:
-    from industrialxpl.core.exploit.option import OptInteger
     from industrialxpl.core.exploit.exceptions import OptionValidationError
+    from industrialxpl.core.exploit.option import OptInteger
     opt = OptInteger(1, "unit id", min_value=1, max_value=255)
     assert opt.validate(1) == 1
     assert opt.validate(255) == 255
@@ -134,8 +136,8 @@ def test_optbool_false_values() -> None:
 
 
 def test_optbool_invalid() -> None:
-    from industrialxpl.core.exploit.option import OptBool
     from industrialxpl.core.exploit.exceptions import OptionValidationError
+    from industrialxpl.core.exploit.option import OptBool
     opt = OptBool(False, "flag")
     with pytest.raises(OptionValidationError):
         opt.validate("maybe")
@@ -148,8 +150,8 @@ def test_optmac_valid() -> None:
 
 
 def test_optmac_invalid() -> None:
-    from industrialxpl.core.exploit.option import OptMAC
     from industrialxpl.core.exploit.exceptions import OptionValidationError
+    from industrialxpl.core.exploit.option import OptMAC
     opt = OptMAC("", "mac")
     with pytest.raises(OptionValidationError):
         opt.validate("not-a-mac")
@@ -164,8 +166,8 @@ def test_opttransport_valid() -> None:
 
 
 def test_opttransport_invalid() -> None:
-    from industrialxpl.core.exploit.option import OptTransport
     from industrialxpl.core.exploit.exceptions import OptionValidationError
+    from industrialxpl.core.exploit.option import OptTransport
     opt = OptTransport()
     with pytest.raises(OptionValidationError):
         opt.validate("serial")

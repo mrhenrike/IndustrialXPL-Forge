@@ -5,8 +5,8 @@ from industrialxpl.core.ics_tools.orchestrator import IcsToolsOrchestrator
 from industrialxpl.core.ics_tools.runner import IcsToolsRunner
 
 __all__ = [
-    "IcsToolsCatalog",
     "IcsToolFamily",
+    "IcsToolsCatalog",
     "IcsToolsOrchestrator",
     "IcsToolsRunner",
 ]

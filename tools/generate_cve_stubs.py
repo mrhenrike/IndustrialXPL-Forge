@@ -9,7 +9,6 @@ Repo is STATIC — no NVD API crawler. New CVEs added on demand via this catalog
 Run: python tools/generate_cve_stubs.py
 """
 
-import os
 import re
 import sys
 from pathlib import Path

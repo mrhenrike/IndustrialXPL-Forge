@@ -14,7 +14,6 @@ Get a free API key: https://nvd.nist.gov/developers/request-an-api-key
 
 import argparse
 import json
-import os
 import sys
 import time
 from pathlib import Path
@@ -147,8 +146,8 @@ class Exploit(Exploit):
 def fetch_nvd_cves(api_key: str, keyword: str, max_results: int = 50) -> list:
     """Fetch CVEs from NVD API v2.0 by keyword."""
     try:
-        import urllib.request
         import urllib.parse
+        import urllib.request
         url = "https://services.nvd.nist.gov/rest/json/cves/2.0?" + urllib.parse.urlencode({
             "keywordSearch": keyword,
             "resultsPerPage": min(max_results, 100),
@@ -167,7 +166,7 @@ def extract_cvss(vuln: dict) -> tuple:
     """Extract CVSS score and severity."""
     metrics = vuln.get("metrics", {})
     for key in ("cvssMetricV31", "cvssMetricV30", "cvssMetricV2"):
-        if key in metrics and metrics[key]:
+        if metrics.get(key):
             m = metrics[key][0].get("cvssData", {})
             score = m.get("baseScore", 0.0)
             severity = m.get("baseSeverity", "UNKNOWN")
