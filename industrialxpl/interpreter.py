@@ -48,7 +48,7 @@ from industrialxpl.core.exploit.utils import (
     pythonize_path,
 )
 
-VERSION = "1.4.1"
+VERSION = "1.5.0"
 
 _BANNER = r"""
  ___           _           _        _       ___  ______  _          _____
