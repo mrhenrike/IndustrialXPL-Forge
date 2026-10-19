@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Batch module generator for IXF — no-CVE protocol abuse and additional CVEs."""
-import re, sys
+import sys
 from pathlib import Path
 
 MODULES = Path(__file__).resolve().parent.parent / "industrialxpl" / "modules"

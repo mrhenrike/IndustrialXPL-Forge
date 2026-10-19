@@ -116,7 +116,7 @@ def _run_serve() -> None:
 
 def main() -> None:
     """Launch IXF in the appropriate mode based on CLI arguments."""
-    from industrialxpl.interpreter import IXFInterpreter, VERSION
+    from industrialxpl.interpreter import VERSION, IXFInterpreter
 
     if len(sys.argv) > 1 and sys.argv[1] == "serve":
         _run_serve()

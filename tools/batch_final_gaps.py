@@ -351,7 +351,7 @@ def main():
             created += 1
             print(f"  {Path(path_or_tuple).name}")
 
-    from industrialxpl.core.exploit.utils import index_modules, import_exploit
+    from industrialxpl.core.exploit.utils import import_exploit, index_modules
     mods = index_modules()
     errs = 0
     for m in mods:

@@ -11,7 +11,9 @@ Fixed in Aedes 1.2.0
 Relevant for ICS/OT environments using MQTT for sensor/device communication.
 Reference: https://github.com/moscajs/aedes/security/advisories/GHSA-5jvp-3p2v-5qgf
 """
-import socket, struct, time
+import socket
+import struct
+import time
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptInt, mute,
     print_error, print_info, print_status, print_success, print_warning,
@@ -132,7 +134,7 @@ class Exploit(Exploit):
             s.sendall(connect)
             connack = s.recv(4)
             if not connack or connack[0] != 0x20:
-                print_warning(f"[GHSA-5jvp-3p2v-5qgf] CONNACK not received — not an MQTT broker or auth required")
+                print_warning("[GHSA-5jvp-3p2v-5qgf] CONNACK not received — not an MQTT broker or auth required")
                 s.close()
                 return
 

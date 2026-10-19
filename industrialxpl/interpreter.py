@@ -8,7 +8,6 @@ Prompt: "ixf >" (global) / "ixf (Module Name) >" (module loaded)
 """
 
 import os
-import shlex
 import sys
 
 from industrialxpl.core.platform import require_linux
@@ -26,18 +25,27 @@ except ModuleNotFoundError:
         readline = None  # type: ignore[assignment]
         _HAS_READLINE = False
 import subprocess
-from pathlib import Path
 from typing import Optional
 
 from industrialxpl.core.exploit.exceptions import IXFException
 from industrialxpl.core.exploit.printer import (
-    print_error, print_info, print_status, print_success, print_table, print_warning,
-    pprint_dict_in_order, printer_queue, set_log_level, get_log_level,
+    get_log_level,
+    pprint_dict_in_order,
+    print_error,
+    print_info,
+    print_status,
+    print_success,
+    print_table,
+    print_warning,
+    set_log_level,
 )
-from industrialxpl.core.exploit.safety import DestructiveGate, IMPACT_LEVELS
+from industrialxpl.core.exploit.safety import DestructiveGate
 from industrialxpl.core.exploit.utils import (
-    index_modules, import_exploit, pythonize_path, humanize_path,
-    module_required, MODULES_DIR,
+    humanize_path,
+    import_exploit,
+    index_modules,
+    module_required,
+    pythonize_path,
 )
 
 VERSION = "1.4.1"
@@ -281,8 +289,8 @@ class BaseInterpreter:
 
     def _startup_update_check(self) -> None:
         """Check PyPI for a newer version and notify the user non-intrusively."""
-        import urllib.request
         import json as _json
+        import urllib.request
         try:
             req = urllib.request.Request(
                 "https://pypi.org/pypi/industrialxpl-forge/json",
@@ -1297,9 +1305,8 @@ Example:
 
     def command_update(self, args: str = "", **kwargs) -> None:
         """Check for IXF updates and optionally upgrade."""
-        import importlib.metadata
-        import urllib.request
         import json as _json
+        import urllib.request
 
         current = VERSION
         print_status("Checking for updates…")
@@ -1414,7 +1421,7 @@ Example:
             if g_target and "target" in self.current_module.options:
                 try:
                     if not getattr(self.current_module, "target", ""):
-                        setattr(self.current_module, "target", g_target)
+                        self.current_module.target = g_target
                 except Exception:
                     pass
             # Warn if poly language requires external runtime
@@ -1556,7 +1563,6 @@ Example:
             return
 
         if key in ("ping_first", "skip_ping"):
-            from industrialxpl.core.exploit.option import OptBool
             _TRUE = {"true", "yes", "1", "on"}
             _FALSE = {"false", "no", "0", "off"}
             lv = value.lower().strip()
@@ -1584,7 +1590,7 @@ Example:
                 print_success("[global] PORT => {}".format(expr))
                 if self.current_module and "port" in self.current_module.options:
                     try:
-                        setattr(self.current_module, "port", expr)
+                        self.current_module.port = expr
                     except Exception:
                         pass
                 return
@@ -1604,7 +1610,7 @@ Example:
             print_success("[global] TRANSPORT => {}".format(lv))
             if self.current_module and "transport" in self.current_module.options:
                 try:
-                    setattr(self.current_module, "transport", lv)
+                    self.current_module.transport = lv
                 except Exception:
                     pass
             return
@@ -1618,7 +1624,7 @@ Example:
                 print_success("[global] UNIT_ID => {}".format(uid))
                 if self.current_module and "unit_id" in self.current_module.options:
                     try:
-                        setattr(self.current_module, "unit_id", uid)
+                        self.current_module.unit_id = uid
                     except Exception:
                         pass
                 return
@@ -1634,7 +1640,7 @@ Example:
                 print_success("[global] timing => {} ({})".format(value, profile.name))
                 if self.current_module and "timing" in self.current_module.options:
                     try:
-                        setattr(self.current_module, "timing", value)
+                        self.current_module.timing = value
                     except Exception:
                         pass
                 return
@@ -1891,7 +1897,7 @@ Example:
             return
 
         if sub not in tree:
-            similar = [c for c in tree.keys() if sub in c or c in sub]
+            similar = [c for c in tree if sub in c or c in sub]
             print_error("Category '{}' not found.".format(sub))
             if similar:
                 print_info("  Did you mean: {}".format(", ".join(similar)))
@@ -1993,7 +1999,7 @@ Example:
             print_info("  use {}".format(humanize_path(m)))
 
     def command_mitre_list(self, args: str, **kwargs) -> None:
-        from industrialxpl.core.mitre.index import TECHNIQUE_INDEX, TACTIC_INDEX, build_index
+        from industrialxpl.core.mitre.index import TACTIC_INDEX, TECHNIQUE_INDEX, build_index
         from industrialxpl.core.mitre.tactics import TACTIC_ALIASES
         build_index(self.modules)
         tactic_filter = args.strip().lower() or None
@@ -2038,14 +2044,14 @@ Example:
         MitreTacticSweeper(target=target, simulate=False).sweep_all()
 
     def command_mitre_coverage(self, args: str, **kwargs) -> None:
-        from industrialxpl.core.mitre.index import build_index, TACTIC_INDEX, TECHNIQUE_INDEX
-        from industrialxpl.core.mitre.tactics import TACTICS, TACTIC_TIDS
+        from industrialxpl.core.mitre.index import TECHNIQUE_INDEX, build_index
+        from industrialxpl.core.mitre.tactics import TACTIC_TIDS, TACTICS
         build_index(self.modules)
         rows = []
         total_cov = total_tids = 0
         for tid_id, tname in TACTICS.items():
             tids = TACTIC_TIDS.get(tid_id, [])
-            covered = sum(1 for t in tids if t in TECHNIQUE_INDEX and TECHNIQUE_INDEX[t])
+            covered = sum(1 for t in tids if TECHNIQUE_INDEX.get(t))
             pct = int(covered / len(tids) * 100) if tids else 0
             rows.append((tid_id, tname, str(len(tids)), str(covered), "{}%".format(pct)))
             total_tids += len(tids)
@@ -2117,8 +2123,8 @@ Example:
         MitreTacticSweeper(target=target, simulate=True).sweep_technique(tid)
 
     def command_ttp_list(self, args: str, **kwargs) -> None:
-        from industrialxpl.core.mitre.index import TECHNIQUE_INDEX, TACTIC_INDEX, build_index
-        from industrialxpl.core.mitre.tactics import TACTIC_ALIASES, TACTICS
+        from industrialxpl.core.mitre.index import TACTIC_INDEX, TECHNIQUE_INDEX, build_index
+        from industrialxpl.core.mitre.tactics import TACTIC_ALIASES
         build_index(self.modules)
         tactic_filter = None
         if "--tactic" in args:
@@ -2142,11 +2148,15 @@ Example:
         parts = args.strip().split()
         sub = (parts[0].lower() if parts else "help")
 
-        from industrialxpl.core.malware import MalwareCatalog, MalwareOrchestrator, MalwareCompiler, BuildProfile
-        from industrialxpl.core.malware.lab_ops import (
-            execute_artifact, deploy_to_target, firmware_replace_plan, interactive_shell_session,
-        )
         from pathlib import Path
+
+        from industrialxpl.core.malware import BuildProfile, MalwareCatalog, MalwareCompiler, MalwareOrchestrator
+        from industrialxpl.core.malware.lab_ops import (
+            deploy_to_target,
+            execute_artifact,
+            firmware_replace_plan,
+            interactive_shell_session,
+        )
 
         if sub in ("help", "?", ""):
             print_info("""
@@ -2320,8 +2330,8 @@ Modules:
             dsn = str(self.global_variables.get("C2_DSN", ""))
             mgr = MiraiC2Manager()
             if action == "build-go":
+                from industrialxpl.core.malware.db_init import default_dsn, init_schema
                 from industrialxpl.core.malware.go_cnc_manager import build_go_cnc
-                from industrialxpl.core.malware.db_init import init_schema, default_dsn
                 r = build_go_cnc()
                 if r.get("success"):
                     print_success("Go CNC: {} ({} bytes)".format(r.get("output"), r.get("size", 0)))
@@ -2443,8 +2453,8 @@ Modules:
             return
 
         if sub == "propagate" and len(parts) >= 2:
-            from industrialxpl.core.malware.propagator import BotnetPropagator
             from industrialxpl.core.malware.crosscompile import RELEASE_DIR
+            from industrialxpl.core.malware.propagator import BotnetPropagator
             target = parts[1]
             lhost = str(self.global_variables.get("LHOST", "127.0.0.1") or "127.0.0.1")
             lport = int(self.global_variables.get("LPORT", 48101) or 48101)
@@ -2505,7 +2515,7 @@ Modules:
         parts = args.strip().split()
         sub = (parts[0].lower() if parts else "help")
 
-        from industrialxpl.core.ics_tools import IcsToolsOrchestrator, IcsToolsCatalog
+        from industrialxpl.core.ics_tools import IcsToolsCatalog, IcsToolsOrchestrator
 
         if sub in ("help", "?", ""):
             print_info("""
@@ -2600,7 +2610,7 @@ Examples:
 
     def command_nse(self, args: str = "", **kwargs) -> None:
         """Manage IXF Nmap NSE scripts. Usage: nse [install|list|status] [--force]"""
-        from industrialxpl.core.nse.nse_manager import NseManager, NSE_SCRIPTS_DIR
+        from industrialxpl.core.nse.nse_manager import NSE_SCRIPTS_DIR, NseManager
 
         parts = args.strip().split()
         subcmd = parts[0].lower() if parts else "status"
@@ -2716,7 +2726,7 @@ Examples:
                 vendors.add(parts[1])
         malware = sum(1 for m in mods if "malware" in m or m.startswith("cve.apt."))
         print_info(f"Vendors covered: {len(vendors)} | Malware TTPs: {malware}")
-        print_info(f"MITRE ATT&CK for ICS: 12 tactics, 103 techniques mapped")
+        print_info("MITRE ATT&CK for ICS: 12 tactics, 103 techniques mapped")
         print_info("PyPI: pip install industrialxpl-forge | GitHub: github.com/mrhenrike/IndustrialXPL-Forge")
 
     def command_vendors(self, args: str = "", **kwargs) -> None:

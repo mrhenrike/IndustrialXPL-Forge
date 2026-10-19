@@ -8,12 +8,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+from industrialxpl.core.ics_tools import IcsToolsCatalog, IcsToolsRunner
 from industrialxpl.core.malware.catalog import MalwareCatalog
 from industrialxpl.core.malware.compiler import MalwareCompiler
 from industrialxpl.core.malware.family_capabilities import capability_matrix, get_capability
 from industrialxpl.core.malware.native_actions import run_native_action
 from industrialxpl.core.malware.orchestrator import MalwareOrchestrator
-from industrialxpl.core.ics_tools import IcsToolsCatalog, IcsToolsRunner
 
 
 def check_malware() -> list[str]:

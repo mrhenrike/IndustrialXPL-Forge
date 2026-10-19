@@ -34,17 +34,17 @@ _REPO_ROOT = _TOOLS_DIR.parent
 sys.path.insert(0, str(_REPO_ROOT))
 
 try:
-    from rich.console import Console
-    from rich.table import Table
-    from rich.panel import Panel
     from rich import box
+    from rich.console import Console
+    from rich.panel import Panel
+    from rich.table import Table
     _HAS_RICH = True
     console = Console()
 except ImportError:
     _HAS_RICH = False
     console = None
 
-from industrialxpl.core.nse.nse_manager import NseManager, NSE_SCRIPTS_DIR
+from industrialxpl.core.nse.nse_manager import NSE_SCRIPTS_DIR, NseManager
 
 
 def _print(msg: str, style: str = "") -> None:
@@ -136,7 +136,7 @@ def cmd_install(force: bool = False, scripts_dir_override: str = "") -> None:
         _print("  macOS:   brew install nmap")
         _print("  Windows: https://nmap.org/download")
         _print("")
-        _print(f"[bold yellow]IXF NSE scripts are available at:[/bold yellow]")
+        _print("[bold yellow]IXF NSE scripts are available at:[/bold yellow]")
         _print(f"  {NSE_SCRIPTS_DIR}")
         _print("")
         _print("After installing Nmap, copy the .nse files manually to:")
@@ -206,7 +206,7 @@ def cmd_install(force: bool = False, scripts_dir_override: str = "") -> None:
             _print(f"  [red]ERR[/red]  {err}")
 
     if result["success"]:
-        _print(f"\n[bold green]Installation complete![/bold green]")
+        _print("\n[bold green]Installation complete![/bold green]")
         _print(f"Scripts installed to: {scripts_dir}")
         _print("\nUsage examples:")
         _print("  nmap --script ics-sweep -p 20-65535 192.168.1.100")
@@ -217,7 +217,7 @@ def cmd_install(force: bool = False, scripts_dir_override: str = "") -> None:
         _print("  nmap --script ics-historian-discover -p 5450,5413,10014 192.168.1.100")
         _print("  nmap --script 'ics-*' --script-args ics-default-creds.timeout=3000 192.168.1.0/24")
     else:
-        _print(f"\n[red]Installation completed with errors.[/red]")
+        _print("\n[red]Installation completed with errors.[/red]")
         if any("Permission" in e for e in result["errors"]):
             _print("")
             if sys.platform == "win32":

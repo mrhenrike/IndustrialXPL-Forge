@@ -20,10 +20,8 @@ Install: pip install modbuspwn  (or: pip install pymodbus)
 from __future__ import annotations
 
 import json
-from typing import Optional
 
-from ixf.core.exploit import Base, OptIP, OptPort, OptString, OptInt, OptBool
-from ixf.core.exploit import print_status, print_error, print_good
+from ixf.core.exploit import Base, OptBool, OptInt, OptIP, OptPort, OptString, print_error, print_good, print_status
 
 
 class Exploit(Base):
