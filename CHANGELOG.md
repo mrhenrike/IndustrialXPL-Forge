@@ -13,6 +13,19 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 ---
 
 
+## [1.5.0] — 2026-10-19
+
+### Added
+- PEP 561 py.typed marker for downstream type checking
+- ruff lint configuration with auto-fix (98 files corrected)
+- mypy type checking config with 18 third-party module overrides
+- pytest config section in pyproject.toml
+- ruff + pytest jobs added to CI workflow (all branches, py3.9-3.14 matrix)
+- 33 new tests: pool, session, platform, shells_shim (64 -> 97 total)
+
+### Fixed
+- `.gitignore`: removed workflow blocks to allow all .github/workflows/ files
+
 ## [1.4.1] — 2026-10-06
 
 ### Changed
