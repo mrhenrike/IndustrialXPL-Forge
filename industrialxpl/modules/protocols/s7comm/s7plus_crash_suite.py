@@ -13,7 +13,9 @@ References:
   - https://github.com/Esamgold/SIEMENS-S7-PLCs-attacks
   - CVE-2019-10929 (S7CommPlus integrity bypass)
 """
-import socket, struct, time
+import socket
+import struct
+import time
 
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptInt, mute,

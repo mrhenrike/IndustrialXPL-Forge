@@ -20,8 +20,8 @@ from .s7plus_client import S7PlusClient
 from .wdb2_client import Wdb2Client
 
 __all__ = [
-    "ModbusClient",
     "CIPClient",
+    "ModbusClient",
     "S7Client",
     "S7PlusClient",
     "Wdb2Client",
