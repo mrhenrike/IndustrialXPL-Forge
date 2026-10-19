@@ -24,8 +24,7 @@ import struct
 from typing import Optional
 
 from embedxpl.core.exploit.base import Base
-from embedxpl.core.exploit.option import OptIP, OptInt, OptBool
-
+from embedxpl.core.exploit.option import OptInt, OptIP
 
 # ISO-TSAP connection request packet
 COTP_CONNECT_REQUEST = bytes([
@@ -143,7 +142,7 @@ class S7CommScanner(Base):
             sock.send(COTP_CONNECT_REQUEST)
             resp = self._recv_tpkt(sock)
             if not resp or resp[4] != 0xd0:
-                print(f"[-] COTP connection rejected")
+                print("[-] COTP connection rejected")
                 return
             print(f"[+] {self.target}:{self.port} - COTP Connected")
 
@@ -151,7 +150,7 @@ class S7CommScanner(Base):
             sock.send(S7_SETUP_COMM)
             resp = self._recv_tpkt(sock)
             if len(resp) >= 10 and resp[7] == 0x07:
-                print(f"[+] S7comm communication established")
+                print("[+] S7comm communication established")
 
             # Step 3: Read SZL (System Status List)
             sock.send(S7_READ_SZL)
@@ -160,7 +159,7 @@ class S7CommScanner(Base):
                 # Parse PLC info from SZL response
                 self._parse_szl(resp)
             else:
-                print(f"[+] SZL request sent - no detailed response")
+                print("[+] SZL request sent - no detailed response")
 
         except Exception as exc:
             print(f"[-] Error: {exc}")

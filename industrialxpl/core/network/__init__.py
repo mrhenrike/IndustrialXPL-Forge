@@ -10,10 +10,10 @@ from industrialxpl.core.network.transport import (
 )
 
 __all__ = [
+    "DEFAULT_OT_PORTS",
     "connect_tcp",
     "connect_udp",
     "probe_tcp",
     "probe_udp",
     "resolve_transports",
-    "DEFAULT_OT_PORTS",
 ]

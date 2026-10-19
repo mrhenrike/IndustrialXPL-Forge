@@ -21,8 +21,7 @@ import struct
 from typing import Optional
 
 from embedxpl.core.exploit.base import Base
-from embedxpl.core.exploit.option import OptIP, OptInt
-
+from embedxpl.core.exploit.option import OptInt, OptIP
 
 # DNP3 Link Layer header constants
 DNP3_START_BYTES = b"\x05\x64"
@@ -158,7 +157,7 @@ class DNP3Scanner(Base):
             if resp2 and resp2[:2] == DNP3_START_BYTES:
                 print(f"[+] Link status confirmed - device address {self.dst_addr} is active")
             else:
-                print(f"[?] Scanning addresses 0-10 for active outstations...")
+                print("[?] Scanning addresses 0-10 for active outstations...")
                 for addr in range(0, 11):
                     frame3 = _build_dnp3_link_frame(
                         src=self.src_addr,

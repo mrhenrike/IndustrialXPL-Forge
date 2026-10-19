@@ -6,11 +6,11 @@ from industrialxpl.core.modbus.transport import modbus_connect, ModbusTCPSocket
 from industrialxpl.core.modbus.base import ModbusBaseExploit
 
 __all__ = [
-    "parse_modbus_addresses",
-    "ModbusAddressSet",
-    "ModbusTiming",
     "TIMING_PROFILES",
-    "modbus_connect",
-    "ModbusTCPSocket",
+    "ModbusAddressSet",
     "ModbusBaseExploit",
+    "ModbusTCPSocket",
+    "ModbusTiming",
+    "modbus_connect",
+    "parse_modbus_addresses",
 ]

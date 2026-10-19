@@ -477,7 +477,7 @@ def main():
         if mitre(path, tid, name, desc, port, impact, tactics, sim):
             created += 1
 
-    from industrialxpl.core.exploit.utils import index_modules, import_exploit
+    from industrialxpl.core.exploit.utils import import_exploit, index_modules
     mods = index_modules()
     errs = []
     for m in mods:

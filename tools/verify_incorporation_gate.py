@@ -265,8 +265,8 @@ def step_isf_port_smoke() -> list[str]:
 
 def step_mozi_smoke() -> list[str]:
     try:
-        from industrialxpl.core.malware.mozi_dht import mozi_inventory
         from industrialxpl.core.malware.family_capabilities import get_capability
+        from industrialxpl.core.malware.mozi_dht import mozi_inventory
         from industrialxpl.core.malware.native_actions import run_native_action
 
         if "mozi-p2p" not in __import__(

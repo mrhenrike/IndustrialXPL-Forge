@@ -186,7 +186,7 @@ def handle_isf_dark_lbp(vendor: Path, extra: list[str] | None, simulate: bool) -
                 text = py.read_text(encoding="utf-8", errors="replace")[:4000]
             except OSError:
                 continue
-            if "icssploit" in text.lower() or "isf" in text.lower() and "dark-lbp" in text:
+            if "icssploit" in text.lower() or ("isf" in text.lower() and "dark-lbp" in text):
                 rel = py.relative_to(mod_root).with_suffix("").as_posix()
                 if rel not in ixf_routes and "refs" not in rel:
                     ixf_routes.append(rel)

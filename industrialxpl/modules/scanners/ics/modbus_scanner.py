@@ -88,7 +88,7 @@ class Exploit(ModbusBaseExploit):
     # Extra option for destructive write operations
     write_value = OptString("", "Value to write when destructive=true (integer for registers, 0/1 for coils)")
 
-    def run(self) -> None:  # noqa: C901
+    def run(self) -> None:
         ports     = self._get_ports()
         timing    = self._get_timing()
         addresses = self._get_addresses()
