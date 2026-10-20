@@ -19,11 +19,10 @@ Reference:
 
 Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
-from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import List, Optional
+from typing import List
 
 from industrialxpl.core.exploit import *
 
@@ -86,7 +85,7 @@ def _generate_modbus_rules(
     plc_nets: str,
     authorized_masters: str,
     start_sid: int = 9001000,
-) -> List[SuricataRule]:
+) -> list[SuricataRule]:
     """Generate Suricata rules for Modbus/TCP anomaly detection.
 
     Args:
@@ -171,7 +170,7 @@ def _generate_modbus_rules(
 def _generate_s7comm_rules(
     plc_nets: str,
     start_sid: int = 9002000,
-) -> List[SuricataRule]:
+) -> list[SuricataRule]:
     """Generate Suricata rules for S7comm anomaly detection.
 
     Args:
@@ -213,7 +212,7 @@ def _generate_s7comm_rules(
     return rules
 
 
-def _generate_mqtt_rules(start_sid: int = 9003000) -> List[SuricataRule]:
+def _generate_mqtt_rules(start_sid: int = 9003000) -> list[SuricataRule]:
     """Generate Suricata rules for MQTT anomalies.
 
     Args:
@@ -319,7 +318,7 @@ class Exploit(Exploit):
 
     def run(self) -> None:
         """Generate Suricata OT/ICS detection rules."""
-        all_rules: List[SuricataRule] = []
+        all_rules: list[SuricataRule] = []
         sid = int(self.start_sid)
 
         plc_nets = str(self.plc_nets)

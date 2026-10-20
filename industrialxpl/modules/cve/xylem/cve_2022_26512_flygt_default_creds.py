@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-26512 Xylem Flygt Pump Controller\nCVSS 9.8\nLogin to Flygt web port 80 with default creds, modify pump setpoints, alter flow rates",
                 mitre_techniques=['T0859', 'T0836'])
             return
-        print_status("[CVE-2022-26512] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-26512] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

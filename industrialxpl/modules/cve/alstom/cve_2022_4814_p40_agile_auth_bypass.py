@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-4814 Alstom/GE Power P40 Agile Protection Relay\nCVSS 9.8\nAccess P40 Agile relay port 443 without auth, modify protection settings, disable trip",
                 mitre_techniques=['T0859', 'T0827'])
             return
-        print_status("[CVE-2022-4814] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-4814] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

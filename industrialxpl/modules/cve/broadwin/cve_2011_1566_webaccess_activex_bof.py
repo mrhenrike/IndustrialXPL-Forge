@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2011-1566 BroadWin/Advantech WebAccess HMI\nCVSS 10.0\nAccess WebAccess port 4592, trigger ActiveX BOF, RCE on HMI workstation",
                 mitre_techniques=["T0866"])
             return
-        print_status("[CVE-2011-1566] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2011-1566] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit payload")

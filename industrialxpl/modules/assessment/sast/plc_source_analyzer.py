@@ -138,7 +138,7 @@ class Exploit(Exploit):
 
         target_path = Path(self.target)
         if not target_path.exists():
-            print_error("Path does not exist: {}".format(self.target))
+            print_error(f"Path does not exist: {self.target}")
             return
 
         # --- Check LLM availability ---
@@ -156,20 +156,20 @@ class Exploit(Exploit):
             )
             return
 
-        print_status("[SAST] Active LLM provider: {}".format(active_provider))
+        print_status(f"[SAST] Active LLM provider: {active_provider}")
 
         # --- Simulate mode ---
         if self.simulate:
-            print_info("[SAST SIMULATE] Would analyze: {}".format(self.target))
-            print_info("[SAST SIMULATE] Provider: {}".format(active_provider))
-            print_info("[SAST SIMULATE] Mode: {}".format(self.mode))
+            print_info(f"[SAST SIMULATE] Would analyze: {self.target}")
+            print_info(f"[SAST SIMULATE] Provider: {active_provider}")
+            print_info(f"[SAST SIMULATE] Mode: {self.mode}")
             if target_path.is_dir():
                 files = list(target_path.rglob("*"))
                 plc_files = [f for f in files if f.suffix.lower() in (
                     ".st",".iecst",".scl",".lad",".ld",".il",".awl",".stl",
                     ".fbd",".sfc",".gvl",".pou",".l5x",".xml"
                 )]
-                print_info("[SAST SIMULATE] Found {} potential PLC files".format(len(plc_files)))
+                print_info(f"[SAST SIMULATE] Found {len(plc_files)} potential PLC files")
             print_info("[SAST SIMULATE] Set simulate=false to run actual LLM analysis.")
             return
 
@@ -188,42 +188,36 @@ class Exploit(Exploit):
         elif mode == "exploit-gen":
             self._run_exploit_gen(target_path, active_provider)
         else:
-            print_error("Unknown mode: {}. Use: sast|reverse|diff|exploit-gen".format(mode))
+            print_error(f"Unknown mode: {mode}. Use: sast|reverse|diff|exploit-gen")
 
     def _run_sast(self, target_path: Path, provider: str) -> None:
         """Main SAST analysis flow."""
-        print_status("[SAST] Parsing PLC project: {}".format(target_path))
+        print_status(f"[SAST] Parsing PLC project: {target_path}")
 
         if target_path.is_file():
             pf = parse_file(str(target_path))
             files = [pf]
-            summary = "Single file: {}, Language: {}, Lines: {}".format(
-                target_path.name, pf.language, pf.line_count
-            )
+            summary = f"Single file: {target_path.name}, Language: {pf.language}, Lines: {pf.line_count}"
             full_source = pf.raw_content
         else:
             project = walk_project(str(target_path), max_files=self.max_files)
             files = project.files
             summary = summarize_project(project)
             full_source = "\n\n".join(
-                "=== {} ({}) ===\n{}".format(Path(f.path).name, f.language, f.raw_content[:8000])
+                f"=== {Path(f.path).name} ({f.language}) ===\n{f.raw_content[:8000]}"
                 for f in files[:20]
             )
 
-        print_success("[SAST] Parsed {} file(s). Sending to {} for analysis…".format(
-            len(files), provider.upper()
-        ))
+        print_success(f"[SAST] Parsed {len(files)} file(s). Sending to {provider.upper()} for analysis…")
 
         if not full_source.strip():
-            print_error("[SAST] No readable source code found in: {}".format(target_path))
+            print_error(f"[SAST] No readable source code found in: {target_path}")
             return
 
         prompt = build_sast_prompt(summary, full_source)
 
         try:
-            print_status("[SAST] Analyzing with {} (this may take 30-120 seconds)…".format(
-                provider.upper()
-            ))
+            print_status(f"[SAST] Analyzing with {provider.upper()} (this may take 30-120 seconds)…")
             analysis = _llm_manager.complete(
                 user_prompt=prompt,
                 system_prompt=SYSTEM_PROMPT,
@@ -244,36 +238,34 @@ class Exploit(Exploit):
             # Save report
             if self.save_report:
                 ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-                report_path = PROJECT_TMP / "ixf_sast_{}.md".format(ts)
+                report_path = PROJECT_TMP / f"ixf_sast_{ts}.md"
                 report_content = (
                     "# IXF SAST Analysis Report\n\n"
-                    "**Target:** {}\n**Provider:** {}\n"
-                    "**Timestamp:** {}\n\n"
-                    "## Project Summary\n\n{}\n\n"
-                    "## Security Analysis\n\n{}".format(
-                        target_path, provider, ts, summary, analysis
-                    )
+                    f"**Target:** {target_path}\n**Provider:** {provider}\n"
+                    f"**Timestamp:** {ts}\n\n"
+                    f"## Project Summary\n\n{summary}\n\n"
+                    f"## Security Analysis\n\n{analysis}"
                 )
                 report_path.write_text(report_content, encoding="utf-8")
-                print_success("[SAST] Report saved: {}".format(report_path))
+                print_success(f"[SAST] Report saved: {report_path}")
 
         except LLMKeyInvalidError as exc:
-            print_error("[SAST] API key error:\n{}".format(exc))
+            print_error(f"[SAST] API key error:\n{exc}")
         except LLMKeyMissingError as exc:
-            print_error("[SAST] No API key:\n{}".format(exc))
+            print_error(f"[SAST] No API key:\n{exc}")
         except LLMRequestError as exc:
-            print_error("[SAST] LLM request failed:\n{}".format(exc))
+            print_error(f"[SAST] LLM request failed:\n{exc}")
 
     def _run_reverse(self, target_path: Path, provider: str) -> None:
         """Binary reverse engineering analysis."""
-        print_status("[SAST/RE] Analyzing binary: {}".format(target_path.name))
+        print_status(f"[SAST/RE] Analyzing binary: {target_path.name}")
 
         # Extract hex dump (first 2KB)
         try:
             binary = target_path.read_bytes()[:4096]
-            hex_dump = " ".join("{:02X}".format(b) for b in binary)
+            hex_dump = " ".join(f"{b:02X}" for b in binary)
         except Exception as exc:
-            print_error("Cannot read file: {}".format(exc))
+            print_error(f"Cannot read file: {exc}")
             return
 
         # Extract printable strings
@@ -294,11 +286,11 @@ class Exploit(Exploit):
             for line in analysis.split("\n"):
                 print_info(line)
         except Exception as exc:
-            print_error("[SAST/RE] Error: {}".format(exc))
+            print_error(f"[SAST/RE] Error: {exc}")
 
     def _run_diff(self, path1: Path, path2: Path, provider: str) -> None:
         """Differential analysis between two versions."""
-        print_status("[SAST/DIFF] Comparing {} vs {}".format(path1.name, path2.name))
+        print_status(f"[SAST/DIFF] Comparing {path1.name} vs {path2.name}")
         try:
             code1 = path1.read_text(encoding="utf-8", errors="ignore")
             code2 = path2.read_text(encoding="utf-8", errors="ignore")
@@ -311,7 +303,7 @@ class Exploit(Exploit):
             for line in analysis.split("\n"):
                 print_info(line)
         except Exception as exc:
-            print_error("[SAST/DIFF] Error: {}".format(exc))
+            print_error(f"[SAST/DIFF] Error: {exc}")
 
     def _run_exploit_gen(self, target_path: Path, provider: str) -> None:
         """Generate exploitation details from previous SAST findings."""
@@ -332,4 +324,4 @@ class Exploit(Exploit):
             for line in analysis.split("\n"):
                 print_info(line)
         except Exception as exc:
-            print_error("[SAST/EXPLOIT-GEN] Error: {}".format(exc))
+            print_error(f"[SAST/EXPLOIT-GEN] Error: {exc}")

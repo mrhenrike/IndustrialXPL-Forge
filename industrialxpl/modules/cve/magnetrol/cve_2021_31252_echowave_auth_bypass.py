@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2021-43861 Magnetrol ECHOWAVE III Level Transmitter\nCVSS 9.8\nAccess Magnetrol web port 80 without auth, modify level setpoints and alarm thresholds",
                 mitre_techniques=['T0859', 'T0836'])
             return
-        print_status("[CVE-2021-43861] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2021-43861] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

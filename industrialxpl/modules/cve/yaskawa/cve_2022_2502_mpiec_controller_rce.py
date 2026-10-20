@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-2502 Yaskawa MP3300iec/MP2600iec Controller\nCVSS 9.8\nConnect Yaskawa EtherNet/IP port 44818, crafted CIP packet, stack overflow, RCE on controller",
                 mitre_techniques=['T0866', 'T0836'])
             return
-        print_status("[CVE-2022-2502] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-2502] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

@@ -33,7 +33,7 @@ class Exploit(Exploit):
         except: return False
     def run(self):
         if not self.target: print_error("Set target"); return
-        print_status("[National Instruments] Scanning {}:{}...".format(self.target, self.port))
+        print_status(f"[National Instruments] Scanning {self.target}:{self.port}...")
         results = []
         try:
             s = socket.socket(); s.settimeout(self.timeout)
@@ -41,10 +41,10 @@ class Exploit(Exploit):
             s.send(b"0001")
             banner = s.recv(256)
             s.close()
-            results.append(("National Instruments NI LabVIEW / FieldPoint", "{}:{}".format(self.target, self.port),
+            results.append(("National Instruments NI LabVIEW / FieldPoint", f"{self.target}:{self.port}",
                            "Detected", banner[:32].hex()))
         except Exception as e:
-            results.append(("National Instruments NI LabVIEW / FieldPoint", "{}:{}".format(self.target, self.port),
+            results.append(("National Instruments NI LabVIEW / FieldPoint", f"{self.target}:{self.port}",
                            "Unreachable", str(e)[:30]))
         if results:
             print_table(["Device","Address","Status","Banner"], results, title="National Instruments Scan")

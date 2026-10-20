@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-30315 Emerson Fisher DVC6200 Digital Valve Controller\nCVSS 9.8\nConnect Fisher DVC6200 OPC UA port 4840, default creds, modify valve position and setpoints",
                 mitre_techniques=['T0859', 'T0836'])
             return
-        print_status("[CVE-2022-30315] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-30315] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2021-33891 Turck BL20 Programmable Gateway\nCVSS 9.8\nConnect Turck BL20 web port 80, login with default creds admin/admin, configure I/O",
                 mitre_techniques=['T0859', 'T0836'])
             return
-        print_status("[CVE-2021-33891] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2021-33891] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

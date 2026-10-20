@@ -59,5 +59,5 @@ class Exploit(Exploit):
             print_info("Affected: AC500 V3 CPU firmware PM5xx V3.2.0 and earlier")
             print_info("PoC: https://search.abb.com/library/Download.aspx?DocumentID=9AKK108466A2764")
             return
-        print_status("[CVE-2023-0636] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-0636] Exploiting {self.target}:{self.port}...")
         print_info('Live payload: implement protocol-specific exploit')

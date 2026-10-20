@@ -29,7 +29,7 @@ class Exploit(Exploit):
         except: return False
     def run(self):
         if not self.target: print_error("Set target"); return
-        print_status("[Siemens Ruggedcom] Scanning {}:{}...".format(self.target, self.port))
+        print_status(f"[Siemens Ruggedcom] Scanning {self.target}:{self.port}...")
         results = []
         try:
             s = socket.socket(); s.settimeout(self.timeout)
@@ -37,9 +37,9 @@ class Exploit(Exploit):
             s.send(b"1603")
             banner = s.recv(256)
             s.close()
-            results.append(("Siemens Ruggedcom", "{}:{}".format(self.target, self.port), "Detected", banner[:24].hex()))
+            results.append(("Siemens Ruggedcom", f"{self.target}:{self.port}", "Detected", banner[:24].hex()))
         except Exception as e:
-            results.append(("Siemens Ruggedcom", "{}:{}".format(self.target, self.port), "Unreachable", str(e)[:25]))
+            results.append(("Siemens Ruggedcom", f"{self.target}:{self.port}", "Unreachable", str(e)[:25]))
         if results:
             print_table(["Vendor","Address","Status","Banner"], results)
         print_info("CVEs: CVE-2023-44317, CVE-2021-37209")

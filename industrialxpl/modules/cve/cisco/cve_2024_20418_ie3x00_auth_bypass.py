@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2024-20418 Cisco IE3000/IE3400 Industrial Ethernet\nCVSS 9.8\nAccess Cisco IE3400 web port 443, bypass auth, modify VLAN/ACL settings, pivot to OT segments",
                 mitre_techniques=['T0859', 'T0822'])
             return
-        print_status("[CVE-2024-20418] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2024-20418] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

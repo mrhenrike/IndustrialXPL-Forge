@@ -1,6 +1,5 @@
 """IEC 60870-5-104 stack — MIT stdlib (lib60870 REFERENCE_ONLY)."""
 
-from __future__ import annotations
 
 import struct
 from typing import Any

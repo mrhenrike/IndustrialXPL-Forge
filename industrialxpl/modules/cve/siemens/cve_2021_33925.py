@@ -42,7 +42,7 @@ class Exploit(Exploit):
         if not self.target: print_error("Set target."); return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2021-33925: {}:{}.  Privilege escalation. CVSS 8.8.".format(self.target, self.port),
+                description=f"CVE-2021-33925: {self.target}:{self.port}.  Privilege escalation. CVSS 8.8.",
                 mitre_techniques=["T0883"],
             ); return
-        print_success("CVE-2021-33925 HIGH — port {} open.".format(self.port)) if self.check() else print_error("Not responding.")
+        print_success(f"CVE-2021-33925 HIGH — port {self.port} open.") if self.check() else print_error("Not responding.")

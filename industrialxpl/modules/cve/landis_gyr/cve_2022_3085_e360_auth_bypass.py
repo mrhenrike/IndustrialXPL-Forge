@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-3085 Landis+Gyr E360 Smart Meter\nCVSS 9.8\nAccess E360 port 80 without credentials, read meter data, modify tariff settings",
                 mitre_techniques=['T0859', 'T0832'])
             return
-        print_status("[CVE-2022-3085] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-3085] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

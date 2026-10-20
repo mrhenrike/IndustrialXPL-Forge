@@ -1,6 +1,5 @@
 """OT segmentation / cred audit helpers — OTAUD-inspired (partial, no overlap with otscan)."""
 
-from __future__ import annotations
 
 from typing import Any
 

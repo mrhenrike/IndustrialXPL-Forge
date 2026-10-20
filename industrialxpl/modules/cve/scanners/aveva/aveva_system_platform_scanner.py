@@ -50,7 +50,7 @@ class Exploit(Exploit):
         if not self.target:
             print_error("Set 'target' option.")
             return
-        print_status("[AVEVA] Scanning {}:{}...".format(self.target, self.port))
+        print_status(f"[AVEVA] Scanning {self.target}:{self.port}...")
         results = []
         try:
             s = socket.socket()
@@ -60,10 +60,10 @@ class Exploit(Exploit):
             banner = s.recv(256)
             s.close()
             vendor_detected = b"ArchestrA" in banner
-            results.append(("AVEVA System Platform / InTouch Access Anywhere", "{}:{}".format(self.target, self.port),
+            results.append(("AVEVA System Platform / InTouch Access Anywhere", f"{self.target}:{self.port}",
                            "Detected" if vendor_detected else "Unknown", banner[:64].hex()))
         except Exception as e:
-            results.append(("AVEVA System Platform / InTouch Access Anywhere", "{}:{}".format(self.target, self.port),
+            results.append(("AVEVA System Platform / InTouch Access Anywhere", f"{self.target}:{self.port}",
                            "Unreachable", str(e)))
         if results:
             print_table(["Device", "Address", "Status", "Banner"],

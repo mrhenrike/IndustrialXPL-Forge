@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2023-1785 Hach SC1500 Water Quality Controller\nCVSS 9.8\nAccess SC1500 web port 80, bypass auth, modify chlorine dosing setpoints and alarm limits",
                 mitre_techniques=['T0859', 'T0836'])
             return
-        print_status("[CVE-2023-1785] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-1785] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

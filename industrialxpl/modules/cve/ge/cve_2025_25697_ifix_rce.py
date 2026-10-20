@@ -33,5 +33,5 @@ class Exploit(Exploit):
                 description="CVE-2025-25697 GE Vernova iFIX 6.5 SCADA\nCVSS 9.8\nPOST webshell to iFIX web service on port 8080, unauthenticated, RCE on SCADA server",
                 mitre_techniques=['T0866', 'T0843'])
             return
-        print_status("[CVE-2025-25697] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2025-25697] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol exploit")

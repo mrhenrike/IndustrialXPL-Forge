@@ -110,7 +110,7 @@ class Exploit(Exploit):
                 queries.extend([(surface, q) for q in qs[:2]])
 
         if not queries:
-            print_error("No queries to run for category={}".format(cat))
+            print_error(f"No queries to run for category={cat}")
             return
 
         if self.simulate:
@@ -119,10 +119,8 @@ class Exploit(Exploit):
             print_table(["Category", "Shodan Query"], rows, title="Shodan ICS Dorks Preview")
             DestructiveGate.print_simulation(
                 description=(
-                    "Would send {} Shodan API queries, collecting up to {} results each. "
-                    "Set api_key and simulate=false to execute real searches.".format(
-                        len(queries), self.max_results
-                    )
+                    f"Would send {len(queries)} Shodan API queries, collecting up to {self.max_results} results each. "
+                    "Set api_key and simulate=false to execute real searches."
                 ),
                 mitre_techniques=["T0883"],
             )
@@ -137,7 +135,7 @@ class Exploit(Exploit):
             print_error("'requests' library required: pip install requests")
             return
 
-        print_status("[Shodan ICS] Executing {} queries…".format(len(queries)))
+        print_status(f"[Shodan ICS] Executing {len(queries)} queries…")
         all_results = []
 
         for label, query in queries[:5]:
@@ -152,7 +150,7 @@ class Exploit(Exploit):
                     data = resp.json()
                     total = data.get("total", 0)
                     matches = data.get("matches", [])[:self.max_results]
-                    print_success("[Shodan] '{}': {} results".format(query, total))
+                    print_success(f"[Shodan] '{query}': {total} results")
                     for match in matches[:5]:
                         ip = match.get("ip_str", "")
                         port = match.get("port", "")
@@ -163,15 +161,15 @@ class Exploit(Exploit):
                     print_error("Invalid Shodan API key.")
                     return
                 else:
-                    print_warning("[Shodan] HTTP {} for query: {}".format(resp.status_code, query))
+                    print_warning(f"[Shodan] HTTP {resp.status_code} for query: {query}")
             except Exception as exc:
-                print_error("[Shodan] Error: {}".format(exc))
+                print_error(f"[Shodan] Error: {exc}")
 
         if all_results:
             print_table(
                 ["IP", "Port", "Organization", "Country", "Category"],
                 all_results,
-                title="Shodan ICS Results (Top {})".format(len(all_results)),
+                title=f"Shodan ICS Results (Top {len(all_results)})",
             )
             print_warning("These are REAL internet-exposed OT devices. Handle responsibly.")
         else:

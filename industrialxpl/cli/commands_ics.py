@@ -1,6 +1,5 @@
 """ICS-tools vendor integration and NSE script management commands (mixin)."""
 
-from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
@@ -104,7 +103,7 @@ Examples:
             print_success(str(r)) if r.get("success") else print_error(r.get("error", "failed"))
             return
 
-        print_error("Unknown: {}".format(sub))
+        print_error(f"Unknown: {sub}")
         self.command_ics_tools("help")
 
     def command_assess(self, args: str, **kwargs) -> None:
@@ -112,7 +111,7 @@ Examples:
         if not module_path:
             print_error("Usage: assess <module_path>")
             return
-        path = module_path if module_path.startswith("assessment") else "assessment/{}".format(module_path)
+        path = module_path if module_path.startswith("assessment") else f"assessment/{module_path}"
         self.command_use(path)
         if self.current_module:
             self.command_run("")
@@ -136,8 +135,8 @@ Examples:
                     "  Linux:   sudo apt install nmap\n"
                     "  macOS:   brew install nmap\n"
                     "  Windows: https://nmap.org/download\n"
-                    "IXF NSE scripts are at: {}\n"
-                    "After installing Nmap, run: nse install".format(NSE_SCRIPTS_DIR)
+                    f"IXF NSE scripts are at: {NSE_SCRIPTS_DIR}\n"
+                    "After installing Nmap, run: nse install"
                 )
             else:
                 scripts_dir = NseManager.find_scripts_dir()
@@ -147,8 +146,7 @@ Examples:
                         if not (scripts_dir / s.name).exists()
                     ]
                     if not_installed:
-                        print_info("Run 'nse install' to install {} script(s).".format(
-                            len(not_installed)))
+                        print_info(f"Run 'nse install' to install {len(not_installed)} script(s).")
 
         elif subcmd == "list":
             scripts = NseManager.list_ixf_scripts()
@@ -156,12 +154,12 @@ Examples:
             rows = []
             for s in scripts:
                 status = "installed" if (scripts_dir and (scripts_dir / s.name).exists()) else "not installed"
-                rows.append((s.name, status, "{:,} B".format(s.stat().st_size)))
+                rows.append((s.name, status, f"{s.stat().st_size:,} B"))
             if rows:
                 print_table(
                     ["Script", "Status", "Size"],
                     rows,
-                    title="IXF NSE Scripts ({} total) : {}".format(len(scripts), NSE_SCRIPTS_DIR),
+                    title=f"IXF NSE Scripts ({len(scripts)} total) : {NSE_SCRIPTS_DIR}",
                 )
             else:
                 print_error("No IXF NSE scripts found.")
@@ -175,9 +173,9 @@ Examples:
                     "  Linux:   sudo apt install nmap\n"
                     "  macOS:   brew install nmap\n"
                     "  Windows: https://nmap.org/download\n"
-                    "\nIXF NSE scripts stored at: {}\n"
+                    f"\nIXF NSE scripts stored at: {NSE_SCRIPTS_DIR}\n"
                     "Copy .nse files manually to your Nmap scripts dir,\n"
-                    "then run: nmap --script-updatedb".format(NSE_SCRIPTS_DIR)
+                    "then run: nmap --script-updatedb"
                 )
                 return
 
@@ -187,18 +185,18 @@ Examples:
                 print_info("Provide manually: python tools/nse_install.py --install --scripts-dir /path")
                 return
 
-            print_status("[NSE] Installing to: {}".format(scripts_dir))
+            print_status(f"[NSE] Installing to: {scripts_dir}")
             result = NseManager.install(scripts_dir=scripts_dir, force=force)
 
             if result["installed"]:
                 for name in result["installed"]:
-                    print_success("  Installed: {}".format(name))
+                    print_success(f"  Installed: {name}")
             if result["skipped"]:
                 print_info("  Skipped (already installed): {} : use 'nse install --force'".format(
                     len(result['skipped'])))
             if result["errors"]:
                 for err in result["errors"]:
-                    print_error("  {}".format(err))
+                    print_error(f"  {err}")
                 if any("Permission" in e for e in result["errors"]):
                     import sys as _sys
                     if _sys.platform == "win32":
@@ -216,5 +214,5 @@ Examples:
                 print_info("All IXF NSE scripts already installed.")
 
         else:
-            print_error("Unknown nse subcommand: '{}'".format(subcmd))
+            print_error(f"Unknown nse subcommand: '{subcmd}'")
             print_info("Usage: nse [install|list|status] [--force]")

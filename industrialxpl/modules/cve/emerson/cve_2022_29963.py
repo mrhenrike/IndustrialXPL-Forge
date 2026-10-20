@@ -79,19 +79,19 @@ class Exploit(Exploit):
             DestructiveGate.print_simulation(
                 description=(
                     "CVE-2022-29963: Would fingerprint Emerson DeltaV EWS at "
-                    "{}:{} and confirm if version is in affected range. "
+                    f"{self.target}:{self.port} and confirm if version is in affected range. "
                     "Exploit type: Insecure firmware update. "
-                    "CVSS 7.4 (HIGH).".format(self.target, self.port)
+                    "CVSS 7.4 (HIGH)."
                 ),
                 mitre_techniques=['T1693'],
             )
             return
-        print_status("Checking {}:{} for CVE-2022-29963...".format(self.target, self.port))
+        print_status(f"Checking {self.target}:{self.port} for CVE-2022-29963...")
         if self.check():
             print_success(
-                "Port {} open on {} — Emerson DeltaV EWS may be present. "
+                f"Port {self.port} open on {self.target} — Emerson DeltaV EWS may be present. "
                 "CVE-2022-29963 (HIGH CVSS 7.4): Insecure firmware update. "
-                "Manual version verification required.".format(self.port, self.target)
+                "Manual version verification required."
             )
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

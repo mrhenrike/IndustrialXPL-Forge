@@ -1,6 +1,5 @@
 """ICS-tools orchestration for IXF."""
 
-from __future__ import annotations
 
 from typing import Any
 

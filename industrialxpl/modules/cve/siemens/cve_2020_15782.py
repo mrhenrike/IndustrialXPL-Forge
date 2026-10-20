@@ -53,12 +53,12 @@ class Exploit(Exploit):
             return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2020-15782: Fingerprint Siemens SIMATIC S7-1500 at {}:{}. Remote code execution via OS commands. CVSS 9.1.".format(self.target, self.port),
+                description=f"CVE-2020-15782: Fingerprint Siemens SIMATIC S7-1500 at {self.target}:{self.port}. Remote code execution via OS commands. CVSS 9.1.",
                 mitre_techniques=['T0819', 'T0866'],
             )
             return
         if self.check():
-            print_success("Port {} open — Siemens SIMATIC S7-1500 may be present. CVE-2020-15782 CRITICAL CVSS 9.1.".format(self.port))
+            print_success(f"Port {self.port} open — Siemens SIMATIC S7-1500 may be present. CVE-2020-15782 CRITICAL CVSS 9.1.")
             print_warning("CISA: N/A")
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

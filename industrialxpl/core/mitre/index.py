@@ -19,7 +19,7 @@ TACTIC_INDEX: dict[str, list[str]] = {}
 _built = False
 
 
-def build_index(module_paths: Optional[list] = None) -> None:
+def build_index(module_paths: list | None = None) -> None:
     """Build the MITRE index from module __info__["mitre_techniques"].
 
     Args:
@@ -44,13 +44,13 @@ def build_index(module_paths: Optional[list] = None) -> None:
             tid_to_tactic[t] = tac_id
 
     for mod_path in module_paths:
-        full = "industrialxpl.modules.{}".format(mod_path)
+        full = f"industrialxpl.modules.{mod_path}"
         try:
             mod = importlib.import_module(full)
             cls = getattr(mod, "Exploit", None) or getattr(mod, "Scanner", None) or getattr(mod, "Assessment", None)
             if cls is None:
                 continue
-            info = getattr(cls, "_{cls}__info__".format(cls=cls.__name__), {})
+            info = getattr(cls, f"_{cls.__name__}__info__", {})
             techniques: list = info.get("mitre_techniques", [])
             for raw_tid in techniques:
                 # Handle "T0843.001" or "T0843 Program Download" formats

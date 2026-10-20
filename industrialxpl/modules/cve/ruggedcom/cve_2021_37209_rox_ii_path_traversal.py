@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2021-37209 Siemens Ruggedcom ROX II Router\nCVSS 9.8\nGET path traversal on ROX II port 443, access config files, escalate to RCE",
                 mitre_techniques=['T0866'])
             return
-        print_status("[CVE-2021-37209] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2021-37209] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2024-46888 Siemens SIMATIC S7-1200/1500 (V7+)\nCVSS 8.8\nUpload modified firmware to S7-1200 V7+ via TLS port 443, bypass signature check",
                 mitre_techniques=['T0839', 'T0880'])
             return
-        print_status("[CVE-2024-46888] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2024-46888] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

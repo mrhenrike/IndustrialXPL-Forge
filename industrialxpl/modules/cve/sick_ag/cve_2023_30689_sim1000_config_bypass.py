@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2023-30689 SICK AG SIM1000 FX Safety Controller\nCVSS 8.8\nAccess SIM1000 web port 80, modify safety function parameters, disable E-Stop zones",
                 mitre_techniques=['T0836', 'T0880'])
             return
-        print_status("[CVE-2023-30689] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-30689] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

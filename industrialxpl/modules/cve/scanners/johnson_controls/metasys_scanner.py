@@ -50,7 +50,7 @@ class Exploit(Exploit):
         if not self.target:
             print_error("Set 'target' option.")
             return
-        print_status("[Johnson Controls] Scanning {}:{}...".format(self.target, self.port))
+        print_status(f"[Johnson Controls] Scanning {self.target}:{self.port}...")
         results = []
         try:
             s = socket.socket()
@@ -60,10 +60,10 @@ class Exploit(Exploit):
             banner = s.recv(256)
             s.close()
             vendor_detected = b"Metasys" in banner
-            results.append(("Johnson Controls Metasys BAS", "{}:{}".format(self.target, self.port),
+            results.append(("Johnson Controls Metasys BAS", f"{self.target}:{self.port}",
                            "Detected" if vendor_detected else "Unknown", banner[:64].hex()))
         except Exception as e:
-            results.append(("Johnson Controls Metasys BAS", "{}:{}".format(self.target, self.port),
+            results.append(("Johnson Controls Metasys BAS", f"{self.target}:{self.port}",
                            "Unreachable", str(e)))
         if results:
             print_table(["Device", "Address", "Status", "Banner"],

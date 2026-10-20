@@ -1,6 +1,5 @@
 """ISF/icssploit port — MIT protocol handlers (REFERENCE_ONLY upstream GPL)."""
 
-from __future__ import annotations
 
 import socket
 from typing import Any

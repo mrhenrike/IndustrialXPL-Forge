@@ -34,9 +34,6 @@ classifiers = [
     "Natural Language :: Portuguese (Brazilian)",
     "Operating System :: POSIX :: Linux",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
@@ -44,7 +41,7 @@ classifiers = [
     "Topic :: System :: Networking",
     "Topic :: Scientific/Engineering",
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.12"
 dependencies = [
     "requests>=2.31.0,<3.0",
     "urllib3>=1.26.0,<3.0",
@@ -194,7 +191,7 @@ module = [
 ignore_missing_imports = true
 
 [tool.ruff]
-target-version = "py39"
+target-version = "py312"
 line-length = 120
 exclude = [
     "industrialxpl/resources/vendor/**",
@@ -202,7 +199,7 @@ exclude = [
 ]
 
 [tool.ruff.lint]
-select = ["E", "W", "F", "I", "B", "SIM", "RUF"]
+select = ["E", "W", "F", "I", "UP", "B", "SIM", "RUF"]
 ignore = [
     "E101",
     "E501",

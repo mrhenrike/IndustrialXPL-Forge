@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2021-37182 Vigor VH Series PLC\nCVSS 9.8\nConnect Vigor VH PLC Modbus TCP port 502, default creds, read/write all process I/O",
                 mitre_techniques=['T0859', 'T0836'])
             return
-        print_status("[CVE-2021-37182] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2021-37182] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

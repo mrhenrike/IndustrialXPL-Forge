@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2023-5402 Schneider Electric Triconex Model 3009 SIS\nCVSS 9.8\nConnect Triconex 3009 TriStation port 1502, bypass SIL validation, disable safety shutdown",
                 mitre_techniques=['T0816', 'T0880'])
             return
-        print_status("[CVE-2023-5402] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-5402] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

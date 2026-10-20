@@ -1,6 +1,5 @@
 """open-plc-utils CLI wrapper — MIT vendor reference."""
 
-from __future__ import annotations
 
 import shutil
 from typing import Any

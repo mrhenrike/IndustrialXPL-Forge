@@ -1,6 +1,5 @@
 """MITRE ATT&CK for ICS, CVE lookup and TTP sweep commands (mixin)."""
 
-from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
@@ -32,30 +31,30 @@ class MITRECommandsMixin:
             if cve_id.lower().replace("-", "_") in m.lower()
         ]
         if not matches:
-            print_error("No IXF module found for {}. Check resources/cve/ics_cve_database.json".format(cve_id))
+            print_error(f"No IXF module found for {cve_id}. Check resources/cve/ics_cve_database.json")
             return
         if len(matches) == 1:
             self.command_use(humanize_path(matches[0]))
         else:
-            print_success("{} module(s) for {}:".format(len(matches), cve_id))
+            print_success(f"{len(matches)} module(s) for {cve_id}:")
             for m in matches:
-                print_info("  use {}".format(humanize_path(m)))
+                print_info(f"  use {humanize_path(m)}")
 
     def command_cve_scan(self, args: str, **kwargs) -> None:
         cidr = args.strip()
         if not cidr:
             print_error("Usage: cve-scan <CIDR>")
             return
-        print_status("[cve-scan] Discovery + CVE testing on {}...".format(cidr))
+        print_status(f"[cve-scan] Discovery + CVE testing on {cidr}...")
         print_info("Feature: auto-fingerprint each host then run applicable CVE modules.")
-        print_info("Use mitre-scan discovery {} to start with passive scanning.".format(cidr))
+        print_info(f"Use mitre-scan discovery {cidr} to start with passive scanning.")
 
     def command_report(self, args: str, **kwargs) -> None:
         fmt = args.strip().lower() or "json"
         from industrialxpl.core.reporting.reporter import IXFReporter
         reporter = IXFReporter()
         output = reporter.generate(fmt)
-        print_success("Report generated: {}".format(output))
+        print_success(f"Report generated: {output}")
 
     # -- MITRE commands -----------------------------------------------------
 
@@ -68,11 +67,11 @@ class MITRECommandsMixin:
         build_index(self.modules)
         mods = TECHNIQUE_INDEX.get(tid, [])
         if not mods:
-            print_error("No modules for {}. Try 'mitre-list' to see all.".format(tid))
+            print_error(f"No modules for {tid}. Try 'mitre-list' to see all.")
             return
-        print_success("{} module(s) cover {}:".format(len(mods), tid))
+        print_success(f"{len(mods)} module(s) cover {tid}:")
         for m in mods:
-            print_info("  use {}".format(humanize_path(m)))
+            print_info(f"  use {humanize_path(m)}")
 
     def command_mitre_list(self, args: str, **kwargs) -> None:
         from industrialxpl.core.mitre.index import TACTIC_INDEX, TECHNIQUE_INDEX, build_index
@@ -88,7 +87,7 @@ class MITRECommandsMixin:
                     continue
             rows.append((tid, str(len(mods)), humanize_path(mods[0]) if mods else ""))
         title = "MITRE ATT&CK for ICS{}".format(
-            " : {}".format(tactic_filter) if tactic_filter else ""
+            f" : {tactic_filter}" if tactic_filter else ""
         )
         print_table(["TID", "# Modules", "Primary Module"], rows, title=title)
 
@@ -130,11 +129,11 @@ class MITRECommandsMixin:
             tids = TACTIC_TIDS.get(tid_id, [])
             covered = sum(1 for t in tids if TECHNIQUE_INDEX.get(t))
             pct = int(covered / len(tids) * 100) if tids else 0
-            rows.append((tid_id, tname, str(len(tids)), str(covered), "{}%".format(pct)))
+            rows.append((tid_id, tname, str(len(tids)), str(covered), f"{pct}%"))
             total_tids += len(tids)
             total_cov += covered
         global_pct = int(total_cov / total_tids * 100) if total_tids else 0
-        rows.append(("TOTAL", "--", str(total_tids), str(total_cov), "{}%".format(global_pct)))
+        rows.append(("TOTAL", "--", str(total_tids), str(total_cov), f"{global_pct}%"))
         print_table(
             ["Tactic ID", "Tactic", "Total TIDs", "Covered", "%"],
             rows,
@@ -145,7 +144,7 @@ class MITRECommandsMixin:
         fmt = args.strip().lower() or "layer"
         from industrialxpl.core.mitre.reporter import MitreSweepReporter
         output = MitreSweepReporter().generate_layer(fmt)
-        print_success("MITRE report generated: {}".format(output))
+        print_success(f"MITRE report generated: {output}")
 
     def command_mitre_tactic(self, args: str, **kwargs) -> None:
         self.command_mitre_scan(args, **kwargs)
@@ -179,7 +178,7 @@ class MITRECommandsMixin:
         if output_file:
             from industrialxpl.core.mitre.reporter import MitreSweepReporter
             MitreSweepReporter(results).save(output_file)
-            print_success("Results saved to {}".format(output_file))
+            print_success(f"Results saved to {output_file}")
 
     def command_ttp_check(self, args: str, **kwargs) -> None:
         parts = args.strip().split()
@@ -215,5 +214,5 @@ class MITRECommandsMixin:
                 if not any(m in tac_mods for m in mods):
                     continue
             rows.append((tid, str(len(mods)), humanize_path(mods[0]) if mods else ""))
-        title = "TTP-IDs{}".format(" : {}".format(tactic_filter) if tactic_filter else " (all)")
+        title = "TTP-IDs{}".format(f" : {tactic_filter}" if tactic_filter else " (all)")
         print_table(["TTP-ID", "# Modules", "Primary Module"], rows, title=title)

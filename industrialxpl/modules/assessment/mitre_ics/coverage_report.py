@@ -64,11 +64,11 @@ class Exploit(Exploit):
         build_index()
 
         fmt = self.output_format.lower()
-        print_status("Generating MITRE ATT&CK for ICS coverage report (format={})…".format(fmt))
+        print_status(f"Generating MITRE ATT&CK for ICS coverage report (format={fmt})…")
 
         if fmt == "layer":
             output_path = MitreSweepReporter().generate_layer("layer")
-            print_success("Navigator layer saved: {}".format(output_path))
+            print_success(f"Navigator layer saved: {output_path}")
             print_info("Import at: https://mitre-attack.github.io/attack-navigator/")
             return
 
@@ -79,12 +79,12 @@ class Exploit(Exploit):
             tids = TACTIC_TIDS.get(tac_id, [])
             covered = [t for t in tids if TECHNIQUE_INDEX.get(t)]
             pct = int(len(covered) / len(tids) * 100) if tids else 0
-            rows.append((tac_id, tac_name, str(len(tids)), str(len(covered)), "{}%".format(pct)))
+            rows.append((tac_id, tac_name, str(len(tids)), str(len(covered)), f"{pct}%"))
             total_tids += len(tids)
             total_cov += len(covered)
 
         global_pct = int(total_cov / total_tids * 100) if total_tids else 0
-        rows.append(("TOTAL", "—", str(total_tids), str(total_cov), "{}%".format(global_pct)))
+        rows.append(("TOTAL", "—", str(total_tids), str(total_cov), f"{global_pct}%"))
         print_table(
             ["Tactic", "Name", "Total TIDs", "Covered", "%"],
             rows,
@@ -93,4 +93,4 @@ class Exploit(Exploit):
 
         if fmt == "layer":
             output_path = MitreSweepReporter().generate_layer("layer")
-            print_success("Navigator layer: {}".format(output_path))
+            print_success(f"Navigator layer: {output_path}")

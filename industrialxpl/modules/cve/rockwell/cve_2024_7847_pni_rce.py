@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2024-7847 Rockwell Automation PowerFlex/Kinetix\nCVSS 9.8\nConnect EtherNet/IP port 44818 to PowerFlex, craft RCE payload, execute on drive firmware",
                 mitre_techniques=['T0866', 'T0836'])
             return
-        print_status("[CVE-2024-7847] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2024-7847] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-22154 Digi International ConnectME/NET+OS Gateway\nCVSS 9.8\nPOST to ConnectME admin web port 80, inject OS commands, RCE on serial gateway",
                 mitre_techniques=['T0866', 'T0822'])
             return
-        print_status("[CVE-2022-22154] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-22154] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2023-1999 Belden/Hirschmann RSPE30/52/85 Managed Switches\nCVSS 9.8\nAccess RSPE switch port 443 without auth, modify VLAN/ACL, control OT network segmentation",
                 mitre_techniques=['T0859', 'T0822'])
             return
-        print_status("[CVE-2023-1999] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-1999] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

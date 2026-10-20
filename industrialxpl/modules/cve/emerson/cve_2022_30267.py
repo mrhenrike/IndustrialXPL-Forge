@@ -80,22 +80,20 @@ class Exploit(Exploit):
                 description=(
                     "CVE-2022-30267 (CRITICAL CVSS 9.8): Authentication bypass (ICEFALL). "
                     "Affects: Emerson Ovation OCR400 controller. "
-                    "Would fingerprint {}:{} and confirm if device version "
-                    "is in the affected range.".format(self.target, self.port)
+                    f"Would fingerprint {self.target}:{self.port} and confirm if device version "
+                    "is in the affected range."
                 ),
                 mitre_techniques=['T1694.002', 'T0859'],
             )
             return
 
-        print_status("Checking {}:{} for CVE-2022-30267...".format(self.target, self.port))
+        print_status(f"Checking {self.target}:{self.port} for CVE-2022-30267...")
         if self.check():
             print_success(
-                "Service port {} open on {} — Emerson Ovation OCR400 controller may be present. "
+                f"Service port {self.port} open on {self.target} — Emerson Ovation OCR400 controller may be present. "
                 "CVE-2022-30267 CRITICAL CVSS 9.8: Authentication bypass (ICEFALL). "
-                "Manual version verification required to confirm vulnerability.".format(
-                    self.port, self.target)
+                "Manual version verification required to confirm vulnerability."
             )
             print_warning("CISA Advisory: ICSA-22-167-04")
         else:
-            print_info("{}:{} not responding on port {}.".format(
-                self.target, self.port, self.port))
+            print_info(f"{self.target}:{self.port} not responding on port {self.port}.")

@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2023-28828 Siemens SIMATIC PCS 7 DCS\nCVSS 9.8\nConnect SIMATIC PCS 7 port 102, exploit deserialization, RCE on process DCS server",
                 mitre_techniques=['T0866', 'T0843'])
             return
-        print_status("[CVE-2023-28828] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-28828] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

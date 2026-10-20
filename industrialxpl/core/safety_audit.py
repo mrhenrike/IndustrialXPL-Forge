@@ -4,12 +4,11 @@ Classifies operations by risk level and enforces gates before
 allowing potentially destructive actions against industrial targets.
 """
 
-from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Callable, Dict, List, Optional
+from collections.abc import Callable
 
 logger = logging.getLogger(__name__)
 
@@ -41,7 +40,7 @@ class OperationType(Enum):
     NETWORK_RECONFIG = "network_reconfig"
 
 
-OPERATION_RISK: Dict[OperationType, RiskLevel] = {
+OPERATION_RISK: dict[OperationType, RiskLevel] = {
     OperationType.READ_REGISTER: RiskLevel.PASSIVE,
     OperationType.SCAN_DISCOVERY: RiskLevel.LOW,
     OperationType.WRITE_REGISTER: RiskLevel.MEDIUM,
@@ -73,11 +72,11 @@ class DestructiveGate:
     def __init__(
         self,
         max_auto_approve: RiskLevel = RiskLevel.LOW,
-        confirm_fn: Optional[Callable[[OperationType, RiskLevel], bool]] = None,
+        confirm_fn: Callable[[OperationType, RiskLevel], bool] | None = None,
     ) -> None:
         self._max_auto: RiskLevel = max_auto_approve
         self._confirm_fn = confirm_fn
-        self._audit_log: List[SafetyDecision] = []
+        self._audit_log: list[SafetyDecision] = []
 
     def evaluate(
         self,
@@ -132,7 +131,7 @@ class DestructiveGate:
         return decision
 
     @property
-    def audit_log(self) -> List[SafetyDecision]:
+    def audit_log(self) -> list[SafetyDecision]:
         return list(self._audit_log)
 
     def clear_log(self) -> None:

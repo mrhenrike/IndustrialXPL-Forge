@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2021-31571 Kongsberg K-Pos Dynamic Positioning\nCVSS 9.8\nAccess K-Pos web port 443 with default creds, modify DP setpoints, compromise vessel control",
                 mitre_techniques=['T0859', 'T0836'])
             return
-        print_status("[CVE-2021-31571] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2021-31571] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

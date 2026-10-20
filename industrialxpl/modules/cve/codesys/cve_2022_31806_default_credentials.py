@@ -70,5 +70,5 @@ class Exploit(Exploit):
             print_info("PoC reference: https://sundi133.github.io/otscan")
             return
 
-        print_status("[CVE-2022-31806] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-31806] Exploiting {self.target}:{self.port}...")
         print_info('Live payload: implement protocol-specific exploit')

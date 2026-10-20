@@ -9,9 +9,8 @@ Provides Metasploit-style completions:
 - MITRE technique IDs after 'mitre' / 'ttp'
 """
 
-from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from industrialxpl.interpreter import IXFInterpreter
@@ -58,7 +57,7 @@ class IXFCompleter:
     def __init__(self, interpreter: IXFInterpreter) -> None:
         self._interp = interpreter
         self._matches: list[str] = []
-        self._module_cache: Optional[list[str]] = None
+        self._module_cache: list[str] | None = None
 
     @property
     def _module_paths(self) -> list[str]:
@@ -82,7 +81,7 @@ class IXFCompleter:
             return [k.upper() for k in opts]
         return []
 
-    def complete(self, text: str, state: int) -> Optional[str]:
+    def complete(self, text: str, state: int) -> str | None:
         if state == 0:
             try:
                 import readline

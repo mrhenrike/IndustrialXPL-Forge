@@ -59,5 +59,5 @@ class Exploit(Exploit):
             print_info("Affected: FactoryTalk Services Platform v6.40 and earlier")
             print_info("PoC: https://www.cisa.gov/uscert/ics/advisories/icsa-24-016-06")
             return
-        print_status("[CVE-2024-21914] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2024-21914] Exploiting {self.target}:{self.port}...")
         print_info('Live payload: implement protocol-specific exploit')

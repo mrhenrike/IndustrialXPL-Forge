@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2024-22042 Siemens Desigo CC Building SCADA\nCVSS 9.8\nPOST SQLi to Desigo CC login port 443, bypass auth, control HVAC, lighting, access control",
                 mitre_techniques=['T0819', 'T0822'])
             return
-        print_status("[CVE-2024-22042] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2024-22042] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

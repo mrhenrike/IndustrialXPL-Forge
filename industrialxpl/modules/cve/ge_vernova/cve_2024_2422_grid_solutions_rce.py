@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2024-2422 GE Vernova Grid Solutions SCADA HMI\nCVSS 9.8\nSend crafted request to Grid Solutions HMI port 80, RCE, control power grid substations",
                 mitre_techniques=['T0866', 'T0827'])
             return
-        print_status("[CVE-2024-2422] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2024-2422] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

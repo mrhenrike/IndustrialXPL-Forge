@@ -81,12 +81,12 @@ class Exploit(_Exploit):
             print_error("requests required: pip install requests")
             return
         url = "http://{}:{}/{}".format(self.target, self.port, self.path.lstrip("/"))
-        print_status("Testing HTTP credentials on {}…".format(url))
+        print_status(f"Testing HTTP credentials on {url}…")
         for username, password in creds:
             try:
                 resp = _requests.get(url, auth=(username, password), timeout=self.timeout)
                 if resp.status_code == 200:
-                    print_success("VALID: {}:{} on {}".format(username, password, url))
+                    print_success(f"VALID: {username}:{password} on {url}")
                     return
             except Exception:
                 break

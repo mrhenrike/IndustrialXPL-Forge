@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2021-33014 KMC Controls Commander BACnet Controller\nCVSS 9.8\nSend crafted HTTP to KMC Commander port 80, buffer overflow, RCE on building controller",
                 mitre_techniques=['T0866', 'T0836'])
             return
-        print_status("[CVE-2021-33014] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2021-33014] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

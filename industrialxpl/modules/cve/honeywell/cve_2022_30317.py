@@ -79,19 +79,19 @@ class Exploit(Exploit):
             DestructiveGate.print_simulation(
                 description=(
                     "CVE-2022-30317: Would fingerprint Honeywell ControlEdge RTU at "
-                    "{}:{} and confirm if version is in affected range. "
+                    f"{self.target}:{self.port} and confirm if version is in affected range. "
                     "Exploit type: Insecure firmware. "
-                    "CVSS 7.4 (HIGH).".format(self.target, self.port)
+                    "CVSS 7.4 (HIGH)."
                 ),
                 mitre_techniques=['T1693'],
             )
             return
-        print_status("Checking {}:{} for CVE-2022-30317...".format(self.target, self.port))
+        print_status(f"Checking {self.target}:{self.port} for CVE-2022-30317...")
         if self.check():
             print_success(
-                "Port {} open on {} — Honeywell ControlEdge RTU may be present. "
+                f"Port {self.port} open on {self.target} — Honeywell ControlEdge RTU may be present. "
                 "CVE-2022-30317 (HIGH CVSS 7.4): Insecure firmware. "
-                "Manual version verification required.".format(self.port, self.target)
+                "Manual version verification required."
             )
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2021-22728 Sierra Wireless AirLink Industrial Router\nCVSS 9.8\nAccess Sierra AirLink ACEmanager port 9191 without auth, control cellular OT connectivity",
                 mitre_techniques=['T0859', 'T0822'])
             return
-        print_status("[CVE-2021-22728] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2021-22728] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

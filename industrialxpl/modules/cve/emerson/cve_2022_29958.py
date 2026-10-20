@@ -79,19 +79,19 @@ class Exploit(Exploit):
             DestructiveGate.print_simulation(
                 description=(
                     "CVE-2022-29958: Would fingerprint Emerson Ovation DCS at "
-                    "{}:{} and confirm if version is in affected range. "
+                    f"{self.target}:{self.port} and confirm if version is in affected range. "
                     "Exploit type: Unauthenticated protocol. "
-                    "CVSS 9.1 (CRITICAL).".format(self.target, self.port)
+                    "CVSS 9.1 (CRITICAL)."
                 ),
                 mitre_techniques=['T1694.002', 'T0859'],
             )
             return
-        print_status("Checking {}:{} for CVE-2022-29958...".format(self.target, self.port))
+        print_status(f"Checking {self.target}:{self.port} for CVE-2022-29958...")
         if self.check():
             print_success(
-                "Port {} open on {} — Emerson Ovation DCS may be present. "
+                f"Port {self.port} open on {self.target} — Emerson Ovation DCS may be present. "
                 "CVE-2022-29958 (CRITICAL CVSS 9.1): Unauthenticated protocol. "
-                "Manual version verification required.".format(self.port, self.target)
+                "Manual version verification required."
             )
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

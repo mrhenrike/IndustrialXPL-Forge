@@ -84,7 +84,7 @@ _VENDOR_NAMES: dict = {
 }
 
 
-def _parse_i_am(data: bytes, src_ip: str) -> Optional[dict]:
+def _parse_i_am(data: bytes, src_ip: str) -> dict | None:
     """Parse a BACnet I-Am APDU into a device information dict.
 
     Returns None if the packet is not a valid I-Am or is too short to parse.
@@ -148,7 +148,7 @@ def _parse_i_am(data: bytes, src_ip: str) -> Optional[dict]:
                 vendor_id = struct.unpack(">H", data[offset + 1:offset + 3])[0]
                 offset += 3
             result["VendorID"] = vendor_id
-            result["VendorName"] = _VENDOR_NAMES.get(vendor_id, "Unknown(ID={})".format(vendor_id))
+            result["VendorName"] = _VENDOR_NAMES.get(vendor_id, f"Unknown(ID={vendor_id})")
     except Exception:
         pass
 
@@ -220,9 +220,7 @@ class Exploit(Exploit):
         is_broadcast = self.target.endswith(".255") or self.target == "255.255.255.255"
         payload = _WHO_IS_BCAST if is_broadcast else _WHO_IS_UNICAST
 
-        print_status("[BACnet-L3] Sending Who-Is to {}:{}/UDP...".format(
-            self.target, self.port
-        ))
+        print_status(f"[BACnet-L3] Sending Who-Is to {self.target}:{self.port}/UDP...")
 
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
@@ -246,10 +244,8 @@ class Exploit(Exploit):
                             )
                         )
                     else:
-                        print_info("[BACnet-L3] Response from {} ({} B) — not I-Am".format(
-                            src_ip, len(data)
-                        ))
-                except socket.timeout:
+                        print_info(f"[BACnet-L3] Response from {src_ip} ({len(data)} B) — not I-Am")
+                except TimeoutError:
                     break
         finally:
             sock.close()
@@ -258,7 +254,7 @@ class Exploit(Exploit):
             print_error("[BACnet-L3] No BACnet I-Am responses received.")
             return
 
-        print_status("[BACnet-L3] {} device(s) discovered.".format(len(devices)))
+        print_status(f"[BACnet-L3] {len(devices)} device(s) discovered.")
         print_table(
             name="BACnet/IP L3 Discovered Devices",
             header=("IP", "DeviceInstance", "VendorName", "MaxAPDU"),

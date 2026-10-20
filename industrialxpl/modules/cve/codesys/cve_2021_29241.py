@@ -79,19 +79,19 @@ class Exploit(Exploit):
             DestructiveGate.print_simulation(
                 description=(
                     "CVE-2021-29241: Would fingerprint CODESYS Linux SL OPC UA at "
-                    "{}:{} and confirm if version is in affected range. "
+                    f"{self.target}:{self.port} and confirm if version is in affected range. "
                     "Exploit type: OPC UA protocol stack DoS. "
-                    "CVSS 7.5 (HIGH).".format(self.target, self.port)
+                    "CVSS 7.5 (HIGH)."
                 ),
                 mitre_techniques=['T0814'],
             )
             return
-        print_status("Checking {}:{} for CVE-2021-29241...".format(self.target, self.port))
+        print_status(f"Checking {self.target}:{self.port} for CVE-2021-29241...")
         if self.check():
             print_success(
-                "Port {} open on {} — CODESYS Linux SL OPC UA may be present. "
+                f"Port {self.port} open on {self.target} — CODESYS Linux SL OPC UA may be present. "
                 "CVE-2021-29241 (HIGH CVSS 7.5): OPC UA protocol stack DoS. "
-                "Manual version verification required.".format(self.port, self.target)
+                "Manual version verification required."
             )
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

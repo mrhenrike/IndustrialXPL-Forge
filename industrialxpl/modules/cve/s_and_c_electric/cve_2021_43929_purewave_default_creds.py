@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2021-43929 S&C Electric PureWave/GeoScale Controller\nCVSS 9.8\nLogin S&C controller web port 80 with default creds, control automated power switching",
                 mitre_techniques=['T0859', 'T0827'])
             return
-        print_status("[CVE-2021-43929] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2021-43929] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2023-1975 Grundfos CUE Pump Drive\nCVSS 9.8\nConnect Grundfos CUE Modbus TCP port 502, default creds, control pump speed and pressure",
                 mitre_techniques=['T0859', 'T0836'])
             return
-        print_status("[CVE-2023-1975] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-1975] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

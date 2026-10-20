@@ -16,5 +16,5 @@ class Exploit(Exploit):
     def run(self):
         host = str(self.target or "127.0.0.1")
         plan = simulate_all(host)
-        print_warning("[Vendors] {} vendors on {}".format(len(VENDOR_NAMES), host))
+        print_warning(f"[Vendors] {len(VENDOR_NAMES)} vendors on {host}")
         print_table(["vendor", "fn"], [[v, plan["results"][v]["fn"]] for v in VENDOR_NAMES])

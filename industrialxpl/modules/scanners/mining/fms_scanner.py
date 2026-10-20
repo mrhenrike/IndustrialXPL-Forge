@@ -28,7 +28,6 @@ References:
 
 import socket
 import re
-from typing import Optional, List, Dict
 
 from industrialxpl.core.exploit import (
     Exploit, OptIP, OptBool, OptInteger,
@@ -88,7 +87,7 @@ _UNAUTHENTICATED_PATHS = [
 ]
 
 
-def _http_probe(host: str, port: int, path: str, use_tls: bool, timeout: float) -> Optional[Dict]:
+def _http_probe(host: str, port: int, path: str, use_tls: bool, timeout: float) -> dict | None:
     """Send a minimal HTTP GET and return status + headers."""
     try:
         sock = socket.create_connection((host, port), timeout=timeout)
@@ -98,9 +97,7 @@ def _http_probe(host: str, port: int, path: str, use_tls: bool, timeout: float) 
             ctx.check_hostname = False
             ctx.verify_mode = ssl.CERT_NONE
             sock = ctx.wrap_socket(sock, server_hostname=host)
-        request = "GET {} HTTP/1.0\r\nHost: {}\r\nUser-Agent: Mozilla/5.0\r\nConnection: close\r\n\r\n".format(
-            path, host
-        )
+        request = f"GET {path} HTTP/1.0\r\nHost: {host}\r\nUser-Agent: Mozilla/5.0\r\nConnection: close\r\n\r\n"
         sock.sendall(request.encode())
         raw = b""
         while True:
@@ -125,7 +122,7 @@ def _http_probe(host: str, port: int, path: str, use_tls: bool, timeout: float) 
         return None
 
 
-def _identify_fms(resp: Dict) -> Optional[str]:
+def _identify_fms(resp: dict) -> str | None:
     """Match response against known FMS fingerprints."""
     if not resp:
         return None
@@ -197,16 +194,16 @@ class Exploit(Exploit):
             print_error("Set TARGET first.")
             return
 
-        print_status("Scanning {} for Fleet Management System interfaces...".format(self.target))
+        print_status(f"Scanning {self.target} for Fleet Management System interfaces...")
         print_info("")
 
-        found: List[Dict] = []
+        found: list[dict] = []
 
         for name, fp in _FMS_FINGERPRINTS.items():
             for port in fp["ports"]:
                 use_tls = port in (443, 8443)
                 proto = "https" if use_tls else "http"
-                url = "{}://{}:{}".format(proto, self.target, port)
+                url = f"{proto}://{self.target}:{port}"
 
                 resp = _http_probe(self.target, port, "/", use_tls, self.timeout)
                 if resp is None:
@@ -219,16 +216,14 @@ class Exploit(Exploit):
 
                 if fms_name:
                     matched_fp = _FMS_FINGERPRINTS[fms_name]
-                    print_success("FMS detected on {}".format(url))
+                    print_success(f"FMS detected on {url}")
                     print_info("  System  : {}".format(matched_fp["vendor"]))
-                    print_info("  HTTP    : {} | Server: {}".format(code, server))
+                    print_info(f"  HTTP    : {code} | Server: {server}")
                     print_info("  Risk    : {}".format(matched_fp["risk"]))
                     print_info("  Notes   : {}".format(matched_fp["notes"]))
                     found.append({"url": url, "system": fms_name, "port": port, "fp": matched_fp})
                 else:
-                    print_info("  {}:{} -> HTTP {} | Server: {} (not FMS fingerprinted)".format(
-                        self.target, port, code, server
-                    ))
+                    print_info(f"  {self.target}:{port} -> HTTP {code} | Server: {server} (not FMS fingerprinted)")
 
         if self.check_unauth and found:
             print_info("")
@@ -243,14 +238,12 @@ class Exploit(Exploit):
                         code = code_m.group(1) if code_m else "?"
                         if code in ("200", "201", "204"):
                             body_preview = resp.get("body", "")[:120].replace("\n", " ")
-                            print_warning("  UNAUTH  : {} -> HTTP {} | {}".format(
-                                path, code, body_preview
-                            ))
+                            print_warning(f"  UNAUTH  : {path} -> HTTP {code} | {body_preview}")
                         elif code in ("401", "403"):
-                            print_info("  AUTH    : {} -> HTTP {} (protected)".format(path, code))
+                            print_info(f"  AUTH    : {path} -> HTTP {code} (protected)")
 
         if not found:
-            print_info("No FMS interfaces detected on {}.".format(self.target))
+            print_info(f"No FMS interfaces detected on {self.target}.")
             print_info("Try: search sector=mining for other mining-specific modules.")
         else:
             print_info("")

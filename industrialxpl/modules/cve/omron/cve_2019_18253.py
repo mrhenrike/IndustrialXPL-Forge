@@ -42,7 +42,7 @@ class Exploit(Exploit):
         if not self.target: print_error("Set target."); return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2019-18253: {}:{}.  Stack buffer overflow on file open. CVSS 7.8.".format(self.target, self.port),
+                description=f"CVE-2019-18253: {self.target}:{self.port}.  Stack buffer overflow on file open. CVSS 7.8.",
                 mitre_techniques=["T0883"],
             ); return
-        print_success("CVE-2019-18253 HIGH — port {} open.".format(self.port)) if self.check() else print_error("Not responding.")
+        print_success(f"CVE-2019-18253 HIGH — port {self.port} open.") if self.check() else print_error("Not responding.")

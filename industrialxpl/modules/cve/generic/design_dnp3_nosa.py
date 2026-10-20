@@ -80,22 +80,20 @@ class Exploit(Exploit):
                 description=(
                     "DESIGN-DNP3-NOSA (CRITICAL CVSS 9.1): Replay attack unauthenticated control no Secure Auth. "
                     "Affects: Generic DNP3 without Secure Authentication v5. "
-                    "Would fingerprint {}:{} and confirm if device version "
-                    "is in the affected range.".format(self.target, self.port)
+                    f"Would fingerprint {self.target}:{self.port} and confirm if device version "
+                    "is in the affected range."
                 ),
                 mitre_techniques=['T1694.002', 'T0859'],
             )
             return
 
-        print_status("Checking {}:{} for DESIGN-DNP3-NOSA...".format(self.target, self.port))
+        print_status(f"Checking {self.target}:{self.port} for DESIGN-DNP3-NOSA...")
         if self.check():
             print_success(
-                "Service port {} open on {} — Generic DNP3 without Secure Authentication v5 may be present. "
+                f"Service port {self.port} open on {self.target} — Generic DNP3 without Secure Authentication v5 may be present. "
                 "DESIGN-DNP3-NOSA CRITICAL CVSS 9.1: Replay attack unauthenticated control no Secure Auth. "
-                "Manual version verification required to confirm vulnerability.".format(
-                    self.port, self.target)
+                "Manual version verification required to confirm vulnerability."
             )
             print_warning("CISA Advisory: N/A")
         else:
-            print_info("{}:{} not responding on port {}.".format(
-                self.target, self.port, self.port))
+            print_info(f"{self.target}:{self.port} not responding on port {self.port}.")

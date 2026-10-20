@@ -33,7 +33,7 @@ class Exploit(Exploit):
         except: return False
     def run(self):
         if not self.target: print_error("Set target"); return
-        print_status("[KEYENCE] Scanning {}:{}...".format(self.target, self.port))
+        print_status(f"[KEYENCE] Scanning {self.target}:{self.port}...")
         results = []
         try:
             s = socket.socket(); s.settimeout(self.timeout)
@@ -41,10 +41,10 @@ class Exploit(Exploit):
             s.send(b"4b56")
             banner = s.recv(256)
             s.close()
-            results.append(("KEYENCE KV Series PLC", "{}:{}".format(self.target, self.port),
+            results.append(("KEYENCE KV Series PLC", f"{self.target}:{self.port}",
                            "Detected", banner[:32].hex()))
         except Exception as e:
-            results.append(("KEYENCE KV Series PLC", "{}:{}".format(self.target, self.port),
+            results.append(("KEYENCE KV Series PLC", f"{self.target}:{self.port}",
                            "Unreachable", str(e)[:30]))
         if results:
             print_table(["Device","Address","Status","Banner"], results, title="KEYENCE Scan")

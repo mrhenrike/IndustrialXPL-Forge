@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-1373 Automated Logic WebCTRL Building Automation\nCVSS 9.8\nSend crafted request to WebCTRL server port 443, deserialization, RCE on building automation",
                 mitre_techniques=['T0866', 'T0836'])
             return
-        print_status("[CVE-2022-1373] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-1373] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

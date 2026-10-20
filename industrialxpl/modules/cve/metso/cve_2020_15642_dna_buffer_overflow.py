@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2020-15642 Metso Neles/Valmet DNA DCS\nCVSS 9.8\nSend crafted Modbus packet to Metso DNA historian port 502, buffer overflow, RCE",
                 mitre_techniques=['T0866', 'T0803'])
             return
-        print_status("[CVE-2020-15642] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2020-15642] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

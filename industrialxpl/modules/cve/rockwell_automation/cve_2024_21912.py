@@ -53,12 +53,12 @@ class Exploit(Exploit):
             return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2024-21912: Fingerprint Rockwell Automation Allen-Bradley Power Monitor 1000E at {}:{}. Authentication bypass. CVSS 9.8.".format(self.target, self.port),
+                description=f"CVE-2024-21912: Fingerprint Rockwell Automation Allen-Bradley Power Monitor 1000E at {self.target}:{self.port}. Authentication bypass. CVSS 9.8.",
                 mitre_techniques=['T1694.002', 'T0859'],
             )
             return
         if self.check():
-            print_success("Port {} open — Rockwell Automation Allen-Bradley Power Monitor 1000E may be present. CVE-2024-21912 CRITICAL CVSS 9.8.".format(self.port))
+            print_success(f"Port {self.port} open — Rockwell Automation Allen-Bradley Power Monitor 1000E may be present. CVE-2024-21912 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

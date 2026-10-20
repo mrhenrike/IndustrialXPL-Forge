@@ -53,12 +53,12 @@ class Exploit(Exploit):
             return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2020-6970: Fingerprint Honeywell MB-Secure Mass Flow Controller at {}:{}. Buffer overflow RCE unauthenticated. CVSS 9.8.".format(self.target, self.port),
+                description=f"CVE-2020-6970: Fingerprint Honeywell MB-Secure Mass Flow Controller at {self.target}:{self.port}. Buffer overflow RCE unauthenticated. CVSS 9.8.",
                 mitre_techniques=['T0819', 'T0866', 'T1694.002', 'T0859'],
             )
             return
         if self.check():
-            print_success("Port {} open — Honeywell MB-Secure Mass Flow Controller may be present. CVE-2020-6970 CRITICAL CVSS 9.8.".format(self.port))
+            print_success(f"Port {self.port} open — Honeywell MB-Secure Mass Flow Controller may be present. CVE-2020-6970 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

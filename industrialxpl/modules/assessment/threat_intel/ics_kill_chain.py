@@ -261,8 +261,8 @@ class Exploit(Exploit):
             for s in _KILL_CHAIN_STAGES:
                 print_info("  Stage {:2d}: {}".format(s["stage"], s["name"]))
             print_info(
-                "\n{} stages total. Set simulate=false to display full details, "
-                "MITRE mappings, and TTP examples.".format(len(_KILL_CHAIN_STAGES))
+                f"\n{len(_KILL_CHAIN_STAGES)} stages total. Set simulate=false to display full details, "
+                "MITRE mappings, and TTP examples."
             )
             return
 
@@ -281,12 +281,12 @@ class Exploit(Exploit):
 
             print_info("\nMITRE ATT&CK for ICS:")
             for t in s["mitre"]:
-                print_info("  -> {}".format(t))
+                print_info(f"  -> {t}")
 
             if self.show_examples and s.get("examples"):
                 print_info("\nReal-world TTP examples:")
                 for actor, example in s["examples"].items():
-                    print_warning("  [{}] {}".format(actor, example))
+                    print_warning(f"  [{actor}] {example}")
 
         print_info("\n" + "=" * 72)
         print_info("DEFENSIVE INSIGHTS")

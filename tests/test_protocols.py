@@ -1,6 +1,5 @@
 """Tests for OT/ICS protocol stubs."""
 
-from __future__ import annotations
 
 import pytest
 

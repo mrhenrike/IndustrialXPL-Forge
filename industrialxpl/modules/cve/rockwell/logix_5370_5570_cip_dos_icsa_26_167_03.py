@@ -28,7 +28,6 @@ References:
   - https://www.cisa.gov/news-events/ics-advisories/icsa-26-022-03
 Affected: CompactLogix 5370 (fw <= 36.011), ControlLogix 5570 (fw <= 33)
 """
-from __future__ import annotations
 
 import logging
 import socket
@@ -196,7 +195,7 @@ class Exploit(Exploit):
                 return f"EtherNet/IP port open at {self.target}:{self.port} - no identity data"
         except ConnectionRefusedError:
             return f"Port {self.port} closed at {self.target}"
-        except socket.timeout:
+        except TimeoutError:
             return f"Timeout at {self.target}:{self.port}"
         except Exception as exc:
             return f"Check error: {exc}"
@@ -231,7 +230,7 @@ class Exploit(Exploit):
                                 logger.info("[*] Pkt %d: Response %d bytes (status=0x%08x)", i + 1, len(resp), status_word)
                             else:
                                 logger.info("[*] Pkt %d: Empty response - controller may be faulting", i + 1)
-                        except socket.timeout:
+                        except TimeoutError:
                             logger.info("[+] Pkt %d: Timeout - controller likely in MNRF / unresponsive", i + 1)
                 except ConnectionRefusedError:
                     logger.info("[+] Connection refused - EtherNet/IP service down (MNRF confirmed)")
@@ -259,6 +258,6 @@ class Exploit(Exploit):
                 logger.info("[*] Port still responding - MNRF may not have triggered yet")
         except ConnectionRefusedError:
             logger.info("[+] CONFIRMED: EtherNet/IP port closed - controller in fault state")
-        except socket.timeout:
+        except TimeoutError:
             logger.info("[*] Port timeout - controller unresponsive (possible MNRF)")
 

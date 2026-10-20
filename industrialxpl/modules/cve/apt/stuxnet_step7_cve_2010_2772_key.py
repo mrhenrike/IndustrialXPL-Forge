@@ -50,12 +50,12 @@ class Exploit(Exploit):
         if not self.target: print_error("Set target first."); return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2010-2772: APT Stuxnet hardcoded key (InduGuard PoC) against Siemens Step7 Stuxnet hardcoded key at {}:{}.".format(self.target, self.port),
+                description=f"CVE-2010-2772: APT Stuxnet hardcoded key (InduGuard PoC) against Siemens Step7 Stuxnet hardcoded key at {self.target}:{self.port}.",
                 payload_hex="",
                 payload_human="",
                 mitre_techniques=["T1694.002","T0873.001"],
             ); return
         if self.check():
-            print_success("Port {} open — Siemens Step7 Stuxnet hardcoded key. CVE-2010-2772 CRITICAL. Manual exploit: https://github.com/Mewtwoz/InduGuard_vul_poc".format(self.port))
+            print_success(f"Port {self.port} open — Siemens Step7 Stuxnet hardcoded key. CVE-2010-2772 CRITICAL. Manual exploit: https://github.com/Mewtwoz/InduGuard_vul_poc")
         else:
             print_error("Target not responding.")

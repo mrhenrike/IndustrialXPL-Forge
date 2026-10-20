@@ -17,7 +17,8 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
-from typing import Callable, Optional
+from typing import Optional
+from collections.abc import Callable
 
 from industrialxpl.core.exploit.printer import print_info, print_warning
 
@@ -60,7 +61,7 @@ class PolyExploitRunner:
         self,
         cmd: list,
         timeout: int = 120,
-        cwd: Optional[str] = None,
+        cwd: str | None = None,
     ) -> tuple[int, str, str]:
         try:
             result = subprocess.run(
@@ -72,15 +73,15 @@ class PolyExploitRunner:
             )
             return result.returncode, result.stdout, result.stderr
         except subprocess.TimeoutExpired:
-            return -1, "", "Command timed out after {}s".format(timeout)
+            return -1, "", f"Command timed out after {timeout}s"
         except FileNotFoundError as exc:
             return -1, "", str(exc)
 
     def _warn_fallback(self, runtime: str) -> None:
-        hint = RUNTIME_HINTS.get(runtime, "install {}".format(runtime))
+        hint = RUNTIME_HINTS.get(runtime, f"install {runtime}")
         print_warning(
-            "[poly] '{}' not found — using Python fallback. "
-            "To use the native runtime: {}".format(runtime, hint)
+            f"[poly] '{runtime}' not found — using Python fallback. "
+            f"To use the native runtime: {hint}"
         )
 
     def run_with_fallback(
@@ -99,7 +100,7 @@ class PolyExploitRunner:
             python_fallback(*args, **kwargs)
             return 0, "Python fallback executed.", ""
         except Exception as exc:
-            return -1, "", "Python fallback failed: {}".format(exc)
+            return -1, "", f"Python fallback failed: {exc}"
 
     def run_ruby(self, script_path: str, args: list) -> tuple[int, str, str]:
         if not self.check_runtime("ruby"):
@@ -121,9 +122,9 @@ class PolyExploitRunner:
             self._warn_fallback("msfconsole")
             return -1, "", "msfconsole not found — use Python fallback implementation"
 
-        rc_lines = ["use {}".format(module_path)]
+        rc_lines = [f"use {module_path}"]
         for k, v in options.items():
-            rc_lines.append("set {} {}".format(k, v))
+            rc_lines.append(f"set {k} {v}")
         rc_lines.extend(["exploit -j", "sleep 10", "exit"])
         rc_content = "\n".join(rc_lines)
 

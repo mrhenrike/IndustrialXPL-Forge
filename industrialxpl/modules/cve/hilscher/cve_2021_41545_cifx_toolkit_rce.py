@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2021-41545 Hilscher netX/cifX Toolkit\nCVSS 9.8\nSend crafted packet to Hilscher netX device port 4840, stack overflow, RCE on fieldbus gateway",
                 mitre_techniques=['T0866'])
             return
-        print_status("[CVE-2021-41545] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2021-41545] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

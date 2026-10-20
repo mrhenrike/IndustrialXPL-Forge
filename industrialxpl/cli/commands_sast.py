@@ -1,6 +1,5 @@
 """LLM key management and SAST analysis commands (mixin)."""
 
-from __future__ import annotations
 
 from industrialxpl.core.exploit.printer import print_error, print_info, print_success, print_table
 
@@ -17,7 +16,7 @@ class SASTCommandsMixin:
         try:
             from industrialxpl.modules.assessment.sast.plc_source_analyzer import _llm_manager
             _llm_manager.set_key(provider, api_key)
-            print_success("LLM key configured: provider={} len={}".format(provider, len(api_key)))
+            print_success(f"LLM key configured: provider={provider} len={len(api_key)}")
         except ValueError as exc:
             print_error(str(exc))
 
@@ -28,9 +27,9 @@ class SASTCommandsMixin:
             active = _llm_manager.get_active_provider() or "(none)"
             rows = [(p, s) for p, s in status.items()]
             print_table(["Provider", "Status"], rows, title="LLM Providers")
-            print_info("Active: {}".format(active))
+            print_info(f"Active: {active}")
         except Exception as exc:
-            print_error("Error: {}".format(exc))
+            print_error(f"Error: {exc}")
 
     def command_sast(self, args: str, **kwargs) -> None:
         parts = args.strip().split()
