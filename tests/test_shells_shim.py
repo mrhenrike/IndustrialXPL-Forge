@@ -2,10 +2,6 @@
 
 from __future__ import annotations
 
-import pytest
-
-pytestmark = pytest.mark.skip(reason="xpl_core.shells not yet extracted; see shell-integration plan")
-
 import sys
 from pathlib import Path
 
@@ -14,6 +10,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from industrialxpl.core import shells
+
 
 def test_shim_imports_successfully():
     assert hasattr(shells, "ShellEngine")
