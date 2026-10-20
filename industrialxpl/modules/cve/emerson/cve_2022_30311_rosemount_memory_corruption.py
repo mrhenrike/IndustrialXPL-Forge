@@ -59,5 +59,5 @@ class Exploit(Exploit):
             print_info("Affected: Rosemount 370XA Gas Chromatograph")
             print_info("PoC: https://www.cisa.gov/uscert/ics/advisories/icsa-22-237-03")
             return
-        print_status("[CVE-2022-30311] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-30311] Exploiting {self.target}:{self.port}...")
         print_info('Live payload: implement protocol-specific exploit')

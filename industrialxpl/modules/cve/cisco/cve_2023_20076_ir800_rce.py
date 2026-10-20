@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2023-20076 Cisco IR800/IR1101 Industrial Router\nCVSS 9.8\nPOST to Cisco IR800 web port 443, inject OS commands, RCE on industrial router",
                 mitre_techniques=['T0866', 'T0822'])
             return
-        print_status("[CVE-2023-20076] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-20076] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2021-44480 STEP Electric AC301E VFD Controller\nCVSS 9.8\nConnect STEP AC301E Modbus TCP port 502, default creds, control motor drive parameters",
                 mitre_techniques=['T0859', 'T0836'])
             return
-        print_status("[CVE-2021-44480] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2021-44480] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

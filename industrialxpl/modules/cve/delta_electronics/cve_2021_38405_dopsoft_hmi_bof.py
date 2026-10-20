@@ -59,5 +59,5 @@ class Exploit(Exploit):
             print_info("Affected: DOPSoft 2.00.07 and earlier")
             print_info("PoC: https://www.cisa.gov/uscert/ics/advisories/icsa-21-259-01")
             return
-        print_status("[CVE-2021-38405] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2021-38405] Exploiting {self.target}:{self.port}...")
         print_info('Live payload: implement protocol-specific exploit')

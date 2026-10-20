@@ -4,13 +4,11 @@ Foundational requirements (FR1-FR7) mapped to system requirements (SR)
 with security level targets.
 """
 
-from __future__ import annotations
 
-from typing import Dict, List
 
 from . import ComplianceCheck, SecurityLevel
 
-FOUNDATIONAL_REQUIREMENTS: Dict[str, str] = {
+FOUNDATIONAL_REQUIREMENTS: dict[str, str] = {
     "FR1": "Identification and Authentication Control (IAC)",
     "FR2": "Use Control (UC)",
     "FR3": "System Integrity (SI)",
@@ -20,7 +18,7 @@ FOUNDATIONAL_REQUIREMENTS: Dict[str, str] = {
     "FR7": "Resource Availability (RA)",
 }
 
-ZONE_CONDUIT_TYPES: List[str] = [
+ZONE_CONDUIT_TYPES: list[str] = [
     "enterprise",
     "manufacturing",
     "supervisory",
@@ -32,15 +30,15 @@ ZONE_CONDUIT_TYPES: List[str] = [
 
 
 def checks_for_level(
-    checks: Dict[str, ComplianceCheck], target: SecurityLevel
-) -> List[ComplianceCheck]:
+    checks: dict[str, ComplianceCheck], target: SecurityLevel
+) -> list[ComplianceCheck]:
     """Filter checks applicable up to a given security level target."""
     return [c for c in checks.values() if c.security_level.value <= target.value]
 
 
 def checks_by_category(
-    checks: Dict[str, ComplianceCheck], category_prefix: str
-) -> List[ComplianceCheck]:
+    checks: dict[str, ComplianceCheck], category_prefix: str
+) -> list[ComplianceCheck]:
     """Return checks whose category starts with *category_prefix* (e.g. 'FR1')."""
     return [c for c in checks.values() if c.category.startswith(category_prefix)]
 

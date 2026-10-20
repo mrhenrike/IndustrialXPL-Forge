@@ -53,12 +53,12 @@ class Exploit(Exploit):
             return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2021-22285: Fingerprint ABB CP651 HMI at {}:{}. Denial of service. CVSS 7.5.".format(self.target, self.port),
+                description=f"CVE-2021-22285: Fingerprint ABB CP651 HMI at {self.target}:{self.port}. Denial of service. CVSS 7.5.",
                 mitre_techniques=['T0814'],
             )
             return
         if self.check():
-            print_success("Port {} open — ABB CP651 HMI may be present. CVE-2021-22285 HIGH CVSS 7.5.".format(self.port))
+            print_success(f"Port {self.port} open — ABB CP651 HMI may be present. CVE-2021-22285 HIGH CVSS 7.5.")
             print_warning("CISA: N/A")
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

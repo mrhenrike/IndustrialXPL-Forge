@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2021-34881 Pepperl+Fuchs IO-Link Master ICE1\nCVSS 9.8\nPOST crafted request to ICE1 port 80, inject OS commands, RCE on IO-Link master",
                 mitre_techniques=['T0866', 'T0822'])
             return
-        print_status("[CVE-2021-34881] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2021-34881] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

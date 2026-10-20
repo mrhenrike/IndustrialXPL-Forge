@@ -53,12 +53,12 @@ class Exploit(Exploit):
             return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2023-38380: Fingerprint Siemens SCALANCE X-200RNA at {}:{}. Denial of service OSPF overflow. CVSS 8.6.".format(self.target, self.port),
+                description=f"CVE-2023-38380: Fingerprint Siemens SCALANCE X-200RNA at {self.target}:{self.port}. Denial of service OSPF overflow. CVSS 8.6.",
                 mitre_techniques=['T0814'],
             )
             return
         if self.check():
-            print_success("Port {} open — Siemens SCALANCE X-200RNA may be present. CVE-2023-38380 HIGH CVSS 8.6.".format(self.port))
+            print_success(f"Port {self.port} open — Siemens SCALANCE X-200RNA may be present. CVE-2023-38380 HIGH CVSS 8.6.")
             print_warning("CISA: N/A")
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

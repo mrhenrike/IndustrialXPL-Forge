@@ -79,19 +79,19 @@ class Exploit(Exploit):
             DestructiveGate.print_simulation(
                 description=(
                     "CVE-2025-13913: Would fingerprint Inductive Automation Ignition at "
-                    "{}:{} and confirm if version is in affected range. "
+                    f"{self.target}:{self.port} and confirm if version is in affected range. "
                     "Exploit type: Malicious project import RCE. "
-                    "CVSS 7.2 (HIGH).".format(self.target, self.port)
+                    "CVSS 7.2 (HIGH)."
                 ),
                 mitre_techniques=['T0819', 'T0866'],
             )
             return
-        print_status("Checking {}:{} for CVE-2025-13913...".format(self.target, self.port))
+        print_status(f"Checking {self.target}:{self.port} for CVE-2025-13913...")
         if self.check():
             print_success(
-                "Port {} open on {} — Inductive Automation Ignition may be present. "
+                f"Port {self.port} open on {self.target} — Inductive Automation Ignition may be present. "
                 "CVE-2025-13913 (HIGH CVSS 7.2): Malicious project import RCE. "
-                "Manual version verification required.".format(self.port, self.target)
+                "Manual version verification required."
             )
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

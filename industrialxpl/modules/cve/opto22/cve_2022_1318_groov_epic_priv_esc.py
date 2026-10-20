@@ -59,5 +59,5 @@ class Exploit(Exploit):
             print_info("Affected: groov EPIC firmware prior to 3.4.2")
             print_info("PoC: https://www.cisa.gov/uscert/ics/advisories/icsa-22-116-06")
             return
-        print_status("[CVE-2022-1318] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-1318] Exploiting {self.target}:{self.port}...")
         print_info('Live payload: implement protocol-specific exploit')

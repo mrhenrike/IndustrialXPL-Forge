@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2021-34585 Elipse Software Epics SCADA/Historian\nCVSS 9.8\nPOST SQLi to Epics login, bypass auth, dump historian process data for manufacturing",
                 mitre_techniques=["T0866"])
             return
-        print_status("[CVE-2021-34585] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2021-34585] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit payload")

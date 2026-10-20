@@ -33,5 +33,5 @@ class Exploit(Exploit):
                 description="CVE-2021-38155 ALTUS Duo PLC Series\nCVSS 9.8\nConnect Modbus TCP port 502, FC03/16 read/write all I/O without auth",
                 mitre_techniques=['T1692.001', 'T0836'])
             return
-        print_status("[CVE-2021-38155] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2021-38155] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol exploit")

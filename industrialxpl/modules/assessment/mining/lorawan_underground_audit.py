@@ -41,7 +41,6 @@ References:
 """
 
 import socket
-from typing import Optional, List, Dict
 
 from industrialxpl.core.exploit import (
     Exploit, OptIP, OptString, OptBool, OptInteger,
@@ -78,7 +77,7 @@ _ABP_RISK_INDICATORS = [
 ]
 
 
-def _tcp_probe(host: str, port: int, timeout: float) -> Optional[str]:
+def _tcp_probe(host: str, port: int, timeout: float) -> str | None:
     """Try TCP connect and grab banner."""
     try:
         sock = socket.create_connection((host, port), timeout=timeout)
@@ -92,13 +91,11 @@ def _tcp_probe(host: str, port: int, timeout: float) -> Optional[str]:
         return None
 
 
-def _http_probe(host: str, port: int, path: str, timeout: float) -> Optional[Dict]:
+def _http_probe(host: str, port: int, path: str, timeout: float) -> dict | None:
     """Send HTTP GET and return response."""
     try:
         sock = socket.create_connection((host, port), timeout=timeout)
-        req = "GET {} HTTP/1.0\r\nHost: {}\r\nUser-Agent: LoRa-Monitor/1.0\r\nConnection: close\r\n\r\n".format(
-            path, host
-        )
+        req = f"GET {path} HTTP/1.0\r\nHost: {host}\r\nUser-Agent: LoRa-Monitor/1.0\r\nConnection: close\r\n\r\n"
         sock.sendall(req.encode())
         raw = b""
         while True:
@@ -163,35 +160,29 @@ class Exploit(Exploit):
         print_info("")
         print_info("=" * 68)
         print_info("LORAWAN UNDERGROUND MINING SENSOR NETWORK AUDIT")
-        print_info("Site   : {}".format(site))
+        print_info(f"Site   : {site}")
         if self.target:
-            print_info("Target : {}".format(self.target))
+            print_info(f"Target : {self.target}")
         print_info("=" * 68)
         print_info("")
 
         if self.target:
             print_status("Port scan of LoRaWAN infrastructure ports...")
-            open_ports: List[Dict] = []
+            open_ports: list[dict] = []
             for port, desc in _LORAWAN_INFRA_PORTS.items():
                 banner = _tcp_probe(self.target, port, self.timeout)
                 if banner is not None:
                     if port == 1883:
-                        print_warning("  OPEN {}:{} -- {} (UNAUTHENTICATED MQTT!)".format(
-                            self.target, port, desc
-                        ))
+                        print_warning(f"  OPEN {self.target}:{port} -- {desc} (UNAUTHENTICATED MQTT!)")
                         open_ports.append({"port": port, "desc": desc, "risk": "CRITICAL"})
                     elif port in (5432,):
-                        print_warning("  OPEN {}:{} -- {} (DATABASE EXPOSED!)".format(
-                            self.target, port, desc
-                        ))
+                        print_warning(f"  OPEN {self.target}:{port} -- {desc} (DATABASE EXPOSED!)")
                         open_ports.append({"port": port, "desc": desc, "risk": "CRITICAL"})
                     elif port == 1700:
-                        print_warning("  OPEN {}:{} -- {} (gateway uplink exposed)".format(
-                            self.target, port, desc
-                        ))
+                        print_warning(f"  OPEN {self.target}:{port} -- {desc} (gateway uplink exposed)")
                         open_ports.append({"port": port, "desc": desc, "risk": "HIGH"})
                     else:
-                        print_info("  OPEN {}:{} -- {}".format(self.target, port, desc))
+                        print_info(f"  OPEN {self.target}:{port} -- {desc}")
                         open_ports.append({"port": port, "desc": desc, "risk": "INFO"})
 
             # Check Network Server API
@@ -202,17 +193,15 @@ class Exploit(Exploit):
                     code_m = re.search(r"HTTP/[\d.]+ (\d+)", resp.get("status", ""))
                     code = code_m.group(1) if code_m else "?"
                     if code == "200":
-                        print_warning("  UNAUTH API {}:8080{} -> HTTP 200".format(
-                            self.target, path
-                        ))
+                        print_warning(f"  UNAUTH API {self.target}:8080{path} -> HTTP 200")
                     elif code not in ("000", ""):
-                        print_info("  {}:8080{} -> HTTP {}".format(self.target, path, code))
+                        print_info(f"  {self.target}:8080{path} -> HTTP {code}")
 
         # ABP Risk Education
         print_info("")
         print_status("LoRaWAN ABP Deployment Risk:")
         for risk in _ABP_RISK_INDICATORS:
-            print_warning("  [!] {}".format(risk))
+            print_warning(f"  [!] {risk}")
 
         # Recommendations
         print_info("")
@@ -230,5 +219,5 @@ class Exploit(Exploit):
             "Gas sensor alerts should have redundant wired backup (not LoRa-only)",
         ]
         for i, rec in enumerate(recs, 1):
-            print_info("  {}. {}".format(i, rec))
+            print_info(f"  {i}. {rec}")
         print_info("=" * 68)

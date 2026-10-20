@@ -29,7 +29,7 @@ class Exploit(Exploit):
         except: return False
     def run(self):
         if not self.target: print_error("Set target"); return
-        print_status("[Bosch Rexroth] Scanning {}:{}...".format(self.target, self.port))
+        print_status(f"[Bosch Rexroth] Scanning {self.target}:{self.port}...")
         results = []
         try:
             s = socket.socket(); s.settimeout(self.timeout)
@@ -37,9 +37,9 @@ class Exploit(Exploit):
             s.send(b"48454c")
             banner = s.recv(256)
             s.close()
-            results.append(("Bosch Rexroth", "{}:{}".format(self.target, self.port), "Detected", banner[:24].hex()))
+            results.append(("Bosch Rexroth", f"{self.target}:{self.port}", "Detected", banner[:24].hex()))
         except Exception as e:
-            results.append(("Bosch Rexroth", "{}:{}".format(self.target, self.port), "Unreachable", str(e)[:25]))
+            results.append(("Bosch Rexroth", f"{self.target}:{self.port}", "Unreachable", str(e)[:25]))
         if results:
             print_table(["Vendor","Address","Status","Banner"], results)
         print_info("CVEs: CVE-2021-32939, CVE-2024-48989")

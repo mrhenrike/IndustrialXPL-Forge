@@ -21,7 +21,6 @@ References:
   - https://www.cisa.gov/ics-advisories/icsa-20-261-02
 Affected: RSLinx Classic <= 4.50.00
 """
-from __future__ import annotations
 
 import logging
 import socket
@@ -108,7 +107,7 @@ class Exploit(Exploit):
                 return f"EtherNet/IP port {self.port} open but no ListIdentity data"
         except ConnectionRefusedError:
             return f"Port {self.port} closed - RSLinx Classic not running or firewalled"
-        except socket.timeout:
+        except TimeoutError:
             return f"Timeout on {self.target}:{self.port}"
         except Exception as exc:
             return f"Check error: {exc}"
@@ -136,7 +135,7 @@ class Exploit(Exploit):
                             logger.info("[*] Packet %d: Empty response - service may have reset", i + 1)
                         else:
                             logger.info("[*] Packet %d: Response %d bytes", i + 1, len(resp))
-                    except socket.timeout:
+                    except TimeoutError:
                         logger.info("[*] Packet %d: Timeout after send - potential hang", i + 1)
                 successes += 1
             except ConnectionRefusedError:
@@ -166,6 +165,6 @@ class Exploit(Exploit):
                 logger.info("[*] Port %d still accepting connections - service may still be running", int(self.port))
         except ConnectionRefusedError:
             logger.info("[+] CONFIRMED: Port %d not accepting connections - RSLinx service down", int(self.port))
-        except socket.timeout:
+        except TimeoutError:
             logger.info("[*] Port %d timeout - service may be unresponsive", int(self.port))
 

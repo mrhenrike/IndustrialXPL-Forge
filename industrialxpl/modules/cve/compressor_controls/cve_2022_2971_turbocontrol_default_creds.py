@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-2971 Compressor Controls TurboControl MkV Controller\nCVSS 9.8\nLogin TurboControl web port 80 with default creds, modify gas turbine control parameters",
                 mitre_techniques=['T0859', 'T0836'])
             return
-        print_status("[CVE-2022-2971] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-2971] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

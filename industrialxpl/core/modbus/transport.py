@@ -1,18 +1,16 @@
 """Modbus/TCP transport layer — raw socket connection with retry and timing support."""
 
-from __future__ import annotations
 
 import socket
 import struct
 import time
-from typing import Optional, List
 
 from industrialxpl.core.modbus.timing import TimingProfile, DEFAULT_TIMING
 
 _PROTOCOL_ID = 0x0000
 
 
-def modbus_connect(host: str, port: int, timeout: float) -> Optional[socket.socket]:
+def modbus_connect(host: str, port: int, timeout: float) -> socket.socket | None:
     """Open a TCP connection to a Modbus device.
 
     Returns a connected socket or None on failure.
@@ -21,7 +19,7 @@ def modbus_connect(host: str, port: int, timeout: float) -> Optional[socket.sock
         sock = socket.create_connection((host, port), timeout=timeout)
         sock.settimeout(timeout)
         return sock
-    except (socket.timeout, ConnectionRefusedError, OSError):
+    except (TimeoutError, ConnectionRefusedError, OSError):
         return None
 
 
@@ -39,7 +37,7 @@ class ModbusTCPSocket:
         self.port = port
         self.unit_id = unit_id
         self.timing = timing
-        self._sock: Optional[socket.socket] = None
+        self._sock: socket.socket | None = None
         self._tx_id = 0
 
     def _next_tx(self) -> int:
@@ -70,7 +68,7 @@ class ModbusTCPSocket:
         tx = self._next_tx()
         return struct.pack(">HHHB", tx, _PROTOCOL_ID, len(pdu) + 1, self.unit_id) + pdu
 
-    def send_pdu(self, pdu: bytes, recv_size: int = 256) -> Optional[bytes]:
+    def send_pdu(self, pdu: bytes, recv_size: int = 256) -> bytes | None:
         """Send PDU with retry logic; returns raw response bytes or None."""
         adu = self._build_adu(pdu)
         for attempt in range(self.timing.retries):
@@ -89,7 +87,7 @@ class ModbusTCPSocket:
                 if data:
                     self.timing.sleep()
                     return data
-            except (socket.timeout, OSError):
+            except (TimeoutError, OSError):
                 self.close()
                 if attempt < self.timing.retries - 1:
                     time.sleep(min(0.5 * (attempt + 1), 2.0))
@@ -97,31 +95,31 @@ class ModbusTCPSocket:
 
     # ── Convenience FC builders ───────────────────────────────────────────────
 
-    def read_coils(self, address: int, quantity: int) -> Optional[bytes]:
+    def read_coils(self, address: int, quantity: int) -> bytes | None:
         pdu = struct.pack(">BHH", 0x01, address, quantity)
         return self.send_pdu(pdu)
 
-    def read_discrete_inputs(self, address: int, quantity: int) -> Optional[bytes]:
+    def read_discrete_inputs(self, address: int, quantity: int) -> bytes | None:
         pdu = struct.pack(">BHH", 0x02, address, quantity)
         return self.send_pdu(pdu)
 
-    def read_holding_registers(self, address: int, quantity: int) -> Optional[bytes]:
+    def read_holding_registers(self, address: int, quantity: int) -> bytes | None:
         pdu = struct.pack(">BHH", 0x03, address, quantity)
         return self.send_pdu(pdu)
 
-    def read_input_registers(self, address: int, quantity: int) -> Optional[bytes]:
+    def read_input_registers(self, address: int, quantity: int) -> bytes | None:
         pdu = struct.pack(">BHH", 0x04, address, quantity)
         return self.send_pdu(pdu)
 
-    def write_single_coil(self, address: int, value: bool) -> Optional[bytes]:
+    def write_single_coil(self, address: int, value: bool) -> bytes | None:
         pdu = struct.pack(">BHH", 0x05, address, 0xFF00 if value else 0x0000)
         return self.send_pdu(pdu)
 
-    def write_single_register(self, address: int, value: int) -> Optional[bytes]:
+    def write_single_register(self, address: int, value: int) -> bytes | None:
         pdu = struct.pack(">BHH", 0x06, address, value & 0xFFFF)
         return self.send_pdu(pdu)
 
-    def write_multiple_coils(self, address: int, values: List[bool]) -> Optional[bytes]:
+    def write_multiple_coils(self, address: int, values: list[bool]) -> bytes | None:
         """FC15 Write Multiple Coils."""
         count = len(values)
         byte_count = (count + 7) // 8
@@ -132,43 +130,43 @@ class ModbusTCPSocket:
         pdu = struct.pack(">BHH B", 0x0F, address, count, byte_count) + bytes(coil_bytes)
         return self.send_pdu(pdu)
 
-    def write_multiple_registers(self, address: int, values: List[int]) -> Optional[bytes]:
+    def write_multiple_registers(self, address: int, values: list[int]) -> bytes | None:
         """FC16 Write Multiple Registers."""
         count = len(values)
         byte_count = count * 2
-        regs = struct.pack(">{}H".format(count), *[v & 0xFFFF for v in values])
+        regs = struct.pack(f">{count}H", *[v & 0xFFFF for v in values])
         pdu = struct.pack(">BHH B", 0x10, address, count, byte_count) + regs
         return self.send_pdu(pdu)
 
-    def mask_write_register(self, address: int, and_mask: int, or_mask: int) -> Optional[bytes]:
+    def mask_write_register(self, address: int, and_mask: int, or_mask: int) -> bytes | None:
         """FC22 Mask Write Register -- modifies bits without full overwrite."""
         pdu = struct.pack(">BHH H", 0x16, address, and_mask & 0xFFFF, or_mask & 0xFFFF)
         return self.send_pdu(pdu)
 
     def read_write_registers(
-        self, read_addr: int, read_qty: int, write_addr: int, values: List[int]
-    ) -> Optional[bytes]:
+        self, read_addr: int, read_qty: int, write_addr: int, values: list[int]
+    ) -> bytes | None:
         """FC23 Read/Write Multiple Registers -- atomic read+write in one PDU."""
         count = len(values)
         byte_count = count * 2
-        regs = struct.pack(">{}H".format(count), *[v & 0xFFFF for v in values])
+        regs = struct.pack(f">{count}H", *[v & 0xFFFF for v in values])
         pdu = (
             struct.pack(">B H H H H B", 0x17, read_addr, read_qty,
                         write_addr, count, byte_count) + regs
         )
         return self.send_pdu(pdu)
 
-    def diagnostic(self, sub_function: int, data: int = 0x0000) -> Optional[bytes]:
+    def diagnostic(self, sub_function: int, data: int = 0x0000) -> bytes | None:
         """FC8 Diagnostics -- sub-functions include restart, flush queues, etc."""
         pdu = struct.pack(">B H H", 0x08, sub_function, data)
         return self.send_pdu(pdu)
 
-    def get_com_event_counter(self) -> Optional[bytes]:
+    def get_com_event_counter(self) -> bytes | None:
         """FC11 Get Com Event Counter -- read communication event counter."""
         pdu = struct.pack(">B", 0x0B)
         return self.send_pdu(pdu)
 
-    def write_file_record(self, file_number: int, record_number: int, data: bytes) -> Optional[bytes]:
+    def write_file_record(self, file_number: int, record_number: int, data: bytes) -> bytes | None:
         """FC21 Write File Record -- used for firmware/configuration write on some PLCs."""
         record_data_len = len(data)
         subreq = struct.pack(">B H H H", 0x06, file_number, record_number,
@@ -176,20 +174,20 @@ class ModbusTCPSocket:
         pdu = struct.pack(">B B", 0x15, 7 + record_data_len) + subreq
         return self.send_pdu(pdu)
 
-    def encapsulated_interface_transport(self, mei_type: int, payload: bytes) -> Optional[bytes]:
+    def encapsulated_interface_transport(self, mei_type: int, payload: bytes) -> bytes | None:
         """FC43 Encapsulated Interface Transport -- MEI type 13 = CANopen, 14 = DeviceID."""
         pdu = struct.pack(">B B", 0x2B, mei_type) + payload
         return self.send_pdu(pdu)
 
-    def report_server_id(self) -> Optional[bytes]:
+    def report_server_id(self) -> bytes | None:
         pdu = struct.pack(">B", 0x11)
         return self.send_pdu(pdu)
 
-    def read_device_identification(self, object_id: int = 0x00) -> Optional[bytes]:
+    def read_device_identification(self, object_id: int = 0x00) -> bytes | None:
         pdu = struct.pack(">BBBBB", 0x2B, 0x0E, 0x01, object_id, 0x00)
         return self.send_pdu(pdu)
 
-    def send_fc(self, fc: int, address: int, quantity: int) -> Optional[bytes]:
+    def send_fc(self, fc: int, address: int, quantity: int) -> bytes | None:
         """Generic read FC dispatcher for FC 1-4."""
         _dispatch = {
             1: self.read_coils,
@@ -199,11 +197,11 @@ class ModbusTCPSocket:
         }
         fn = _dispatch.get(fc)
         if fn is None:
-            raise ValueError("FC{} not supported by send_fc (use send_pdu for custom)".format(fc))
+            raise ValueError(f"FC{fc} not supported by send_fc (use send_pdu for custom)")
         return fn(address, quantity)
 
 
-def scan_ports(host: str, ports: List[int], timeout: float) -> List[int]:
+def scan_ports(host: str, ports: list[int], timeout: float) -> list[int]:
     """Return list of open ports from the given list."""
     open_ports = []
     for port in ports:
@@ -214,7 +212,7 @@ def scan_ports(host: str, ports: List[int], timeout: float) -> List[int]:
     return open_ports
 
 
-def parse_port_expression(expr: str) -> List[int]:
+def parse_port_expression(expr: str) -> list[int]:
     """Parse a port expression like '502', '502,510', '500-510'.
 
     Returns sorted list of unique port numbers (1-65535).
@@ -229,22 +227,22 @@ def parse_port_expression(expr: str) -> List[int]:
             try:
                 start, end = int(parts[0]), int(parts[1])
             except ValueError:
-                raise ValueError("Invalid port range: '{}'".format(token))
+                raise ValueError(f"Invalid port range: '{token}'")
             if not (1 <= start <= end <= 65535):
-                raise ValueError("Port range {}-{} out of bounds (1-65535)".format(start, end))
+                raise ValueError(f"Port range {start}-{end} out of bounds (1-65535)")
             if end - start > 1000:
                 raise ValueError(
-                    "Port range {}-{} too wide (max 1000 per range for safety)".format(start, end)
+                    f"Port range {start}-{end} too wide (max 1000 per range for safety)"
                 )
             ports.update(range(start, end + 1))
         else:
             try:
                 p = int(token)
             except ValueError:
-                raise ValueError("Invalid port: '{}'".format(token))
+                raise ValueError(f"Invalid port: '{token}'")
             if not 1 <= p <= 65535:
-                raise ValueError("Port {} out of bounds (1-65535)".format(p))
+                raise ValueError(f"Port {p} out of bounds (1-65535)")
             ports.add(p)
     if not ports:
-        raise ValueError("No ports resolved from '{}'".format(expr))
+        raise ValueError(f"No ports resolved from '{expr}'")
     return sorted(ports)

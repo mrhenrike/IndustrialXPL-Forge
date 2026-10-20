@@ -53,12 +53,12 @@ class Exploit(Exploit):
             return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2024-6081: Fingerprint Honeywell ControlEdge PLC at {}:{}. Hardcoded credentials bypass. CVSS 9.8.".format(self.target, self.port),
+                description=f"CVE-2024-6081: Fingerprint Honeywell ControlEdge PLC at {self.target}:{self.port}. Hardcoded credentials bypass. CVSS 9.8.",
                 mitre_techniques=['T1694.002', 'T0859'],
             )
             return
         if self.check():
-            print_success("Port {} open — Honeywell ControlEdge PLC may be present. CVE-2024-6081 CRITICAL CVSS 9.8.".format(self.port))
+            print_success(f"Port {self.port} open — Honeywell ControlEdge PLC may be present. CVE-2024-6081 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

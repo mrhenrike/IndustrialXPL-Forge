@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2019-10953 HIMA HIMatrix/HIQuad Safety PLC\nCVSS 9.8\nExploit PROFIsafe validation flaw on HIMA HIMatrix, disable SIS functions, bypass E-Stop",
                 mitre_techniques=['T0816', 'T0880'])
             return
-        print_status("[CVE-2019-10953] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2019-10953] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

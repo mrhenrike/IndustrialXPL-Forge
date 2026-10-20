@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2023-34990 Bentley Systems AMULET Water Management\nCVSS 9.8\nSend malformed HTTP to AMULET port 80, buffer overflow, RCE on water management server",
                 mitre_techniques=['T0866', 'T0836'])
             return
-        print_status("[CVE-2023-34990] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-34990] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

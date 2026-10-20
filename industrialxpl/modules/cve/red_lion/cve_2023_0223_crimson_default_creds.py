@@ -59,5 +59,5 @@ class Exploit(Exploit):
             print_info("Affected: Crimson 3.0 before 3.0.044.0086, Crimson 3.2 before 3.2.057.0")
             print_info("PoC: https://www.cisa.gov/uscert/ics/advisories/icsa-23-012-04")
             return
-        print_status("[CVE-2023-0223] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-0223] Exploiting {self.target}:{self.port}...")
         print_info('Live payload: implement protocol-specific exploit')

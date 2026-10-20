@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-34762 Comtrol DeviceMaster UP Gateway\nCVSS 9.8\nPOST to DeviceMaster UP port 80, inject OS commands, RCE on serial OT gateway",
                 mitre_techniques=['T0866', 'T0822'])
             return
-        print_status("[CVE-2022-34762] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-34762] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

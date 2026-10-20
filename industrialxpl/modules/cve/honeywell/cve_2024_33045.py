@@ -53,12 +53,12 @@ class Exploit(Exploit):
             return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2024-33045: Fingerprint Honeywell Niagara IQ Pro at {}:{}. Authentication bypass door controller. CVSS 9.1.".format(self.target, self.port),
+                description=f"CVE-2024-33045: Fingerprint Honeywell Niagara IQ Pro at {self.target}:{self.port}. Authentication bypass door controller. CVSS 9.1.",
                 mitre_techniques=['T1694.002', 'T0859'],
             )
             return
         if self.check():
-            print_success("Port {} open — Honeywell Niagara IQ Pro may be present. CVE-2024-33045 CRITICAL CVSS 9.1.".format(self.port))
+            print_success(f"Port {self.port} open — Honeywell Niagara IQ Pro may be present. CVE-2024-33045 CRITICAL CVSS 9.1.")
             print_warning("CISA: N/A")
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

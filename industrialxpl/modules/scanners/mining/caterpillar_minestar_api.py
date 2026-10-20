@@ -33,7 +33,6 @@ References:
 
 import socket
 import re
-from typing import Optional, Dict, List
 
 from industrialxpl.core.exploit import (
     Exploit, OptIP, OptInteger, OptBool,
@@ -69,7 +68,7 @@ _MINESTAR_FINGERPRINTS = [
 ]
 
 
-def _http_probe(host: str, port: int, path: str, use_tls: bool, timeout: float) -> Optional[Dict]:
+def _http_probe(host: str, port: int, path: str, use_tls: bool, timeout: float) -> dict | None:
     """Send HTTP GET and return parsed response."""
     try:
         sock = socket.create_connection((host, port), timeout=timeout)
@@ -79,9 +78,7 @@ def _http_probe(host: str, port: int, path: str, use_tls: bool, timeout: float) 
             ctx.check_hostname = False
             ctx.verify_mode = ssl.CERT_NONE
             sock = ctx.wrap_socket(sock, server_hostname=host)
-        req = "GET {} HTTP/1.0\r\nHost: {}\r\nUser-Agent: MineStar-Admin/5.0\r\nConnection: close\r\n\r\n".format(
-            path, host
-        )
+        req = f"GET {path} HTTP/1.0\r\nHost: {host}\r\nUser-Agent: MineStar-Admin/5.0\r\nConnection: close\r\n\r\n"
         sock.sendall(req.encode())
         raw = b""
         while True:
@@ -161,10 +158,10 @@ class Exploit(Exploit):
             print_error("Set TARGET first.")
             return
 
-        print_status("Scanning {} for Caterpillar MineStar interfaces...".format(self.target))
+        print_status(f"Scanning {self.target} for Caterpillar MineStar interfaces...")
         print_info("")
 
-        open_ports: List[int] = []
+        open_ports: list[int] = []
         for port in _MINESTAR_PORTS:
             use_tls = port in (443, 8443)
             resp = _http_probe(self.target, port, "/", use_tls, self.timeout)
@@ -177,18 +174,14 @@ class Exploit(Exploit):
             is_minestar = any(fp in body_low for fp in _MINESTAR_FINGERPRINTS)
             proto = "https" if use_tls else "http"
             if is_minestar:
-                print_success("MineStar confirmed on {}://{}:{} (HTTP {})".format(
-                    proto, self.target, port, code
-                ))
+                print_success(f"MineStar confirmed on {proto}://{self.target}:{port} (HTTP {code})")
                 open_ports.append(port)
             else:
-                print_info("  {}:{} -> HTTP {} | Server: {}".format(
-                    self.target, port, code, server
-                ))
+                print_info(f"  {self.target}:{port} -> HTTP {code} | Server: {server}")
                 open_ports.append(port)
 
         if not open_ports:
-            print_info("No web service found on {}. MineStar may not be installed.".format(self.target))
+            print_info(f"No web service found on {self.target}. MineStar may not be installed.")
             return
 
         if self.deep:
@@ -206,18 +199,14 @@ class Exploit(Exploit):
                     content_type = resp.get("headers", {}).get("content-type", "")
                     body = resp.get("body", "")[:80].replace("\n", " ")
                     if code in ("200", "201"):
-                        print_warning("  UNAUTH {}:{}{} -> HTTP {} ({}) | {}".format(
-                            self.target, port, path, code, desc, body
-                        ))
+                        print_warning(f"  UNAUTH {self.target}:{port}{path} -> HTTP {code} ({desc}) | {body}")
                         results.append((path, code, desc))
                     elif code in ("401", "403"):
-                        print_info("  AUTH   {}:{}{} -> HTTP {} (protected)".format(
-                            self.target, port, path, code
-                        ))
+                        print_info(f"  AUTH   {self.target}:{port}{path} -> HTTP {code} (protected)")
 
             if results:
                 print_info("")
-                print_warning("{} unauthenticated endpoint(s) found.".format(len(results)))
+                print_warning(f"{len(results)} unauthenticated endpoint(s) found.")
                 print_warning("MineStar Command API exposure can reveal AHS fleet positions and routes.")
             else:
                 print_info("All checked endpoints require authentication.")

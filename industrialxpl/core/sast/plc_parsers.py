@@ -358,7 +358,7 @@ def detect_language(file_path: str) -> str:
     if ext in EXTENSION_MAP:
         return EXTENSION_MAP[ext]
     try:
-        with open(file_path, "r", errors="ignore") as f:
+        with open(file_path, errors="ignore") as f:
             head = f.read(1024)
         if re.search(r'\bFUNCTION_BLOCK\b|\bPROGRAM\b|\bVAR_INPUT\b', head, re.I):
             return "Structured Text (ST)"

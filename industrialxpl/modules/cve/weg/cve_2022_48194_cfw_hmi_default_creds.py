@@ -33,5 +33,5 @@ class Exploit(Exploit):
                 description="CVE-2022-48194 WEG CFW-11 VFD HMI\nCVSS 9.8\nConnect Modbus TCP port 502, write default creds, control motor speed/torque",
                 mitre_techniques=['T0859', 'T0836'])
             return
-        print_status("[CVE-2022-48194] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-48194] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol exploit")

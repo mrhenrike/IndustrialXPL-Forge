@@ -1,6 +1,5 @@
 """Binary PLC firmware analyzer — SAST issue #4."""
 
-from __future__ import annotations
 
 import re
 from pathlib import Path
@@ -53,7 +52,7 @@ class Exploit(Exploit):
         if self.firmware_path:
             p = Path(self.firmware_path)
             if not p.is_file():
-                print_warning("File not found: {}".format(p))
+                print_warning(f"File not found: {p}")
                 return
             result = analyze_firmware(p)
         else:

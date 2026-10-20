@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2023-1655 National Instruments NI LabVIEW Industrial\nCVSS 9.8\nSend crafted LabVIEW VI file to NI process port 3537, deserialization, RCE on test system",
                 mitre_techniques=['T0866'])
             return
-        print_status("[CVE-2023-1655] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-1655] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

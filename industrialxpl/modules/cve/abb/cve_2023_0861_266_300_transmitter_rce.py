@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2023-0861 ABB 266/300 Series Pressure Transmitter\nCVSS 9.8\nSend crafted HTTP to ABB transmitter port 80, buffer overflow, RCE on field instrument",
                 mitre_techniques=['T0866', 'T0832'])
             return
-        print_status("[CVE-2023-0861] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-0861] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2021-34598 Framatome TXP/TELEPERM XP Nuclear I&C\nCVSS 9.8\nLogin TELEPERM XP port 443 with default creds, access nuclear reactor instrumentation",
                 mitre_techniques=['T0859', 'T0880'])
             return
-        print_status("[CVE-2021-34598] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2021-34598] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

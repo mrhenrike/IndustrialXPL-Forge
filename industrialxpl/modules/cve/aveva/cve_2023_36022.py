@@ -53,12 +53,12 @@ class Exploit(Exploit):
             return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2023-36022: Fingerprint AVEVA PI Vision dashboard at {}:{}. Cross-site scripting stored. CVSS 7.6.".format(self.target, self.port),
+                description=f"CVE-2023-36022: Fingerprint AVEVA PI Vision dashboard at {self.target}:{self.port}. Cross-site scripting stored. CVSS 7.6.",
                 mitre_techniques=['T0883'],
             )
             return
         if self.check():
-            print_success("Port {} open — AVEVA PI Vision dashboard may be present. CVE-2023-36022 HIGH CVSS 7.6.".format(self.port))
+            print_success(f"Port {self.port} open — AVEVA PI Vision dashboard may be present. CVE-2023-36022 HIGH CVSS 7.6.")
             print_warning("CISA: N/A")
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

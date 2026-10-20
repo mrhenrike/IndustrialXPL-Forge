@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-29834 Mettler-Toledo JLT Industrial Terminal\nCVSS 9.8\nPOST to Mettler-Toledo JLT port 80, inject commands, RCE on industrial weighing terminal",
                 mitre_techniques=['T0866'])
             return
-        print_status("[CVE-2022-29834] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-29834] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

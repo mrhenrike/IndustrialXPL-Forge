@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2021-22669 Fatek Automation FBS Series PLC\nCVSS 9.8\nSend crafted packet to Fatek FBS PLC port 500, stack overflow, RCE on PLC firmware",
                 mitre_techniques=['T0866', 'T0836'])
             return
-        print_status("[CVE-2021-22669] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2021-22669] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

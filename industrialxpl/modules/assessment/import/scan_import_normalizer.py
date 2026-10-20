@@ -6,7 +6,6 @@ Ported and adapted from Gridwolf backend scanner_parsers.py (SafeLabs).
 Author: André Henrique (@mrhenrike) | União Geek
 """
 
-from __future__ import annotations
 
 import logging
 import xml.etree.ElementTree as ET
@@ -89,17 +88,17 @@ class ScanImportNormalizer:
         """
         path = Path(xml_path)
         if not path.exists():
-            raise FileNotFoundError("Nmap XML not found: {}".format(path))
+            raise FileNotFoundError(f"Nmap XML not found: {path}")
 
         try:
             tree = ET.parse(path)
         except ET.ParseError as exc:
-            raise ValueError("Cannot parse Nmap XML at {}: {}".format(path, exc)) from exc
+            raise ValueError(f"Cannot parse Nmap XML at {path}: {exc}") from exc
 
         root = tree.getroot()
         if root.tag != "nmaprun":
             raise ValueError(
-                "Not a Nmap XML file (root tag is {!r}, expected 'nmaprun')".format(root.tag)
+                f"Not a Nmap XML file (root tag is {root.tag!r}, expected 'nmaprun')"
             )
 
         findings: list[IcsFinding] = []
@@ -195,14 +194,14 @@ class ScanImportNormalizer:
     # ── Private helpers ──────────────────────────────────────────────────────
 
     @staticmethod
-    def _extract_host(host_el: ET.Element) -> Optional[str]:
+    def _extract_host(host_el: ET.Element) -> str | None:
         for addr in host_el.findall("address"):
             if addr.get("addrtype") in ("ipv4", "ipv6"):
                 return addr.get("addr")
         return None
 
     @staticmethod
-    def _parse_port_element(host: str, port_el: ET.Element) -> Optional[IcsFinding]:
+    def _parse_port_element(host: str, port_el: ET.Element) -> IcsFinding | None:
         state_el = port_el.find("state")
         if state_el is None:
             return None

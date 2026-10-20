@@ -79,19 +79,19 @@ class Exploit(Exploit):
             DestructiveGate.print_simulation(
                 description=(
                     "CVE-2022-25921: Would fingerprint Yokogawa STARDOM FCN/FCJ at "
-                    "{}:{} and confirm if version is in affected range. "
+                    f"{self.target}:{self.port} and confirm if version is in affected range. "
                     "Exploit type: Unauthenticated (ICEFALL). "
-                    "CVSS 9.1 (CRITICAL).".format(self.target, self.port)
+                    "CVSS 9.1 (CRITICAL)."
                 ),
                 mitre_techniques=['T1694.002', 'T0859'],
             )
             return
-        print_status("Checking {}:{} for CVE-2022-25921...".format(self.target, self.port))
+        print_status(f"Checking {self.target}:{self.port} for CVE-2022-25921...")
         if self.check():
             print_success(
-                "Port {} open on {} — Yokogawa STARDOM FCN/FCJ may be present. "
+                f"Port {self.port} open on {self.target} — Yokogawa STARDOM FCN/FCJ may be present. "
                 "CVE-2022-25921 (CRITICAL CVSS 9.1): Unauthenticated (ICEFALL). "
-                "Manual version verification required.".format(self.port, self.target)
+                "Manual version verification required."
             )
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

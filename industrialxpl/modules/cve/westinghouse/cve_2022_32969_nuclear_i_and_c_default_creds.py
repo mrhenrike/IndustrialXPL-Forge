@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-32969 Westinghouse Common Q Nuclear I&C Platform\nCVSS 9.8\nLogin Westinghouse I&C platform port 443 with default creds, access nuclear safety monitoring",
                 mitre_techniques=['T0859', 'T0880'])
             return
-        print_status("[CVE-2022-32969] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-32969] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

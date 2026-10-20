@@ -1,6 +1,5 @@
 """Tests for DestructiveGate safety audit."""
 
-from __future__ import annotations
 
 from industrialxpl.core.safety_audit import (
     DestructiveGate,

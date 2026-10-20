@@ -152,7 +152,7 @@ class Exploit(Exploit):
                         print_info(f"[S7Plus-Crash v{v}] Response {len(resp)}B: {resp[:16].hex()}")
                 except ConnectionResetError:
                     print_success(f"[S7Plus-Crash v{v}] Connection reset — CPU fault triggered!")
-                except socket.timeout:
+                except TimeoutError:
                     print_success(f"[S7Plus-Crash v{v}] Timeout — PLC unresponsive!")
 
             except Exception as e:

@@ -29,7 +29,6 @@ References:
 
 Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
-from __future__ import annotations
 
 import csv
 import json
@@ -37,13 +36,13 @@ import struct
 from collections import defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, List, Tuple
 
 from industrialxpl.core.exploit import *
 
 
 # Modbus Function Code table
-_FC_NAMES: Dict[int, str] = {
+_FC_NAMES: dict[int, str] = {
     1: "Read Coils",
     2: "Read Discrete Inputs",
     3: "Read Holding Registers",
@@ -109,7 +108,7 @@ class ModbusTransaction:
     data_hex: str = ""
 
 
-def _parse_mbap(data: bytes) -> Optional[Tuple[int, int, int, int, int]]:
+def _parse_mbap(data: bytes) -> tuple[int, int, int, int, int] | None:
     """Parse Modbus MBAP header.
 
     Args:
@@ -132,7 +131,7 @@ def _parse_mbap(data: bytes) -> Optional[Tuple[int, int, int, int, int]]:
         return None
 
 
-def _parse_register_address(fc: int, pdu: bytes) -> Tuple[int, int]:
+def _parse_register_address(fc: int, pdu: bytes) -> tuple[int, int]:
     """Extract register address and count from PDU.
 
     Args:
@@ -152,7 +151,7 @@ def _parse_register_address(fc: int, pdu: bytes) -> Tuple[int, int]:
         return 0, 0
 
 
-def _analyze_with_scapy(pcap_file: str) -> List[ModbusTransaction]:
+def _analyze_with_scapy(pcap_file: str) -> list[ModbusTransaction]:
     """Analyze PCAP using Scapy.
 
     Args:
@@ -217,7 +216,7 @@ def _analyze_with_scapy(pcap_file: str) -> List[ModbusTransaction]:
     return transactions
 
 
-def _analyze_statistics(transactions: List[ModbusTransaction]) -> Dict[str, Any]:
+def _analyze_statistics(transactions: list[ModbusTransaction]) -> dict[str, Any]:
     """Calculate statistics from transaction list.
 
     Args:
@@ -229,8 +228,8 @@ def _analyze_statistics(transactions: List[ModbusTransaction]) -> Dict[str, Any]
     if not transactions:
         return {}
 
-    fc_counts: Dict[int, int] = defaultdict(int)
-    src_counts: Dict[str, int] = defaultdict(int)
+    fc_counts: dict[int, int] = defaultdict(int)
+    src_counts: dict[str, int] = defaultdict(int)
     write_ops = []
     recon_ops = []
     dangerous_ops = []

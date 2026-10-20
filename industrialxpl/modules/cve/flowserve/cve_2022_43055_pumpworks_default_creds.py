@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-43055 Flowserve PumpWorks Controller\nCVSS 9.8\nConnect Flowserve PumpWorks Modbus TCP port 502, default creds, modify pump flow setpoints",
                 mitre_techniques=['T0859', 'T0836'])
             return
-        print_status("[CVE-2022-43055] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-43055] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

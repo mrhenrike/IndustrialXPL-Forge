@@ -33,7 +33,7 @@ class Exploit(Exploit):
         except: return False
     def run(self):
         if not self.target: print_error("Set target"); return
-        print_status("[Endress+Hauser] Scanning {}:{}...".format(self.target, self.port))
+        print_status(f"[Endress+Hauser] Scanning {self.target}:{self.port}...")
         results = []
         try:
             s = socket.socket(); s.settimeout(self.timeout)
@@ -41,10 +41,10 @@ class Exploit(Exploit):
             s.send(b"474554202f")
             banner = s.recv(256)
             s.close()
-            results.append(("Endress+Hauser Fieldgate FXA42 Gateway", "{}:{}".format(self.target, self.port),
+            results.append(("Endress+Hauser Fieldgate FXA42 Gateway", f"{self.target}:{self.port}",
                            "Detected", banner[:32].hex()))
         except Exception as e:
-            results.append(("Endress+Hauser Fieldgate FXA42 Gateway", "{}:{}".format(self.target, self.port),
+            results.append(("Endress+Hauser Fieldgate FXA42 Gateway", f"{self.target}:{self.port}",
                            "Unreachable", str(e)[:30]))
         if results:
             print_table(["Device","Address","Status","Banner"], results, title="Endress+Hauser Scan")

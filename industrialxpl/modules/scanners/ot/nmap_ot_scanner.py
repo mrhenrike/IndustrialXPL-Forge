@@ -19,13 +19,12 @@ References:
 
 Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
-from __future__ import annotations
 
 import subprocess
 import shutil
 import re
 from dataclasses import dataclass, field
-from typing import List, Optional
+from typing import List
 
 from industrialxpl.core.exploit import *
 
@@ -64,7 +63,7 @@ class NmapOTResult:
     nmap_available: bool = True
 
 
-def _run_nmap(args: List[str], timeout: int = 60) -> tuple[int, str, str]:
+def _run_nmap(args: list[str], timeout: int = 60) -> tuple[int, str, str]:
     """Run nmap with arguments.
 
     Args:
@@ -157,7 +156,7 @@ class Exploit(Exploit):
     output_file = OptString("", "Save Nmap output to file (empty = don't save)")
     simulate = OptBool(False, "Simulate: show nmap command without executing")
 
-    def _build_nmap_args(self) -> List[str]:
+    def _build_nmap_args(self) -> list[str]:
         """Build Nmap argument list based on scan_mode.
 
         Returns:

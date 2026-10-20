@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-3059 PTC Kepware/ThingWorx KEPServerEX\nCVSS 8.1\nSend crafted request to KEPServerEX port 57412, SSRF to internal Modbus/OPC devices",
                 mitre_techniques=['T0883', 'T0888'])
             return
-        print_status("[CVE-2022-3059] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-3059] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

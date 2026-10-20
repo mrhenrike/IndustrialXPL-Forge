@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2023-4481 Yokogawa ProSafe-RS Safety Controller\nCVSS 9.8\nConnect ProSafe-RS OPC UA port 4840, bypass auth, access safety function controls",
                 mitre_techniques=['T0816', 'T0880'])
             return
-        print_status("[CVE-2023-4481] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-4481] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

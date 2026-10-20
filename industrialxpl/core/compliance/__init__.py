@@ -1,10 +1,8 @@
 """IEC 62443 compliance engine for OT/ICS security assessment."""
 
-from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Dict, List, Optional
 
 
 __all__ = [
@@ -40,7 +38,7 @@ class ComplianceCheck:
     description: str
     security_level: SecurityLevel
     category: str = ""
-    check_fn: Optional[str] = None
+    check_fn: str | None = None
 
 
 class IEC62443Engine:
@@ -51,8 +49,8 @@ class IEC62443Engine:
     """
 
     def __init__(self) -> None:
-        self._checks: Dict[str, ComplianceCheck] = {}
-        self._results: List[ComplianceResult] = []
+        self._checks: dict[str, ComplianceCheck] = {}
+        self._results: list[ComplianceResult] = []
         self._load_baseline()
 
     def _load_baseline(self) -> None:
@@ -139,7 +137,7 @@ class IEC62443Engine:
             self._checks[check.requirement_id] = check
 
     @property
-    def checks(self) -> Dict[str, ComplianceCheck]:
+    def checks(self) -> dict[str, ComplianceCheck]:
         return dict(self._checks)
 
     def add_check(self, check: ComplianceCheck) -> None:
@@ -166,10 +164,10 @@ class IEC62443Engine:
         self._results.append(result)
         return result
 
-    def results(self) -> List[ComplianceResult]:
+    def results(self) -> list[ComplianceResult]:
         return list(self._results)
 
-    def results_by_level(self, level: SecurityLevel) -> List[ComplianceResult]:
+    def results_by_level(self, level: SecurityLevel) -> list[ComplianceResult]:
         return [r for r in self._results if r.security_level == level]
 
     def compliance_score(self) -> float:
@@ -178,7 +176,7 @@ class IEC62443Engine:
         passed = sum(1 for r in self._results if r.passed)
         return (passed / len(self._results)) * 100.0
 
-    def gaps(self) -> List[ComplianceResult]:
+    def gaps(self) -> list[ComplianceResult]:
         return [r for r in self._results if not r.passed]
 
     def reset(self) -> None:

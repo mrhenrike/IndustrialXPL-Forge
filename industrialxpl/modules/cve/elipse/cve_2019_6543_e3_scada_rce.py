@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2019-6543 Elipse Software E3 SCADA\nCVSS 9.8\nSend malformed HTTP request to Elipse E3 port 80, buffer overflow, RCE on SCADA server",
                 mitre_techniques=["T0866"])
             return
-        print_status("[CVE-2019-6543] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2019-6543] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit payload")

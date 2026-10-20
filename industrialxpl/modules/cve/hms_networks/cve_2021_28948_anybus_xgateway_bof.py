@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2021-28948 HMS Networks Anybus X-Gateway Fieldbus\nCVSS 9.8\nSend oversized HTTP request to Anybus X-Gateway port 80, stack overflow, RCE",
                 mitre_techniques=['T0866', 'T0822'])
             return
-        print_status("[CVE-2021-28948] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2021-28948] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

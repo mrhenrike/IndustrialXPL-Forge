@@ -53,12 +53,12 @@ class Exploit(Exploit):
             return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2024-0175: Fingerprint CODESYS V3 engineering tool at {}:{}. Code execution via crafted project file. CVSS 7.8.".format(self.target, self.port),
+                description=f"CVE-2024-0175: Fingerprint CODESYS V3 engineering tool at {self.target}:{self.port}. Code execution via crafted project file. CVSS 7.8.",
                 mitre_techniques=['T0819', 'T0866'],
             )
             return
         if self.check():
-            print_success("Port {} open — CODESYS V3 engineering tool may be present. CVE-2024-0175 HIGH CVSS 7.8.".format(self.port))
+            print_success(f"Port {self.port} open — CODESYS V3 engineering tool may be present. CVE-2024-0175 HIGH CVSS 7.8.")
             print_warning("CISA: N/A")
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

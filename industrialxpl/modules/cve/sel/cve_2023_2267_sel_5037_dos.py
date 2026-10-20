@@ -59,5 +59,5 @@ class Exploit(Exploit):
             print_info("Affected: SEL-5037 SDNet all versions before 2.03.07")
             print_info("PoC: https://www.cisa.gov/uscert/ics/advisories/icsa-23-131-06")
             return
-        print_status("[CVE-2023-2267] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-2267] Exploiting {self.target}:{self.port}...")
         print_info('Live payload: implement protocol-specific exploit')

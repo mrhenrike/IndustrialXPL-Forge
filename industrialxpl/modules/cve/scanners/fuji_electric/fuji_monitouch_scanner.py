@@ -50,7 +50,7 @@ class Exploit(Exploit):
         if not self.target:
             print_error("Set 'target' option.")
             return
-        print_status("[Fuji Electric] Scanning {}:{}...".format(self.target, self.port))
+        print_status(f"[Fuji Electric] Scanning {self.target}:{self.port}...")
         results = []
         try:
             s = socket.socket()
@@ -60,10 +60,10 @@ class Exploit(Exploit):
             banner = s.recv(256)
             s.close()
             vendor_detected = b"Monitouch" in banner
-            results.append(("Fuji Electric Monitouch V10 Series HMI", "{}:{}".format(self.target, self.port),
+            results.append(("Fuji Electric Monitouch V10 Series HMI", f"{self.target}:{self.port}",
                            "Detected" if vendor_detected else "Unknown", banner[:64].hex()))
         except Exception as e:
-            results.append(("Fuji Electric Monitouch V10 Series HMI", "{}:{}".format(self.target, self.port),
+            results.append(("Fuji Electric Monitouch V10 Series HMI", f"{self.target}:{self.port}",
                            "Unreachable", str(e)))
         if results:
             print_table(["Device", "Address", "Status", "Banner"],

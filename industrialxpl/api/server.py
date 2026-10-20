@@ -6,7 +6,6 @@ Usage:
 Uses stdlib HTTP by default; install `industrialxpl-forge[api]` for OpenAPI via FastAPI.
 """
 
-from __future__ import annotations
 
 import json
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -32,7 +31,7 @@ def build_handler(token: str = "") -> type[BaseHTTPRequestHandler]:
             if not token:
                 return True
             hdr = self.headers.get("Authorization", "")
-            return hdr == "Bearer {}".format(token)
+            return hdr == f"Bearer {token}"
 
         def do_GET(self) -> None:
             if not self._auth_ok():
@@ -97,7 +96,7 @@ def build_handler(token: str = "") -> type[BaseHTTPRequestHandler]:
 def run_server(host: str = "127.0.0.1", port: int = 8443, token: str = "") -> None:
     handler = build_handler(token)
     httpd = ThreadingHTTPServer((host, port), handler)
-    print("IXF API listening on http://{}:{}".format(host, port))
+    print(f"IXF API listening on http://{host}:{port}")
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:

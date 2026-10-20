@@ -8,7 +8,6 @@ Supports port ranges and T0-T5 timing profiles.
 """
 
 import struct
-from typing import Dict
 
 from industrialxpl.core.exploit import (
     mute, print_error, print_info, print_status, print_success, print_table,
@@ -16,7 +15,7 @@ from industrialxpl.core.exploit import (
 from industrialxpl.core.modbus.base import ModbusBaseExploit
 from industrialxpl.core.modbus.transport import ModbusTCPSocket, modbus_connect
 
-_OBJ_LABELS: Dict[int, str] = {
+_OBJ_LABELS: dict[int, str] = {
     0x00: "VendorName",
     0x01: "ProductCode",
     0x02: "MajorMinorRevision",
@@ -27,8 +26,8 @@ _OBJ_LABELS: Dict[int, str] = {
 }
 
 
-def _parse_mei(data: bytes) -> Dict[str, str]:
-    result: Dict[str, str] = {}
+def _parse_mei(data: bytes) -> dict[str, str]:
+    result: dict[str, str] = {}
     if len(data) < 11:
         return result
     off = 9
@@ -41,7 +40,7 @@ def _parse_mei(data: bytes) -> Dict[str, str]:
             oid  = data[off]
             olen = data[off + 1]
             oval = data[off + 2: off + 2 + olen].decode("ascii", errors="replace")
-            result[_OBJ_LABELS.get(oid, "Obj_0x{:02X}".format(oid))] = oval
+            result[_OBJ_LABELS.get(oid, f"Obj_0x{oid:02X}")] = oval
             off += 2 + olen
     except Exception:
         pass
@@ -92,9 +91,9 @@ class Exploit(ModbusBaseExploit):
         timing = self._get_timing()
         sim    = getattr(self, "_simulate_mode", self.simulate)
 
-        print_info("  Target  : {}".format(self.target))
+        print_info(f"  Target  : {self.target}")
         print_info("  Port(s) : {}".format(", ".join(str(p) for p in ports)))
-        print_info("  Unit ID : {}".format(self.unit_id))
+        print_info(f"  Unit ID : {self.unit_id}")
         self._print_timing()
         print_info("")
 
@@ -103,29 +102,27 @@ class Exploit(ModbusBaseExploit):
                 sock = modbus_connect(self.target, port, timing.socket_timeout)
                 if sock:
                     sock.close()
-                    print_success("[SIMULATE] {}:{} — would send FC43/MEI Read Device Identification".format(
-                        self.target, port
-                    ))
+                    print_success(f"[SIMULATE] {self.target}:{port} — would send FC43/MEI Read Device Identification")
                 else:
-                    print_info("[SIMULATE] {}:{} — cannot connect".format(self.target, port))
+                    print_info(f"[SIMULATE] {self.target}:{port} — cannot connect")
             return
 
         for port in ports:
             with ModbusTCPSocket(self.target, port, self.unit_id, timing) as sock:
                 if not sock._sock:
-                    print_info("{}:{} — cannot connect".format(self.target, port))
+                    print_info(f"{self.target}:{port} — cannot connect")
                     continue
 
-                print_status("Grabbing FC43/MEI banner from {}:{}...".format(self.target, port))
+                print_status(f"Grabbing FC43/MEI banner from {self.target}:{port}...")
                 resp = sock.read_device_identification()
                 if not resp or len(resp) < 8:
-                    print_error("  No response from {}:{}".format(self.target, port))
+                    print_error(f"  No response from {self.target}:{port}")
                     continue
 
                 fc_resp = resp[7]
                 if fc_resp & 0x80:
                     exc = resp[8] if len(resp) > 8 else "?"
-                    print_info("  FC43 exception {} — device present but MEI unsupported".format(exc))
+                    print_info(f"  FC43 exception {exc} — device present but MEI unsupported")
                     continue
 
                 info = _parse_mei(resp)
@@ -134,7 +131,7 @@ class Exploit(ModbusBaseExploit):
                     print_table(
                         ["Field", "Value"],
                         rows,
-                        title="FC43 Banner — {}:{}".format(self.target, port),
+                        title=f"FC43 Banner — {self.target}:{port}",
                     )
                 else:
                     print_info("  FC43 responded but no identifiable objects in payload")

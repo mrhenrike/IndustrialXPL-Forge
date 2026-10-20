@@ -52,7 +52,7 @@ class S7PlusClient:
         self._ip = ip
         self._port = port
         self._timeout = timeout
-        self._sock: Optional[socket.socket] = None
+        self._sock: socket.socket | None = None
         self._connected = False
         self._session: int = 0x0120
         self._seq: int = 1
@@ -117,7 +117,7 @@ class S7PlusClient:
     # Low-level I/O
     # ------------------------------------------------------------------ #
 
-    def _recv(self) -> Optional[bytes]:
+    def _recv(self) -> bytes | None:
         if not self._sock:
             return None
         try:
@@ -138,7 +138,7 @@ class S7PlusClient:
             self._logger.error("Recv error: %s", exc)
             return None
 
-    def send_recv_s7plus(self, pdu: bytes) -> Optional[bytes]:
+    def send_recv_s7plus(self, pdu: bytes) -> bytes | None:
         """Public wrapper to send a raw S7comm+ PDU.
 
         Args:
@@ -149,7 +149,7 @@ class S7PlusClient:
         """
         return self._send_recv_s7plus(pdu)
 
-    def _send_recv_s7plus(self, pdu: bytes) -> Optional[bytes]:
+    def _send_recv_s7plus(self, pdu: bytes) -> bytes | None:
         """Internal: wrap in COTP+TPKT, send, and strip COTP from response."""
         if not self._sock:
             return None

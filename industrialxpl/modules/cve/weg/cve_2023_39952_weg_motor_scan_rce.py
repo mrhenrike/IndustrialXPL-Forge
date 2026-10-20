@@ -33,5 +33,5 @@ class Exploit(Exploit):
                 description="CVE-2023-39952 WEG Motor Scan IIoT Gateway\nCVSS 9.8\nGET /../../etc/weg_config on port 80, extract motor drive credentials",
                 mitre_techniques=['T0866'])
             return
-        print_status("[CVE-2023-39952] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-39952] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol exploit")

@@ -59,5 +59,5 @@ class Exploit(Exploit):
             print_info("Affected: CENTUM VP R6.01.10 to R6.10.00")
             print_info("PoC: https://www.yokogawa.com/security-advisory/")
             return
-        print_status("[CVE-2023-35984] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-35984] Exploiting {self.target}:{self.port}...")
         print_info('Live payload: implement protocol-specific exploit')

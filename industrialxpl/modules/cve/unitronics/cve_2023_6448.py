@@ -68,18 +68,16 @@ class Exploit(Exploit):
             DestructiveGate.print_simulation(
                 description=(
                     "CVE-2023-6448: Would fingerprint Unitronics Vision PLCs / Samba / Jazz at "
-                    "{}:{} and check if version is in affected range (All with default password).".format(
-                        self.target, self.port
-                    )
+                    f"{self.target}:{self.port} and check if version is in affected range (All with default password)."
                 ),
                 mitre_techniques=["T0888"],
             )
             return
-        print_status("Checking {}:{} for CVE-2023-6448...".format(self.target, self.port))
+        print_status(f"Checking {self.target}:{self.port} for CVE-2023-6448...")
         if self.check():
             print_success(
-                "Port {} open — Unitronics Vision PLCs / Samba / Jazz MAY be present. "
-                "Verify version manually: affected=All with default password".format(self.port)
+                f"Port {self.port} open — Unitronics Vision PLCs / Samba / Jazz MAY be present. "
+                "Verify version manually: affected=All with default password"
             )
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

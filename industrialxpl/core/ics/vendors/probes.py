@@ -1,10 +1,10 @@
 """Per-vendor OT discovery probes — stdlib UDP/TCP."""
 
-from __future__ import annotations
 
 import socket
 import struct
-from typing import Any, Callable
+from typing import Any
+from collections.abc import Callable
 
 VENDOR_NAMES: tuple[str, ...] = (
     "beckhoff",
@@ -106,5 +106,5 @@ def probe_vendor(vendor: str, host: str, *, simulate: bool = False, timeout: flo
         }
     fn = PROBE_MAP.get(key)
     if not fn:
-        return {"success": False, "error": "unknown vendor: {}".format(vendor)}
+        return {"success": False, "error": f"unknown vendor: {vendor}"}
     return {"success": True, **fn(host, timeout)}

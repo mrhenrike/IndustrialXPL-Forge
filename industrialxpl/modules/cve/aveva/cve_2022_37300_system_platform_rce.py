@@ -59,5 +59,5 @@ class Exploit(Exploit):
             print_info("Affected: System Platform 2020 R2 SP1 and earlier")
             print_info("PoC: https://www.cisa.gov/uscert/ics/advisories/icsa-22-307-01")
             return
-        print_status("[CVE-2022-37300] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-37300] Exploiting {self.target}:{self.port}...")
         print_info('Live payload: implement protocol-specific exploit')

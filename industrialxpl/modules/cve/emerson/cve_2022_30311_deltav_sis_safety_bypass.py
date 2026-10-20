@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-30311 Emerson DeltaV SIS Safety Controller\nCVSS 9.8\nConnect DeltaV SIS DCOM port 135, bypass safety validation, disable emergency shutdowns",
                 mitre_techniques=['T0816', 'T0880'])
             return
-        print_status("[CVE-2022-30311] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-30311] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

@@ -1,6 +1,5 @@
 """Tests for industrialxpl.core.shells shim re-exporting from xpl-core."""
 
-from __future__ import annotations
 
 import sys
 from pathlib import Path

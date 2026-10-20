@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2021-31854 Axiomtek ICG100 Industrial IoT Gateway\nCVSS 9.8\nPOST to ICG100 port 443, inject commands, RCE on industrial IoT gateway",
                 mitre_techniques=['T0866', 'T0822'])
             return
-        print_status("[CVE-2021-31854] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2021-31854] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

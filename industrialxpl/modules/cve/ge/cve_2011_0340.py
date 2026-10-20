@@ -79,19 +79,19 @@ class Exploit(Exploit):
             DestructiveGate.print_simulation(
                 description=(
                     "CVE-2011-0340: Would fingerprint GE Proficy HMI/SCADA at "
-                    "{}:{} and confirm if version is in affected range. "
+                    f"{self.target}:{self.port} and confirm if version is in affected range. "
                     "Exploit type: BOF RCE. "
-                    "CVSS 9.3 (CRITICAL).".format(self.target, self.port)
+                    "CVSS 9.3 (CRITICAL)."
                 ),
                 mitre_techniques=['T0819', 'T0866'],
             )
             return
-        print_status("Checking {}:{} for CVE-2011-0340...".format(self.target, self.port))
+        print_status(f"Checking {self.target}:{self.port} for CVE-2011-0340...")
         if self.check():
             print_success(
-                "Port {} open on {} — GE Proficy HMI/SCADA may be present. "
+                f"Port {self.port} open on {self.target} — GE Proficy HMI/SCADA may be present. "
                 "CVE-2011-0340 (CRITICAL CVSS 9.3): BOF RCE. "
-                "Manual version verification required.".format(self.port, self.target)
+                "Manual version verification required."
             )
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

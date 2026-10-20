@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-25169 Fatek Automation WinProLadder Engineering\nCVSS 9.8\nOpen crafted project in WinProLadder, stack overflow, RCE on EWS",
                 mitre_techniques=['T0866'])
             return
-        print_status("[CVE-2022-25169] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-25169] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

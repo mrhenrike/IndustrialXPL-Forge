@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2011-4873 Smar ProcessView SCADA\nCVSS 9.8\nSend crafted FBD project to Smar ProcessView port 8080, buffer overflow, RCE",
                 mitre_techniques=["T0866"])
             return
-        print_status("[CVE-2011-4873] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2011-4873] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit payload")

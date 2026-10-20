@@ -29,7 +29,7 @@ class Exploit(Exploit):
         except: return False
     def run(self):
         if not self.target: print_error("Set target"); return
-        print_status("[Danfoss] Scanning {}:{}...".format(self.target, self.port))
+        print_status(f"[Danfoss] Scanning {self.target}:{self.port}...")
         results = []
         try:
             s = socket.socket(); s.settimeout(self.timeout)
@@ -37,9 +37,9 @@ class Exploit(Exploit):
             s.send(b"000100000006010300000001")
             banner = s.recv(256)
             s.close()
-            results.append(("Danfoss", "{}:{}".format(self.target, self.port), "Detected", banner[:24].hex()))
+            results.append(("Danfoss", f"{self.target}:{self.port}", "Detected", banner[:24].hex()))
         except Exception as e:
-            results.append(("Danfoss", "{}:{}".format(self.target, self.port), "Unreachable", str(e)[:25]))
+            results.append(("Danfoss", f"{self.target}:{self.port}", "Unreachable", str(e)[:25]))
         if results:
             print_table(["Vendor","Address","Status","Banner"], results)
         print_info("Known CVEs: CVE-2022-22966")

@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2021-27780 Belden/Hirschmann Eagle One Industrial Firewall\nCVSS 9.8\nPOST to Eagle One port 443, inject OS commands, RCE on industrial firewall",
                 mitre_techniques=['T0866', 'T0822'])
             return
-        print_status("[CVE-2021-27780] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2021-27780] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

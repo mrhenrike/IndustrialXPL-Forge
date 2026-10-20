@@ -11,7 +11,7 @@ Default port: 44818 (TCP).  UDP discovery: 2222.
 import socket
 import struct
 import logging
-from typing import Optional, Dict, Tuple
+from typing import Optional, Dict
 
 
 # EtherNet/IP command codes
@@ -22,7 +22,7 @@ ENIP_LIST_INTERFACES = 0x0064
 ENIP_SEND_RR_DATA = 0x006F
 ENIP_SEND_UNIT_DATA = 0x0070
 
-DEVICE_TYPES: Dict[int, str] = {
+DEVICE_TYPES: dict[int, str] = {
     0x02: "AC Drive",
     0x07: "Generic Device",
     0x0C: "Communications Adapter",
@@ -49,7 +49,7 @@ class CIPClient:
         self._ip = ip
         self._port = port
         self._timeout = timeout
-        self._sock: Optional[socket.socket] = None
+        self._sock: socket.socket | None = None
         self._session: int = 0
         self._logger = logging.getLogger(self.__class__.__name__)
 
@@ -132,7 +132,7 @@ class CIPClient:
                            0,           # reserved
                            ) + data
 
-    def _send_recv_enip(self, command: int, data: bytes) -> Optional[bytes]:
+    def _send_recv_enip(self, command: int, data: bytes) -> bytes | None:
         """Send an ENIP packet and return the response payload.
 
         Returns:
@@ -169,7 +169,7 @@ class CIPClient:
     # ------------------------------------------------------------------ #
 
     @staticmethod
-    def list_identity_udp(ip: str, port: int = 44818, timeout: float = 3.0) -> Optional[dict]:
+    def list_identity_udp(ip: str, port: int = 44818, timeout: float = 3.0) -> dict | None:
         """Broadcast ListIdentity request via UDP and return device info.
 
         Args:
@@ -192,7 +192,7 @@ class CIPClient:
         finally:
             sock.close()
 
-    def list_identity(self) -> Optional[dict]:
+    def list_identity(self) -> dict | None:
         """Send ListIdentity over existing TCP session.
 
         Returns:
@@ -248,7 +248,7 @@ class CIPClient:
     # Unconnected messaging (SendRRData)
     # ------------------------------------------------------------------ #
 
-    def send_rr_data(self, service: int, path: bytes, request_data: bytes = b"") -> Optional[bytes]:
+    def send_rr_data(self, service: int, path: bytes, request_data: bytes = b"") -> bytes | None:
         """Send an unconnected CIP explicit message (SendRRData).
 
         Args:

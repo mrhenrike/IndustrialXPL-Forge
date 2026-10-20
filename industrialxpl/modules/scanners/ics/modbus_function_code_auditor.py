@@ -29,12 +29,11 @@ References:
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import socket
 import struct
 import time
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, List
 
 from industrialxpl.core.exploit import *
 from industrialxpl.core.exploit.exploit import BaseExploit
@@ -46,7 +45,7 @@ _TID = 0x1A2B
 
 # Modbus function code definitions
 # (fc, name, risk_level, description, probe_bytes_after_header)
-_FC_CATALOG: List[Tuple[int, str, str, str, bytes]] = [
+_FC_CATALOG: list[tuple[int, str, str, str, bytes]] = [
     # Read FCs - use READ-ONLY probe (read 1 register/coil from address 0)
     (0x01, "ReadCoils",           "HIGH",     "Read coil state (digital outputs)", b"\x00\x00\x00\x01"),
     (0x02, "ReadDiscreteInputs",  "MEDIUM",   "Read discrete input state",          b"\x00\x00\x00\x01"),
@@ -82,7 +81,7 @@ def _probe_fc(
     fc: int,
     data: bytes,
     timeout: float,
-) -> Tuple[str, bytes]:
+) -> tuple[str, bytes]:
     """Send a single Modbus function code probe and return (status, raw_response).
 
     Status values:
@@ -116,7 +115,7 @@ def _probe_fc(
 
     except ConnectionRefusedError:
         return "refused", b""
-    except socket.timeout:
+    except TimeoutError:
         return "timeout", b""
     except Exception:
         return "error", b""
@@ -135,7 +134,7 @@ def audit_modbus(
     unit_id: int = 1,
     timeout: float = 3.0,
     write_test: bool = False,
-) -> List[Dict[str, Any]]:
+) -> list[dict[str, Any]]:
     """Audit all Modbus function codes against a target.
 
     Args:

@@ -5,12 +5,11 @@ substations and IEDs. Production implementation requires
 libiec61850 bindings or a pure-Python MMS stack.
 """
 
-from __future__ import annotations
 
 import logging
 import struct
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +23,7 @@ class IED:
     name: str
     ip: str
     port: int = MMS_PORT
-    logical_devices: List[str] = field(default_factory=list)
+    logical_devices: list[str] = field(default_factory=list)
     vendor: str = ""
     model: str = ""
 
@@ -57,10 +56,10 @@ class MmsClient:
     def write(self, reference: str, value: Any) -> bool:
         raise NotImplementedError("MMS write not implemented")
 
-    def get_logical_devices(self) -> List[str]:
+    def get_logical_devices(self) -> list[str]:
         raise NotImplementedError("MMS getServerDirectory not implemented")
 
-    def get_data_directory(self, ld: str) -> List[str]:
+    def get_data_directory(self, ld: str) -> list[str]:
         raise NotImplementedError("MMS getLogicalDeviceDirectory not implemented")
 
 
@@ -71,7 +70,7 @@ class GooseSubscriber:
         self.interface = interface
         self._running = False
 
-    def start(self, gocb_ref: Optional[str] = None) -> None:
+    def start(self, gocb_ref: str | None = None) -> None:
         raise NotImplementedError("GOOSE capture requires raw socket or libiec61850")
 
     def stop(self) -> None:
@@ -87,7 +86,7 @@ class SvSubscriber:
     def __init__(self, interface: str = "eth0") -> None:
         self.interface = interface
 
-    def start(self, sv_id: Optional[str] = None) -> None:
+    def start(self, sv_id: str | None = None) -> None:
         raise NotImplementedError("SV capture requires raw socket or libiec61850")
 
     def stop(self) -> None:

@@ -80,22 +80,20 @@ class Exploit(Exploit):
                 description=(
                     "CVE-2019-7246 (HIGH CVSS 7.5): Denial of service vulnerability. "
                     "Affects: ABB CP651 HMI. "
-                    "Would fingerprint {}:{} and confirm if device version "
-                    "is in the affected range.".format(self.target, self.port)
+                    f"Would fingerprint {self.target}:{self.port} and confirm if device version "
+                    "is in the affected range."
                 ),
                 mitre_techniques=['T0814'],
             )
             return
 
-        print_status("Checking {}:{} for CVE-2019-7246...".format(self.target, self.port))
+        print_status(f"Checking {self.target}:{self.port} for CVE-2019-7246...")
         if self.check():
             print_success(
-                "Service port {} open on {} — ABB CP651 HMI may be present. "
+                f"Service port {self.port} open on {self.target} — ABB CP651 HMI may be present. "
                 "CVE-2019-7246 HIGH CVSS 7.5: Denial of service vulnerability. "
-                "Manual version verification required to confirm vulnerability.".format(
-                    self.port, self.target)
+                "Manual version verification required to confirm vulnerability."
             )
             print_warning("CISA Advisory: N/A")
         else:
-            print_info("{}:{} not responding on port {}.".format(
-                self.target, self.port, self.port))
+            print_info(f"{self.target}:{self.port} not responding on port {self.port}.")

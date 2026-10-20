@@ -1,6 +1,5 @@
 """Stats, vendors, protocols and coverage commands (mixin)."""
 
-from __future__ import annotations
 
 from industrialxpl.core.exploit.printer import print_info, print_table
 from industrialxpl.core.exploit.utils import index_modules
@@ -17,8 +16,8 @@ class StatsCommandsMixin:
         print_info("IXF Module Statistics")
         print_table(
             ["Category", "Count", "%"],
-            [(k, str(v), "{}%".format(v * 100 // len(mods))) for k, v in sorted(top_cats.items(), key=lambda x: -x[1])],
-            title="Total: {} modules".format(len(mods)),
+            [(k, str(v), f"{v * 100 // len(mods)}%") for k, v in sorted(top_cats.items(), key=lambda x: -x[1])],
+            title=f"Total: {len(mods)} modules",
         )
         vendors = set()
         for m in mods:
@@ -26,7 +25,7 @@ class StatsCommandsMixin:
             if parts[0] == "cve" and len(parts) >= 2 and not parts[1].startswith("cve_"):
                 vendors.add(parts[1])
         malware = sum(1 for m in mods if "malware" in m or m.startswith("cve.apt."))
-        print_info("Vendors covered: {} | Malware TTPs: {}".format(len(vendors), malware))
+        print_info(f"Vendors covered: {len(vendors)} | Malware TTPs: {malware}")
         print_info("MITRE ATT&CK for ICS: 12 tactics, 103 techniques mapped")
         print_info("PyPI: pip install industrialxpl-forge | GitHub: github.com/mrhenrike/IndustrialXPL-Forge")
 
@@ -45,7 +44,7 @@ class StatsCommandsMixin:
             for v, cnt in sorted(vendors.items(), key=lambda x: -x[1])
             if not flt or flt in v.lower()
         ]
-        print_table(["Vendor", "Modules"], rows, title="Vendors ({} covered)".format(len(rows)))
+        print_table(["Vendor", "Modules"], rows, title=f"Vendors ({len(rows)} covered)")
 
     def command_protocols(self, args: str = "", **kwargs) -> None:
         """List all OT/ICS protocols covered. Usage: protocols"""
@@ -59,7 +58,7 @@ class StatsCommandsMixin:
                     p = parts[idx + 1]
                     protos[p] = protos.get(p, 0) + 1
         rows = [(p.upper().replace("_", "-"), str(cnt)) for p, cnt in sorted(protos.items())]
-        print_table(["Protocol", "Exploit Modules"], rows, title="Protocol Coverage ({} protocols)".format(len(rows)))
+        print_table(["Protocol", "Exploit Modules"], rows, title=f"Protocol Coverage ({len(rows)} protocols)")
 
     def command_coverage(self, args: str = "", **kwargs) -> None:
         """Show MITRE ATT&CK for ICS coverage. Alias for: mitre coverage"""

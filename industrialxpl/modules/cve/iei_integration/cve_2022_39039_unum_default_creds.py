@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-39039 IEI Integration UNUM Industrial PC\nCVSS 9.8\nLogin UNUM IPC port 443 with default admin/admin, access industrial computing platform",
                 mitre_techniques=['T0859', 'T0843'])
             return
-        print_status("[CVE-2022-39039] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-39039] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

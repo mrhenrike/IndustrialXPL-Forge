@@ -33,5 +33,5 @@ class Exploit(Exploit):
                 description="CVE-2025-21694 Rockwell Logix5000 Controllers\nCVSS 7.5\nSend malformed EtherNet/IP packet to port 44818, PLC fault mode, production stops",
                 mitre_techniques=['T0814'])
             return
-        print_status("[CVE-2025-21694] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2025-21694] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol exploit")

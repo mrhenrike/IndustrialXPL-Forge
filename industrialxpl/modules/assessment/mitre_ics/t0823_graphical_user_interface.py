@@ -36,5 +36,5 @@ class Exploit(Exploit):
                 ),
                 mitre_techniques=["T0823"])
             return
-        print_status("[MITRE T0823] Executing against {}:{}...".format(self.target, self.port))
+        print_status(f"[MITRE T0823] Executing against {self.target}:{self.port}...")
         print_info("Live: implement technique-specific logic")

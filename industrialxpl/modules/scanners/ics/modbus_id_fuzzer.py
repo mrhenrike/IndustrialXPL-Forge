@@ -7,7 +7,6 @@ to discover which slave addresses have active devices.
 Supports port ranges and T0-T5 timing profiles.
 """
 
-from typing import List
 
 from industrialxpl.core.exploit import (
     OptInteger, mute, print_error, print_info, print_status, print_success,
@@ -58,35 +57,31 @@ class Exploit(ModbusBaseExploit):
 
         sim = getattr(self, "_simulate_mode", self.simulate)
 
-        print_info("  Target  : {}".format(self.target))
+        print_info(f"  Target  : {self.target}")
         print_info("  Port(s) : {}".format(", ".join(str(p) for p in ports)))
-        print_info("  UID range: {}-{}".format(self.start_id, self.end_id))
+        print_info(f"  UID range: {self.start_id}-{self.end_id}")
         self._print_timing()
         self._print_address_plan(addresses, fc)
         print_info("")
 
         if sim:
             total = self.end_id - self.start_id + 1
-            print_info("[SIMULATE] Would fuzz {} Unit IDs on {} port(s) with FC{:02d} (TCP check only)".format(
-                total, len(ports), fc
-            ))
+            print_info(f"[SIMULATE] Would fuzz {total} Unit IDs on {len(ports)} port(s) with FC{fc:02d} (TCP check only)")
             for port in ports:
                 sock = modbus_connect(self.target, port, timing.socket_timeout)
                 if sock:
                     sock.close()
-                    print_success("[SIMULATE] {}:{} — port open".format(self.target, port))
+                    print_success(f"[SIMULATE] {self.target}:{port} — port open")
                 else:
-                    print_info("[SIMULATE] {}:{} — closed / no response".format(self.target, port))
+                    print_info(f"[SIMULATE] {self.target}:{port} — closed / no response")
             return
 
         for port in ports:
-            found: List[int] = []
+            found: list[int] = []
             total = self.end_id - self.start_id + 1
-            print_status("Fuzzing {}:{} UIDs {}-{} ({} total)...".format(
-                self.target, port, self.start_id, self.end_id, total
-            ))
+            print_status(f"Fuzzing {self.target}:{port} UIDs {self.start_id}-{self.end_id} ({total} total)...")
             for uid in range(self.start_id, self.end_id + 1):
-                print("\r[*] Testing UID {:3d} ({}/{})".format(uid, uid - self.start_id + 1, total), end="", flush=True)
+                print(f"\r[*] Testing UID {uid:3d} ({uid - self.start_id + 1}/{total})", end="", flush=True)
                 with ModbusTCPSocket(self.target, port, uid, timing) as sock:
                     if not sock._sock:
                         timing.sleep()
@@ -95,16 +90,14 @@ class Exploit(ModbusBaseExploit):
                     if resp and len(resp) >= 7 and not (resp[7] & 0x80 and resp[8] == 0x0B):
                         found.append(uid)
                         print("\r" + " " * 40, end="\r")
-                        print_success("  Active UID {:3d}: FC{:02d} responded".format(uid, fc))
+                        print_success(f"  Active UID {uid:3d}: FC{fc:02d} responded")
                 timing.sleep()
             print("\r" + " " * 40, end="\r")
 
             if found:
-                print_success("Found {} active Unit ID(s) on {}:{}: {}".format(
-                    len(found), self.target, port, found
-                ))
+                print_success(f"Found {len(found)} active Unit ID(s) on {self.target}:{port}: {found}")
             else:
-                print_info("No active UIDs found on {}:{}".format(self.target, port))
+                print_info(f"No active UIDs found on {self.target}:{port}")
 
     @mute
     def check(self) -> bool:

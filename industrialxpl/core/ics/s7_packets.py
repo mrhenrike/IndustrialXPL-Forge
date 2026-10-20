@@ -1,6 +1,5 @@
 """S7 packet builders — EDB 38964 / MSF simatic_s7_1200 inspired (MIT)."""
 
-from __future__ import annotations
 
 import struct
 from typing import Any

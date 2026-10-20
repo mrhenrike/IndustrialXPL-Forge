@@ -13,11 +13,9 @@ Suporta:
     000001-065536, 100001-165536, 300001-365536, 400001-465536
 """
 
-from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
-from typing import List, Optional, Tuple
 
 # FC implied by Modicon 5-digit prefix
 _MODICON_5_FC = {
@@ -44,25 +42,25 @@ class ModbusAddress:
 
     raw: str
     offset: int
-    implied_fc: Optional[int] = None
-    data_type: Optional[str] = None
+    implied_fc: int | None = None
+    data_type: str | None = None
 
     def __repr__(self) -> str:
-        fc_str = " (FC{})".format(self.implied_fc) if self.implied_fc else ""
-        return "{}@{}{}".format(self.raw, self.offset, fc_str)
+        fc_str = f" (FC{self.implied_fc})" if self.implied_fc else ""
+        return f"{self.raw}@{self.offset}{fc_str}"
 
 
 @dataclass
 class ModbusAddressSet:
     """Collection of resolved Modbus addresses."""
 
-    addresses: List[ModbusAddress] = field(default_factory=list)
-    implied_fc: Optional[int] = None  # unanimous FC if all addresses agree
+    addresses: list[ModbusAddress] = field(default_factory=list)
+    implied_fc: int | None = None  # unanimous FC if all addresses agree
 
     def __len__(self) -> int:
         return len(self.addresses)
 
-    def offsets(self) -> List[int]:
+    def offsets(self) -> list[int]:
         return [a.offset for a in self.addresses]
 
     def __iter__(self):
@@ -81,7 +79,7 @@ class ModbusAddressSet:
         """Contiguous quantity needed to cover min..max (for bulk FC read)."""
         return self.max - self.min + 1
 
-    def as_bulk(self) -> Tuple[int, int]:
+    def as_bulk(self) -> tuple[int, int]:
         """Return (start_address, quantity) for a single bulk read covering all addresses."""
         return self.min, self.span
 
@@ -98,7 +96,7 @@ def _parse_single(token: str) -> ModbusAddress:
         num = int(token[1:])
         fc, dtype = _MODICON_6_FC.get(prefix, (None, None))
         if fc is None:
-            raise ValueError("Unrecognized Modicon 6-digit prefix '{}' in '{}'".format(prefix, token))
+            raise ValueError(f"Unrecognized Modicon 6-digit prefix '{prefix}' in '{token}'")
         offset = num - 1  # 1-based -> 0-based
         return ModbusAddress(raw=token, offset=offset, implied_fc=fc, data_type=dtype)
 
@@ -108,7 +106,7 @@ def _parse_single(token: str) -> ModbusAddress:
         num = int(token[1:])
         fc, dtype = _MODICON_5_FC.get(prefix, (None, None))
         if fc is None:
-            raise ValueError("Unrecognized Modicon 5-digit prefix '{}' in '{}'".format(prefix, token))
+            raise ValueError(f"Unrecognized Modicon 5-digit prefix '{prefix}' in '{token}'")
         offset = num - 1
         return ModbusAddress(raw=token, offset=offset, implied_fc=fc, data_type=dtype)
 
@@ -116,10 +114,10 @@ def _parse_single(token: str) -> ModbusAddress:
     if re.fullmatch(r"\d+", token):
         offset = int(token)
         if offset > MAX_ADDR:
-            raise ValueError("Address {} exceeds Modbus maximum ({})".format(offset, MAX_ADDR))
+            raise ValueError(f"Address {offset} exceeds Modbus maximum ({MAX_ADDR})")
         return ModbusAddress(raw=token, offset=offset)
 
-    raise ValueError("Cannot parse address token '{}'".format(token))
+    raise ValueError(f"Cannot parse address token '{token}'")
 
 
 def parse_modbus_addresses(expr: str) -> ModbusAddressSet:
@@ -144,7 +142,7 @@ def parse_modbus_addresses(expr: str) -> ModbusAddressSet:
     if not expr or not expr.strip():
         raise ValueError("Address expression cannot be empty")
 
-    addresses: List[ModbusAddress] = []
+    addresses: list[ModbusAddress] = []
     tokens = [t.strip() for t in expr.split(",") if t.strip()]
 
     for token in tokens:
@@ -153,21 +151,19 @@ def parse_modbus_addresses(expr: str) -> ModbusAddressSet:
             # Split on the LAST dash that follows a digit (to handle 14-20 correctly)
             parts = re.split(r"-", token, maxsplit=1)
             if len(parts) != 2:
-                raise ValueError("Invalid range expression: '{}'".format(token))
+                raise ValueError(f"Invalid range expression: '{token}'")
             start_addr = _parse_single(parts[0])
             end_addr   = _parse_single(parts[1])
             if start_addr.offset > end_addr.offset:
                 raise ValueError(
-                    "Range start {} > end {} in '{}'".format(
-                        start_addr.offset, end_addr.offset, token
-                    )
+                    f"Range start {start_addr.offset} > end {end_addr.offset} in '{token}'"
                 )
             # Both must have consistent FC if Modicon-typed
             if (start_addr.implied_fc is not None and end_addr.implied_fc is not None
                     and start_addr.implied_fc != end_addr.implied_fc):
                 raise ValueError(
-                    "Range '{}' spans different Modicon data types "
-                    "(FC{} vs FC{})".format(token, start_addr.implied_fc, end_addr.implied_fc)
+                    f"Range '{token}' spans different Modicon data types "
+                    f"(FC{start_addr.implied_fc} vs FC{end_addr.implied_fc})"
                 )
             ref_fc = start_addr.implied_fc or end_addr.implied_fc
             ref_dtype = start_addr.data_type or end_addr.data_type
@@ -184,7 +180,7 @@ def parse_modbus_addresses(expr: str) -> ModbusAddressSet:
             addresses.append(_parse_single(token))
 
     if not addresses:
-        raise ValueError("No addresses resolved from '{}'".format(expr))
+        raise ValueError(f"No addresses resolved from '{expr}'")
 
     # Determine unanimous implied FC
     fcs = {a.implied_fc for a in addresses if a.implied_fc is not None}

@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2021-21913 Weidmuller IE-SW-PL Industrial Switch\nCVSS 9.8\nLogin Weidmuller switch port 443 with default admin/weidmuller, modify VLAN/ACL for OT pivot",
                 mitre_techniques=['T0859', 'T0822'])
             return
-        print_status("[CVE-2021-21913] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2021-21913] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

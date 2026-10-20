@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-27584 SICK AG S3000/V3000 Safety Laser Scanner\nCVSS 9.8\nPOST malicious firmware to SICK S3000 web port 80, modify safety zone configuration",
                 mitre_techniques=['T0839', 'T0880'])
             return
-        print_status("[CVE-2022-27584] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-27584] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

@@ -1,6 +1,5 @@
 """Ricnar Exploit Solutions PoCs — MIT payload specs (REFERENCE_ONLY)."""
 
-from __future__ import annotations
 
 from typing import Any
 
@@ -33,5 +32,5 @@ def list_pocs() -> list[str]:
 def get_poc(name: str, *, simulate: bool = True) -> dict[str, Any]:
     poc = RICNAR_POCS.get(name)
     if not poc:
-        return {"success": False, "error": "unknown poc: {}".format(name)}
+        return {"success": False, "error": f"unknown poc: {name}"}
     return {"success": True, "simulate": simulate, "name": name, **poc}

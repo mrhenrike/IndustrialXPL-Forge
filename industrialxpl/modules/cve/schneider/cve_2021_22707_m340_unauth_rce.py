@@ -59,5 +59,5 @@ class Exploit(Exploit):
             print_info("Affected: M340 BMXP34 CPU V3.20 and earlier")
             print_info("PoC: https://www.se.com/ww/en/download/document/SEVD-2021-313-06/")
             return
-        print_status("[CVE-2021-22707] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2021-22707] Exploiting {self.target}:{self.port}...")
         print_info('Live payload: implement protocol-specific exploit')

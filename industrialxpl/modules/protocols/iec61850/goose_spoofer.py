@@ -6,7 +6,6 @@ to cause unauthorized protective relay trips in electrical substations.
 CRITICAL: Can cause real-world blackouts. ONLY for authorized lab testing.
 # Standard: IEC 61850-8-1 (GOOSE operates at Ethernet Layer 2, multicast)
 """
-from __future__ import annotations
 import logging
 import socket
 import struct

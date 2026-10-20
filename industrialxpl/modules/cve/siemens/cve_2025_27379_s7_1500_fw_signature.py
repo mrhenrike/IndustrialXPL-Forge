@@ -33,5 +33,5 @@ class Exploit(Exploit):
                 description="CVE-2025-27379 Siemens S7-1500 CPU Firmware\nCVSS 9.1\nUpload crafted S7-1500 firmware with modified signature to port 102, persistent RCE",
                 mitre_techniques=['T0839', 'T0880'])
             return
-        print_status("[CVE-2025-27379] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2025-27379] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol exploit")

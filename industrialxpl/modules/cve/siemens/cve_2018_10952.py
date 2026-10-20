@@ -79,19 +79,19 @@ class Exploit(Exploit):
             DestructiveGate.print_simulation(
                 description=(
                     "CVE-2018-10952: Would fingerprint Siemens WinCC flexible at "
-                    "{}:{} and confirm if version is in affected range. "
+                    f"{self.target}:{self.port} and confirm if version is in affected range. "
                     "Exploit type: Authentication bypass. "
-                    "CVSS 8.1 (HIGH).".format(self.target, self.port)
+                    "CVSS 8.1 (HIGH)."
                 ),
                 mitre_techniques=['T1694.002', 'T0859'],
             )
             return
-        print_status("Checking {}:{} for CVE-2018-10952...".format(self.target, self.port))
+        print_status(f"Checking {self.target}:{self.port} for CVE-2018-10952...")
         if self.check():
             print_success(
-                "Port {} open on {} — Siemens WinCC flexible may be present. "
+                f"Port {self.port} open on {self.target} — Siemens WinCC flexible may be present. "
                 "CVE-2018-10952 (HIGH CVSS 8.1): Authentication bypass. "
-                "Manual version verification required.".format(self.port, self.target)
+                "Manual version verification required."
             )
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

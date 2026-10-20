@@ -1,6 +1,5 @@
 """ICSForge detection scenarios — ATT&CK ICS lab YAML loader."""
 
-from __future__ import annotations
 
 import json
 from pathlib import Path
@@ -32,7 +31,7 @@ def export_sigma_rule(scenario_id: str) -> dict[str, Any]:
                     "detection": sc.get("detection", {}),
                 },
             }
-    return {"success": False, "error": "scenario not found: {}".format(scenario_id)}
+    return {"success": False, "error": f"scenario not found: {scenario_id}"}
 
 
 def inventory() -> dict[str, Any]:

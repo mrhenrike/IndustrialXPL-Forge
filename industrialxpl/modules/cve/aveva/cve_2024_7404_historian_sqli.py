@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2024-7404 AVEVA Historian 2023 R2\nCVSS 9.8\nPOST SQLi to AVEVA Historian port 5450, bypass auth, dump all process history tags",
                 mitre_techniques=['T0803', 'T0832'])
             return
-        print_status("[CVE-2024-7404] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2024-7404] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

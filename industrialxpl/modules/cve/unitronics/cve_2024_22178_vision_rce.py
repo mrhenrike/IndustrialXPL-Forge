@@ -59,5 +59,5 @@ class Exploit(Exploit):
             print_info("Affected: Vision Series PLC (V120, V350, V570, V700, V1040, V1210)")
             print_info("PoC: https://www.cisa.gov/uscert/ics/advisories/icsa-24-016-01")
             return
-        print_status("[CVE-2024-22178] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2024-22178] Exploiting {self.target}:{self.port}...")
         print_info('Live payload: implement protocol-specific exploit')

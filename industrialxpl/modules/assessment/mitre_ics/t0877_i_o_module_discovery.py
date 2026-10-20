@@ -38,5 +38,5 @@ class Exploit(Exploit):
                 ),
                 mitre_techniques=["T0877"])
             return
-        print_status("[MITRE T0877] Executing against {}:{}...".format(self.target, self.port))
+        print_status(f"[MITRE T0877] Executing against {self.target}:{self.port}...")
         print_info("Live: connect and enumerate I/O configuration")

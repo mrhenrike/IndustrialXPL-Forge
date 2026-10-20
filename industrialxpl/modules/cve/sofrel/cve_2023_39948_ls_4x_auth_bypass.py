@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2023-39948 Sofrel LS-4x RTU (Water Networks)\nCVSS 9.8\nAccess Sofrel LS-4x web port 80 without auth, modify water network telemetry setpoints",
                 mitre_techniques=['T0859', 'T0836'])
             return
-        print_status("[CVE-2023-39948] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-39948] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

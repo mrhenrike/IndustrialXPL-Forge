@@ -53,12 +53,12 @@ class Exploit(Exploit):
             return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2022-41977: Fingerprint Schneider Electric EcoStruxure Operator Terminal at {}:{}. Stack buffer overflow local. CVSS 7.8.".format(self.target, self.port),
+                description=f"CVE-2022-41977: Fingerprint Schneider Electric EcoStruxure Operator Terminal at {self.target}:{self.port}. Stack buffer overflow local. CVSS 7.8.",
                 mitre_techniques=['T0883'],
             )
             return
         if self.check():
-            print_success("Port {} open — Schneider Electric EcoStruxure Operator Terminal may be present. CVE-2022-41977 HIGH CVSS 7.8.".format(self.port))
+            print_success(f"Port {self.port} open — Schneider Electric EcoStruxure Operator Terminal may be present. CVE-2022-41977 HIGH CVSS 7.8.")
             print_warning("CISA: N/A")
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

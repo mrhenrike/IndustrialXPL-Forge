@@ -59,5 +59,5 @@ class Exploit(Exploit):
             print_info("Affected: APROL R4.2-07 and earlier")
             print_info("PoC: https://www.cisa.gov/uscert/ics/advisories/icsa-22-104-04")
             return
-        print_status("[CVE-2022-1137] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-1137] Exploiting {self.target}:{self.port}...")
         print_info('Live payload: implement protocol-specific exploit')
