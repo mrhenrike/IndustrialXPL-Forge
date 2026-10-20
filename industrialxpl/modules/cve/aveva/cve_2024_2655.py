@@ -53,12 +53,12 @@ class Exploit(Exploit):
             return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2024-2655: Fingerprint AVEVA PI Server at {}:{}. Denial of service resource exhaustion. CVSS 8.7.".format(self.target, self.port),
+                description=f"CVE-2024-2655: Fingerprint AVEVA PI Server at {self.target}:{self.port}. Denial of service resource exhaustion. CVSS 8.7.",
                 mitre_techniques=['T0819', 'T0866', 'T0814'],
             )
             return
         if self.check():
-            print_success("Port {} open — AVEVA PI Server may be present. CVE-2024-2655 HIGH CVSS 8.7.".format(self.port))
+            print_success(f"Port {self.port} open — AVEVA PI Server may be present. CVE-2024-2655 HIGH CVSS 8.7.")
             print_warning("CISA: N/A")
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

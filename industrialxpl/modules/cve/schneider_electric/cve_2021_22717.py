@@ -53,12 +53,12 @@ class Exploit(Exploit):
             return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2021-22717: Fingerprint Schneider Electric Modicon M340 at {}:{}. Denial of service via HTTP. CVSS 6.5.".format(self.target, self.port),
+                description=f"CVE-2021-22717: Fingerprint Schneider Electric Modicon M340 at {self.target}:{self.port}. Denial of service via HTTP. CVSS 6.5.",
                 mitre_techniques=['T0814'],
             )
             return
         if self.check():
-            print_success("Port {} open — Schneider Electric Modicon M340 may be present. CVE-2021-22717 MEDIUM CVSS 6.5.".format(self.port))
+            print_success(f"Port {self.port} open — Schneider Electric Modicon M340 may be present. CVE-2021-22717 MEDIUM CVSS 6.5.")
             print_warning("CISA: N/A")
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

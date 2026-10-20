@@ -1,10 +1,10 @@
 """Per-protocol OT probes — stdlib + optional pymodbus."""
 
-from __future__ import annotations
 
 import socket
 import struct
-from typing import Any, Callable
+from typing import Any
+from collections.abc import Callable
 
 ProbeFn = Callable[[str, float], dict[str, Any]]
 
@@ -38,7 +38,7 @@ def probe_modbus(host: str, timeout: float = 3.0) -> dict[str, Any]:
         resp = s.recv(256)
         s.close()
         if len(resp) >= 8:
-            return {"detected": True, "port": 502, "detail": "Modbus/TCP FC03 ({} B)".format(len(resp))}
+            return {"detected": True, "port": 502, "detail": f"Modbus/TCP FC03 ({len(resp)} B)"}
     except OSError as exc:
         return {"detected": False, "port": 502, "error": str(exc)}
     return {"detected": False, "port": 502}
@@ -58,7 +58,7 @@ def probe_s7(host: str, timeout: float = 3.0) -> dict[str, Any]:
         resp = s.recv(128)
         s.close()
         if resp:
-            return {"detected": True, "port": 102, "detail": "S7comm COTP ({} B)".format(len(resp))}
+            return {"detected": True, "port": 102, "detail": f"S7comm COTP ({len(resp)} B)"}
     except OSError as exc:
         return {"detected": False, "port": 102, "error": str(exc)}
     return {"detected": False, "port": 102}
@@ -83,7 +83,7 @@ def probe_bacnet(host: str, timeout: float = 3.0) -> dict[str, Any]:
     whois = bytes([0x81, 0x0B, 0x00, 0x0C, 0x01, 0x20, 0xFF, 0xFF, 0x00, 0xFF, 0x10, 0x08])
     resp = _udp_send(host, 47808, whois, timeout)
     if resp:
-        return {"detected": True, "port": 47808, "detail": "BACnet/IP Who-Is ({} B)".format(len(resp))}
+        return {"detected": True, "port": 47808, "detail": f"BACnet/IP Who-Is ({len(resp)} B)"}
     return {"detected": False, "port": 47808}
 
 
@@ -131,7 +131,7 @@ def probe_profinet(host: str, timeout: float = 3.0) -> dict[str, Any]:
     dcp = bytes([0xFE, 0xFD, 0x82, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00])
     resp = _udp_send(host, 34962, dcp, timeout)
     if resp:
-        return {"detected": True, "port": 34962, "detail": "Profinet DCP ({} B)".format(len(resp))}
+        return {"detected": True, "port": 34962, "detail": f"Profinet DCP ({len(resp)} B)"}
     return {"detected": False, "port": 34962}
 
 

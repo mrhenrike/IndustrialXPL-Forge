@@ -38,7 +38,6 @@ References:
 """
 
 import socket
-from typing import List, Dict
 
 from industrialxpl.core.exploit import (
     Exploit, OptIP, OptString, OptInteger, OptBool,
@@ -137,7 +136,7 @@ class Exploit(Exploit):
         print_info("")
         print_info("=" * 68)
         print_info("GNSS / AHS SPOOFING RISK ASSESSMENT")
-        print_info("Site   : {}".format(site))
+        print_info(f"Site   : {site}")
         print_info("Vendor : {} -- {}".format(vendor_key.title(), vendor_info["product"]))
         print_info("Trucks : {}".format(vendor_info["trucks"]))
         print_info("GNSS   : {}".format(vendor_info["gnss"]))
@@ -145,11 +144,11 @@ class Exploit(Exploit):
         print_info("=" * 68)
         print_info("")
 
-        findings: List[str] = []
+        findings: list[str] = []
 
         # Network checks if target is provided
         if self.target:
-            print_status("Network checks against {}...".format(self.target))
+            print_status(f"Network checks against {self.target}...")
 
             # RTK NTRIP server
             for port in _RTK_PORTS:
@@ -157,14 +156,10 @@ class Exploit(Exploit):
                     sock = socket.create_connection((self.target, port), timeout=3)
                     sock.close()
                     if port in (2101, 2102):
-                        print_warning("  RTK NTRIP server OPEN on {}:{} -- GNSS correction data exposed".format(
-                            self.target, port
-                        ))
-                        findings.append("RTK NTRIP correction server accessible on {}:{}".format(
-                            self.target, port
-                        ))
+                        print_warning(f"  RTK NTRIP server OPEN on {self.target}:{port} -- GNSS correction data exposed")
+                        findings.append(f"RTK NTRIP correction server accessible on {self.target}:{port}")
                     else:
-                        print_info("  Port {}:{} OPEN".format(self.target, port))
+                        print_info(f"  Port {self.target}:{port} OPEN")
                 except Exception:
                     pass
 
@@ -175,12 +170,10 @@ class Exploit(Exploit):
                     banner = sock.recv(256).decode("utf-8", errors="replace")
                     sock.close()
                     if "gpsd" in banner.lower() or "gps" in banner.lower():
-                        print_warning("  gpsd (GPS-over-IP) on {}:{} -- GPS stream accessible: {}".format(
-                            self.target, port, banner[:60]
-                        ))
-                        findings.append("GPS-over-IP (gpsd) exposed on port {}".format(port))
+                        print_warning(f"  gpsd (GPS-over-IP) on {self.target}:{port} -- GPS stream accessible: {banner[:60]}")
+                        findings.append(f"GPS-over-IP (gpsd) exposed on port {port}")
                     else:
-                        print_info("  Port {}:{} open -- not gpsd".format(self.target, port))
+                        print_info(f"  Port {self.target}:{port} open -- not gpsd")
                 except Exception:
                     pass
 
@@ -189,8 +182,8 @@ class Exploit(Exploit):
         print_status("GNSS Security Checklist (AHS environments):")
         print_info("")
         for check_item, detail in _CHECKLIST:
-            print_info("  [?] {}".format(check_item))
-            print_info("      {}".format(detail))
+            print_info(f"  [?] {check_item}")
+            print_info(f"      {detail}")
         print_info("")
 
         # Recommendations
@@ -212,4 +205,4 @@ class Exploit(Exploit):
             print_info("")
             print_warning("Network exposure findings:")
             for f in findings:
-                print_warning("  - {}".format(f))
+                print_warning(f"  - {f}")

@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2021-32939 Bosch Rexroth IndraControl XM/XL PLC\nCVSS 9.8\nConnect IndraControl OPC UA port 4840, anonymous session, write motion control parameters",
                 mitre_techniques=['T0866', 'T0836'])
             return
-        print_status("[CVE-2021-32939] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2021-32939] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

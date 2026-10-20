@@ -59,5 +59,5 @@ class Exploit(Exploit):
             print_info("Affected: KEPServerEX v6.x to v6.14")
             print_info("PoC: https://www.cisa.gov/uscert/ics/advisories/icsa-23-157-02")
             return
-        print_status("[CVE-2023-29444] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-29444] Exploiting {self.target}:{self.port}...")
         print_info('Live payload: implement protocol-specific exploit')

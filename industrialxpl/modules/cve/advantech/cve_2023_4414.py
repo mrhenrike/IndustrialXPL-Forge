@@ -53,12 +53,12 @@ class Exploit(Exploit):
             return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2023-4414: Fingerprint Advantech WebAccess SCADA at {}:{}. Path traversal information disclosure. CVSS 7.5.".format(self.target, self.port),
+                description=f"CVE-2023-4414: Fingerprint Advantech WebAccess SCADA at {self.target}:{self.port}. Path traversal information disclosure. CVSS 7.5.",
                 mitre_techniques=['T0819'],
             )
             return
         if self.check():
-            print_success("Port {} open — Advantech WebAccess SCADA may be present. CVE-2023-4414 HIGH CVSS 7.5.".format(self.port))
+            print_success(f"Port {self.port} open — Advantech WebAccess SCADA may be present. CVE-2023-4414 HIGH CVSS 7.5.")
             print_warning("CISA: N/A")
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

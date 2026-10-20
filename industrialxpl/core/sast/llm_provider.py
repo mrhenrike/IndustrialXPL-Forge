@@ -94,7 +94,7 @@ class LLMProviderManager:
             ))
         self._keys[provider] = api_key.strip()
 
-    def get_active_provider(self) -> Optional[str]:
+    def get_active_provider(self) -> str | None:
         """Return the active provider name (OpenAI preferred)."""
         if not self._keys:
             return None
@@ -150,14 +150,14 @@ class LLMProviderManager:
             elif fmt == "gemini":
                 return self._request_gemini(api_key, config, user_prompt, system_prompt, max_tokens, temperature)
             else:
-                raise LLMRequestError("Unknown format: {}".format(fmt))
+                raise LLMRequestError(f"Unknown format: {fmt}")
         except LLMKeyInvalidError:
             raise
         except LLMKeyMissingError:
             raise
         except Exception as exc:
             raise LLMRequestError(
-                "LLM request failed (provider={}): {}".format(provider, exc)
+                f"LLM request failed (provider={provider}): {exc}"
             ) from exc
 
     def _request_openai(self, provider, api_key, config, user_prompt, system_prompt, max_tokens, temperature):
@@ -199,7 +199,7 @@ class LLMProviderManager:
         url = "{}?key={}".format(config["url"], api_key)
         parts = []
         if system_prompt:
-            parts.append({"text": "SYSTEM: {}\n\nUSER: {}".format(system_prompt, user_prompt)})
+            parts.append({"text": f"SYSTEM: {system_prompt}\n\nUSER: {user_prompt}"})
         else:
             parts.append({"text": user_prompt})
 
@@ -223,12 +223,12 @@ class LLMProviderManager:
             error_body = exc.read().decode(errors="replace")
             if exc.code in (401, 403):
                 raise LLMKeyInvalidError(
-                    "API key rejected by {} (HTTP {}). "
-                    "Check the key and update with: ixf > llm-key {} <new-key>\n"
-                    "Details: {}".format(provider, exc.code, provider, error_body[:200])
+                    f"API key rejected by {provider} (HTTP {exc.code}). "
+                    f"Check the key and update with: ixf > llm-key {provider} <new-key>\n"
+                    f"Details: {error_body[:200]}"
                 )
             raise LLMRequestError(
-                "{} API error HTTP {}: {}".format(provider, exc.code, error_body[:300])
+                f"{provider} API error HTTP {exc.code}: {error_body[:300]}"
             )
 
         # Extract text from response

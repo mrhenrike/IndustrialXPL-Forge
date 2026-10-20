@@ -53,12 +53,12 @@ class Exploit(Exploit):
             return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2023-2071: Fingerprint Rockwell Automation FactoryTalk View ME at {}:{}. Remote code execution buffer overflow. CVSS 9.8.".format(self.target, self.port),
+                description=f"CVE-2023-2071: Fingerprint Rockwell Automation FactoryTalk View ME at {self.target}:{self.port}. Remote code execution buffer overflow. CVSS 9.8.",
                 mitre_techniques=['T0819', 'T0866'],
             )
             return
         if self.check():
-            print_success("Port {} open — Rockwell Automation FactoryTalk View ME may be present. CVE-2023-2071 CRITICAL CVSS 9.8.".format(self.port))
+            print_success(f"Port {self.port} open — Rockwell Automation FactoryTalk View ME may be present. CVE-2023-2071 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

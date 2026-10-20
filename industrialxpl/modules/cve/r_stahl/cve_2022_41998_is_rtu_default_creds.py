@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-41998 R. Stahl IS-RTU Remote I/O\nCVSS 9.8\nLogin R.Stahl IS-RTU web port 80, default creds, access Zone 1/Zone 2 hazardous area I/O",
                 mitre_techniques=['T0859', 'T0836'])
             return
-        print_status("[CVE-2022-41998] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-41998] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

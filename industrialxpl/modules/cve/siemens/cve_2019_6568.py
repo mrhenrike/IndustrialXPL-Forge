@@ -53,12 +53,12 @@ class Exploit(Exploit):
             return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2019-6568: Fingerprint Siemens SIMATIC S7 OPC UA at {}:{}. Denial of service OPC UA. CVSS 7.5.".format(self.target, self.port),
+                description=f"CVE-2019-6568: Fingerprint Siemens SIMATIC S7 OPC UA at {self.target}:{self.port}. Denial of service OPC UA. CVSS 7.5.",
                 mitre_techniques=['T0814'],
             )
             return
         if self.check():
-            print_success("Port {} open — Siemens SIMATIC S7 OPC UA may be present. CVE-2019-6568 HIGH CVSS 7.5.".format(self.port))
+            print_success(f"Port {self.port} open — Siemens SIMATIC S7 OPC UA may be present. CVE-2019-6568 HIGH CVSS 7.5.")
             print_warning("CISA: N/A")
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

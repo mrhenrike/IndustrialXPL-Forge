@@ -17,7 +17,6 @@ In-memory compilation (C/Rust payloads):
   5. Execute from loaded memory -- no compiled artifact persists on disk
 """
 
-from __future__ import annotations
 
 import importlib.util
 import os
@@ -27,7 +26,8 @@ import tempfile
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable, Optional
+from typing import Any, Optional
+from collections.abc import Callable
 
 from industrialxpl.core.exploit.printer import (
     print_error, print_info, print_status, print_success, print_warning,
@@ -53,7 +53,7 @@ class NativePayload:
     mitre: list = field(default_factory=list)
 
     @property
-    def source_path(self) -> Optional[Path]:
+    def source_path(self) -> Path | None:
         candidates = [
             self.directory / "payload.py",
             self.directory / "payload.c",
@@ -103,7 +103,7 @@ class NativePayloadLoader:
                 continue
             try:
                 spec = importlib.util.spec_from_file_location(
-                    "manifest_{}".format(subdir.name), manifest_path
+                    f"manifest_{subdir.name}", manifest_path
                 )
                 mod = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(mod)
@@ -121,12 +121,10 @@ class NativePayloadLoader:
                     )
                     cls._registry[subdir.name] = payload
             except Exception as exc:
-                print_warning("  [native] Failed to load manifest for {}: {}".format(
-                    subdir.name, exc
-                ))
+                print_warning(f"  [native] Failed to load manifest for {subdir.name}: {exc}")
 
     @classmethod
-    def get(cls, slug: str) -> Optional[NativePayload]:
+    def get(cls, slug: str) -> NativePayload | None:
         cls._load_manifest()
         return cls._registry.get(slug)
 
@@ -146,9 +144,7 @@ class NativePayloadLoader:
         payload = cls.get(module_slug)
         if payload and payload.available:
             print_warning(
-                "  [native] Native payload available for '{}' (GitHub clone only)".format(
-                    payload.name
-                )
+                f"  [native] Native payload available for '{payload.name}' (GitHub clone only)"
             )
             print_info(
                 "  [native] Impact: {}  |  Lang: {}  |  MITRE: {}".format(
@@ -167,7 +163,7 @@ class NativePayloadLoader:
         slug: str,
         target: str,
         options: dict,
-        confirm_callback: Optional[Callable[[], bool]] = None,
+        confirm_callback: Callable[[], bool] | None = None,
     ) -> bool:
         """Execute a native payload against target after confirmation gate.
 
@@ -184,21 +180,21 @@ class NativePayloadLoader:
         payload = cls.get(slug)
 
         if not payload:
-            print_error("No native payload registered for slug '{}'.".format(slug))
+            print_error(f"No native payload registered for slug '{slug}'.")
             return False
 
         if not payload.available:
-            print_error("Native payload source not found for '{}'.".format(slug))
+            print_error(f"Native payload source not found for '{slug}'.")
             return False
 
         # Authorization gate — always required for native payloads
         print_info("")
         print_warning("=" * 68)
         print_warning("  NATIVE PAYLOAD EXECUTION REQUEST")
-        print_warning("  Payload  : {}".format(payload.name))
-        print_warning("  Target   : {}".format(target))
-        print_warning("  Impact   : {}".format(payload.impact))
-        print_warning("  Language : {}".format(payload.language))
+        print_warning(f"  Payload  : {payload.name}")
+        print_warning(f"  Target   : {target}")
+        print_warning(f"  Impact   : {payload.impact}")
+        print_warning(f"  Language : {payload.language}")
         print_warning("  MITRE    : {}".format(", ".join(payload.mitre)))
         print_warning("=" * 68)
         print_info("")
@@ -226,7 +222,7 @@ class NativePayloadLoader:
         elif payload.language == "go":
             return cls._exec_go(payload, target, options)
         else:
-            print_error("Unsupported payload language: {}".format(payload.language))
+            print_error(f"Unsupported payload language: {payload.language}")
             return False
 
     @classmethod
@@ -234,21 +230,19 @@ class NativePayloadLoader:
         """Load and execute a Python payload module."""
         src = payload.source_path
         if src is None:
-            print_error("No Python source found for {}".format(payload.slug))
+            print_error(f"No Python source found for {payload.slug}")
             return False
         try:
             spec = importlib.util.spec_from_file_location(
-                "native_{}".format(payload.slug), src
+                f"native_{payload.slug}", src
             )
             mod = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(mod)
             fn = getattr(mod, payload.entry_point, None)
             if fn is None:
-                print_error("Entry point '{}' not found in {}".format(
-                    payload.entry_point, src
-                ))
+                print_error(f"Entry point '{payload.entry_point}' not found in {src}")
                 return False
-            print_status("Executing native Python payload: {}".format(payload.name))
+            print_status(f"Executing native Python payload: {payload.name}")
             result = fn(target=target, options=options)
             if result:
                 print_success("Native payload completed successfully.")
@@ -256,7 +250,7 @@ class NativePayloadLoader:
                 print_warning("Native payload completed with partial/no result.")
             return True
         except Exception as exc:
-            print_error("Native Python execution error: {}".format(exc))
+            print_error(f"Native Python execution error: {exc}")
             return False
 
     @classmethod
@@ -264,45 +258,43 @@ class NativePayloadLoader:
         """Compile C source in-memory and execute the payload function."""
         src = payload.source_path
         if src is None or not src.exists():
-            print_error("No C source found for {}".format(payload.slug))
+            print_error(f"No C source found for {payload.slug}")
             return False
 
         _PROJECT_TMP.mkdir(parents=True, exist_ok=True)
-        out_so = _PROJECT_TMP / "native_{}.so".format(payload.slug)
-        out_exe = _PROJECT_TMP / "native_{}.bin".format(payload.slug)
+        out_so = _PROJECT_TMP / f"native_{payload.slug}.so"
+        out_exe = _PROJECT_TMP / f"native_{payload.slug}.bin"
 
         compiler = cls._find_compiler()
         if not compiler:
             print_error("No C compiler found (gcc, cc, clang). Install build-essential.")
             return False
 
-        print_status("Compiling {} in-memory via {}...".format(payload.name, compiler))
+        print_status(f"Compiling {payload.name} in-memory via {compiler}...")
         try:
             # Compile to shared library for ctypes loading
             result = subprocess.run(
                 [compiler, "-shared", "-fPIC", "-O2", "-o", str(out_so), str(src),
-                 "-DTARGET=\"{}\"".format(target)],
+                 f"-DTARGET=\"{target}\""],
                 capture_output=True, text=True, timeout=30
             )
             if result.returncode != 0:
-                print_error("Compilation failed:\n{}".format(result.stderr))
+                print_error(f"Compilation failed:\n{result.stderr}")
                 return False
 
             import ctypes
             lib = ctypes.CDLL(str(out_so))
             fn = getattr(lib, payload.entry_point, None)
             if fn is None:
-                print_error("Symbol '{}' not found in compiled library".format(
-                    payload.entry_point
-                ))
+                print_error(f"Symbol '{payload.entry_point}' not found in compiled library")
                 return False
 
-            print_status("Executing native compiled payload against {}...".format(target))
+            print_status(f"Executing native compiled payload against {target}...")
             ret = fn(target.encode("utf-8"), ctypes.c_int(options.get("port", 0)))
-            print_success("Native C payload returned: {}".format(ret))
+            print_success(f"Native C payload returned: {ret}")
             return True
         except Exception as exc:
-            print_error("Native C execution error: {}".format(exc))
+            print_error(f"Native C execution error: {exc}")
             return False
         finally:
             # Delete binary immediately after use -- no artifact on disk
@@ -318,7 +310,7 @@ class NativePayloadLoader:
         """Compile Rust source and execute in-memory."""
         src = payload.source_path
         if src is None:
-            print_error("No Rust source found for {}".format(payload.slug))
+            print_error(f"No Rust source found for {payload.slug}")
             return False
 
         rustc = cls._find_rustc()
@@ -327,22 +319,22 @@ class NativePayloadLoader:
             return False
 
         _PROJECT_TMP.mkdir(parents=True, exist_ok=True)
-        out_bin = _PROJECT_TMP / "native_{}_rust".format(payload.slug)
+        out_bin = _PROJECT_TMP / f"native_{payload.slug}_rust"
         try:
-            print_status("Compiling {} (Rust) via {}...".format(payload.name, rustc))
+            print_status(f"Compiling {payload.name} (Rust) via {rustc}...")
             result = subprocess.run(
                 [rustc, "--edition", "2021", "-O", str(src), "-o", str(out_bin)],
                 capture_output=True, text=True, timeout=60
             )
             if result.returncode != 0:
-                print_error("Rust compilation failed:\n{}".format(result.stderr))
+                print_error(f"Rust compilation failed:\n{result.stderr}")
                 return False
             result2 = subprocess.run(
                 [str(out_bin), target], capture_output=False, text=True, timeout=120
             )
             return result2.returncode == 0
         except Exception as exc:
-            print_error("Native Rust error: {}".format(exc))
+            print_error(f"Native Rust error: {exc}")
             return False
         finally:
             try:
@@ -356,7 +348,7 @@ class NativePayloadLoader:
         """Compile Go source and execute in-memory."""
         src = payload.source_path
         if src is None:
-            print_error("No Go source found for {}".format(payload.slug))
+            print_error(f"No Go source found for {payload.slug}")
             return False
 
         go = cls._find_go()
@@ -365,20 +357,20 @@ class NativePayloadLoader:
             return False
 
         _PROJECT_TMP.mkdir(parents=True, exist_ok=True)
-        out_bin = _PROJECT_TMP / "native_{}_go".format(payload.slug)
+        out_bin = _PROJECT_TMP / f"native_{payload.slug}_go"
         try:
-            print_status("Compiling {} (Go)...".format(payload.name))
+            print_status(f"Compiling {payload.name} (Go)...")
             result = subprocess.run(
                 [go, "build", "-o", str(out_bin), str(src)],
                 capture_output=True, text=True, timeout=60
             )
             if result.returncode != 0:
-                print_error("Go compilation failed:\n{}".format(result.stderr))
+                print_error(f"Go compilation failed:\n{result.stderr}")
                 return False
             result2 = subprocess.run([str(out_bin), target], timeout=120)
             return result2.returncode == 0
         except Exception as exc:
-            print_error("Native Go error: {}".format(exc))
+            print_error(f"Native Go error: {exc}")
             return False
         finally:
             try:
@@ -388,7 +380,7 @@ class NativePayloadLoader:
                 pass
 
     @staticmethod
-    def _find_compiler() -> Optional[str]:
+    def _find_compiler() -> str | None:
         for cc in ("gcc", "cc", "clang", "cl"):
             if subprocess.run(["which", cc] if sys.platform != "win32" else ["where", cc],
                               capture_output=True).returncode == 0:
@@ -396,7 +388,7 @@ class NativePayloadLoader:
         return None
 
     @staticmethod
-    def _find_rustc() -> Optional[str]:
+    def _find_rustc() -> str | None:
         for rustc in ("rustc", os.path.expanduser("~/.cargo/bin/rustc")):
             if os.path.exists(rustc) or subprocess.run(
                 ["which", rustc], capture_output=True
@@ -405,7 +397,7 @@ class NativePayloadLoader:
         return None
 
     @staticmethod
-    def _find_go() -> Optional[str]:
+    def _find_go() -> str | None:
         for go in ("go", "/usr/local/go/bin/go"):
             if os.path.exists(go) or subprocess.run(
                 ["which", go], capture_output=True

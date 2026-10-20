@@ -53,12 +53,12 @@ class Exploit(Exploit):
             return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2021-27482: Fingerprint Rockwell Automation CompactLogix GuardLogix at {}:{}. Remote code execution unauthenticated. CVSS 9.8.".format(self.target, self.port),
+                description=f"CVE-2021-27482: Fingerprint Rockwell Automation CompactLogix GuardLogix at {self.target}:{self.port}. Remote code execution unauthenticated. CVSS 9.8.",
                 mitre_techniques=['T0819', 'T0866', 'T1694.002', 'T0859'],
             )
             return
         if self.check():
-            print_success("Port {} open — Rockwell Automation CompactLogix GuardLogix may be present. CVE-2021-27482 CRITICAL CVSS 9.8.".format(self.port))
+            print_success(f"Port {self.port} open — Rockwell Automation CompactLogix GuardLogix may be present. CVE-2021-27482 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

@@ -61,12 +61,12 @@ class NseManager:
     # ── Detection ──────────────────────────────────────────────────────────
 
     @staticmethod
-    def find_nmap() -> Optional[str]:
+    def find_nmap() -> str | None:
         """Return the path to the nmap binary, or None if not found."""
         return shutil.which("nmap")
 
     @staticmethod
-    def get_nmap_version() -> Optional[str]:
+    def get_nmap_version() -> str | None:
         """Return nmap version string, or None on failure."""
         nmap_bin = NseManager.find_nmap()
         if not nmap_bin:
@@ -84,7 +84,7 @@ class NseManager:
         return None
 
     @staticmethod
-    def find_scripts_dir() -> Optional[Path]:
+    def find_scripts_dir() -> Path | None:
         """Locate the Nmap scripts directory.
 
         Strategy:
@@ -139,7 +139,7 @@ class NseManager:
         return None
 
     @staticmethod
-    def _locate_nse_dir_via_find() -> Optional[Path]:
+    def _locate_nse_dir_via_find() -> Path | None:
         """Use OS tools to find the nmap scripts directory."""
         if sys.platform == "win32":
             # Use where.exe + dir to find nmap scripts on Windows
@@ -201,7 +201,7 @@ class NseManager:
 
     @staticmethod
     def install(
-        scripts_dir: Optional[Path] = None,
+        scripts_dir: Path | None = None,
         force: bool = False,
     ) -> dict:
         """Install IXF NSE scripts into Nmap scripts directory.

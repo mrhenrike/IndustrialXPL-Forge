@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2024-2461 ABB System 800xA Safety\nCVSS 9.1\nConnect 800xA Safety OPC UA port 4840, write safety tags, disable emergency shutdowns",
                 mitre_techniques=['T0816', 'T0880'])
             return
-        print_status("[CVE-2024-2461] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2024-2461] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-3092 SEW-EURODRIVE MOVIDRIVE B/MDX61B\nCVSS 9.8\nConnect MOVIDRIVE B Modbus TCP port 502, default creds, modify motor drive parameters",
                 mitre_techniques=['T0859', 'T0836'])
             return
-        print_status("[CVE-2022-3092] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-3092] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

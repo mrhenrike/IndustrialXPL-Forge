@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2020-14507 Bihl+Wiedemann AS-Interface Gateway\nCVSS 9.8\nLogin BW4006 web port 80 with default creds, access all AS-Interface slave I/O data",
                 mitre_techniques=['T0859', 'T0836'])
             return
-        print_status("[CVE-2020-14507] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2020-14507] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

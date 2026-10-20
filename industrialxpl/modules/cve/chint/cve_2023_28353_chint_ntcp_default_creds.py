@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2023-28353 CHINT NTCP Smart Circuit Breaker\nCVSS 9.8\nConnect CHINT NTCP web port 80, login admin/admin, control circuit breaker remotely",
                 mitre_techniques=['T0859', 'T0836'])
             return
-        print_status("[CVE-2023-28353] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-28353] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

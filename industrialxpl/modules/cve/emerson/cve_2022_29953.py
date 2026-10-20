@@ -68,18 +68,16 @@ class Exploit(Exploit):
             DestructiveGate.print_simulation(
                 description=(
                     "CVE-2022-29953: Would fingerprint Emerson DeltaV at "
-                    "{}:{} and check if version is in affected range (All versions (insecure by design)).".format(
-                        self.target, self.port
-                    )
+                    f"{self.target}:{self.port} and check if version is in affected range (All versions (insecure by design))."
                 ),
                 mitre_techniques=["T0888"],
             )
             return
-        print_status("Checking {}:{} for CVE-2022-29953...".format(self.target, self.port))
+        print_status(f"Checking {self.target}:{self.port} for CVE-2022-29953...")
         if self.check():
             print_success(
-                "Port {} open — Emerson DeltaV MAY be present. "
-                "Verify version manually: affected=All versions (insecure by design)".format(self.port)
+                f"Port {self.port} open — Emerson DeltaV MAY be present. "
+                "Verify version manually: affected=All versions (insecure by design)"
             )
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

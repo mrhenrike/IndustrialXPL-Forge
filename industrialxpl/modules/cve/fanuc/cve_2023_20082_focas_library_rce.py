@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2023-20082 FANUC FOCAS/FANUC CNC Library\nCVSS 9.8\nConnect FANUC CNC FOCAS port 8193, send crafted request, stack overflow, RCE on CNC controller",
                 mitre_techniques=['T0866', 'T0836'])
             return
-        print_status("[CVE-2023-20082] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-20082] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

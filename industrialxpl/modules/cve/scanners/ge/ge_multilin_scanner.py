@@ -29,7 +29,7 @@ class Exploit(Exploit):
         except: return False
     def run(self):
         if not self.target: print_error("Set target"); return
-        print_status("[GE] Scanning {}:{}...".format(self.target, self.port))
+        print_status(f"[GE] Scanning {self.target}:{self.port}...")
         results = []
         try:
             s = socket.socket(); s.settimeout(self.timeout)
@@ -37,9 +37,9 @@ class Exploit(Exploit):
             s.send(b"03000018")
             banner = s.recv(256)
             s.close()
-            results.append(("GE", "{}:{}".format(self.target, self.port), "Detected", banner[:24].hex()))
+            results.append(("GE", f"{self.target}:{self.port}", "Detected", banner[:24].hex()))
         except Exception as e:
-            results.append(("GE", "{}:{}".format(self.target, self.port), "Unreachable", str(e)[:25]))
+            results.append(("GE", f"{self.target}:{self.port}", "Unreachable", str(e)[:25]))
         if results:
             print_table(["Vendor","Address","Status","Banner"], results)
         print_info("Known CVEs: CVE-2022-44620")

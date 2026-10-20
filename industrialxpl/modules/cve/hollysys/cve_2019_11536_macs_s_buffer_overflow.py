@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2019-11536 Hollysys MACS-S v6 DCS\nCVSS 9.8\nConnect MACS-S v6 engineering port 20201, send crafted packet, buffer overflow, RCE on DCS",
                 mitre_techniques=['T0866', 'T0843'])
             return
-        print_status("[CVE-2019-11536] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2019-11536] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

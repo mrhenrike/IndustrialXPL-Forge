@@ -20,12 +20,11 @@ References:
 
 Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
-from __future__ import annotations
 
 import socket
 import struct
 from dataclasses import dataclass, field
-from typing import List, Optional
+from typing import List
 
 from industrialxpl.core.exploit import *
 
@@ -46,8 +45,8 @@ class ConpotFingerprint:
     host: str
     is_conpot: bool = False
     confidence: int = 0
-    services: List[str] = field(default_factory=list)
-    indicators: List[str] = field(default_factory=list)
+    services: list[str] = field(default_factory=list)
+    indicators: list[str] = field(default_factory=list)
     real_vendor: str = ""
 
 
@@ -63,7 +62,7 @@ _CONPOT_HTTP_SIGNATURES = [
 _CONPOT_MODBUS_DEVICE_ID = b"Siemens"  # Conpot default in device identification
 
 
-def _check_tcp_port(host: str, port: int, timeout: float = 3.0) -> Optional[bytes]:
+def _check_tcp_port(host: str, port: int, timeout: float = 3.0) -> bytes | None:
     """Attempt TCP connection and grab banner.
 
     Args:
@@ -79,13 +78,13 @@ def _check_tcp_port(host: str, port: int, timeout: float = 3.0) -> Optional[byte
             sock.settimeout(timeout)
             try:
                 return sock.recv(512)
-            except socket.timeout:
+            except TimeoutError:
                 return b""
     except (OSError, ConnectionRefusedError):
         return None
 
 
-def _check_http_banner(host: str, port: int = 80, timeout: float = 5.0) -> Optional[str]:
+def _check_http_banner(host: str, port: int = 80, timeout: float = 5.0) -> str | None:
     """Fetch HTTP root page to check for Conpot signatures.
 
     Args:
@@ -106,7 +105,7 @@ def _check_http_banner(host: str, port: int = 80, timeout: float = 5.0) -> Optio
         return None
 
 
-def _check_modbus_device_id(host: str, port: int = 502, timeout: float = 3.0) -> Optional[bytes]:
+def _check_modbus_device_id(host: str, port: int = 502, timeout: float = 3.0) -> bytes | None:
     """Send Modbus Read Device Identification (FC=43) and return response.
 
     Args:

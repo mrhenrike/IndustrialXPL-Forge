@@ -50,7 +50,7 @@ class Exploit(Exploit):
         if not self.target:
             print_error("Set 'target' option.")
             return
-        print_status("[Unitronics] Scanning {}:{}...".format(self.target, self.port))
+        print_status(f"[Unitronics] Scanning {self.target}:{self.port}...")
         results = []
         try:
             s = socket.socket()
@@ -60,10 +60,10 @@ class Exploit(Exploit):
             banner = s.recv(256)
             s.close()
             vendor_detected = b"Unitronics" in banner
-            results.append(("Unitronics Vision/Unistream PLC", "{}:{}".format(self.target, self.port),
+            results.append(("Unitronics Vision/Unistream PLC", f"{self.target}:{self.port}",
                            "Detected" if vendor_detected else "Unknown", banner[:64].hex()))
         except Exception as e:
-            results.append(("Unitronics Vision/Unistream PLC", "{}:{}".format(self.target, self.port),
+            results.append(("Unitronics Vision/Unistream PLC", f"{self.target}:{self.port}",
                            "Unreachable", str(e)))
         if results:
             print_table(["Device", "Address", "Status", "Banner"],

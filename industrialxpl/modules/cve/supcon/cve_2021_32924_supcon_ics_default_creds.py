@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2021-32924 Supcon JX-300XP/T2000 DCS\nCVSS 9.8\nLogin Supcon DCS web port 80 with default creds, modify process setpoints for chemical plant",
                 mitre_techniques=['T0859', 'T0836'])
             return
-        print_status("[CVE-2021-32924] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2021-32924] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

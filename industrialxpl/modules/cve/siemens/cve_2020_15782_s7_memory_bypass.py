@@ -70,5 +70,5 @@ class Exploit(Exploit):
             print_info("PoC reference: https://cert-portal.siemens.com/productcert/pdf/ssa-381684.pdf")
             return
 
-        print_status("[CVE-2020-15782] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2020-15782] Exploiting {self.target}:{self.port}...")
         print_info('Live payload: implement protocol-specific exploit')

@@ -141,7 +141,7 @@ class Exploit(Exploit):
                     print_info(f"[CVE-2024-33889] Server responded ({len(resp)} bytes) — may be patched or not vulnerable")
             except ConnectionResetError:
                 print_success("[CVE-2024-33889] Connection reset — NULL deref triggered, server crashed!")
-            except socket.timeout:
+            except TimeoutError:
                 print_success("[CVE-2024-33889] Timeout — server unresponsive after payload — crash likely!")
         except Exception as e:
             print_error(f"[CVE-2024-33889] {e}")

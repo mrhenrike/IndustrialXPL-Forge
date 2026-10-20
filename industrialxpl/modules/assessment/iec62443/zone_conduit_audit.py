@@ -201,7 +201,7 @@ class Exploit(Exploit):
 
         if self.simulate:
             print_info("\nIEC 62443-3-2 Zone and Conduit Audit — PREVIEW (simulate=True)\n")
-            print_info("This module runs {} questions covering:".format(len(_QUESTIONS)))
+            print_info(f"This module runs {len(_QUESTIONS)} questions covering:")
             for q in _QUESTIONS:
                 print_info("  {} {}".format(
                     q["id"], q["text"].split("]")[0].lstrip("Q0123456789 [") + "]"
@@ -214,7 +214,7 @@ class Exploit(Exploit):
 
         print_info("\n" + "=" * 68)
         print_info("IEC 62443-3-2 ZONE AND CONDUIT SECURITY AUDIT")
-        print_info("Site: {}".format(site))
+        print_info(f"Site: {site}")
         print_info("=" * 68)
         print_info(
             "For each question, enter: Y (yes/implemented), P (partial), "
@@ -283,19 +283,17 @@ class Exploit(Exploit):
                 break
 
         print_info("\n" + "=" * 68)
-        print_success("ASSESSMENT RESULTS — {}".format(site))
+        print_success(f"ASSESSMENT RESULTS — {site}")
         print_info("=" * 68)
         print_success(
-            "Score: {:.1f} / {} ({:.0f}%)  ->  Security Level: {}".format(
-                total_score, max_score, pct, sl_rating
-            )
+            f"Score: {total_score:.1f} / {max_score} ({pct:.0f}%)  ->  Security Level: {sl_rating}"
         )
-        print_info("SL Description: {}".format(sl_desc))
+        print_info(f"SL Description: {sl_desc}")
 
         if gaps:
-            print_warning("\nIdentified Gaps ({} items):".format(len(gaps)))
+            print_warning(f"\nIdentified Gaps ({len(gaps)} items):")
             for gap in gaps:
-                print_warning("  [-] {}".format(gap))
+                print_warning(f"  [-] {gap}")
         else:
             print_success("\nNo gaps identified — all controls reported as implemented.")
 

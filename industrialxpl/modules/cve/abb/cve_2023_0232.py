@@ -53,12 +53,12 @@ class Exploit(Exploit):
             return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2023-0232: Fingerprint ABB REF615 REM615 protection relay at {}:{}. Denial of service credentials. CVSS 7.5.".format(self.target, self.port),
+                description=f"CVE-2023-0232: Fingerprint ABB REF615 REM615 protection relay at {self.target}:{self.port}. Denial of service credentials. CVSS 7.5.",
                 mitre_techniques=['T0814', 'T1694.002', 'T0859'],
             )
             return
         if self.check():
-            print_success("Port {} open — ABB REF615 REM615 protection relay may be present. CVE-2023-0232 HIGH CVSS 7.5.".format(self.port))
+            print_success(f"Port {self.port} open — ABB REF615 REM615 protection relay may be present. CVE-2023-0232 HIGH CVSS 7.5.")
             print_warning("CISA: N/A")
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

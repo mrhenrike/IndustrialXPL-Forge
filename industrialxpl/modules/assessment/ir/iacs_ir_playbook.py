@@ -376,9 +376,9 @@ def _print_summary(results: list) -> None:
     print_status("\n" + "=" * 68)
     print_status("IACS IR PLAYBOOK — COMPLETION SUMMARY")
     print_status("=" * 68)
-    print_success("Completed : {}/{}".format(len(done), len(results)))
-    print_warning("Skipped   : {}".format(len(skipped)))
-    print_warning("Follow-up : {}".format(len(noted)))
+    print_success(f"Completed : {len(done)}/{len(results)}")
+    print_warning(f"Skipped   : {len(skipped)}")
+    print_warning(f"Follow-up : {len(noted)}")
 
     print_table(
         name="Checklist Results",
@@ -401,10 +401,10 @@ def _print_summary(results: list) -> None:
 
     pct = round(len(done) / len(results) * 100, 1) if results else 0.0
     if pct >= 80:
-        print_success("\nPlaybook {:.1f}% complete. Good response execution.".format(pct))
+        print_success(f"\nPlaybook {pct:.1f}% complete. Good response execution.")
     elif pct >= 50:
-        print_warning("\nPlaybook {:.1f}% complete. Ensure follow-ups are addressed.".format(pct))
+        print_warning(f"\nPlaybook {pct:.1f}% complete. Ensure follow-ups are addressed.")
     else:
-        print_error("\nPlaybook {:.1f}% complete. Critical steps remain.".format(pct))
+        print_error(f"\nPlaybook {pct:.1f}% complete. Critical steps remain.")
 
     print_info("\nRef: IEC 62443-2-1 | NIST SP 800-61r3 | SANS ICS515\n")

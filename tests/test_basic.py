@@ -1,6 +1,5 @@
 """Basic package import smoke tests for IndustrialXPL-Forge."""
 
-from __future__ import annotations
 
 import importlib
 import re

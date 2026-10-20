@@ -33,5 +33,5 @@ class Exploit(Exploit):
                 description="CVE-2025-31895 Yokogawa CENTUM CS 3000 DCS\nCVSS 9.8\nSend crafted Vnet/IP frame to CS3000 port 20111, stack overflow, RCE on DCS controller",
                 mitre_techniques=['T0866'])
             return
-        print_status("[CVE-2025-31895] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2025-31895] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol exploit")

@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2023-1891 Thales IntelliGEN SCADA Platform\nCVSS 9.8\nSend crafted request to IntelliGEN port 80, RCE on critical infrastructure SCADA",
                 mitre_techniques=['T0866', 'T0843'])
             return
-        print_status("[CVE-2023-1891] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-1891] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

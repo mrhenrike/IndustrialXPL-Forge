@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-41607 Endress+Hauser Fieldgate FXA42 Web Server\nCVSS 9.8\nGET /../../etc/passwd on Fieldgate port 80, read config files including credentials",
                 mitre_techniques=['T0866'])
             return
-        print_status("[CVE-2022-41607] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-41607] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

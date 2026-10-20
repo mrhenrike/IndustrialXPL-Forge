@@ -1,6 +1,5 @@
 """S7 ladder-logic forensics — stdlib-only (no pandas/snap7/loguru)."""
 
-from __future__ import annotations
 
 import csv
 import json
@@ -79,7 +78,7 @@ def scan_file_hashes(path: Path) -> dict[str, Any]:
 def _probe_s7(host: str, port: int = 102, rack: int = 0, slot: int = 2) -> dict[str, Any]:
     client = S7Client(host, port=port, rack=rack, slot=slot, timeout=3.0)
     if not client.connect():
-        return {"success": False, "error": "S7 connect failed on {}:{}".format(host, port)}
+        return {"success": False, "error": f"S7 connect failed on {host}:{port}"}
     info = client.get_plc_info()
     client.disconnect()
     return {"success": True, "host": host, "plc_info": info}

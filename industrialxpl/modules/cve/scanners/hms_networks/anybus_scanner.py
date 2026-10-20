@@ -29,7 +29,7 @@ class Exploit(Exploit):
         except: return False
     def run(self):
         if not self.target: print_error("Set target"); return
-        print_status("[HMS Networks] Scanning {}:{}...".format(self.target, self.port))
+        print_status(f"[HMS Networks] Scanning {self.target}:{self.port}...")
         results = []
         try:
             s = socket.socket(); s.settimeout(self.timeout)
@@ -37,9 +37,9 @@ class Exploit(Exploit):
             s.send(b"474554202f")
             banner = s.recv(256)
             s.close()
-            results.append(("HMS Networks", "{}:{}".format(self.target, self.port), "Detected", banner[:24].hex()))
+            results.append(("HMS Networks", f"{self.target}:{self.port}", "Detected", banner[:24].hex()))
         except Exception as e:
-            results.append(("HMS Networks", "{}:{}".format(self.target, self.port), "Unreachable", str(e)[:25]))
+            results.append(("HMS Networks", f"{self.target}:{self.port}", "Unreachable", str(e)[:25]))
         if results:
             print_table(["Vendor","Address","Status","Banner"], results)
         print_info("Known CVEs: CVE-2021-28948, CVE-2022-2488")

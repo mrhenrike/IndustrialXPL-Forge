@@ -79,19 +79,19 @@ class Exploit(Exploit):
             DestructiveGate.print_simulation(
                 description=(
                     "CVE-2021-43397: Would fingerprint Siemens SINEC NMS at "
-                    "{}:{} and confirm if version is in affected range. "
+                    f"{self.target}:{self.port} and confirm if version is in affected range. "
                     "Exploit type: Path traversal. "
-                    "CVSS 8.8 (HIGH).".format(self.target, self.port)
+                    "CVSS 8.8 (HIGH)."
                 ),
                 mitre_techniques=['T0819'],
             )
             return
-        print_status("Checking {}:{} for CVE-2021-43397...".format(self.target, self.port))
+        print_status(f"Checking {self.target}:{self.port} for CVE-2021-43397...")
         if self.check():
             print_success(
-                "Port {} open on {} — Siemens SINEC NMS may be present. "
+                f"Port {self.port} open on {self.target} — Siemens SINEC NMS may be present. "
                 "CVE-2021-43397 (HIGH CVSS 8.8): Path traversal. "
-                "Manual version verification required.".format(self.port, self.target)
+                "Manual version verification required."
             )
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

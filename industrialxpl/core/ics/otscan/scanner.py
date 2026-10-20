@@ -1,6 +1,5 @@
 """OTscan orchestrator — unified multi-protocol identify/assess."""
 
-from __future__ import annotations
 
 from typing import Any
 

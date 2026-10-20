@@ -15,11 +15,9 @@ Reference: MITRE ATT&CK ICS T0836 (Modify Parameter), T0855 (Unauthorized Comman
 
 Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
-from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import List, Optional
 
 from industrialxpl.core.exploit import *
 
@@ -39,8 +37,8 @@ class ModbusZeekConfig:
         log_prefix: Prefix for Zeek Notice type names.
     """
 
-    allowed_masters: List[str] = field(default_factory=lambda: ["192.168.1.5"])
-    plc_hosts: List[str] = field(default_factory=lambda: ["192.168.1.10"])
+    allowed_masters: list[str] = field(default_factory=lambda: ["192.168.1.5"])
+    plc_hosts: list[str] = field(default_factory=lambda: ["192.168.1.10"])
     alert_write_from_unauthorized: bool = True
     alert_enum_fc: bool = True
     alert_rapid_requests: bool = True

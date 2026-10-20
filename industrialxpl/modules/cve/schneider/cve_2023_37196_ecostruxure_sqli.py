@@ -41,5 +41,5 @@ class Exploit(Exploit):
                 mitre_techniques=['T0819'],
             )
             return
-        print_status("[CVE-2023-37196] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-37196] Exploiting {self.target}:{self.port}...")
         print_info("Live exploit: implement protocol-specific code")

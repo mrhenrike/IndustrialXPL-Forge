@@ -59,5 +59,5 @@ class Exploit(Exploit):
             print_info("Affected: DVP-ES2/EX2 firmware all versions")
             print_info("PoC: https://www.cisa.gov/uscert/ics/advisories/icsa-21-307-01")
             return
-        print_status("[CVE-2021-43548] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2021-43548] Exploiting {self.target}:{self.port}...")
         print_info('Live payload: implement protocol-specific exploit')

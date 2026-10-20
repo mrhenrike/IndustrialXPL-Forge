@@ -348,17 +348,15 @@ class Exploit(Exploit):
         )
 
         # Overall score
-        print_status("\nOVERALL RISK SCORE: {}/{} ({:.1f}%)".format(
-            total_score, _MAX_SCORE, score_pct
-        ))
+        print_status(f"\nOVERALL RISK SCORE: {total_score}/{_MAX_SCORE} ({score_pct:.1f}%)")
 
-        risk_display = "{}[OT RISK LEVEL: {}]\033[0m".format(level_color, level_name)
+        risk_display = f"{level_color}[OT RISK LEVEL: {level_name}]\033[0m"
         print_status(risk_display)
 
         # Gaps and recommendations
         gaps = [r for r in results if r["answer"] in ("YES", "PARTIAL")]
         if gaps:
-            print_warning("\n[GAPS REQUIRING ATTENTION — {} item(s)]:".format(len(gaps)))
+            print_warning(f"\n[GAPS REQUIRING ATTENTION — {len(gaps)} item(s)]:")
             for gap in gaps:
                 print_warning(
                     "\n  [{}] {} (Score: {}, Status: {})".format(

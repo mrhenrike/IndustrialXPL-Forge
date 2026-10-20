@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-44620 GE Multilin 850F Protection Relay\nCVSS 9.8\nAccess Multilin 850F IEC 61850 MMS port 102, bypass auth, issue trip commands to relay",
                 mitre_techniques=['T0859', 'T0827'])
             return
-        print_status("[CVE-2022-44620] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-44620] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

@@ -10,10 +10,8 @@ Mirrors Nmap timing templates behaviour adapted for Modbus/TCP:
   T5  Insane     — 0.2 s timeout,   0 ms between requests, 1 retry
 """
 
-from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Dict
 
 import time
 
@@ -34,18 +32,12 @@ class TimingProfile:
 
     def __str__(self) -> str:
         return (
-            "T{level} ({name}): timeout={timeout}s, "
-            "delay={delay}ms, retries={retries}".format(
-                level=self.level,
-                name=self.name,
-                timeout=self.socket_timeout,
-                delay=int(self.inter_request_delay * 1000),
-                retries=self.retries,
-            )
+            f"T{self.level} ({self.name}): timeout={self.socket_timeout}s, "
+            f"delay={int(self.inter_request_delay * 1000)}ms, retries={self.retries}"
         )
 
 
-TIMING_PROFILES: Dict[int, TimingProfile] = {
+TIMING_PROFILES: dict[int, TimingProfile] = {
     0: TimingProfile(0, "Paranoid",   socket_timeout=5.0,  inter_request_delay=10.0, retries=1, max_rtt_timeout=10.0),
     1: TimingProfile(1, "Sneaky",     socket_timeout=3.0,  inter_request_delay=5.0,  retries=1, max_rtt_timeout=5.0),
     2: TimingProfile(2, "Polite",     socket_timeout=2.0,  inter_request_delay=1.0,  retries=2, max_rtt_timeout=2.0),
@@ -79,11 +71,11 @@ class ModbusTiming:
                     level = int(s)
                 except ValueError:
                     raise ValueError(
-                        "Invalid timing level '{}'. Use T0-T5 or names: "
-                        "paranoid, sneaky, polite, normal, aggressive, insane.".format(value)
+                        f"Invalid timing level '{value}'. Use T0-T5 or names: "
+                        "paranoid, sneaky, polite, normal, aggressive, insane."
                     )
         if level not in TIMING_PROFILES:
-            raise ValueError("Timing level must be 0-5, got: {}".format(level))
+            raise ValueError(f"Timing level must be 0-5, got: {level}")
         return TIMING_PROFILES[level]
 
     @staticmethod

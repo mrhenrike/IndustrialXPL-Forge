@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2021-22730 Sauter AG moduWeb Vision BAS\nCVSS 9.8\nSend crafted request to moduWeb Vision port 443, buffer overflow, RCE on building system",
                 mitre_techniques=['T0866', 'T0836'])
             return
-        print_status("[CVE-2021-22730] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2021-22730] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

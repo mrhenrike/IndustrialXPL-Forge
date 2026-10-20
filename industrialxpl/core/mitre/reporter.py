@@ -21,7 +21,7 @@ STATUS_COLORS = {
 class MitreSweepReporter:
     """Generate ATT&CK Navigator layers and HTML/JSON reports."""
 
-    def __init__(self, results: Optional[list] = None) -> None:
+    def __init__(self, results: list | None = None) -> None:
         self.results = results or []
 
     def generate_layer(self, fmt: str = "layer") -> str:
@@ -32,7 +32,7 @@ class MitreSweepReporter:
         techniques = []
         for tid, mods in TECHNIQUE_INDEX.items():
             color = STATUS_COLORS["DEFAULT"] if mods else "#cccccc"
-            comment = "ixf: {}".format(mods[0]) if mods else "no module"
+            comment = f"ixf: {mods[0]}" if mods else "no module"
             techniques.append({
                 "techniqueID": tid,
                 "color": color,
@@ -55,7 +55,7 @@ class MitreSweepReporter:
         }
 
         ts = datetime.date.today().isoformat()
-        out = PROJECT_TMP / "ixf_mitre_layer_{}.json".format(ts)
+        out = PROJECT_TMP / f"ixf_mitre_layer_{ts}.json"
         out.write_text(json.dumps(layer, indent=2), encoding="utf-8")
         return str(out)
 
@@ -73,7 +73,7 @@ class MitreSweepReporter:
     def generate(self, fmt: str = "json") -> str:
         """Generate full session report."""
         ts = datetime.date.today().isoformat()
-        out = PROJECT_TMP / "ixf_report_{}.{}".format(ts, fmt)
+        out = PROJECT_TMP / f"ixf_report_{ts}.{fmt}"
         data = {
             "assessment_id": "ixf-{}".format(datetime.datetime.now().strftime("%Y%m%d-%H%M%S")),
             "generated": datetime.datetime.utcnow().isoformat(),

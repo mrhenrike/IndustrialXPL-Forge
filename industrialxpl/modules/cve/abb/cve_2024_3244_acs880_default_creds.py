@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2024-3244 ABB ACS880 Industrial Drive\nCVSS 9.8\nConnect ACS880 Modbus TCP port 502, default creds, modify motor drive parameters",
                 mitre_techniques=['T0859', 'T0836'])
             return
-        print_status("[CVE-2024-3244] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2024-3244] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

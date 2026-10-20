@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2021-26726 Krohne SUMMIT 8800 Flow Computer\nCVSS 9.8\nLogin SUMMIT 8800 web port 80 with default creds, modify fiscal flow measurement parameters",
                 mitre_techniques=['T0859', 'T0832'])
             return
-        print_status("[CVE-2021-26726] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2021-26726] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

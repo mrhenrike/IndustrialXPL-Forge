@@ -1,6 +1,5 @@
 """Tests for IEC 62443 compliance engine."""
 
-from __future__ import annotations
 
 import pytest
 

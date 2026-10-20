@@ -59,5 +59,5 @@ class Exploit(Exploit):
             print_info("Affected: GENESIS64 v10.97.3 and earlier")
             print_info("PoC: https://www.cisa.gov/uscert/ics/advisories/icsa-23-248-02")
             return
-        print_status("[CVE-2023-4256] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-4256] Exploiting {self.target}:{self.port}...")
         print_info('Live payload: implement protocol-specific exploit')

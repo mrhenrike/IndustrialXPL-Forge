@@ -59,5 +59,5 @@ class Exploit(Exploit):
             print_info("Affected: PNOZmulti 2 all versions, PSS4000 all versions")
             print_info("PoC: https://www.cisa.gov/uscert/ics/advisories/icsa-19-281-02")
             return
-        print_status("[CVE-2019-13533] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2019-13533] Exploiting {self.target}:{self.port}...")
         print_info('Live payload: implement protocol-specific exploit')

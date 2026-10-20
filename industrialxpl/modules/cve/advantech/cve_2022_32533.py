@@ -53,12 +53,12 @@ class Exploit(Exploit):
             return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2022-32533: Fingerprint Advantech R-SeeNet monitoring at {}:{}. Path traversal RCE. CVSS 9.8.".format(self.target, self.port),
+                description=f"CVE-2022-32533: Fingerprint Advantech R-SeeNet monitoring at {self.target}:{self.port}. Path traversal RCE. CVSS 9.8.",
                 mitre_techniques=['T0819', 'T0866'],
             )
             return
         if self.check():
-            print_success("Port {} open — Advantech R-SeeNet monitoring may be present. CVE-2022-32533 CRITICAL CVSS 9.8.".format(self.port))
+            print_success(f"Port {self.port} open — Advantech R-SeeNet monitoring may be present. CVE-2022-32533 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

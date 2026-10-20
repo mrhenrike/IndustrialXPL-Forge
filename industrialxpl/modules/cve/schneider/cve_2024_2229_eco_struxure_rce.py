@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2024-2229 Schneider Electric EcoStruxure Machine Expert\nCVSS 9.8\nOpen crafted project in EcoStruxure Machine Expert, buffer overflow, RCE on engineering PC",
                 mitre_techniques=['T0866', 'T0843'])
             return
-        print_status("[CVE-2024-2229] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2024-2229] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

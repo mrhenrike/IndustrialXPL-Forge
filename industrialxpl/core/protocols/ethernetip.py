@@ -5,12 +5,11 @@ Rockwell and other CIP-based PLCs/controllers over EtherNet/IP.
 Production implementation can wrap python-ethernetip or cpppo.
 """
 
-from __future__ import annotations
 
 import logging
 import struct
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +45,7 @@ class Tag:
     name: str
     value: Any = None
     data_type: int = 0
-    dimensions: List[int] = field(default_factory=list)
+    dimensions: list[int] = field(default_factory=list)
 
 
 class EnipClient:
@@ -75,7 +74,7 @@ class EnipClient:
     def write_tag(self, tag_name: str, value: Any, data_type: int = 0) -> bool:
         raise NotImplementedError("CIP WriteTag not implemented")
 
-    def get_tags(self) -> List[Tag]:
+    def get_tags(self) -> list[Tag]:
         raise NotImplementedError("Tag enumeration not implemented")
 
     def forward_open(self) -> bool:

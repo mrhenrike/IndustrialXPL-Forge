@@ -33,5 +33,5 @@ class Exploit(Exploit):
                 description="CVE-2025-0513 Delta Electronics DIAScreen HMI\nCVSS 9.8\nOpen crafted .dsf project in DIAScreen HMI, buffer overflow, RCE on HMI workstation",
                 mitre_techniques=['T0865', 'T0866'])
             return
-        print_status("[CVE-2025-0513] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2025-0513] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol exploit")

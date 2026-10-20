@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2023-35122 IFM Electronic ecoomatMobile/IO-Link\nCVSS 9.8\nPOST SQLi to IFM web interface port 80, bypass auth, read all sensor process data",
                 mitre_techniques=['T0819', 'T0832'])
             return
-        print_status("[CVE-2023-35122] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-35122] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

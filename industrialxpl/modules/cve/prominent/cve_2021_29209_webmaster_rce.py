@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2021-29209 ProMinent Webmaster Water Treatment Controller\nCVSS 9.8\nSend malformed HTTP to ProMinent Webmaster port 80, RCE, control chemical dosing pumps",
                 mitre_techniques=['T0866', 'T0836'])
             return
-        print_status("[CVE-2021-29209] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2021-29209] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

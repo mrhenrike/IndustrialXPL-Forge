@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2023-4463 Weintek cMT-SVRM2/cMT3090 HMI Server\nCVSS 9.8\nSend crafted request to cMT-SVRM2 port 8080, unauthenticated, RCE on HMI server",
                 mitre_techniques=['T0866', 'T0843'])
             return
-        print_status("[CVE-2023-4463] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-4463] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

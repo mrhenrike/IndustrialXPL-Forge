@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-2488 HMS/Ewon eWON Flexy Industrial VPN\nCVSS 9.8\nPOST crafted request to eWON Flexy web port 80, inject OS commands, RCE on VPN gateway",
                 mitre_techniques=['T0866', 'T0822'])
             return
-        print_status("[CVE-2022-2488] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-2488] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

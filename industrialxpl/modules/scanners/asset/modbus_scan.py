@@ -85,13 +85,13 @@ class Exploit(ModbusBaseExploit):
                         oid = resp[off]
                         olen = resp[off + 1]
                         oval = resp[off + 2: off + 2 + olen].decode("ascii", errors="replace")
-                        print_info("    {:20s}: {}".format(obj_labels.get(oid, "ObjID_0x{:02X}".format(oid)), oval))
+                        print_info("    {:20s}: {}".format(obj_labels.get(oid, f"ObjID_0x{oid:02X}"), oval))
                         off += 2 + olen
                 except Exception:
                     pass
             elif fc_resp & 0x80:
                 exc = resp[8] if len(resp) > 8 else "?"
-                print_status("  FC43 exception {} — MEI not supported, device present".format(exc))
+                print_status(f"  FC43 exception {exc} — MEI not supported, device present")
                 found = True
 
         # FC17 Report Server ID
@@ -100,7 +100,7 @@ class Exploit(ModbusBaseExploit):
             found = True
             payload = resp17[9:].decode("ascii", errors="replace").strip("\x00")
             if payload:
-                print_success("  FC17 Server ID  : {}".format(payload))
+                print_success(f"  FC17 Server ID  : {payload}")
 
         return found
 
@@ -111,7 +111,7 @@ class Exploit(ModbusBaseExploit):
         fc        = self._resolve_fc(addresses.implied_fc)
         sim       = getattr(self, "_simulate_mode", self.simulate)
 
-        print_info("  Target  : {}".format(self.target))
+        print_info(f"  Target  : {self.target}")
         print_info("  Port(s) : {}".format(", ".join(str(p) for p in ports)))
         self._print_timing()
         self._print_address_plan(addresses, fc)
@@ -123,14 +123,12 @@ class Exploit(ModbusBaseExploit):
                 sock = modbus_connect(self.target, port, timing.socket_timeout)
                 if sock:
                     sock.close()
-                    print_success("[SIMULATE] {}:{} — would probe FC43/FC17".format(self.target, port))
+                    print_success(f"[SIMULATE] {self.target}:{port} — would probe FC43/FC17")
                     if fc in (1, 2, 3, 4):
                         start, qty = addresses.as_bulk()
-                        print_info("[SIMULATE]   plus FC{:02d} read addr {} qty {}".format(
-                            fc, start, min(qty, 125)
-                        ))
+                        print_info(f"[SIMULATE]   plus FC{fc:02d} read addr {start} qty {min(qty, 125)}")
                 elif not self.scan_range:
-                    print_info("[SIMULATE] {}:{} — closed / no response".format(self.target, port))
+                    print_info(f"[SIMULATE] {self.target}:{port} — closed / no response")
             return
 
         for port in ports:
@@ -138,10 +136,10 @@ class Exploit(ModbusBaseExploit):
                 with ModbusTCPSocket(self.target, port, uid, timing) as sock:
                     if not sock._sock:
                         if not self.scan_range:
-                            print_error("  Cannot connect to {}:{}".format(self.target, port))
+                            print_error(f"  Cannot connect to {self.target}:{port}")
                         continue
 
-                    print_status("Probing {}:{} unit_id={}".format(self.target, port, uid))
+                    print_status(f"Probing {self.target}:{port} unit_id={uid}")
                     found = self._probe_device(sock)
 
                     # Additional register read with selected FC
@@ -153,21 +151,19 @@ class Exploit(ModbusBaseExploit):
                             if fc in (1, 2):
                                 bits = ""
                                 for byte in payload:
-                                    bits += "{:08b}".format(byte)[::-1]
-                                print_success("  FC{:02d} addr {:5d}-{:5d}: {}".format(
-                                    fc, start, start + qty - 1, bits[:qty]
-                                ))
+                                    bits += f"{byte:08b}"[::-1]
+                                print_success(f"  FC{fc:02d} addr {start:5d}-{start + qty - 1:5d}: {bits[:qty]}")
                             elif fc in (3, 4):
                                 regs = []
                                 for i in range(0, len(payload) - 1, 2):
                                     regs.append(struct.unpack(">H", payload[i: i + 2])[0])
                                 print_success("  FC{:02d} addr {:5d}-{:5d}: {}".format(
                                     fc, start, start + qty - 1,
-                                    ["{} (0x{:04X})".format(v, v) for v in regs]
+                                    [f"{v} (0x{v:04X})" for v in regs]
                                 ))
 
                     if not found and not self.scan_range:
-                        print_error("  No Modbus response from {}:{}".format(self.target, port))
+                        print_error(f"  No Modbus response from {self.target}:{port}")
 
     @mute
     def check(self) -> bool:

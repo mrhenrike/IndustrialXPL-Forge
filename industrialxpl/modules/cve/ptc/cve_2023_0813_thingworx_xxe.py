@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2023-0813 PTC ThingWorx Foundation Server\nCVSS 8.1\nPOST malicious XML to ThingWorx port 443, XXE extracts files, SSRF to internal OT devices",
                 mitre_techniques=['T0866', 'T0882'])
             return
-        print_status("[CVE-2023-0813] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-0813] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

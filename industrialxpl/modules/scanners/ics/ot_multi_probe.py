@@ -7,10 +7,10 @@ Respects global setg PORT / TRANSPORT / UNIT_ID when loaded after setg.
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import struct
-from typing import Callable, Dict, List, Optional, Tuple
+from typing import List
+from collections.abc import Callable
 
 from industrialxpl.core.exploit import *
 from industrialxpl.core.exploit.exploit import BaseExploit
@@ -86,7 +86,7 @@ class Exploit(BaseExploit):
             return ports[0]
         return DEFAULT_OT_PORTS.get(proto, 502)
 
-    def _selected_protocols(self) -> List[str]:
+    def _selected_protocols(self) -> list[str]:
         p = str(self.protocol).lower().strip()
         if p in ("all", "*"):
             return list(_PROTOCOLS)
@@ -119,7 +119,7 @@ class Exploit(BaseExploit):
         hdr = b"HELF" + struct.pack("<I", len(body))
         return hdr + body
 
-    def _probe_modbus(self) -> Optional[str]:
+    def _probe_modbus(self) -> str | None:
         port = self._resolve_port("modbus")
         if self.simulate:
             return "port open (simulate)" if connect_tcp(
@@ -131,10 +131,10 @@ class Exploit(BaseExploit):
         if resp[7] == 0x84:
             return "Modbus exception response"
         if resp[7] == 0x04:
-            return "Modbus/TCP FC04 response ({} bytes)".format(len(resp))
-        return "Modbus/TCP active (FC=0x{:02X})".format(resp[7])
+            return f"Modbus/TCP FC04 response ({len(resp)} bytes)"
+        return f"Modbus/TCP active (FC=0x{resp[7]:02X})"
 
-    def _probe_dnp3(self) -> Optional[str]:
+    def _probe_dnp3(self) -> str | None:
         port = self._resolve_port("dnp3")
         mode = str(self.transport).lower()
         if mode == "udp":
@@ -148,15 +148,15 @@ class Exploit(BaseExploit):
             if self.simulate:
                 ok = connect_udp if udp else connect_tcp
                 if ok(self.target, port, float(self.timeout)):
-                    return "{} port open (simulate)".format(label)
+                    return f"{label} port open (simulate)"
                 continue
             fn = probe_udp if udp else probe_tcp
             resp = fn(self.target, port, _DNP3_LINK_STATUS, float(self.timeout))
             if resp and len(resp) >= 5 and resp[0] == 0x05 and resp[1] == 0x64:
-                return "DNP3 link response on {}/{}".format(port, label)
+                return f"DNP3 link response on {port}/{label}"
         return None
 
-    def _probe_bacnet(self) -> Optional[str]:
+    def _probe_bacnet(self) -> str | None:
         port = self._resolve_port("bacnet")
         if self.simulate:
             return "UDP reachable (simulate)" if connect_udp(
@@ -164,10 +164,10 @@ class Exploit(BaseExploit):
             ) else None
         resp = probe_udp(self.target, port, self._bacnet_whois(), float(self.timeout))
         if resp and len(resp) >= 6 and resp[0] == 0x81:
-            return "BACnet/IP response ({} bytes)".format(len(resp))
+            return f"BACnet/IP response ({len(resp)} bytes)"
         return None
 
-    def _probe_s7(self) -> Optional[str]:
+    def _probe_s7(self) -> str | None:
         port = self._resolve_port("s7")
         if self.simulate:
             return "port open (simulate)" if connect_tcp(
@@ -177,10 +177,10 @@ class Exploit(BaseExploit):
         if resp and len(resp) >= 7 and resp[5] == 0xD0:
             return "S7comm COTP connection confirm"
         if resp:
-            return "TCP response on S7 port ({} bytes)".format(len(resp))
+            return f"TCP response on S7 port ({len(resp)} bytes)"
         return None
 
-    def _probe_enip(self) -> Optional[str]:
+    def _probe_enip(self) -> str | None:
         port = self._resolve_port("enip")
         if self.simulate:
             return "port open (simulate)" if connect_tcp(
@@ -191,10 +191,10 @@ class Exploit(BaseExploit):
             status = struct.unpack_from("<I", resp, 8)[0]
             if status == 0:
                 return "EtherNet/IP List Identity response"
-            return "EtherNet/IP encapsulation reply (status={})".format(status)
+            return f"EtherNet/IP encapsulation reply (status={status})"
         return None
 
-    def _probe_opcua(self) -> Optional[str]:
+    def _probe_opcua(self) -> str | None:
         port = self._resolve_port("opcua")
         if self.simulate:
             return "port open (simulate)" if connect_tcp(
@@ -216,7 +216,7 @@ class Exploit(BaseExploit):
             print_error(str(exc))
             return
 
-        probes: Dict[str, Callable[[], Optional[str]]] = {
+        probes: dict[str, Callable[[], str | None]] = {
             "modbus": self._probe_modbus,
             "dnp3": self._probe_dnp3,
             "bacnet": self._probe_bacnet,
@@ -225,34 +225,34 @@ class Exploit(BaseExploit):
             "opcua": self._probe_opcua,
         }
 
-        print_info("Target   : {}".format(self.target))
+        print_info(f"Target   : {self.target}")
         print_info("Protocol : {}".format(", ".join(protos)))
         if self.port:
-            print_info("Port     : {} (override)".format(self.port))
-        print_info("Transport: {}".format(self.transport))
-        print_info("Simulate : {}".format(self.simulate))
+            print_info(f"Port     : {self.port} (override)")
+        print_info(f"Transport: {self.transport}")
+        print_info(f"Simulate : {self.simulate}")
         print_info("")
 
         hits = 0
         for name in protos:
             default_port = self._resolve_port(name)
-            print_status("[{}] probing port {}...".format(name.upper(), default_port))
+            print_status(f"[{name.upper()}] probing port {default_port}...")
             try:
                 detail = probes[name]()
             except Exception as exc:
-                print_error("[{}] probe error: {}".format(name.upper(), exc))
+                print_error(f"[{name.upper()}] probe error: {exc}")
                 continue
             if detail:
-                print_success("[{}] {}".format(name.upper(), detail))
+                print_success(f"[{name.upper()}] {detail}")
                 hits += 1
             else:
-                print_info("[{}] no response".format(name.upper()))
+                print_info(f"[{name.upper()}] no response")
 
         print_info("")
         if hits:
-            print_success("Detected {} protocol(s) on {}".format(hits, self.target))
+            print_success(f"Detected {hits} protocol(s) on {self.target}")
         else:
-            print_warning("No OT protocol responses from {}".format(self.target))
+            print_warning(f"No OT protocol responses from {self.target}")
 
     @mute
     def check(self) -> bool:

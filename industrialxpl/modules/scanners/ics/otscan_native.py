@@ -5,7 +5,6 @@ Usage (simulate default):
   ixf (otscan) > set target 192.168.1.10
   ixf (otscan) > run
 """
-from __future__ import annotations
 
 from industrialxpl.core.exploit import (
     DestructiveGate,
@@ -63,18 +62,18 @@ class Exploit(Exploit):
         if not live:
             plan = simulate_scan(host, proto_list)
             selected = plan.get("protocols", list(PROTOCOLS))
-            print_warning("\n[OTscan] simulate — {} protocols on {}\n".format(len(selected), host))
+            print_warning(f"\n[OTscan] simulate — {len(selected)} protocols on {host}\n")
             rows = [[p, plan["results"][p].get("would_run", "probe")] for p in selected]
             print_table(["protocol", "probe_fn"], rows)
             native = run_native("otscan", simulate=True)
             print_info("ics_tools native: {}".format(native.get("would_run") if native else "n/a"))
             DestructiveGate.print_simulation(
-                description="OTscan {} protocols on {}".format(len(selected), host),
+                description=f"OTscan {len(selected)} protocols on {host}",
                 mitre_techniques=["T0846", "T0888"],
             )
             return
 
-        print_status("[OTscan] LIVE probe on {}".format(host))
+        print_status(f"[OTscan] LIVE probe on {host}")
         result = scan(host, proto_list, simulate=False)
         rows = []
         for proto, detail in result.get("results", {}).items():

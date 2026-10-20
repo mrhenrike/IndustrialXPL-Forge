@@ -79,19 +79,19 @@ class Exploit(Exploit):
             DestructiveGate.print_simulation(
                 description=(
                     "CVE-2011-2089: Would fingerprint Iconics Genesis32 at "
-                    "{}:{} and confirm if version is in affected range. "
+                    f"{self.target}:{self.port} and confirm if version is in affected range. "
                     "Exploit type: GenBroker buffer overflow. "
-                    "CVSS 9.3 (CRITICAL).".format(self.target, self.port)
+                    "CVSS 9.3 (CRITICAL)."
                 ),
                 mitre_techniques=['T0883', 'T0888'],
             )
             return
-        print_status("Checking {}:{} for CVE-2011-2089...".format(self.target, self.port))
+        print_status(f"Checking {self.target}:{self.port} for CVE-2011-2089...")
         if self.check():
             print_success(
-                "Port {} open on {} — Iconics Genesis32 may be present. "
+                f"Port {self.port} open on {self.target} — Iconics Genesis32 may be present. "
                 "CVE-2011-2089 (CRITICAL CVSS 9.3): GenBroker buffer overflow. "
-                "Manual version verification required.".format(self.port, self.target)
+                "Manual version verification required."
             )
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

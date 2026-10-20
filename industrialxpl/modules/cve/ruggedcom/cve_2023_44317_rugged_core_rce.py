@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2023-44317 Siemens Ruggedcom ROS/ROX II OS\nCVSS 9.1\nPOST to Ruggedcom web port 443, inject commands, RCE on hardened industrial router/switch",
                 mitre_techniques=['T0866', 'T0822'])
             return
-        print_status("[CVE-2023-44317] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-44317] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

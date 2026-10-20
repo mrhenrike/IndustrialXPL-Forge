@@ -68,18 +68,16 @@ class Exploit(Exploit):
             DestructiveGate.print_simulation(
                 description=(
                     "CVE-2010-2772: Would fingerprint Siemens Step7 / Stuxnet at "
-                    "{}:{} and check if version is in affected range (All Step7 versions < 5.5 SP1).".format(
-                        self.target, self.port
-                    )
+                    f"{self.target}:{self.port} and check if version is in affected range (All Step7 versions < 5.5 SP1)."
                 ),
                 mitre_techniques=["T0888"],
             )
             return
-        print_status("Checking {}:{} for CVE-2010-2772...".format(self.target, self.port))
+        print_status(f"Checking {self.target}:{self.port} for CVE-2010-2772...")
         if self.check():
             print_success(
-                "Port {} open — Siemens Step7 / Stuxnet MAY be present. "
-                "Verify version manually: affected=All Step7 versions < 5.5 SP1".format(self.port)
+                f"Port {self.port} open — Siemens Step7 / Stuxnet MAY be present. "
+                "Verify version manually: affected=All Step7 versions < 5.5 SP1"
             )
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

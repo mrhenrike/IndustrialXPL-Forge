@@ -70,5 +70,5 @@ class Exploit(Exploit):
             print_info("PoC reference: https://github.com/Mewtwoz/n-days-poc-benchmark-and-dataset")
             return
 
-        print_status("[CVE-2016-5645] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2016-5645] Exploiting {self.target}:{self.port}...")
         print_info('Live payload: implement protocol-specific exploit')

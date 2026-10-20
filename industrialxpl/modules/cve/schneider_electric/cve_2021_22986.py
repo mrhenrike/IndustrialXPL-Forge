@@ -53,12 +53,12 @@ class Exploit(Exploit):
             return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2021-22986: Fingerprint Schneider Electric APC Smart-UPS at {}:{}. RCE unauthenticated TLS bypass. CVSS 9.8.".format(self.target, self.port),
+                description=f"CVE-2021-22986: Fingerprint Schneider Electric APC Smart-UPS at {self.target}:{self.port}. RCE unauthenticated TLS bypass. CVSS 9.8.",
                 mitre_techniques=['T0819', 'T0866', 'T1694.002', 'T0859'],
             )
             return
         if self.check():
-            print_success("Port {} open — Schneider Electric APC Smart-UPS may be present. CVE-2021-22986 CRITICAL CVSS 9.8.".format(self.port))
+            print_success(f"Port {self.port} open — Schneider Electric APC Smart-UPS may be present. CVE-2021-22986 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

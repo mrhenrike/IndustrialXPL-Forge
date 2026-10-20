@@ -1,6 +1,5 @@
 """Catalog of incorporated ics-tools vendor trees."""
 
-from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
@@ -87,7 +86,7 @@ class IcsToolsCatalog:
                 slug=slug,
                 label=self.LABELS.get(slug, slug),
                 vendor_path=vendor_dir,
-                source_repo="submodules/ics-tools/{}".format(slug),
+                source_repo=f"submodules/ics-tools/{slug}",
                 entry_script=entry if entry_path.exists() else "",
                 interpreter=interp,
                 ixf_module=self.IXF_ROUTES.get(slug, ""),

@@ -70,5 +70,5 @@ class Exploit(Exploit):
             print_info("PoC reference: https://github.com/SawyersPresent/SCADAver")
             return
 
-        print_status("[CVE-2019-5637] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2019-5637] Exploiting {self.target}:{self.port}...")
         print_info('Live payload: implement protocol-specific exploit')

@@ -1,6 +1,5 @@
 """Validate third_party_manifest.json for IndustrialXPL-Forge."""
 
-from __future__ import annotations
 
 import json
 from pathlib import Path

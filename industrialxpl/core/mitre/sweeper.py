@@ -34,7 +34,7 @@ class MitreTacticSweeper:
         rate_limit_ms: int = 500,
         stop_on_first_vuln: bool = False,
         check_only: bool = False,
-        module_paths: Optional[list] = None,
+        module_paths: list | None = None,
     ) -> None:
         self.target = target
         self.port = port
@@ -53,14 +53,12 @@ class MitreTacticSweeper:
         modules = TACTIC_INDEX.get(tactic_id, [])
         mode = "simulate" if self.simulate else "LIVE"
         print_status(
-            "[mitre-sweep] Tactic: {} ({}) — {} modules [{}]".format(
-                tactic_name, tactic_id, len(modules), mode
-            )
+            f"[mitre-sweep] Tactic: {tactic_name} ({tactic_id}) — {len(modules)} modules [{mode}]"
         )
         if not modules:
-            print_error("No IXF modules found for tactic {}.".format(tactic_id))
+            print_error(f"No IXF modules found for tactic {tactic_id}.")
             return []
-        return self._run_modules(modules, context="tactic:{}".format(tactic_id))
+        return self._run_modules(modules, context=f"tactic:{tactic_id}")
 
     def sweep_technique(self, tid: str) -> list[dict]:
         """Execute all modules for a technique ID (e.g. T0843 or T0843.001)."""
@@ -68,22 +66,18 @@ class MitreTacticSweeper:
         modules = TECHNIQUE_INDEX.get(tid, [])
         mode = "simulate" if self.simulate else "LIVE"
         print_status(
-            "[ttp] Technique: {} — {} modules [{}] — Target: {}".format(
-                tid, len(modules), mode, self.target
-            )
+            f"[ttp] Technique: {tid} — {len(modules)} modules [{mode}] — Target: {self.target}"
         )
         if not modules:
-            print_error("No IXF modules for {}. Use 'ttp-list' to see all TTP-IDs.".format(tid))
+            print_error(f"No IXF modules for {tid}. Use 'ttp-list' to see all TTP-IDs.")
             return []
-        return self._run_modules(modules, context="technique:{}".format(tid))
+        return self._run_modules(modules, context=f"technique:{tid}")
 
     def sweep_all(self) -> list[dict]:
         """Execute ALL IXF modules with MITRE mapping."""
         all_mods = list({m for mods in TECHNIQUE_INDEX.values() for m in mods})
         print_status(
-            "[mitre-all] Full sweep — {} unique modules [simulate={}]".format(
-                len(all_mods), self.simulate
-            )
+            f"[mitre-all] Full sweep — {len(all_mods)} unique modules [simulate={self.simulate}]"
         )
         return self._run_modules(all_mods, context="all")
 
@@ -92,12 +86,12 @@ class MitreTacticSweeper:
         try:
             network = ipaddress.ip_network(cidr, strict=False)
         except ValueError:
-            print_error("Invalid CIDR: {}".format(cidr))
+            print_error(f"Invalid CIDR: {cidr}")
             return {}
 
-        print_status("[cidr-sweep] Scanning {}…".format(cidr))
+        print_status(f"[cidr-sweep] Scanning {cidr}…")
         live_hosts = self._discover_hosts(network)
-        print_success("[cidr-sweep] {} host(s) responding.".format(len(live_hosts)))
+        print_success(f"[cidr-sweep] {len(live_hosts)} host(s) responding.")
 
         all_results: dict[str, list[dict]] = {}
         for host in live_hosts:
@@ -123,10 +117,10 @@ class MitreTacticSweeper:
                 "error": None,
             }
 
-            print_status("[{}/{}] {}".format(i, len(module_paths), humanize_path(path)))
+            print_status(f"[{i}/{len(module_paths)}] {humanize_path(path)}")
 
             try:
-                cls = import_exploit("industrialxpl.modules.{}".format(path))
+                cls = import_exploit(f"industrialxpl.modules.{path}")
                 mod = cls()
 
                 if hasattr(mod, "target") and self.target:
@@ -164,14 +158,14 @@ class MitreTacticSweeper:
                     result["status"] = "SIMULATED ({})".format(result["status"])
 
                 if self.stop_on_first_vuln and is_vuln:
-                    print_success("[sweep] First VULNERABLE found: {} — stopping.".format(path))
+                    print_success(f"[sweep] First VULNERABLE found: {path} — stopping.")
                     self.results.append(result)
                     break
 
             except IXFException as exc:
                 result["status"] = "LOAD_ERROR"
                 result["error"] = str(exc)[:120]
-                print_error("[sweep] {}: {}".format(path, exc))
+                print_error(f"[sweep] {path}: {exc}")
             except Exception as exc:
                 result["status"] = "ERROR"
                 result["error"] = str(exc)[:120]
@@ -194,10 +188,10 @@ class MitreTacticSweeper:
         print_table(
             ["Module", "Status", "MITRE Techniques"],
             rows,
-            title="MITRE Sweep — Target: {}".format(self.target),
+            title=f"MITRE Sweep — Target: {self.target}",
         )
         vuln = sum(1 for r in self.results if "VULNERABLE" in r["status"])
-        print_success("{}/{} modules: VULNERABLE/POSSIBLY_VULNERABLE".format(vuln, len(self.results)))
+        print_success(f"{vuln}/{len(self.results)} modules: VULNERABLE/POSSIBLY_VULNERABLE")
 
     def _discover_hosts(self, network: ipaddress.IPv4Network) -> list[str]:
         """Quick Modbus port-502 probe to find live OT hosts."""

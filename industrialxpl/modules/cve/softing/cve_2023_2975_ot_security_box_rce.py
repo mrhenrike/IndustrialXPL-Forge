@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2023-2975 Softing OT Security Box\nCVSS 9.8\nPOST to Softing OT Security Box port 443, exploit deserialization, RCE on security appliance",
                 mitre_techniques=['T0866', 'T0822'])
             return
-        print_status("[CVE-2023-2975] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-2975] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

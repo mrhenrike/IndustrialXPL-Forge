@@ -53,12 +53,12 @@ class Exploit(Exploit):
             return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2022-22984: Fingerprint Schneider Electric Easergy T300 RTU at {}:{}. Hardcoded SSH key remote login. CVSS 9.8.".format(self.target, self.port),
+                description=f"CVE-2022-22984: Fingerprint Schneider Electric Easergy T300 RTU at {self.target}:{self.port}. Hardcoded SSH key remote login. CVSS 9.8.",
                 mitre_techniques=['T1694.002', 'T0859'],
             )
             return
         if self.check():
-            print_success("Port {} open — Schneider Electric Easergy T300 RTU may be present. CVE-2022-22984 CRITICAL CVSS 9.8.".format(self.port))
+            print_success(f"Port {self.port} open — Schneider Electric Easergy T300 RTU may be present. CVE-2022-22984 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

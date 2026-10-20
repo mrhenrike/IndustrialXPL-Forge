@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-3484 HARTING MICA Industrial Edge Device\nCVSS 9.8\nPOST crafted request to HARTING MICA port 443, inject commands, RCE on edge device",
                 mitre_techniques=['T0866', 'T0822'])
             return
-        print_status("[CVE-2022-3484] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-3484] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

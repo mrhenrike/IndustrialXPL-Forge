@@ -42,7 +42,7 @@ class Exploit(Exploit):
         if not self.target: print_error("Set target."); return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2024-21684: {}:{}.  Stack overflow unauthenticated. CVSS 9.8.".format(self.target, self.port),
+                description=f"CVE-2024-21684: {self.target}:{self.port}.  Stack overflow unauthenticated. CVSS 9.8.",
                 mitre_techniques=["T0883"],
             ); return
-        print_success("CVE-2024-21684 CRITICAL — port {} open.".format(self.port)) if self.check() else print_error("Not responding.")
+        print_success(f"CVE-2024-21684 CRITICAL — port {self.port} open.") if self.check() else print_error("Not responding.")

@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-29838 Hollysys HolliField SCADA Software\nCVSS 9.8\nPOST SQLi to HolliField web, bypass auth, dump process historian data for power plant DCS",
                 mitre_techniques=['T0819', 'T0803'])
             return
-        print_status("[CVE-2022-29838] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-29838] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

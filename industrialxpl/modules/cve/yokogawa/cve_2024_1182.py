@@ -53,12 +53,12 @@ class Exploit(Exploit):
             return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2024-1182: Fingerprint Yokogawa Vnet/IP engineering tool at {}:{}. Denial of service broadcast. CVSS 7.5.".format(self.target, self.port),
+                description=f"CVE-2024-1182: Fingerprint Yokogawa Vnet/IP engineering tool at {self.target}:{self.port}. Denial of service broadcast. CVSS 7.5.",
                 mitre_techniques=['T0814'],
             )
             return
         if self.check():
-            print_success("Port {} open — Yokogawa Vnet/IP engineering tool may be present. CVE-2024-1182 HIGH CVSS 7.5.".format(self.port))
+            print_success(f"Port {self.port} open — Yokogawa Vnet/IP engineering tool may be present. CVE-2024-1182 HIGH CVSS 7.5.")
             print_warning("CISA: N/A")
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

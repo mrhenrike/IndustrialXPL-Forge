@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2023-44322 Siemens SCALANCE X/XC Industrial Switch\nCVSS 7.5\nSend malformed packet to SCALANCE X port 443, switch crashes, OT network disrupted",
                 mitre_techniques=['T0814', 'T0826'])
             return
-        print_status("[CVE-2023-44322] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-44322] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

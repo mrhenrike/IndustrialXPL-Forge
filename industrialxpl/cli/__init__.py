@@ -16,8 +16,8 @@ from industrialxpl.cli.commands_stats import StatsCommandsMixin
 
 __all__ = [
     "ICSCommandsMixin",
-    "MalwareCommandsMixin",
     "MITRECommandsMixin",
+    "MalwareCommandsMixin",
     "SASTCommandsMixin",
     "StatsCommandsMixin",
 ]

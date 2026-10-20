@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2023-35126 Yokogawa STARDOM FCN/FCJ RTU\nCVSS 9.8\nSend oversized packet to STARDOM RTU port 2101, stack overflow, RCE on RTU",
                 mitre_techniques=['T0866', 'T0836'])
             return
-        print_status("[CVE-2023-35126] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-35126] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

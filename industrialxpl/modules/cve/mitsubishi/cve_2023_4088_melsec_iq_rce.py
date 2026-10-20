@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2023-4088 Mitsubishi Electric MELSEC iQ-R Safety CPU\nCVSS 9.8\nSend crafted SLMP packet to iQ-R Safety CPU port 5007, buffer overflow, RCE on safety CPU",
                 mitre_techniques=['T0866', 'T0816'])
             return
-        print_status("[CVE-2023-4088] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-4088] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

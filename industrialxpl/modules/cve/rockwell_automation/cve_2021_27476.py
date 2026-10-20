@@ -53,12 +53,12 @@ class Exploit(Exploit):
             return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2021-27476: Fingerprint Rockwell Automation Studio 5000 View Designer at {}:{}. Code execution malicious VSD file. CVSS 7.8.".format(self.target, self.port),
+                description=f"CVE-2021-27476: Fingerprint Rockwell Automation Studio 5000 View Designer at {self.target}:{self.port}. Code execution malicious VSD file. CVSS 7.8.",
                 mitre_techniques=['T0819', 'T0866'],
             )
             return
         if self.check():
-            print_success("Port {} open — Rockwell Automation Studio 5000 View Designer may be present. CVE-2021-27476 HIGH CVSS 7.8.".format(self.port))
+            print_success(f"Port {self.port} open — Rockwell Automation Studio 5000 View Designer may be present. CVE-2021-27476 HIGH CVSS 7.8.")
             print_warning("CISA: N/A")
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

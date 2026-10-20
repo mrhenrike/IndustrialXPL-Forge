@@ -53,12 +53,12 @@ class Exploit(Exploit):
             return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2024-21903: Fingerprint Siemens SINEMA Remote Connect Server at {}:{}. Path traversal server-side. CVSS 8.4.".format(self.target, self.port),
+                description=f"CVE-2024-21903: Fingerprint Siemens SINEMA Remote Connect Server at {self.target}:{self.port}. Path traversal server-side. CVSS 8.4.",
                 mitre_techniques=['T0819'],
             )
             return
         if self.check():
-            print_success("Port {} open — Siemens SINEMA Remote Connect Server may be present. CVE-2024-21903 HIGH CVSS 8.4.".format(self.port))
+            print_success(f"Port {self.port} open — Siemens SINEMA Remote Connect Server may be present. CVE-2024-21903 HIGH CVSS 8.4.")
             print_warning("CISA: N/A")
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

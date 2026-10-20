@@ -13,9 +13,7 @@ Common options (all displayed in UPPERCASE in show options):
 Options are case-insensitive: 'set TARGET', 'set target', and 'set Target' all work.
 """
 
-from __future__ import annotations
 
-from typing import List, Optional
 
 from industrialxpl.core.exploit.exploit import Exploit
 from industrialxpl.core.exploit.option import (
@@ -188,7 +186,7 @@ class ModbusBaseExploit(Exploit):
         except (ValueError, TypeError):
             return 30.0
 
-    def _get_ports(self) -> List[int]:
+    def _get_ports(self) -> list[int]:
         """Return list of ports from the port expression."""
         return parse_port_expression(str(self.port))
 
@@ -215,7 +213,7 @@ class ModbusBaseExploit(Exploit):
             reg_expr = default or self._DEFAULT_REGS
         return parse_modbus_addresses(reg_expr)
 
-    def _resolve_fc(self, implied_fc: Optional[int] = None) -> int:
+    def _resolve_fc(self, implied_fc: int | None = None) -> int:
         """Return the effective function code.
 
         Priority: explicit set fc > implied_fc from address notation > _DEFAULT_FC
@@ -228,7 +226,7 @@ class ModbusBaseExploit(Exploit):
 
     def _print_timing(self) -> None:
         profile = self._get_timing()
-        print_info("  Timing  : {}".format(profile))
+        print_info(f"  Timing  : {profile}")
 
     def _print_address_plan(self, addr_set: ModbusAddressSet, fc: int) -> None:
         start, qty = addr_set.as_bulk()
@@ -239,13 +237,11 @@ class ModbusBaseExploit(Exploit):
             17: "Report Server ID",    43: "Read Device ID (MEI)",
         }
         src = "COILS" if str(self.coils).strip() else "REGISTERS"
-        fc_label = _FC_NAMES.get(fc, "FC{:02d}".format(fc))
+        fc_label = _FC_NAMES.get(fc, f"FC{fc:02d}")
         addr_preview = ", ".join(str(a.offset) for a in list(addr_set)[:8])
         if len(addr_set) > 8:
             addr_preview += "..."
-        print_info("  FC{:02d} ({}) via {}: {} addresses [{}], start={} qty={}".format(
-            fc, fc_label, src, len(addr_set), addr_preview, start, qty
-        ))
+        print_info(f"  FC{fc:02d} ({fc_label}) via {src}: {len(addr_set)} addresses [{addr_preview}], start={start} qty={qty}")
 
     @staticmethod
     def timing_help() -> str:

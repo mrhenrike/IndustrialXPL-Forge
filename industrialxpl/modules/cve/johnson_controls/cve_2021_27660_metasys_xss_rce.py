@@ -59,5 +59,5 @@ class Exploit(Exploit):
             print_info("Affected: Metasys ADS/ADX/OAS 10.x to 11.0.2")
             print_info("PoC: https://www.cisa.gov/uscert/ics/advisories/icsa-21-147-01")
             return
-        print_status("[CVE-2021-27660] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2021-27660] Exploiting {self.target}:{self.port}...")
         print_info('Live payload: implement protocol-specific exploit')

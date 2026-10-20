@@ -1,6 +1,5 @@
 """Quickdraw/Suricata rule generator — NSE expansion helper (F20)."""
 
-from __future__ import annotations
 
 from typing import Any
 
@@ -18,9 +17,9 @@ OT_NSE_SCRIPTS = (
 
 def suricata_rule_from_mitre(technique: str, protocol: str = "modbus") -> str:
     return (
-        'alert {proto} any any -> any any (msg:"IXF OT {tech} on {proto}"; '
+        f'alert {protocol} any any -> any any (msg:"IXF OT {technique} on {protocol}"; '
         'classtype:attempted-admin; sid:9900001; rev:1;)'
-    ).format(proto=protocol, tech=technique)
+    )
 
 
 def nse_inventory(installed: list[str] | None = None) -> dict[str, Any]:

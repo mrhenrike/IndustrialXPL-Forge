@@ -59,5 +59,5 @@ class Exploit(Exploit):
             print_info("Affected: CLICK PLC CPU modules CPX-SX-101-A1")
             print_info("PoC: https://www.cisa.gov/uscert/ics/advisories/icsa-22-228-04")
             return
-        print_status("[CVE-2022-2003] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-2003] Exploiting {self.target}:{self.port}...")
         print_info('Live payload: implement protocol-specific exploit')

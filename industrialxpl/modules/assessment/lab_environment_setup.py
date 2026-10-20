@@ -17,11 +17,9 @@ Reference commands (Daryus course README):
 
 Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
-from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Optional
 
 from industrialxpl.core.exploit import *
 

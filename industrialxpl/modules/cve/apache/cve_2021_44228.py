@@ -79,19 +79,19 @@ class Exploit(Exploit):
             DestructiveGate.print_simulation(
                 description=(
                     "CVE-2021-44228: Would fingerprint Apache Log4j2 (affects Java MES) at "
-                    "{}:{} and confirm if version is in affected range. "
+                    f"{self.target}:{self.port} and confirm if version is in affected range. "
                     "Exploit type: JNDI RCE Log4Shell (affects Ignition/MES). "
-                    "CVSS 10.0 (CRITICAL).".format(self.target, self.port)
+                    "CVSS 10.0 (CRITICAL)."
                 ),
                 mitre_techniques=['T0819', 'T0866'],
             )
             return
-        print_status("Checking {}:{} for CVE-2021-44228...".format(self.target, self.port))
+        print_status(f"Checking {self.target}:{self.port} for CVE-2021-44228...")
         if self.check():
             print_success(
-                "Port {} open on {} — Apache Log4j2 (affects Java MES) may be present. "
+                f"Port {self.port} open on {self.target} — Apache Log4j2 (affects Java MES) may be present. "
                 "CVE-2021-44228 (CRITICAL CVSS 10.0): JNDI RCE Log4Shell (affects Ignition/MES). "
-                "Manual version verification required.".format(self.port, self.target)
+                "Manual version verification required."
             )
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

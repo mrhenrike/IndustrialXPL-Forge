@@ -57,7 +57,7 @@ class Exploit(Exploit):
             for slug in orch.list_tools():
                 fam = IcsToolsCatalog().get(slug)
                 rows.append((slug, fam.label if fam else slug, fam.entry_script if fam else ""))
-            print_table(["Slug", "Label", "Entry"], rows, title="ICS-Tools ({})".format(len(rows)))
+            print_table(["Slug", "Label", "Entry"], rows, title=f"ICS-Tools ({len(rows)})")
             return
 
         slug = self.tool.strip()
@@ -109,7 +109,7 @@ class Exploit(Exploit):
                     "ics_tools_ops",
                     self.target,
                     "HIGH",
-                    "Run vendor ics-tool {} against {}".format(slug, self.target),
+                    f"Run vendor ics-tool {slug} against {self.target}",
                 ):
                     return
 
@@ -124,4 +124,4 @@ class Exploit(Exploit):
                 print_error(r.get("error", r.get("stderr", "failed")[:200]))
             return
 
-        print_error("Unknown action: {} (analyze|run|plan|compile)".format(action))
+        print_error(f"Unknown action: {action} (analyze|run|plan|compile)")
