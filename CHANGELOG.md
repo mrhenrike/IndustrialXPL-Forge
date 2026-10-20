@@ -13,7 +13,14 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 ---
 
 
-## [1.5.0] — 2026-10-19
+## [1.5.1] - 2026-10-20
+
+### Changed
+- `requires-python` elevated from `>=3.9` to `>=3.12` (align with all XPL-Suite forges)
+- Modernized type annotations (native generics, removed `from __future__ import annotations`)
+- README badge updated to Python >=3.12
+
+## [1.5.0] - 2026-10-19
 
 ### Added
 - PEP 561 py.typed marker for downstream type checking
@@ -26,16 +33,16 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 ### Fixed
 - `.gitignore`: removed workflow blocks to allow all .github/workflows/ files
 
-## [1.4.1] — 2026-10-06
+## [1.4.1] - 2026-10-06
 
 ### Changed
 - Release alignment: pyproject + interpreter VERSION synced to 1.4.1 for GitHub + PyPI (HEAD beyond v1.4.0).
 
 ## [merged-from-origin] - remote changelog entries
 
-## [1.3.0] — 2026-09-26
+## [1.3.0] - 2026-09-26
 
-### Added — Protocol Layer
+### Added - Protocol Layer
 - GHSA-5jvp-3p2v-5qgf: Aedes MQTT broker QoS 2 memory exhaustion DoS (CVSS 7.5, fixed in 1.2.0)
 - CVE-2024-33889: OPC Foundation UA C++ SDK NULL pointer deref DoS (CVSS 7.5)
 
@@ -43,9 +50,9 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 - feat/ixf-protocol-stack: Modbus TCP, S7comm, EtherNet/IP/CIP, PROFINET DCP native stacks
 - feat/ixf-remaining-exploits: Gridwolf import layer, Schneider ComBox, QNX/VxWorks DoS, ICS brute
 
-## [1.2.0] — 2026-09-24
+## [1.2.0] - 2026-09-24
 
-### Added — 14 New CVE Modules
+### Added - 14 New CVE Modules
 - CVE-2023-3595 (enhanced): Rockwell ControlLogix CIP OOB write (Sandworm TTP, CVSS 10.0)
 - CVE-2023-3596: Rockwell ControlLogix companion stack overflow (CVSS 9.8)
 - CVE-2024-6242: Rockwell ControlLogix auth bypass → RCE (CVSS 9.8)
@@ -65,7 +72,7 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 - CVE-2024-8935: Schneider Electric Modicon M340 auth bypass (CVSS 9.8)
 - CVE-2025-40765: Siemens S7-1200/1500 S7comm-plus arbitrary write (CVSS 9.8)
 
-## [1.1.1] — 2026-09-19 (previous release)
+## [1.1.1] - 2026-09-19 (previous release)
 
 ## [minor-sync-2026-09-26] - 2026-09-26
 
@@ -86,7 +93,7 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 
 ### Changed
 - Documentação en-US + pt-BR + wiki sincronizadas: **1193 módulos**, **96/103 MITRE (93%)**, **15 NSE**
-- CI matrix Python 3.9–3.14; `pyproject.toml` versionado no repositório
+- CI matrix Python 3.9-3.14; `pyproject.toml` versionado no repositório
 - Flag CLI `--no-color`; correção import cred modules (`__info__` metaclass)
 
 ### Fixed
@@ -99,7 +106,7 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 ## [1.1.0] - 2026-06-28
 
 ### Added
-- **F03–F21** incorporação nativa MIT completa (gates `verify_incorporation_gate.py --phase ALL`)
+- **F03-F21** incorporação nativa MIT completa (gates `verify_incorporation_gate.py --phase ALL`)
 - F03 `s7_llc.py` + `s7scan_native`; F04 `core/ics/vendors/` (7 vendors)
 - F05 BACnet `bacnet_offensive.py` + handler `bacteria`; F06 `iec104_stack.py`
 - F07 `isf_port.py` (DNP3/ENIP/OPC-UA/Profinet/VxWorks); F08 família `mozi-p2p` + `mozi_dht.py`
@@ -113,13 +120,13 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 
 ### Changed
 - Remote `origin` → `https://github.com/mrhenrike/IndustrialXPL-Forge.git`
-- `incorporation_gates.json` v2 — fases F00–F21 + F-AIM3
+- `incorporation_gates.json` v2 - fases F00-F21 + F-AIM3
 
 ## [1.0.57] - 2026-06-28
 
 ### Added
-- **F02 otscan nativo** — `core/ics/otscan/` (13 probes stdlib MIT)
-- `scanners/ics/otscan_native.py` — módulo IXF com simulate default
+- **F02 otscan nativo** - `core/ics/otscan/` (13 probes stdlib MIT)
+- `scanners/ics/otscan_native.py` - módulo IXF com simulate default
 - Registro `otscan` em `IcsToolsCatalog` + `handle_otscan` nativo
 - PyPI extra `ot-scan` (pymodbus opcional)
 - Gate **F02** com step `otscan_smoke`
@@ -127,9 +134,9 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 ## [1.0.56] - 2026-06-28
 
 ### Added
-- **F01 fuzzing nativo** — `_native/fuzzing/` (mutator C + modbus/s7 smoke)
-- `core/ics/fuzz_engine.py` — 8 estratégias de mutação MIT
-- `scanners/ics/fuzz_native.py` — módulo IXF com simulate default
+- **F01 fuzzing nativo** - `_native/fuzzing/` (mutator C + modbus/s7 smoke)
+- `core/ics/fuzz_engine.py` - 8 estratégias de mutação MIT
+- `scanners/ics/fuzz_native.py` - módulo IXF com simulate default
 - PyPI extra `fuzzing` (gcc externo)
 - Gate **F01** com step `fuzz_compile`
 
@@ -137,67 +144,67 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 
 ### Added
 - **F-AIM2 gap modules** (awesome-ics-malware 20/20 families):
-  - `fast16_simulation_sabotage.py`, `chaya_003_siemens_eng_kill.py`
-  - `dynowiper_hmi_wiper.py`, `zionsiphon_water_lab.py`
-- `aim2_helpers.py` — TTP helpers + `aim2_family_status()`
+ - `fast16_simulation_sabotage.py`, `chaya_003_siemens_eng_kill.py`
+ - `dynowiper_hmi_wiper.py`, `zionsiphon_water_lab.py`
+- `aim2_helpers.py` - TTP helpers + `aim2_family_status()`
 - Gate **F-AIM2** em `incorporation_gates.json`
 
 ### Changed
-- `score_incorporation.py` — gaps zerados (stuxnet parcial)
-- `test_e2e_lab.py` — modo `aim2`
+- `score_incorporation.py` - gaps zerados (stuxnet parcial)
+- `test_e2e_lab.py` - modo `aim2`
 
 ## [1.0.54] - 2026-06-28
 
 ### Added
-- **Incorporation gates** — `tools/verify_incorporation_gate.py`, `tools/incorporation_gates.json`
-- **E2E lab runner** — `tools/test_e2e_lab.py` (c2, bashlite, aim-manifest, forensics-ioc)
-- **awesome-ics-malware pipeline** — `ingest_awesome_ics_malware.py`, `deep_study_external.py`, `score_incorporation.py`
-- Research corpus — `resources/research/awesome-ics-malware/manifest.json` + per-URL studies
-- **IOC forensics** — `resources/ioc/awesome-ics-malware-hashes.json` (221 hashes, 20 families)
-- `forensics_engine` — `ioc_inventory()`, `match_ioc_hash()`, `scan_file_hashes()`
-- `docs/INCORPORATION_PLAYBOOK.md` — gate protocol + licença MIT-first
+- **Incorporation gates** - `tools/verify_incorporation_gate.py`, `tools/incorporation_gates.json`
+- **E2E lab runner** - `tools/test_e2e_lab.py` (c2, bashlite, aim-manifest, forensics-ioc)
+- **awesome-ics-malware pipeline** - `ingest_awesome_ics_malware.py`, `deep_study_external.py`, `score_incorporation.py`
+- Research corpus - `resources/research/awesome-ics-malware/manifest.json` + per-URL studies
+- **IOC forensics** - `resources/ioc/awesome-ics-malware-hashes.json` (221 hashes, 20 families)
+- `forensics_engine` - `ioc_inventory()`, `match_ioc_hash()`, `scan_file_hashes()`
+- `docs/INCORPORATION_PLAYBOOK.md` - gate protocol + licença MIT-first
 
 ### Changed
-- `env_doctor.py` — docker, pdftotext, tesseract, nmap, paho-mqtt, incorporation gate status
-- `verify_family_matrix.py` — `check_phase_registrations()` hook for gates
+- `env_doctor.py` - docker, pdftotext, tesseract, nmap, paho-mqtt, incorporation gate status
+- `verify_family_matrix.py` - `check_phase_registrations()` hook for gates
 
 ## [1.0.52] - 2026-06-30
 
 ### Added
-- **Sample lab DBs** (`resources/sql/samples/`) — `botnet.db`, `mirai.db`, `c2_state.json`
-- `malware db bootstrap|init` — cada usuário gera `.tmp/ixf_c2/` a partir dos samples
-- `botnet_registry_schema.sqlite.sql` — schema versionado do registry IXF
-- **IXF native Bashlite/Gafgyt bot** (`_native/bashlite/`) — telnet scan, wget deploy, IXF C2 arch=8
-- `bashlite_patch.py` — vendor creds embed + table patch
-- `forensics_engine.py` — S7 probe + OB mapping (stdlib, no pandas/snap7)
-- `docker_stack.py` — Lisa `malware docker lisa up|down|status`
-- `maliot_lookup.py` — Maliot JSON corpus inventory
+- **Sample lab DBs** (`resources/sql/samples/`) - `botnet.db`, `mirai.db`, `c2_state.json`
+- `malware db bootstrap|init` - cada usuário gera `.tmp/ixf_c2/` a partir dos samples
+- `botnet_registry_schema.sqlite.sql` - schema versionado do registry IXF
+- **IXF native Bashlite/Gafgyt bot** (`_native/bashlite/`) - telnet scan, wget deploy, IXF C2 arch=8
+- `bashlite_patch.py` - vendor creds embed + table patch
+- `forensics_engine.py` - S7 probe + OB mapping (stdlib, no pandas/snap7)
+- `docker_stack.py` - Lisa `malware docker lisa up|down|status`
+- `maliot_lookup.py` - Maliot JSON corpus inventory
 - PyPI extras: `forensics`, `malware-lab`, `docker-lab` (granular install)
 
 ### Changed
-- **TriStationClient** — TsBase ops (upload/allocate/cancel/exploit)
-- TRITON module — `upload_probe` option
+- **TriStationClient** - TsBase ops (upload/allocate/cancel/exploit)
+- TRITON module - `upload_probe` option
 - HTTP C2 syncs `bashlite.dbg` + `mirai.dbg` into payload root
 
 ### Fixed
-- `bashlite_bot_debug` compile — removed broken `release_dir` reference
-- **Bashlite creds parser** — vendor C-array wordlists parsed correctly (was embedding C syntax as strings)
-- **Bashlite build staging** — patches go to `.tmp/staging/`; source tree no longer dirtied on compile
-- Lisa overlay — radare2 built from source; nginx Node 18 + OpenSSL legacy provider
-- `docker_stack` — auto `sudo docker` when socket permission denied
+- `bashlite_bot_debug` compile - removed broken `release_dir` reference
+- **Bashlite creds parser** - vendor C-array wordlists parsed correctly (was embedding C syntax as strings)
+- **Bashlite build staging** - patches go to `.tmp/staging/`; source tree no longer dirtied on compile
+- Lisa overlay - radare2 built from source; nginx Node 18 + OpenSSL legacy provider
+- `docker_stack` - auto `sudo docker` when socket permission denied
 
 ### Verified
-- `tools/verify_family_matrix.py` — includes bashlite compile smoke
-- Lisa stack E2E — `http://127.0.0.1:4242` returns 200
+- `tools/verify_family_matrix.py` - includes bashlite compile smoke
+- Lisa stack E2E - `http://127.0.0.1:4242` returns 200
 
 ## [1.0.51] - 2026-06-30
 
 ### Added
-- **`family_capabilities.py`** — per-family matrix (mode, compile targets, IXF route)
-- **`native_actions.py`** — ELF/YARA/schema inventory without vendor execution
-- **`ics_tools/native_handlers.py`** — IXF-native runtime for all 7 ics-tools (no py2neo/pandas/python2)
+- **`family_capabilities.py`** - per-family matrix (mode, compile targets, IXF route)
+- **`native_actions.py`** - ELF/YARA/schema inventory without vendor execution
+- **`ics_tools/native_handlers.py`** - IXF-native runtime for all 7 ics-tools (no py2neo/pandas/python2)
 - CLI `malware matrix` / `ics_tools matrix`
-- `tools/verify_family_matrix.py` — smoke test 12+7 families
+- `tools/verify_family_matrix.py` - smoke test 12+7 families
 
 ### Fixed
 - Mirai **`mirai_bot_debug`** via `MiraiCrossCompiler` (i586-gcc path)
@@ -210,7 +217,7 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 ## [1.0.50] - 2026-06-30
 
 ### Added
-- **Linux-only** runtime gate (`core/platform.py`) — IXF aborts on Windows/macOS
+- **Linux-only** runtime gate (`core/platform.py`) - IXF aborts on Windows/macOS
 - Persistent **HTTP payload daemon** (`http_payload_daemon.py`, `http_payload_manager.py`)
 - Go CNC **bot registry** → sync live bots to `botnet.db` (`bot_registry.go`)
 - `C2Config.release_dir` persisted in `c2_state.json`
@@ -231,9 +238,9 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 ## [1.0.49] - 2026-06-30
 
 ### Added
-- `tools/install-mirai-toolchains.sh` — download uClibc cross-compilers (Hexoral mirror)
-- `malware crosscompile install` — instala toolchains via IXF
-- `ensure_cross_path_in_env()` — PATH automático para mips-gcc, armv4l-gcc, etc.
+- `tools/install-mirai-toolchains.sh` - download uClibc cross-compilers (Hexoral mirror)
+- `malware crosscompile install` - instala toolchains via IXF
+- `ensure_cross_path_in_env()` - PATH automático para mips-gcc, armv4l-gcc, etc.
 
 ### Fixed
 - Go CNC build (`netshift` em `database_ixf.go`)
@@ -245,17 +252,17 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 ## [1.0.48] - 2026-06-28
 
 ### Added
-- **Go Mirai CNC** (`native/go/ixf-mirai-cnc/`) — admin telnet, bot handler, API de ataques
+- **Go Mirai CNC** (`native/go/ixf-mirai-cnc/`) - admin telnet, bot handler, API de ataques
 - **Multi-DB** via `IXF_C2_DSN`: `sqlite://`, `mysql://`, `postgres://` + schemas SQL
 - `core/malware/go_cnc_manager.py`, `db_init.py`, `crosscompile.py`
-- `malware c2 build-go` — compila CNC Go + inicializa schema
-- `malware crosscompile list|all|mips|arm|...` — bots Mirai multi-arch
+- `malware c2 build-go` - compila CNC Go + inicializa schema
+- `malware crosscompile list|all|mips|arm|...` - bots Mirai multi-arch
 - Propagação **arch-aware** (`uname` → mirai.mips/arm/x86...)
 - `setg C2_BACKEND auto|go|python` e `setg C2_DSN`
-- Extra PyPI `[c2]` — pymysql, psycopg2-binary
+- Extra PyPI `[c2]` - pymysql, psycopg2-binary
 
 ### Changed
-- `malware c2 start` — auto cross-compile + Go CNC full stack (fallback Python)
+- `malware c2 start` - auto cross-compile + Go CNC full stack (fallback Python)
 - IXF multilanguage: Python shell + backends Go/C conforme módulo
 
 ---
@@ -263,26 +270,26 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 ## [1.0.47] - 2026-06-28
 
 ### Added
-- `core/malware/c2_server.py` — listener Mirai-compatible (handshake 0x00 0x00 0x00 + ping echo)
-- `core/malware/c2_persistence.py` — SQLite `.tmp/ixf_c2/botnet.db` + estado entre sessões IXF
-- `core/malware/c2_daemon.py` — daemon detached (C2 sobrevive ao fechar IXF)
-- `core/malware/propagator.py` — scan telnet IoT/OT, deploy wget/beacon para LHOST/LPORT
+- `core/malware/c2_server.py` - listener Mirai-compatible (handshake 0x00 0x00 0x00 + ping echo)
+- `core/malware/c2_persistence.py` - SQLite `.tmp/ixf_c2/botnet.db` + estado entre sessões IXF
+- `core/malware/c2_daemon.py` - daemon detached (C2 sobrevive ao fechar IXF)
+- `core/malware/propagator.py` - scan telnet IoT/OT, deploy wget/beacon para LHOST/LPORT
 - CLI `malware c2 start|stop|status` e `malware propagate <target>`
 - Módulo `scanners/malware_research/botnet_c2_ops`
 - Retomada automática no startup: bots reportando ao C2 após reabrir IXF (`setg C2_PERSIST true`)
 
 ### Changed
-- `malware_full_pipeline` — ações `c2_start`, `c2_status`, `propagate`, `full`
+- `malware_full_pipeline` - ações `c2_start`, `c2_status`, `propagate`, `full`
 
 ---
 
 ## [1.0.46] - 2026-06-30
 
 ### Added
-- `core/ics_tools/` — catalog, orchestrator, runner for 7 incorporated ics-tools families
+- `core/ics_tools/` - catalog, orchestrator, runner for 7 incorporated ics-tools families
 - CLI `ics_tools list|analyze|plan|run|compile`
-- `scanners/ics_tools_research/ics_tools_ops` — unified ICS-tools module
-- `scanners/malware_research/malware_full_pipeline` — C2 build, exec, deploy, shell, firmware
+- `scanners/ics_tools_research/ics_tools_ops` - unified ICS-tools module
+- `scanners/malware_research/malware_full_pipeline` - C2 build, exec, deploy, shell, firmware
 - `core/malware/build_profile.py`, `c2_patch.py`, `obfuscator.py`, `lab_ops.py`
 - CLI `malware build|exec|deploy|shell|firmware` with `setg LHOST` / `LPORT` / `OBFUSCATE` / `STEALTH`
 
@@ -294,14 +301,14 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 ## [1.0.45] - 2026-06-30
 
 ### Added
-- **Public research vendor corpus** — 12 malware families + 7 ics-tools trees versioned in
+- **Public research vendor corpus** - 12 malware families + 7 ics-tools trees versioned in
   `industrialxpl/resources/vendor/submodules__malwares__*` and `submodules__ics-tools__*`
-- [TERMS_OF_USE.md](TERMS_OF_USE.md) — user responsibility for public clone/use
-- `industrialxpl/resources/vendor/README.md` — corpus inventory and PyPI vs GitHub note
+- [TERMS_OF_USE.md](TERMS_OF_USE.md) - user responsibility for public clone/use
+- `industrialxpl/resources/vendor/README.md` - corpus inventory and PyPI vs GitHub note
 
 ### Changed
-- DISCLAIMER, SECURITY, CODE_OF_CONDUCT, README — reinforced authorized-use and sole user liability
-- `.gitignore` — incorporated malware/ics-tools vendor no longer excluded from Git
+- DISCLAIMER, SECURITY, CODE_OF_CONDUCT, README - reinforced authorized-use and sole user liability
+- `.gitignore` - incorporated malware/ics-tools vendor no longer excluded from Git
 - PyPI package remains framework-only (~100 MB limit); full corpus via `git clone`
 
 ---
@@ -310,13 +317,13 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 
 ### Added
 - Full EmbedXPL utility port (83 files):
-  - `core/ics/` — native S7, S7+, CIP, Modbus, WDB2 clients
-  - `core/shells/` — covert shell handlers
-  - `core/session.py`, `core/pool.py` — session and connection pool
-  - `core/exploit/{shell,shell_stager,payloads,encoders,char_by_char}.py`
-  - `modules/payloads/` (42) and `modules/encoders/` (17) — multi-arch payloads
+ - `core/ics/` - native S7, S7+, CIP, Modbus, WDB2 clients
+ - `core/shells/` - covert shell handlers
+ - `core/session.py`, `core/pool.py` - session and connection pool
+ - `core/exploit/{shell,shell_stager,payloads,encoders,char_by_char}.py`
+ - `modules/payloads/` (42) and `modules/encoders/` (17) - multi-arch payloads
 - Malware family TTP modules (12 families) under `cve/malware/families/`
-- `core/malware/family_ttp.py` — shared base for native malware research modules
+- `core/malware/family_ttp.py` - shared base for native malware research modules
 - Root `SECURITY.md` and `DISCLAIMER.md`
 
 ### Changed
@@ -330,15 +337,15 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 
 ### Added
 - Native malware framework expansion:
-  - `core/malware/compiler.py` — cross-compile IXF native + vendor (Mirai, Akaja, Bashlite)
-  - `core/malware/tristation.py` — TriStation/TCM client ported from TRISIS decompiled sources
-  - `core/malware/botnet_network.py` — telnet/ICS port scan and credential probe helpers
+ - `core/malware/compiler.py` - cross-compile IXF native + vendor (Mirai, Akaja, Bashlite)
+ - `core/malware/tristation.py` - TriStation/TCM client ported from TRISIS decompiled sources
+ - `core/malware/botnet_network.py` - telnet/ICS port scan and credential probe helpers
 - New modules:
-  - `assessment/malware/malware_native_compiler`
-  - `scanners/malware_research/mirai_telnet_ics_scanner`
-  - `scanners/malware_research/botnet_network_mapper`
-  - `cve/malware/triton_tristation_native`
-- CLI command `malware` — list, analyze, plan, compile families
+ - `assessment/malware/malware_native_compiler`
+ - `scanners/malware_research/mirai_telnet_ics_scanner`
+ - `scanners/malware_research/botnet_network_mapper`
+ - `cve/malware/triton_tristation_native`
+- CLI command `malware` - list, analyze, plan, compile families
 
 ### Changed
 - Malware orchestrator routes families to new native IXF modules
@@ -349,15 +356,15 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 ## [1.0.42] - 2026-06-29
 
 ### Added
-- Global `setg PORT`, `setg TRANSPORT`, `setg UNIT_ID` — applied automatically when loading modules
+- Global `setg PORT`, `setg TRANSPORT`, `setg UNIT_ID` - applied automatically when loading modules
 - `OptTransport` and `OptPortExpr` option types in core
-- `industrialxpl/core/network/` — shared TCP/UDP probe helpers and default OT ports
-- New scanner `scanners/ics/ot_multi_probe` — multi-protocol discovery (modbus, dnp3, bacnet, s7, enip, opcua)
+- `industrialxpl/core/network/` - shared TCP/UDP probe helpers and default OT ports
+- New scanner `scanners/ics/ot_multi_probe` - multi-protocol discovery (modbus, dnp3, bacnet, s7, enip, opcua)
 
 ### Changed
 - `dnp3_scanner`: respects `transport` option (tcp | udp | both)
 - `ModbusBaseExploit`: explicit `transport` option (tcp-only for Modbus/TCP)
-- SIMULATE default remains `false` — execution follows module options without global override
+- SIMULATE default remains `false` - execution follows module options without global override
 
 ---
 
