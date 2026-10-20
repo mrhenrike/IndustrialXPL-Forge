@@ -13,6 +13,14 @@ Format: [Semantic Versioning](https://semver.org) -- `MAJOR.MINOR.PATCH`.
 ---
 
 
+## [1.5.2] - 2026-10-20
+
+### Changed
+- Replace 6691 em dashes and 25 en dashes across 1265 files (zero-dash policy)
+- Remove README.pt-BR.md and 15 docs/pt-br/ files (en-US standardization)
+- Clean pt-BR references from README.md documentation table
+- Standardize README docs section to en-US only with all 14 topics listed
+
 ## [1.5.1] - 2026-10-20
 
 ### Changed
