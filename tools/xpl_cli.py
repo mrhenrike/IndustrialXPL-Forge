@@ -1,4 +1,4 @@
-"""xpl_cli — forward to canonical XPL-Suite implementation.
+"""xpl_cli - forward to canonical XPL-Suite implementation.
 
 Falls back to inline copy when the suite root is not adjacent (standalone install).
 """
@@ -22,7 +22,7 @@ try:
         run_doctor,
     )
 except ImportError:
-    # Standalone install fallback — import from this forge's own copy
+    # Standalone install fallback - import from this forge's own copy
     raise ImportError(
         "xpl_cli canonical not found at suite root. "
         "Re-clone XPL-Suite or install embedxpl for the shared tools."

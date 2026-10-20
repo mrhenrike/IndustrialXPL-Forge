@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2021-37185 — Siemens SIMATIC S7-1500 (HIGH CVSS 7.5).
+"""IXF CVE CVE-2021-37185 - Siemens SIMATIC S7-1500 (HIGH CVSS 7.5).
 
 Exploit type: Denial of service memory corruption
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Siemens SIMATIC S7-1500 may be present. CVE-2021-37185 HIGH CVSS 7.5.")
+            print_success(f"Port {self.port} open - Siemens SIMATIC S7-1500 may be present. CVE-2021-37185 HIGH CVSS 7.5.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

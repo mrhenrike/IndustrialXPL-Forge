@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2010-2773 — Siemens WinCC DB server.
+"""IXF CVE Module - CVE-2010-2773 - Siemens WinCC DB server.
 
 SQL injection APT Stuxnet
 
@@ -32,8 +32,8 @@ _SEVERITY      = "CRITICAL"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2010-2773 — Siemens WinCC DB server (CRITICAL)",
-        "description":   "Siemens WinCC DB server — SQL injection APT Stuxnet. "
+        "name":          "CVE-2010-2773 - Siemens WinCC DB server (CRITICAL)",
+        "description":   "Siemens WinCC DB server - SQL injection APT Stuxnet. "
                          "CVSS 10.0 (CRITICAL). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2010-2773...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Siemens WinCC DB server may be present. "
+                f"Port {self.port} open on {self.target} - Siemens WinCC DB server may be present. "
                 "CVE-2010-2773 (CRITICAL CVSS 10.0): SQL injection APT Stuxnet. "
                 "Manual version verification required."
             )

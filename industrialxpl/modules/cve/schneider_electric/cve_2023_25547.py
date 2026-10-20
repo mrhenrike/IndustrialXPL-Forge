@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2023-25547 — Schneider Electric EcoStruxure Power Build (HIGH CVSS 7.8).
+"""IXF CVE CVE-2023-25547 - Schneider Electric EcoStruxure Power Build (HIGH CVSS 7.8).
 
 Exploit type: Arbitrary code execution
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Schneider Electric EcoStruxure Power Build may be present. CVE-2023-25547 HIGH CVSS 7.8.")
+            print_success(f"Port {self.port} open - Schneider Electric EcoStruxure Power Build may be present. CVE-2023-25547 HIGH CVSS 7.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

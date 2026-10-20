@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2019-18247 — ABB Relion protection relay (HIGH CVSS 7.5).
+"""IXF CVE CVE-2019-18247 - ABB Relion protection relay (HIGH CVSS 7.5).
 
 Exploit type: Denial of service IEC 61850
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — ABB Relion protection relay may be present. CVE-2019-18247 HIGH CVSS 7.5.")
+            print_success(f"Port {self.port} open - ABB Relion protection relay may be present. CVE-2019-18247 HIGH CVSS 7.5.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

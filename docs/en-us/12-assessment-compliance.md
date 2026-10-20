@@ -1,6 +1,6 @@
 # Assessment & Compliance
 
-IXF includes 18 assessment modules covering IEC 62443, NIST SP 800-82r3, MITRE ATT&CK for ICS coverage, risk scoring, threat intelligence (ICS Kill Chain), incident response playbooks, protocol security audits, and network assessment — all with detailed checklists and actionable guidance.
+IXF includes 18 assessment modules covering IEC 62443, NIST SP 800-82r3, MITRE ATT&CK for ICS coverage, risk scoring, threat intelligence (ICS Kill Chain), incident response playbooks, protocol security audits, and network assessment - all with detailed checklists and actionable guidance.
 
 ---
 
@@ -47,9 +47,9 @@ ixf > run
 
 ---
 
-## IEC 62443 — Zone and Conduit Audit
+## IEC 62443 - Zone and Conduit Audit
 
-### Security Levels (SL1–SL4)
+### Security Levels (SL1-SL4)
 
 IEC 62443-3-3 defines four Security Levels based on attacker capability and required protection:
 
@@ -84,24 +84,24 @@ ixf > assess iec62443/zone_conduit_audit
 
   [Zone Model]
   ──────────────────────────────────────────────────────────────────────
-  Purdue Level 4 (Enterprise Network — Business)
-    Zone:    Corporate network — ERP, email, internet access
+  Purdue Level 4 (Enterprise Network - Business)
+    Zone:    Corporate network - ERP, email, internet access
     Target:  No direct OT access | Separate from Level 3
 
-  Purdue Level 3 (Operations/Site Network — MES/Historian)
-    Zone:    Site operations — historians, engineering workstations
+  Purdue Level 3 (Operations/Site Network - MES/Historian)
+    Zone:    Site operations - historians, engineering workstations
     Target:  DMZ between Level 4 and Level 2 | No direct PLC access
 
-  Purdue Level 2 (Control Network — SCADA/HMI)
+  Purdue Level 2 (Control Network - SCADA/HMI)
     Zone:    SCADA servers, HMI stations, control room
-    Target:  Isolated — only approved traffic to Level 1
+    Target:  Isolated - only approved traffic to Level 1
 
-  Purdue Level 1 (Field Control Network — PLCs/RTUs)
+  Purdue Level 1 (Field Control Network - PLCs/RTUs)
     Zone:    PLCs, RTUs, field controllers
     Target:  Minimal external connectivity; serial preferred
 
-  Purdue Level 0 (Process — Physical Sensors/Actuators)
-    Zone:    Field instruments — temperature, pressure, valves
+  Purdue Level 0 (Process - Physical Sensors/Actuators)
+    Zone:    Field instruments - temperature, pressure, valves
     Target:  No IP connectivity at this level
 
   ──────────────────────────────────────────────────────────────────────
@@ -141,7 +141,7 @@ ixf > assess iec62443/zone_conduit_audit
 
 ---
 
-## NIST SP 800-82r3 — ICS Security Checklist
+## NIST SP 800-82r3 - ICS Security Checklist
 
 ### All 8 Control Domains with Full Checklist Output
 
@@ -150,7 +150,7 @@ ixf > assess nist_sp800_82/control_checklist
 [*] Running NIST SP 800-82r3 Industrial Control System Security Checklist...
 
   ══════════════════════════════════════════════════════════════════════
-  NIST SP 800-82 Rev. 3 — ICS Security Control Checklist
+  NIST SP 800-82 Rev. 3 - ICS Security Control Checklist
   Reference: https://csrc.nist.gov/publications/detail/sp/800-82/rev-3/final
   ══════════════════════════════════════════════════════════════════════
 
@@ -229,14 +229,14 @@ ixf > assess nist_sp800_82/control_checklist
 
 ---
 
-## Risk Scorer — Full Output with Score Calculation
+## Risk Scorer - Full Output with Score Calculation
 
 ```
 ixf > assess risk/ics_risk_scorer
 [*] ICS Risk Scoring...
 
   ══════════════════════════════════════════════════════════════════════
-  ICS Risk Score — Composite Methodology
+  ICS Risk Score - Composite Methodology
   Reference: CISA ICS Risk Assessment Methodology
   ══════════════════════════════════════════════════════════════════════
 
@@ -249,17 +249,17 @@ ixf > assess risk/ics_risk_scorer
     MEDIUM   (score 5.0):  ICS behind firewall but remote access without MFA
     LOW      (score 2.5):  Air-gapped or strict network segmentation
   Assessment: Set target to internet-facing IP or 'none' for air-gapped
-  Default assumption for methodology: HIGH (7.5) — typical enterprise OT
+  Default assumption for methodology: HIGH (7.5) - typical enterprise OT
 
   Factor 2: Authentication Strength (25% weight)
   ──────────────────────────────────────────────────────────────────────
   Question: Is authentication required for all OT system access?
   Indicators:
-    CRITICAL (10.0): Modbus/DNP3 — no authentication by design; all access open
+    CRITICAL (10.0): Modbus/DNP3 - no authentication by design; all access open
     HIGH      (7.5): Default credentials unchanged; shared passwords
     MEDIUM    (5.0): Unique passwords but no MFA; basic auth only
     LOW       (2.5): MFA enforced for all remote access; certificate-based auth
-  Assessment: HIGH (7.5) — Modbus unauthenticated, SSH default creds present
+  Assessment: HIGH (7.5) - Modbus unauthenticated, SSH default creds present
 
   Factor 3: Safety System Separation (25% weight)
   ──────────────────────────────────────────────────────────────────────
@@ -268,8 +268,8 @@ ixf > assess risk/ics_risk_scorer
     CRITICAL (10.0): SIS on same VLAN as basic process control or internet
     HIGH      (7.5): SIS has OT network access (should be one-way/air-gapped)
     MEDIUM    (5.0): SIS behind firewall but on OT network
-    LOW       (2.5): SIS fully isolated — independent power, network, HMI
-  Assessment: HIGH (7.5) — SIS on same OT network as SCADA
+    LOW       (2.5): SIS fully isolated - independent power, network, HMI
+  Assessment: HIGH (7.5) - SIS on same OT network as SCADA
 
   Factor 4: Patch Level (15% weight)
   ──────────────────────────────────────────────────────────────────────
@@ -279,7 +279,7 @@ ixf > assess risk/ics_risk_scorer
     HIGH      (7.5): Firmware 2-5 years old; irregular patching
     MEDIUM    (5.0): Firmware < 2 years old; semi-annual patching
     LOW       (2.5): Current firmware; monthly patching window; vendor alerts
-  Assessment: HIGH (7.5) — firmware typically 3+ years; long change windows
+  Assessment: HIGH (7.5) - firmware typically 3+ years; long change windows
 
   Factor 5: Logging and Monitoring (5% weight)
   ──────────────────────────────────────────────────────────────────────
@@ -289,7 +289,7 @@ ixf > assess risk/ics_risk_scorer
     HIGH      (7.5): Syslog only; no OT-specific anomaly detection
     MEDIUM    (5.0): OT-aware IDS (Claroty, Nozomi, Dragos) without fine-tuning
     LOW       (2.5): OT-aware IDS + SOC with OT expertise + regular review
-  Assessment: MEDIUM (5.0) — Syslog to SIEM; no OT-specific IDS
+  Assessment: MEDIUM (5.0) - Syslog to SIEM; no OT-specific IDS
 
   ──────────────────────────────────────────────────────────────────────
   Score Calculation
@@ -302,7 +302,7 @@ ixf > assess risk/ics_risk_scorer
   Logging and Monitoring         5.0     5%      0.25
   ──────────────────────────────────────────────────────────────────────
   COMPOSITE RISK SCORE: 7.375 / 10.0
-  RISK LEVEL: HIGH (7.0-8.9) — Significant risk requiring immediate action
+  RISK LEVEL: HIGH (7.0-8.9) - Significant risk requiring immediate action
 
   Priority Recommendations:
   1. [CRITICAL ACTION] Implement Modbus/ICS authentication (DMZ + authentication proxy)
@@ -315,7 +315,7 @@ ixf > assess risk/ics_risk_scorer
 
 ---
 
-## ICS Kill Chain — All 8 Stages
+## ICS Kill Chain - All 8 Stages
 
 ```
 ixf > assess threat_intel/ics_kill_chain
@@ -359,7 +359,7 @@ ixf > assess threat_intel/ics_kill_chain
     - Spearphishing email to engineering/operations staff
     - Compromised VPN credentials for remote access (T0822)
     - Supply chain compromise (vendor update, hardware implant)
-    - USB/removable media (T0847) — especially in air-gapped environments
+    - USB/removable media (T0847) - especially in air-gapped environments
     - Watering hole attack on ICS vendor/conference websites
   IXF Coverage: assessment/threat_intel/ics_kill_chain; ttp T0854
   MITRE ICS: T0822 (External Remote Services), T0847 (Replication via Removable Media)
@@ -422,10 +422,10 @@ ixf > assess threat_intel/ics_kill_chain
   Description: Achieve physical disruption, damage, or sustained control
   Attacker Actions:
     - Trigger physical process disruption (power outage, heating failure, water contamination)
-    - Cause physical equipment damage (centrifuge destruction — Stuxnet model)
+    - Cause physical equipment damage (centrifuge destruction - Stuxnet model)
     - Wipe SCADA workstations (KillDisk) to delay recovery
     - Suppress alarms to extend impact duration (T0838, T0878)
-    - Deny view to operators — spoof sensor readings (T0832, T0856)
+    - Deny view to operators - spoof sensor readings (T0832, T0856)
   IXF Coverage: cve/malware/*, assessment modules, full TTP sweep
   MITRE ICS: T0837 (Loss of Safety), T0879 (Damage to Property), T0826-T0829 (Loss of...)
   Defensive: Segmentation; backup/recovery; independent safety monitoring; incident response
@@ -435,7 +435,7 @@ ixf > assess threat_intel/ics_kill_chain
 
 ---
 
-## IR Playbook — All 5 Phases
+## IR Playbook - All 5 Phases
 
 ```
 ixf > assess ir/iacs_ir_playbook
@@ -501,7 +501,7 @@ ixf > assess ir/iacs_ir_playbook
 
 ---
 
-## OPC UA Security Audit — Full Output
+## OPC UA Security Audit - Full Output
 
 ```
 ixf > assess protocols/opcua_security_audit
@@ -536,7 +536,7 @@ ixf > assess protocols/opcua_security_audit
 
 ---
 
-## DNP3 Security Audit — Full Output
+## DNP3 Security Audit - Full Output
 
 ```
 ixf > assess protocols/dnp3_security_audit
@@ -562,7 +562,7 @@ ixf > assess protocols/dnp3_security_audit
   Routable DNP3 (TCP) preferred over serial    REVIEW   Serial harder to intercept
   ──────────────────────────────────────────────────────────────────────
   Key Facts:
-  - DNP3 without SAv5 has NO authentication — any device on the network can send commands
+  - DNP3 without SAv5 has NO authentication - any device on the network can send commands
   - CosmicEnergy (2023) exploited unauthenticated DNP3 for grid switching
   - SAv5 provides HMAC-based message authentication; requires key pre-provisioning
   Reference: IEEE 1815, NERC CIP-005, NERC CIP-007
@@ -571,7 +571,7 @@ ixf > assess protocols/dnp3_security_audit
 
 ---
 
-## IEC 61850 Security Audit — Full Output
+## IEC 61850 Security Audit - Full Output
 
 ```
 ixf > assess protocols/iec61850_security_audit
@@ -612,7 +612,7 @@ ixf > assess protocols/iec61850_security_audit
 
 ---
 
-## ICS Firewall Audit — Full Output
+## ICS Firewall Audit - Full Output
 
 ```
 ixf > assess network/ics_firewall_audit
@@ -623,7 +623,7 @@ ixf > assess network/ics_firewall_audit
   Reference: NIST SP 800-82 Rev. 3, IEC 62443
   ══════════════════════════════════════════════════════════════════════
 
-  [Firewall Rules — Inbound to OT Network]
+  [Firewall Rules - Inbound to OT Network]
   ──────────────────────────────────────────────────────────────────────
   Rule Check                                   Verdict   Notes
   Block all from Internet to OT               REVIEW    No OT ports directly internet-facing
@@ -659,7 +659,7 @@ ixf > assess network/ics_firewall_audit
 
 ---
 
-## Industrial Network Assessment — Full Output
+## Industrial Network Assessment - Full Output
 
 ```
 ixf > assess network/industrial_network_assessment
@@ -784,17 +784,17 @@ ixf > mitre-scan discovery 192.168.1.0/24
 [+] Discovery sweep complete.
 
 ixf > ttp T0843 192.168.1.100
-[*] T0843 (Program Download) — 5 modules — simulate
+[*] T0843 (Program Download) - 5 modules - simulate
 [+] T0843 complete.
 
 ixf > ttp T0812 192.168.1.0/24
-[*] T0812 (Default Credentials) — 34 modules — simulate
+[*] T0812 (Default Credentials) - 34 modules - simulate
 [+] T0812 complete.
 
 ixf > ttp-check T0846 192.168.1.100
 [*] T0846 check-only on 192.168.1.100...
-[+] Potential: scanners/ics/modbus_detect — port 502 open
-[+] Potential: scanners/ics/s7_comm_scanner — port 102 open
+[+] Potential: scanners/ics/modbus_detect - port 502 open
+[+] Potential: scanners/ics/s7_comm_scanner - port 102 open
 
 ixf > cve CVE-2021-22681
 [*] Module loaded: CVE-2021-22681 Siemens S7-1200/1500 PLC (CRITICAL)
@@ -807,7 +807,7 @@ ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > show info
 
 ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > check
 [*] Checking 192.168.1.50:102...
-[+] POTENTIAL — Port 102 open, S7comm+ detected
+[+] POTENTIAL - Port 102 open, S7comm+ detected
 
 ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > run
   [SIMULATE] CVE-2021-22681 S7 TLS Key exploit chain...
@@ -815,13 +815,13 @@ ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > run
 ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > back
 
 ixf > assess iec62443/zone_conduit_audit
-  [IEC 62443 audit output — 24 SR checks REVIEW]
+  [IEC 62443 audit output - 24 SR checks REVIEW]
 
 ixf > assess nist_sp800_82/control_checklist
-  [NIST 800-82r3 — 8 domains, 35 controls REVIEW]
+  [NIST 800-82r3 - 8 domains, 35 controls REVIEW]
 
 ixf > assess risk/ics_risk_scorer
-  COMPOSITE SCORE: 7.375 / 10.0 — HIGH
+  COMPOSITE SCORE: 7.375 / 10.0 - HIGH
 
 ixf > assess threat_intel/ics_kill_chain
   [8-stage kill chain analysis]
@@ -856,7 +856,7 @@ ixf > exit
 
 ---
 
-## Compliance Reporting — Generating Reports for Each Framework
+## Compliance Reporting - Generating Reports for Each Framework
 
 ### IEC 62443 Report
 
@@ -911,7 +911,7 @@ IXF assessment modules map to NERC CIP standards for bulk electric systems:
 
 ---
 
-## IEC 62443 Security Levels — Complete Reference
+## IEC 62443 Security Levels - Complete Reference
 
 ### SL1: Protection against Unintentional Violation
 
@@ -993,14 +993,14 @@ The IEC 62443 zone and conduit model organizes OT assets into security zones, wi
 
 ## Additional MITRE Technique Assessment Modules
 
-### T0843 — Program Download
+### T0843 - Program Download
 
 ```
 ixf > use assessment/mitre_ics/t0843_program_upload
 ixf > set target 192.168.1.55
 ixf > run
 
-  MITRE T0843 — Program Download Assessment
+  MITRE T0843 - Program Download Assessment
   ═══════════════════════════════════════════════════════════════════════════
   Checks:
   PD-001  S7comm program block write accessible       MANUAL  Port 102 reachable
@@ -1014,13 +1014,13 @@ ixf > run
   ═══════════════════════════════════════════════════════════════════════════
 ```
 
-### T0851 — Rootkit
+### T0851 - Rootkit
 
 ```
 ixf > use assessment/mitre_ics/t0851_rootkit
 ixf > run
 
-  MITRE T0851 — Rootkit Assessment
+  MITRE T0851 - Rootkit Assessment
   ═══════════════════════════════════════════════════════════════════════════
   Checks:
   RK-001  PLC firmware hash verification enabled      MANUAL  Compare against baseline

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run incorporation phase gates — blocks merge when checks fail.
+"""Run incorporation phase gates - blocks merge when checks fail.
 
 Usage:
   PYTHONPATH=. python3 tools/verify_incorporation_gate.py --phase F00
@@ -507,7 +507,7 @@ def run_phase(phase_id: str, gates: dict) -> list[str]:
         return ["unknown phase: {}".format(phase_id)]
     cfg = phases[phase_id]
     failures: list[str] = []
-    print("\n=== Gate {} — {} ===".format(phase_id, cfg.get("label", "")))
+    print("\n=== Gate {} - {} ===".format(phase_id, cfg.get("label", "")))
     for step in cfg.get("steps", []):
         print("  -> {}".format(step))
         runner = STEP_RUNNERS.get(step)

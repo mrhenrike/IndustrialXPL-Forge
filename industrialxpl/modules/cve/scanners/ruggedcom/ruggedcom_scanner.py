@@ -1,4 +1,4 @@
-"""IXF Scanner — Siemens Ruggedcom ROS/ROX Industrial Router. simulate=True."""
+"""IXF Scanner - Siemens Ruggedcom ROS/ROX Industrial Router. simulate=True."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptInteger, mute,

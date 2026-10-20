@@ -45,4 +45,4 @@ class Exploit(Exploit):
                 description=f"CVE-2019-13510: {self.target}:{self.port}.  Code execution crafted file. CVSS 7.8.",
                 mitre_techniques=["T0883"],
             ); return
-        print_success(f"CVE-2019-13510 HIGH — port {self.port} open.") if self.check() else print_error("Not responding.")
+        print_success(f"CVE-2019-13510 HIGH - port {self.port} open.") if self.check() else print_error("Not responding.")

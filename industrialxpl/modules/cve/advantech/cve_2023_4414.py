@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2023-4414 — Advantech WebAccess SCADA (HIGH CVSS 7.5).
+"""IXF CVE CVE-2023-4414 - Advantech WebAccess SCADA (HIGH CVSS 7.5).
 
 Exploit type: Path traversal information disclosure
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Advantech WebAccess SCADA may be present. CVE-2023-4414 HIGH CVSS 7.5.")
+            print_success(f"Port {self.port} open - Advantech WebAccess SCADA may be present. CVE-2023-4414 HIGH CVSS 7.5.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

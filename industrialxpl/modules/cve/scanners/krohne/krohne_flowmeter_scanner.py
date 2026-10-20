@@ -1,4 +1,4 @@
-"""IXF Scanner — Krohne Flow/Level Measurement. simulate=True."""
+"""IXF Scanner - Krohne Flow/Level Measurement. simulate=True."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptInteger, mute,

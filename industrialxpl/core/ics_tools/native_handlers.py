@@ -155,7 +155,7 @@ def handle_sixnet(vendor: Path, extra: list[str] | None, simulate: bool) -> dict
             "returncode": 0,
         }
     open_ports = [p for p in ports if _probe_tcp(host, p)]
-    lines = ["SIXNET probe {} — open TCP: {}".format(host, open_ports or "none")]
+    lines = ["SIXNET probe {} - open TCP: {}".format(host, open_ports or "none")]
     if 502 in open_ports:
         mb = _modbus_probe(host, 502)
         lines.append("Modbus: {}".format(mb.get("detail") or mb.get("error")))
@@ -251,7 +251,7 @@ def handle_attkfinder(vendor: Path, extra: list[str] | None, simulate: bool) -> 
         "success": True,
         "mode": "native-attkfinder",
         "stdout": (
-            "ATT&CK Finder (IXF native inventory — neo4j/py2neo not required).\n"
+            "ATT&CK Finder (IXF native inventory - neo4j/py2neo not required).\n"
             "Python modules: {}\n"
             "PLC ST sample: {}\n"
             "Offensive classes: {}\n"
@@ -259,7 +259,7 @@ def handle_attkfinder(vendor: Path, extra: list[str] | None, simulate: bool) -> 
         ).format(
             ", ".join(py_files[:8]),
             "yes" if stir.is_file() else "missing",
-            ", ".join(classes[:8]) or "—",
+            ", ".join(classes[:8]) or " - ",
         ),
         "returncode": 0,
     }
@@ -353,7 +353,7 @@ def handle_otscan(vendor: Path, extra: list[str] | None, simulate: bool) -> dict
     return {
         "success": True,
         "mode": "native-otscan",
-        "stdout": "OTscan {} — {}/{} detected\n{}".format(
+        "stdout": "OTscan {} - {}/{} detected\n{}".format(
             host,
             result.get("detected_count", 0),
             len(result.get("protocols", [])),
@@ -387,7 +387,7 @@ def handle_bacteria(vendor: Path, extra: list[str] | None, simulate: bool) -> di
     return {
         "success": True,
         "mode": "native-bacteria",
-        "stdout": "BACnet Who-Is {} — detected={}".format(host, r.get("detected")),
+        "stdout": "BACnet Who-Is {} - detected={}".format(host, r.get("detected")),
         "result": r,
         "returncode": 0,
     }

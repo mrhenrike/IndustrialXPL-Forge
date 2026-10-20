@@ -1,4 +1,4 @@
-"""IXF Default Credentials — ICONICS GENESIS64 SCADA."""
+"""IXF Default Credentials - ICONICS GENESIS64 SCADA."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptString, mute,

@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2021-27476 — Rockwell Automation Studio 5000 View Designer (HIGH CVSS 7.8).
+"""IXF CVE CVE-2021-27476 - Rockwell Automation Studio 5000 View Designer (HIGH CVSS 7.8).
 
 Exploit type: Code execution malicious VSD file
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Rockwell Automation Studio 5000 View Designer may be present. CVE-2021-27476 HIGH CVSS 7.8.")
+            print_success(f"Port {self.port} open - Rockwell Automation Studio 5000 View Designer may be present. CVE-2021-27476 HIGH CVSS 7.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

@@ -1,4 +1,4 @@
-"""BACnet offensive helpers — MIT stdlib (BACteria-inspired)."""
+"""BACnet offensive helpers - MIT stdlib (BACteria-inspired)."""
 
 
 import socket

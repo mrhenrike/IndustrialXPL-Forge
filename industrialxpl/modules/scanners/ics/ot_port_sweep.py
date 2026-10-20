@@ -1,4 +1,4 @@
-"""IXF Scanner — Generic OT/ICS Multi-Protocol Port Sweep Discovery. simulate=True."""
+"""IXF Scanner - Generic OT/ICS Multi-Protocol Port Sweep Discovery. simulate=True."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptInteger, OptPort, mute,

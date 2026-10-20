@@ -11,7 +11,7 @@ education, detection engineering, and authorized red-team research.
 | `submodules__ics-tools__*` | 7 ICS tooling references (SCADAPASS, Redpoint, isf-w3h, …) |
 
 Native IXF modules under `industrialxpl/modules/cve/malware/`, `scanners/malware_research/`,
-and `core/malware/` wrap these trees — they do **not** execute weaponized payloads by default.
+and `core/malware/` wrap these trees - they do **not** execute weaponized payloads by default.
 
 ## Legal notice
 

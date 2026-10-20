@@ -81,7 +81,7 @@ class IEC61850GOOSEAttack:
         return result
 
     def flood(self, duration_s: float = 5.0) -> GOOSEResult:
-        """GOOSE flooding DoS — saturate relay processing with fake events."""
+        """GOOSE flooding DoS - saturate relay processing with fake events."""
         result = GOOSEResult(interface=self.interface)
         end = time.time() + duration_s
         try:

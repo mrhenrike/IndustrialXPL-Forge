@@ -9,7 +9,7 @@ MODULES = ROOT / "industrialxpl" / "modules"
 AUTHOR = "Andre Henrique (mrhenrike)"
 
 CREDS_T = '''\
-"""IXF Default Credentials — {vendor} {product}."""
+"""IXF Default Credentials - {vendor} {product}."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptString, mute,
@@ -48,7 +48,7 @@ class Exploit(Exploit):
 '''
 
 SCANNER_T = '''\
-"""IXF Scanner — {vendor} {product} Discovery."""
+"""IXF Scanner - {vendor} {product} Discovery."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptInteger, mute,
@@ -96,7 +96,7 @@ class Exploit(Exploit):
 '''
 
 MITRE_T = '''\
-"""IXF MITRE ATT&CK for ICS — {tid}: {name}. simulate=True."""
+"""IXF MITRE ATT&CK for ICS - {tid}: {name}. simulate=True."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, mute,
@@ -286,7 +286,7 @@ SCANNER_BATCH = [
      ["https://www.aveva.com/"], "CVE-2023-31175, CVE-2023-31176"),
 ]
 
-# MITRE ATT&CK for ICS — Uncovered techniques
+# MITRE ATT&CK for ICS - Uncovered techniques
 MITRE_BATCH = [
     ("assessment/mitre_ics/t0801_monitor_process_state.py",
      "T0801", "Monitor Process State", "HIGH",
@@ -340,19 +340,19 @@ MITRE_BATCH = [
      "T0847", "Replication via Removable Media",  "MEDIUM",
      ["Initial Access", "Lateral Movement"], 0,
      "Adversary uses removable media (USB, CD) to move malware across air-gapped ICS network segments",
-     "Step 1: Identify air-gapped ICS systems that accept removable media\nStep 2: Prepare malicious USB with autorun PLC project file\nStep 3: Operator inserts USB — malware copies to EWS/HMI\nStep 4: Malware propagates to connected PLCs via engineering software"),
+     "Step 1: Identify air-gapped ICS systems that accept removable media\nStep 2: Prepare malicious USB with autorun PLC project file\nStep 3: Operator inserts USB - malware copies to EWS/HMI\nStep 4: Malware propagates to connected PLCs via engineering software"),
 
     ("assessment/mitre_ics/t0851_rootkit.py",
      "T0851", "Rootkit", "CRITICAL",
      ["Persistence", "Evasion"], 102,
      "Adversary installs a rootkit on an ICS device to maintain persistence and hide malicious activity",
-     "Step 1: Gain root/admin access to embedded Linux ICS device\nStep 2: Install rootkit (kernel module or LD_PRELOAD) to hide processes/files\nStep 3: Rootkit intercepts process queries — hides malicious programs\nStep 4: IDS/AV cannot detect presence of malware"),
+     "Step 1: Gain root/admin access to embedded Linux ICS device\nStep 2: Install rootkit (kernel module or LD_PRELOAD) to hide processes/files\nStep 3: Rootkit intercepts process queries - hides malicious programs\nStep 4: IDS/AV cannot detect presence of malware"),
 
     ("assessment/mitre_ics/t0852_screen_capture.py",
      "T0852", "Screen Capture", "MEDIUM",
      ["Collection"], 3389,
      "Adversary captures screenshots of HMI/SCADA screens to gather intelligence about industrial process",
-     "Step 1: Gain access to HMI workstation or SCADA server\nStep 2: Use screenshot tools (VNC, RDP, programmatic) to capture screens\nStep 3: Extract operator view of process — temperatures, pressures, alarms\nStep 4: Use captured data to understand process and plan attacks"),
+     "Step 1: Gain access to HMI workstation or SCADA server\nStep 2: Use screenshot tools (VNC, RDP, programmatic) to capture screens\nStep 3: Extract operator view of process - temperatures, pressures, alarms\nStep 4: Use captured data to understand process and plan attacks"),
 
     ("assessment/mitre_ics/t0861_point_and_tag_identification.py",
      "T0861", "Point and Tag Identification", "MEDIUM",
@@ -364,7 +364,7 @@ MITRE_BATCH = [
      "T0863", "User Execution: Malicious Link", "HIGH",
      ["Execution"], 80,
      "Adversary tricks ICS operator into executing malicious content via spearphishing or malicious file",
-     "Step 1: Craft malicious file (Excel macro, PDF, PLC project file)\nStep 2: Deliver via spearphishing email to ICS operator/engineer\nStep 3: Operator opens file — malware executes on EWS/HMI\nStep 4: C2 established from OT operator workstation"),
+     "Step 1: Craft malicious file (Excel macro, PDF, PLC project file)\nStep 2: Deliver via spearphishing email to ICS operator/engineer\nStep 3: Operator opens file - malware executes on EWS/HMI\nStep 4: C2 established from OT operator workstation"),
 
     ("assessment/mitre_ics/t0864_transient_cyber_asset.py",
      "T0864", "Transient Cyber Asset", "HIGH",
@@ -382,7 +382,7 @@ MITRE_BATCH = [
      "T0869", "Standard Application Layer Protocol", "HIGH",
      ["Command and Control"], 80,
      "Adversary uses legitimate industrial protocols (MQTT, OPC UA, HTTP) for C2 communication in ICS",
-     "Step 1: Compromise ICS device with C2 capability\nStep 2: Configure C2 over MQTT (port 1883) — blends with IoT traffic\nStep 3: C2 commands embedded in legitimate industrial protocol messages\nStep 4: Detection difficult — traffic appears as normal SCADA communication"),
+     "Step 1: Compromise ICS device with C2 capability\nStep 2: Configure C2 over MQTT (port 1883) - blends with IoT traffic\nStep 3: C2 commands embedded in legitimate industrial protocol messages\nStep 4: Detection difficult - traffic appears as normal SCADA communication"),
 
     ("assessment/mitre_ics/t0870_network_sniffing.py",
      "T0870", "Network Sniffing", "HIGH",
@@ -400,7 +400,7 @@ MITRE_BATCH = [
      "T0874", "Hooking", "CRITICAL",
      ["Persistence", "Evasion"], 0,
      "Adversary installs hooks on ICS engineering software to intercept and manipulate communications",
-     "Step 1: Compromise EWS/HMI workstation\nStep 2: Hook DLL used by SCADA/engineering software (IAT hooking)\nStep 3: Intercept communications between software and PLC\nStep 4: Modify data in transit — operators see false readings"),
+     "Step 1: Compromise EWS/HMI workstation\nStep 2: Hook DLL used by SCADA/engineering software (IAT hooking)\nStep 3: Intercept communications between software and PLC\nStep 4: Modify data in transit - operators see false readings"),
 
     ("assessment/mitre_ics/t0877_i_o_module_discovery.py",
      "T0877", "I/O Module Discovery", "MEDIUM",
@@ -439,10 +439,10 @@ MITRE_BATCH = [
      "Step 1: Compromise ICS device that uses Modbus/EtherNet/IP/OPC UA\nStep 2: Tunnel C2 traffic inside legitimate industrial protocol packets\nStep 3: C2 uses port 502 (Modbus) or port 44818 (EtherNet/IP)\nStep 4: Traffic analysis reveals unusual patterns within legitimate protocols"),
 
     ("assessment/mitre_ics/t0886_remote_services_external.py",
-     "T0886", "Remote Services — External Remote Services", "HIGH",
+     "T0886", "Remote Services - External Remote Services", "HIGH",
      ["Initial Access"], 443,
      "Adversary uses external remote services (VPN, Citrix, RDP gateway) to gain access to ICS",
-     "Step 1: Identify external remote access to OT network (VPN gateway, jump server)\nStep 2: Credential stuffing or phishing to obtain VPN credentials\nStep 3: Authenticate to VPN/RDP gateway from internet\nStep 4: Access OT network directly — bypass perimeter controls"),
+     "Step 1: Identify external remote access to OT network (VPN gateway, jump server)\nStep 2: Credential stuffing or phishing to obtain VPN credentials\nStep 3: Authenticate to VPN/RDP gateway from internet\nStep 4: Access OT network directly - bypass perimeter controls"),
 
     ("assessment/mitre_ics/t0887_wireless_compromise.py",
      "T0887", "Wireless Compromise", "HIGH",

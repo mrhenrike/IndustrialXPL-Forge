@@ -45,4 +45,4 @@ class Exploit(Exploit):
                 description=f"CVE-2023-27855: {self.target}:{self.port}.  Code execution out-of-bounds write. CVSS 7.8.",
                 mitre_techniques=["T0883"],
             ); return
-        print_success(f"CVE-2023-27855 HIGH — port {self.port} open.") if self.check() else print_error("Not responding.")
+        print_success(f"CVE-2023-27855 HIGH - port {self.port} open.") if self.check() else print_error("Not responding.")

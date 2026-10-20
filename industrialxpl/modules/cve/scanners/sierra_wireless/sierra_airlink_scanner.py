@@ -1,4 +1,4 @@
-"""IXF Scanner — Sierra Wireless AirLink Industrial Router Discovery."""
+"""IXF Scanner - Sierra Wireless AirLink Industrial Router Discovery."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptInteger, mute,

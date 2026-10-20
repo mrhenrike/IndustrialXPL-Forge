@@ -1,6 +1,6 @@
 ﻿# CLI Non-Interactive Mode
 
-IXF can be used without the interactive shell, passing commands directly on the command line. This enables scripting, CI/CD pipelines, automation, scheduled security scans, and one-liner penetration testing workflows — all without requiring a human to drive the interactive shell.
+IXF can be used without the interactive shell, passing commands directly on the command line. This enables scripting, CI/CD pipelines, automation, scheduled security scans, and one-liner penetration testing workflows - all without requiring a human to drive the interactive shell.
 
 ---
 
@@ -35,7 +35,7 @@ ixf stats
 ```
 [*] Indexing modules...
 [+] 1193 modules indexed.
-[i] IXF Module Statistics — IndustrialXPL-Forge v1.0.13
+[i] IXF Module Statistics - IndustrialXPL-Forge v1.0.13
   Total: 1193 | Vendors: 150 | Protocols: 50 | MITRE: 96/103 (93%)
   cve: 486 | exploits: 159 | creds: 34 | scanners: 31 | assessment: 18
 ```
@@ -66,7 +66,7 @@ ixf use scanners/ics/modbus_detect set target 192.168.1.100 run
 [*] Module loaded: Modbus TCP Device Detect
 [*] target => 192.168.1.100
 
-  [SIMULATE MODE — no packets sent]
+  [SIMULATE MODE - no packets sent]
   [i] What would happen:
       Phase 1 [TCP Connect]: TCP to 192.168.1.100:502
       Phase 2 [FC04 Probe]:  Modbus FC04 Read Input Registers (Unit=1)
@@ -85,7 +85,7 @@ ixf use scanners/ics/modbus_detect set target 192.168.1.100 check
 [*] Module loaded: Modbus TCP Device Detect
 [*] target => 192.168.1.100
 [*] Checking 192.168.1.100:502...
-[+] VULNERABLE — Modbus device detected
+[+] VULNERABLE - Modbus device detected
 [+] Device: Schneider Electric Modicon M340 (inferred)
 ```
 
@@ -111,7 +111,7 @@ ixf mitre-list discovery
 ```
 
 ```
-  MITRE ATT&CK for ICS — Discovery Techniques (TA0102)
+  MITRE ATT&CK for ICS - Discovery Techniques (TA0102)
   T0840  Network Connection Enumeration   2 modules
   T0842  Network Sniffing                 3 modules
   T0846  Remote System Discovery          8 modules
@@ -125,7 +125,7 @@ ixf ttp T0843 192.168.1.100
 ```
 
 ```
-[*] TTP T0843 (Program Download) — 5 modules — simulate=True
+[*] TTP T0843 (Program Download) - 5 modules - simulate=True
 [*] Running module 1/5: cve/siemens/cve_2021_22681_s7_1200_hardcoded_key
   [SIMULATE] CVE-2021-22681 ...
 [*] Running module 2/5: cve/siemens/cve_2022_38465_s7_global_key
@@ -140,7 +140,7 @@ ixf vendors japan
 ```
 
 ```
-  Vendors (7 results — japan)
+  Vendors (7 results - japan)
   Omron             12 CVE | 3 Cred
   Mitsubishi         8 CVE | 1 Cred
   Yokogawa           5 CVE | 1 Cred
@@ -207,7 +207,7 @@ ixf ttp-list --tactic evasion
 ```
 
 ```
-  TTP Index — Evasion (TA0103)
+  TTP Index - Evasion (TA0103)
   T0838  Modify Alarm Settings    2 modules
   T0844  Program Organization     1 module
   T0849  Masquerading             1 module
@@ -379,17 +379,17 @@ ixf ttp-list --tactic discovery
 ixf ttp-list --tactic impact
 ixf ttp-list --tactic "initial-access"
 
-# MITRE scan — tactic sweep
+# MITRE scan - tactic sweep
 ixf mitre-scan discovery 192.168.1.0/24
 ixf mitre-scan initial-access 192.168.1.100
 ixf mitre-scan impact 192.168.1.100
 ixf mitre-scan collection 192.168.1.100
 
-# MITRE scan — single technique
+# MITRE scan - single technique
 ixf mitre-scan T0843 192.168.1.100
 ixf mitre-scan T0836 192.168.1.100
 
-# MITRE scan — TA-ID
+# MITRE scan - TA-ID
 ixf mitre-scan TA0102 192.168.1.0/24
 
 # Full MITRE sweep
@@ -418,7 +418,7 @@ ixf mitre-list "impair-process-control"
 
 ---
 
-## Shell Piping — 15 Examples with grep, jq, awk
+## Shell Piping - 15 Examples with grep, jq, awk
 
 IXF output can be piped to standard shell tools for filtering, parsing, and integration with other tooling.
 
@@ -568,7 +568,7 @@ A complete ICS security assessment script using IXF in non-interactive mode:
 
 ```bash
 #!/usr/bin/env bash
-# ixf_assessment.sh — Automated ICS Security Assessment
+# ixf_assessment.sh - Automated ICS Security Assessment
 # Usage: ./ixf_assessment.sh <target_ip> [output_dir]
 # Requires: ixf installed (
         $extras = $args[0].Groups[1].Value
@@ -618,15 +618,15 @@ echo "[Phase 4] MITRE Discovery Sweep (Simulate)" | tee -a "$LOGFILE"
 ixf mitre-scan discovery "$TARGET" 2>&1 | tee -a "$LOGFILE"
 echo "" | tee -a "$LOGFILE"
 
-echo "[Phase 5] TTP T0846 — Remote System Discovery" | tee -a "$LOGFILE"
+echo "[Phase 5] TTP T0846 - Remote System Discovery" | tee -a "$LOGFILE"
 ixf ttp T0846 "$TARGET" 2>&1 | tee -a "$LOGFILE"
 echo "" | tee -a "$LOGFILE"
 
-echo "[Phase 6] TTP T0812 — Default Credentials Check" | tee -a "$LOGFILE"
+echo "[Phase 6] TTP T0812 - Default Credentials Check" | tee -a "$LOGFILE"
 ixf ttp-check T0812 "$TARGET" 2>&1 | tee -a "$LOGFILE"
 echo "" | tee -a "$LOGFILE"
 
-echo "[Phase 7] TTP T0819 — Exploit Public-Facing Application (Simulate)" | tee -a "$LOGFILE"
+echo "[Phase 7] TTP T0819 - Exploit Public-Facing Application (Simulate)" | tee -a "$LOGFILE"
 ixf ttp T0819 "$TARGET" 2>&1 | tee -a "$LOGFILE"
 echo "" | tee -a "$LOGFILE"
 
@@ -674,7 +674,7 @@ chmod +x ixf_assessment.sh
 
 ---
 
-## Python API — 15 Code Examples
+## Python API - 15 Code Examples
 
 ### 1. Run a module programmatically
 
@@ -871,7 +871,7 @@ def has_modbus(target: str) -> bool:
     return "[+] VULNERABLE" in output or "Modbus device detected" in output
 
 if has_modbus("192.168.1.100"):
-    print("Target has Modbus — checking for CVEs...")
+    print("Target has Modbus - checking for CVEs...")
     print(run_ixf("search", "modbus"))
 ```
 
@@ -1066,7 +1066,7 @@ jobs:
 ## Jenkins Pipeline (Complete)
 
 ```groovy
-// Jenkinsfile — ICS Security Assessment Pipeline
+// Jenkinsfile - ICS Security Assessment Pipeline
 pipeline {
     agent {
         docker {
@@ -1163,7 +1163,7 @@ pipeline {
 ## GitLab CI (Complete)
 
 ```yaml
-# .gitlab-ci.yml — ICS Security Assessment
+# .gitlab-ci.yml - ICS Security Assessment
 stages:
   - setup
   - scan
@@ -1332,7 +1332,7 @@ EXIT_CODE=$?
 case $EXIT_CODE in
     0) echo "Success" ;;
     2) echo "Module not found" ;;
-    4) echo "Connection failed — target unreachable" ;;
+    4) echo "Connection failed - target unreachable" ;;
     *) echo "Error: $EXIT_CODE" ;;
 esac
 ```
@@ -1369,7 +1369,7 @@ print(f"Simulated: {len(simulated)}")
 
 # Most severe findings
 for event in sorted(report.get("events", []), key=lambda e: e.get("cvss", 0), reverse=True)[:5]:
-    print(f"{event.get('module')} — CVSS: {event.get('cvss', 'N/A')} — {event.get('result')}")
+    print(f"{event.get('module')} - CVSS: {event.get('cvss', 'N/A')} - {event.get('result')}")
 ```
 
 ---

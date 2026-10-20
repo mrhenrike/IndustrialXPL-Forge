@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2017-12719 — Advantech WebAccess.
+"""IXF CVE Module - CVE-2017-12719 - Advantech WebAccess.
 
 Buffer overflow RCE
 
@@ -32,8 +32,8 @@ _SEVERITY      = "CRITICAL"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2017-12719 — Advantech WebAccess (CRITICAL)",
-        "description":   "Advantech WebAccess — Buffer overflow RCE. "
+        "name":          "CVE-2017-12719 - Advantech WebAccess (CRITICAL)",
+        "description":   "Advantech WebAccess - Buffer overflow RCE. "
                          "CVSS 9.8 (CRITICAL). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2017-12719...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Advantech WebAccess may be present. "
+                f"Port {self.port} open on {self.target} - Advantech WebAccess may be present. "
                 "CVE-2017-12719 (CRITICAL CVSS 9.8): Buffer overflow RCE. "
                 "Manual version verification required."
             )

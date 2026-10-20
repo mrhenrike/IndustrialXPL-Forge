@@ -1,4 +1,4 @@
-"""OTscan orchestrator — unified multi-protocol identify/assess."""
+"""OTscan orchestrator - unified multi-protocol identify/assess."""
 
 
 from typing import Any
@@ -46,7 +46,7 @@ def simulate_scan(
     host: str = "127.0.0.1",
     protocols: list[str] | None = None,
 ) -> dict[str, Any]:
-    """Dry-run — returns probe plan without network I/O."""
+    """Dry-run - returns probe plan without network I/O."""
     selected = _normalize_protocols(protocols)
     return {
         "success": True,

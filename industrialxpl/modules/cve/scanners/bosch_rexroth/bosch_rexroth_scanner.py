@@ -1,4 +1,4 @@
-"""IXF Scanner — Bosch Rexroth IndraControl/ctrlX. simulate=True."""
+"""IXF Scanner - Bosch Rexroth IndraControl/ctrlX. simulate=True."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptInteger, mute,

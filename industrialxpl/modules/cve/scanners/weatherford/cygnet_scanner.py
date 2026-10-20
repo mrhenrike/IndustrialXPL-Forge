@@ -1,4 +1,4 @@
-"""IXF Scanner — Weatherford CygNet SCADA. simulate=True."""
+"""IXF Scanner - Weatherford CygNet SCADA. simulate=True."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptInteger, mute,

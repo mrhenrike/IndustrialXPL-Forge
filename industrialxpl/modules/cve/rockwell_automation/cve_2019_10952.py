@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2019-10952 — Rockwell Automation CompactLogix 5480.
+"""IXF CVE Module - CVE-2019-10952 - Rockwell Automation CompactLogix 5480.
 
 Authentication bypass
 
@@ -32,8 +32,8 @@ _SEVERITY      = "CRITICAL"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2019-10952 — Rockwell Automation CompactLogix 5480 (CRITICAL)",
-        "description":   "Rockwell Automation CompactLogix 5480 — Authentication bypass. "
+        "name":          "CVE-2019-10952 - Rockwell Automation CompactLogix 5480 (CRITICAL)",
+        "description":   "Rockwell Automation CompactLogix 5480 - Authentication bypass. "
                          "CVSS 9.8 (CRITICAL). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2019-10952...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Rockwell Automation CompactLogix 5480 may be present. "
+                f"Port {self.port} open on {self.target} - Rockwell Automation CompactLogix 5480 may be present. "
                 "CVE-2019-10952 (CRITICAL CVSS 9.8): Authentication bypass. "
                 "Manual version verification required."
             )

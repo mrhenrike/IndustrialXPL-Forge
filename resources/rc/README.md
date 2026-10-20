@@ -1,6 +1,6 @@
 # IXF Resource Files (.rc)
 
-Resource files allow you to automate IXF sessions — set global options, load modules, configure them, and run — all from a plain text file. Similar to Metasploit's `-r` option.
+Resource files allow you to automate IXF sessions - set global options, load modules, configure them, and run - all from a plain text file. Similar to Metasploit's `-r` option.
 
 ## Usage
 
@@ -30,7 +30,7 @@ ixf -o /tmp/ixf_scan.log -r scan.rc -x
 ## File Format
 
 ```
-# Lines starting with # are comments — ignored
+# Lines starting with # are comments - ignored
 # Blank lines are ignored
 
 # Set global options first

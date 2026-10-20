@@ -1,4 +1,4 @@
-"""IXF Scanner — OSIsoft/AVEVA PI Data Archive Discovery."""
+"""IXF Scanner - OSIsoft/AVEVA PI Data Archive Discovery."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptInteger, mute,

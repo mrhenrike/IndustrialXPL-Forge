@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2021-22717 — Schneider Electric Modicon M340 (MEDIUM CVSS 6.5).
+"""IXF CVE CVE-2021-22717 - Schneider Electric Modicon M340 (MEDIUM CVSS 6.5).
 
 Exploit type: Denial of service via HTTP
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Schneider Electric Modicon M340 may be present. CVE-2021-22717 MEDIUM CVSS 6.5.")
+            print_success(f"Port {self.port} open - Schneider Electric Modicon M340 may be present. CVE-2021-22717 MEDIUM CVSS 6.5.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

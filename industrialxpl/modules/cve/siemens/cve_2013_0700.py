@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2013-0700 — Siemens S7-1200 ISO-TSAP.
+"""IXF CVE Module - CVE-2013-0700 - Siemens S7-1200 ISO-TSAP.
 
 Crafted packet crash DoS
 
@@ -32,8 +32,8 @@ _SEVERITY      = "HIGH"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2013-0700 — Siemens S7-1200 ISO-TSAP (HIGH)",
-        "description":   "Siemens S7-1200 ISO-TSAP — Crafted packet crash DoS. "
+        "name":          "CVE-2013-0700 - Siemens S7-1200 ISO-TSAP (HIGH)",
+        "description":   "Siemens S7-1200 ISO-TSAP - Crafted packet crash DoS. "
                          "CVSS 7.8 (HIGH). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2013-0700...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Siemens S7-1200 ISO-TSAP may be present. "
+                f"Port {self.port} open on {self.target} - Siemens S7-1200 ISO-TSAP may be present. "
                 "CVE-2013-0700 (HIGH CVSS 7.8): Crafted packet crash DoS. "
                 "Manual version verification required."
             )

@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2024-37998 — Siemens SIMATIC WinCC V7 (HIGH CVSS 8.8).
+"""IXF CVE CVE-2024-37998 - Siemens SIMATIC WinCC V7 (HIGH CVSS 8.8).
 
 Exploit type: SQL injection privilege escalation
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Siemens SIMATIC WinCC V7 may be present. CVE-2024-37998 HIGH CVSS 8.8.")
+            print_success(f"Port {self.port} open - Siemens SIMATIC WinCC V7 may be present. CVE-2024-37998 HIGH CVSS 8.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

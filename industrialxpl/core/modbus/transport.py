@@ -1,4 +1,4 @@
-"""Modbus/TCP transport layer — raw socket connection with retry and timing support."""
+"""Modbus/TCP transport layer - raw socket connection with retry and timing support."""
 
 
 import socket

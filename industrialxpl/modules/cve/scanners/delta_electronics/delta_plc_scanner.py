@@ -1,4 +1,4 @@
-"""IXF Scanner — Delta Electronics AS/DVP/DIAEnergie Discovery."""
+"""IXF Scanner - Delta Electronics AS/DVP/DIAEnergie Discovery."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptInteger, mute,

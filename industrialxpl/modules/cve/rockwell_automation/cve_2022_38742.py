@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2022-38742 — Rockwell Automation ThinManager ThinServer (HIGH CVSS 8.1).
+"""IXF CVE CVE-2022-38742 - Rockwell Automation ThinManager ThinServer (HIGH CVSS 8.1).
 
 Exploit type: Path traversal arbitrary file access
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Rockwell Automation ThinManager ThinServer may be present. CVE-2022-38742 HIGH CVSS 8.1.")
+            print_success(f"Port {self.port} open - Rockwell Automation ThinManager ThinServer may be present. CVE-2022-38742 HIGH CVSS 8.1.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

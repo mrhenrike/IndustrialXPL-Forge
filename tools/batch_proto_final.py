@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Final protocol and LATAM vendor batch — close 50-protocol goal."""
+"""Final protocol and LATAM vendor batch - close 50-protocol goal."""
 import sys
 from pathlib import Path
 
@@ -20,7 +20,7 @@ def write_if_new(path, content):
 
 
 PROTO_TEMPLATE = '''\
-"""IXF Protocol Abuse — {name}. No CVE. simulate=True."""
+"""IXF Protocol Abuse - {name}. No CVE. simulate=True."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, mute,
@@ -65,7 +65,7 @@ class Exploit(Exploit):
 '''
 
 CVE_TEMPLATE = '''\
-"""IXF {cve_id} — {vendor} {product}. CVSS {cvss}. simulate=True."""
+"""IXF {cve_id} - {vendor} {product}. CVSS {cvss}. simulate=True."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, mute,

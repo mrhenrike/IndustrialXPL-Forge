@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2018-17924 — GE Communicator EXT data server (HIGH CVSS 7.5).
+"""IXF CVE CVE-2018-17924 - GE Communicator EXT data server (HIGH CVSS 7.5).
 
 Exploit type: Denial of service arbitrary write
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — GE Communicator EXT data server may be present. CVE-2018-17924 HIGH CVSS 7.5.")
+            print_success(f"Port {self.port} open - GE Communicator EXT data server may be present. CVE-2018-17924 HIGH CVSS 7.5.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

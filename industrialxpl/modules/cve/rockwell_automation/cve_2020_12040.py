@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2020-12040 — Rockwell Automation SoftLogix CIP.
+"""IXF CVE Module - CVE-2020-12040 - Rockwell Automation SoftLogix CIP.
 
 Stack buffer overflow
 
@@ -32,8 +32,8 @@ _SEVERITY      = "CRITICAL"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2020-12040 — Rockwell Automation SoftLogix CIP (CRITICAL)",
-        "description":   "Rockwell Automation SoftLogix CIP — Stack buffer overflow. "
+        "name":          "CVE-2020-12040 - Rockwell Automation SoftLogix CIP (CRITICAL)",
+        "description":   "Rockwell Automation SoftLogix CIP - Stack buffer overflow. "
                          "CVSS 9.8 (CRITICAL). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2020-12040...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Rockwell Automation SoftLogix CIP may be present. "
+                f"Port {self.port} open on {self.target} - Rockwell Automation SoftLogix CIP may be present. "
                 "CVE-2020-12040 (CRITICAL CVSS 9.8): Stack buffer overflow. "
                 "Manual version verification required."
             )

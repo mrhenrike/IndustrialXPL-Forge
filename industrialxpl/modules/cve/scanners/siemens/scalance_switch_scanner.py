@@ -1,4 +1,4 @@
-"""IXF Scanner — Siemens SCALANCE Industrial Switch. simulate=True."""
+"""IXF Scanner - Siemens SCALANCE Industrial Switch. simulate=True."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptInteger, mute,

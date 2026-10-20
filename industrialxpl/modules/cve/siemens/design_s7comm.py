@@ -1,4 +1,4 @@
-"""IXF CVE Module — DESIGN-S7COMM — Siemens S7comm (pre-S7comm+).
+"""IXF CVE Module - DESIGN-S7COMM - Siemens S7comm (pre-S7comm+).
 
 No authentication by protocol design
 
@@ -32,8 +32,8 @@ _SEVERITY      = "CRITICAL"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "DESIGN-S7COMM — Siemens S7comm (pre-S7comm+) (CRITICAL)",
-        "description":   "Siemens S7comm (pre-S7comm+) — No authentication by protocol design. "
+        "name":          "DESIGN-S7COMM - Siemens S7comm (pre-S7comm+) (CRITICAL)",
+        "description":   "Siemens S7comm (pre-S7comm+) - No authentication by protocol design. "
                          "CVSS 9.1 (CRITICAL). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for DESIGN-S7COMM...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Siemens S7comm (pre-S7comm+) may be present. "
+                f"Port {self.port} open on {self.target} - Siemens S7comm (pre-S7comm+) may be present. "
                 "DESIGN-S7COMM (CRITICAL CVSS 9.1): No authentication by protocol design. "
                 "Manual version verification required."
             )

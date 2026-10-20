@@ -182,7 +182,7 @@ Protocol-specific discovery and fingerprinting. Read-only modules for asset inve
 | `scanners/ics/modbus_detect` | Modbus TCP port probe and unit ID enumeration |
 | `scanners/ics/s7_enumerate` | S7comm CPU info, firmware version, protection level |
 | `scanners/ics/enip_list_identity` | EtherNet/IP List Identity broadcast |
-| `scanners/ics/bacnet_device_id` | BACnet Read Property — device ID and vendor name |
+| `scanners/ics/bacnet_device_id` | BACnet Read Property - device ID and vendor name |
 | `scanners/ics/dnp3_link_status` | DNP3 Link Status request |
 | `scanners/ics/opcua_endpoints` | OPC UA unauthenticated endpoint enumeration |
 | `scanners/ics/profinet_dcp_identify` | PROFINET DCP device identification |
@@ -319,9 +319,9 @@ from typing import Optional
 
 # IXF imports second
 from industrialxpl.core.exploit import (
-    # Base class — your class must shadow this name
+    # Base class - your class must shadow this name
     Exploit,
-    # Option descriptors — declare as class-level attributes
+    # Option descriptors - declare as class-level attributes
     OptBool,
     OptIP,
     OptInteger,
@@ -372,7 +372,7 @@ class Exploit(Exploit):
             "Vendor Product Model v3.0 (firmware < 3.1.4)",
         ),
 
-        # Required: impact level — determines DestructiveGate confirmation tier
+        # Required: impact level - determines DestructiveGate confirmation tier
         # Valid values: INFO | READ | LOW | MEDIUM | HIGH | CRITICAL | CATASTROPHIC
         "impact":           "CRITICAL",
 
@@ -391,7 +391,7 @@ class Exploit(Exploit):
         # Required: CVSS base score string, or "N/A"
         "cvss":             "9.8",
 
-        # Required: severity label — typically mirrors the CVSS severity
+        # Required: severity label - typically mirrors the CVSS severity
         # Values: INFO | LOW | MEDIUM | HIGH | CRITICAL
         "severity":         "CRITICAL",
 
@@ -416,26 +416,26 @@ class Exploit(Exploit):
     # Class-level Option descriptors. The metaclass collects these into
     # exploit_attributes for tab-completion and show options display.
 
-    # Target host — always OptIP, always defaults to empty string
+    # Target host - always OptIP, always defaults to empty string
     target      = OptIP("",    "Target device IP or hostname")
 
-    # Protocol port — use the standard port for the target protocol
+    # Protocol port - use the standard port for the target protocol
     port        = OptPort(102,  "S7comm port (default: 102)")
 
     # Example integer option with bounds
     timeout     = OptInteger(5, "Connection timeout (seconds)", min_value=1, max_value=60)
     slot        = OptInteger(2, "PLC rack/slot number", min_value=0, max_value=31)
 
-    # SafeMode — MUST be declared in every module. Default MUST be True.
+    # SafeMode - MUST be declared in every module. Default MUST be True.
     simulate    = OptBool(True,  "Simulate mode: describe action without sending payload")
 
-    # DestructiveMode — MUST be declared in every module. Default MUST be False.
-    destructive = OptBool(False, "Enable live exploitation — may cause irreversible damage")
+    # DestructiveMode - MUST be declared in every module. Default MUST be False.
+    destructive = OptBool(False, "Enable live exploitation - may cause irreversible damage")
 
     # ── check() method ───────────────────────────────────────────────────────
     @mute  # Always decorate check() with @mute for thread-safe scanning
     def check(self) -> bool:
-        """Read-only connectivity probe — never sends exploit payloads.
+        """Read-only connectivity probe - never sends exploit payloads.
 
         Returns True if the target appears reachable and potentially vulnerable.
         Returns False on any error, unreachable target, or safe response.
@@ -467,17 +467,17 @@ class Exploit(Exploit):
             print_error("Set 'target' option first. Example: set target 192.168.1.100")
             return
 
-        # Step 2: Simulate path — no packets sent to the target
+        # Step 2: Simulate path - no packets sent to the target
         if self.simulate:
             DestructiveGate.print_simulation(
                 description=(
-                    "CVE-YYYY-NNNNN Vendor Product Model — Stack Buffer Overflow\n\n"
+                    "CVE-YYYY-NNNNN Vendor Product Model - Stack Buffer Overflow\n\n"
                     "Step 1: Connect to {}:{} (S7comm)\n"
                     "Step 2: Send malformed firmware update PDU (0x72 function)\n"
                     "Step 3: Overwrite return address with shellcode pointer\n"
                     "Step 4: Shellcode spawns reverse shell on port 4444\n"
                     "Physical Impact: PLC crash or arbitrary code execution in "
-                    "firmware context — may stop controlled process"
+                    "firmware context - may stop controlled process"
                 ).format(self.target, self.port),
                 payload_hex=(
                     "03 00 00 XX 02 F0 80 72 01 00 00 00 00 00 "
@@ -510,7 +510,7 @@ class Exploit(Exploit):
             resp = s.recv(32)
 
             if len(resp) < 7:
-                print_error("Unexpected COTP response — target may not be vulnerable.")
+                print_error("Unexpected COTP response - target may not be vulnerable.")
                 return
 
             # Send S7comm setup communication
@@ -532,7 +532,7 @@ class Exploit(Exploit):
                 )
             )
         except ConnectionRefusedError:
-            print_error("Connection refused — port {} may be closed.".format(self.port))
+            print_error("Connection refused - port {} may be closed.".format(self.port))
         except socket.timeout:
             print_error("Connection timed out after {}s.".format(self.timeout))
         except Exception as exc:
@@ -551,7 +551,7 @@ The table below documents all 14 valid keys.
 |-----|------|----------|-------------|-------------|
 | `name` | `str` | Yes | Any string | Human-readable module name. Shown in `show info`, `search`, and the prompt banner. Example: `"CVE-2021-22681 Siemens S7-1200/1500 Hardcoded Key"` |
 | `description` | `str` | Yes | Any string | One to three sentences describing the vulnerability and what the module does. Avoid marketing language. |
-| `authors` | `tuple[str]` | Yes | Tuple of strings | Author(s) of this module. Must be a `tuple`, not a `list`. Single author: `("Name",)` — note the trailing comma. |
+| `authors` | `tuple[str]` | Yes | Tuple of strings | Author(s) of this module. Must be a `tuple`, not a `list`. Single author: `("Name",)` - note the trailing comma. |
 | `references` | `tuple[str]` | Yes | Tuple of URL strings | Advisory URLs, PoC repositories, vendor security bulletins, academic papers, or standards references. |
 | `devices` | `tuple[str]` | Yes | Tuple of strings | Affected devices or software, including version range when known. Example: `("Siemens S7-1200 v1.0-v4.1", "Siemens S7-1500 v1.0-v2.8")` |
 | `impact` | `str` | Yes | `INFO`, `READ`, `LOW`, `MEDIUM`, `HIGH`, `CRITICAL`, `CATASTROPHIC` | Determines the DestructiveGate confirmation tier. See Impact Levels below. |
@@ -570,8 +570,8 @@ The `impact` key determines how much confirmation IXF requires before allowing l
 
 | Level | Exact Description String (from code) | When It Applies | Confirmation Required | Example Modules |
 |-------|---------------------------------------|----------------|----------------------|-----------------|
-| `INFO` | `"Passive observation only. No packets sent."` | Modules that never touch the network. Assessment tools, compliance checklists, coverage reports, documentation generators. | Automatic — no prompt | `assessment/mitre_ics/coverage_report`, `assessment/ir/iacs_ir_playbook` |
-| `READ` | `"Read-only queries. No state change on target."` | Modules that read data from the target but never write or modify anything. Protocol scanners, banner grabbers, register readers. | Automatic — no prompt | `scanners/ics/modbus_detect`, `scanners/ics/s7_enumerate`, `assessment/mitre_ics/t0801_monitor_process_state` |
+| `INFO` | `"Passive observation only. No packets sent."` | Modules that never touch the network. Assessment tools, compliance checklists, coverage reports, documentation generators. | Automatic - no prompt | `assessment/mitre_ics/coverage_report`, `assessment/ir/iacs_ir_playbook` |
+| `READ` | `"Read-only queries. No state change on target."` | Modules that read data from the target but never write or modify anything. Protocol scanners, banner grabbers, register readers. | Automatic - no prompt | `scanners/ics/modbus_detect`, `scanners/ics/s7_enumerate`, `assessment/mitre_ics/t0801_monitor_process_state` |
 | `LOW` | `"Non-destructive write. Reversible."` | Modules that write non-critical data. LED toggle, test coil write, non-production tag update. The change is easily reversed. | Warning displayed, no confirmation required | `exploits/protocols/modbus/modbus_single_coil_write`, `assessment/mitre_ics/t0835_manipulate_io_image` |
 | `MEDIUM` | `"Process parameter modification. May affect operation. Reversible."` | Modules that change process parameters (setpoints, timers, counters). The change may affect the running process but can be reversed by an operator. | Press Enter to confirm | `exploits/protocols/modbus/modbus_fc16_write_registers`, `assessment/mitre_ics/t0836_modify_parameter` |
 | `HIGH` | `"Device restart / process stop. Requires operator intervention."` | Modules that stop a PLC CPU, trigger a device restart, or halt a controlled process. Recovery requires physical or remote operator action. | Type exact confirmation string | `exploits/protocols/s7/s7_stop_cpu`, `creds/siemens/s7_default_creds`, `assessment/mitre_ics/t0806_brute_force_io` |
@@ -608,8 +608,8 @@ OptIP(default: str, description: str, *, advanced: bool = False)
 **Validation logic:**
 1. Strip whitespace from input.
 2. If empty string, accept immediately.
-3. Try `ipaddress.ip_address(value)` — accepts any valid IPv4 or IPv6 address.
-4. If that fails, check that every character is alphanumeric or in `{'-', '_', '.'}` — accepts hostnames and FQDN.
+3. Try `ipaddress.ip_address(value)` - accepts any valid IPv4 or IPv6 address.
+4. If that fails, check that every character is alphanumeric or in `{'-', '_', '.'}` - accepts hostnames and FQDN.
 5. If step 4 also fails, raise `OptionValidationError`.
 
 **Valid inputs:**
@@ -673,7 +673,7 @@ OptPort(default: int, description: str, *, advanced: bool = False)
 ```
 
 **Validation logic:**
-1. Try `int(value)` — accepts any integer-coercible input including string `"502"`.
+1. Try `int(value)` - accepts any integer-coercible input including string `"502"`.
 2. If conversion fails, raise `OptionValidationError`.
 3. Check `1 <= port <= 65535`. If outside range, raise `OptionValidationError`.
 
@@ -873,7 +873,7 @@ ixf (DNP3 Flood) > set rate_limit 1,5
 
 **File:** `industrialxpl/core/exploit/option.py`
 
-Accepts any string value. No format validation is performed. The `validate()` method calls `str(value)` unconditionally — this means `OptString` never raises `OptionValidationError` on its own.
+Accepts any string value. No format validation is performed. The `validate()` method calls `str(value)` unconditionally - this means `OptString` never raises `OptionValidationError` on its own.
 
 **Constructor:**
 ```python
@@ -881,7 +881,7 @@ OptString(default: str, description: str, *, advanced: bool = False)
 ```
 
 **Validation logic:**
-1. Return `str(value)` — always succeeds.
+1. Return `str(value)` - always succeeds.
 
 **Declaration examples:**
 
@@ -971,7 +971,7 @@ OptBool(default: bool, description: str, *, advanced: bool = False)
 **Declaration examples:**
 ```python
 simulate    = OptBool(True,  "Simulate mode: describe action without sending payload (default: True)")
-destructive = OptBool(False, "Enable live exploitation — may cause irreversible damage")
+destructive = OptBool(False, "Enable live exploitation - may cause irreversible damage")
 verbose     = OptBool(False, "Enable verbose debug output", advanced=True)
 ssl         = OptBool(False, "Use TLS/SSL for connection")
 verify_cert = OptBool(True,  "Verify TLS certificate", advanced=True)
@@ -1014,10 +1014,10 @@ OptMAC(default: str, description: str, *, advanced: bool = False)
 **Validation logic:**
 1. Strip whitespace.
 2. Replace all `-` with `:` to normalize separators.
-3. Split on `:` — must produce exactly 6 parts.
+3. Split on `:` - must produce exactly 6 parts.
 4. Each part must be exactly 2 characters long (hex digits).
 5. If steps 3-4 fail, raise `OptionValidationError`.
-6. Return `value.lower()` — normalized to lowercase.
+6. Return `value.lower()` - normalized to lowercase.
 
 Note: The validator does not verify that each octet contains only valid hex characters (0-9, a-f). It validates structural format only (6 groups of 2 characters). This is an intentional design choice to allow testing with non-standard MAC patterns.
 
@@ -1139,7 +1139,7 @@ ixf (S7 Default Creds) > set wordlist file:///opt/missing.txt
 
 **File:** `industrialxpl/core/exploit/option.py`
 
-Accepts an encoder name string. No format validation is performed — the value is passed directly to the encoding pipeline. This is the most permissive option type.
+Accepts an encoder name string. No format validation is performed - the value is passed directly to the encoding pipeline. This is the most permissive option type.
 
 **Constructor:**
 ```python
@@ -1147,7 +1147,7 @@ OptEncoder(default: str, description: str, *, advanced: bool = False)
 ```
 
 **Validation logic:**
-1. Return `str(value).strip()` — always succeeds.
+1. Return `str(value).strip()` - always succeeds.
 
 **Common encoder values:**
 
@@ -1250,7 +1250,7 @@ class Exploit(Exploit):
 
     @mute
     def check(self) -> bool:
-        """This method runs silently — all print_* calls are suppressed."""
+        """This method runs silently - all print_* calls are suppressed."""
         if not self.target:
             return False
         try:
@@ -1264,7 +1264,7 @@ class Exploit(Exploit):
             return False
 
     def run(self) -> None:
-        """This method is NOT muted — output is visible."""
+        """This method is NOT muted - output is visible."""
         # print_* calls here appear in the terminal normally
         ...
 ```
@@ -1318,7 +1318,7 @@ class Exploit(Exploit):
 
 **Target file example (`/opt/targets.txt`):**
 ```
-# Modbus TCP devices — Plant Floor A
+# Modbus TCP devices - Plant Floor A
 192.168.10.1
 192.168.10.2
 192.168.10.3
@@ -1362,8 +1362,8 @@ ixf (Modbus Detect) > run
 
 **Strict requirements:**
 
-1. Must be decorated with `@mute` — always.
-2. Must return `bool` — `True` if target appears present/vulnerable, `False` otherwise.
+1. Must be decorated with `@mute` - always.
+2. Must return `bool` - `True` if target appears present/vulnerable, `False` otherwise.
 3. Must never send exploit payloads. Only benign probes: TCP connect, banner grab, minimal read-only protocol PDU.
 4. Must handle all exceptions internally and return `False` on any error. Never let an exception propagate to the caller.
 5. Must return `False` immediately if `self.target` is empty.
@@ -1381,8 +1381,8 @@ def check(self) -> bool:
     indicates a live Modbus device.
 
     Returns:
-        True  — Target responded with a Modbus-shaped response.
-        False — Target unreachable, wrong port, or no Modbus service.
+        True  - Target responded with a Modbus-shaped response.
+        False - Target unreachable, wrong port, or no Modbus service.
     """
     # Guard: target must be set before attempting connection
     if not self.target:
@@ -1432,7 +1432,7 @@ def check(self) -> bool:
 ```python
 @mute
 def check(self) -> bool:
-    """Trivial check — returns True if target is set."""
+    """Trivial check - returns True if target is set."""
     return bool(self.target)
 ```
 
@@ -1475,7 +1475,7 @@ def check(self) -> bool:
 1. Must validate `self.target` first and return with an error if unset.
 2. If `self.simulate` is `True`: call `DestructiveGate.print_simulation()` and return immediately. No packets sent.
 3. If `self.simulate` is `False`: implement the actual exploit, scan, or assessment logic.
-4. Must not call `DestructiveGate.require_confirmation()` directly — the shell handles that gate before calling `run()`.
+4. Must not call `DestructiveGate.require_confirmation()` directly - the shell handles that gate before calling `run()`.
 5. Should use only `print_status`, `print_success`, `print_error`, `print_warning`, `print_info` for output.
 
 **Complete annotated run() with simulate / live branches:**
@@ -1499,17 +1499,17 @@ def run(self) -> None:
         )
         return
 
-    # ── Simulate path — absolutely no packets ────────────────────────────
+    # ── Simulate path - absolutely no packets ────────────────────────────
     if self.simulate:
         DestructiveGate.print_simulation(
             description=(
-                "FrostyGoop TTP (2024) — Sandworm/GRU (Russia)\n\n"
+                "FrostyGoop TTP (2024) - Sandworm/GRU (Russia)\n\n"
                 "Phase 1 [Discovery]: Scan for Modbus TCP port 502 on {target}\n"
                 "Phase 2 [FC16 Write]: Write 0x0000 to holding registers "
                 "(setpoint disable)\n"
                 "Phase 3 [Loop]: Repeat write every 30 seconds to prevent "
                 "manual recovery\n"
-                "Physical Impact: Heating controllers offline — historical "
+                "Physical Impact: Heating controllers offline - historical "
                 "impact: 600 apartments in Lviv, Ukraine lost heat for 2 days "
                 "(January 2024)"
             ).format(target=self.target),
@@ -1571,15 +1571,15 @@ def run(self) -> None:
 
         if len(response) >= 8 and response[7] == 0x10:
             print_success(
-                "[FrostyGoop] FC16 write confirmed — heating registers "
+                "[FrostyGoop] FC16 write confirmed - heating registers "
                 "zeroed on {}:{}".format(self.target, self.port)
             )
         else:
-            print_error("[FrostyGoop] Unexpected response — write may have failed.")
+            print_error("[FrostyGoop] Unexpected response - write may have failed.")
 
     except ConnectionRefusedError:
         print_error(
-            "Connection refused on {}:{} — Modbus port may be closed.".format(
+            "Connection refused on {}:{} - Modbus port may be closed.".format(
                 self.target, self.port
             )
         )
@@ -1613,7 +1613,7 @@ def get_info(self) -> dict:
 
 **How it works:**
 
-1. Iterates through the class's Method Resolution Order (MRO) — the list of classes from most-derived to base.
+1. Iterates through the class's Method Resolution Order (MRO) - the list of classes from most-derived to base.
 2. For each class in the MRO, constructs the mangled key name `_{ClassName}__info__`.
 3. Checks `cls.__dict__` directly (not `getattr`, to avoid descriptor lookup).
 4. Returns the first non-None value found.
@@ -1621,7 +1621,7 @@ def get_info(self) -> dict:
 
 **Why MRO traversal is required:** When `class Exploit(Exploit)` is defined in a module file, both the module class and the base class are named `Exploit`. The metaclass stores the module's `__info__` as `_Exploit__info__` on the module class. The base `Exploit` class's `__info__` (if any) is stored as `_Exploit__info__` on the base class. The MRO traversal returns the most-derived class's dictionary first.
 
-**Usage — shell `show info` command:**
+**Usage - shell `show info` command:**
 ```
 ixf (FrostyGoop Modbus Heating) > show info
 
@@ -1631,7 +1631,7 @@ ixf (FrostyGoop Modbus Heating) > show info
   Description: Replicates FrostyGoop TTP used by Sandworm/GRU in
                January 2024 to disable heating in 600 Lviv apartments.
   Authors:     Andre Henrique (@mrhenrike) | Uniao Geek
-  CVE:         N/A (malware TTP — no CVE assigned)
+  CVE:         N/A (malware TTP - no CVE assigned)
   CVSS:        N/A
   Severity:    CATASTROPHIC
   Impact:      CATASTROPHIC
@@ -1800,7 +1800,7 @@ def import_exploit(path: str) -> type
 **Return value:** The uninstantiated class (`type`). Call it with `()` to create an instance.
 
 **Raises:** `IXFException` if:
-- The path cannot be imported (`ImportError` — module file not found or has syntax errors).
+- The path cannot be imported (`ImportError` - module file not found or has syntax errors).
 - The module does not define any of `Exploit`, `Scanner`, or `Assessment` classes.
 
 **Usage:**
@@ -1830,7 +1830,7 @@ print(info["cvss"])    # 9.8
 reachable = module.check()
 print("Reachable:", reachable)
 
-# Run the exploit (simulate mode — no packets sent)
+# Run the exploit (simulate mode - no packets sent)
 module.run()
 ```
 
@@ -2167,7 +2167,7 @@ class Exploit(Exploit):
                     "(disclosed in ICSA-21-131-03)\n"
                     "Step 5: Download attacker-controlled STL/ladder program "
                     "to PLC CPU slot {}\n"
-                    "Step 6: Initiate cold restart — PLC runs attacker logic\n"
+                    "Step 6: Initiate cold restart - PLC runs attacker logic\n"
                     "Physical Impact: Complete loss of control over "
                     "the industrial process managed by this PLC"
                 ).format(self.target, self.port, self.slot),
@@ -2201,7 +2201,7 @@ class Exploit(Exploit):
             resp = sock.recv(32)
 
             if not (len(resp) > 5 and resp[0] == 0x03 and resp[5] == 0xD0):
-                print_error("COTP handshake failed — target may not be an S7 device.")
+                print_error("COTP handshake failed - target may not be an S7 device.")
                 sock.close()
                 return
 

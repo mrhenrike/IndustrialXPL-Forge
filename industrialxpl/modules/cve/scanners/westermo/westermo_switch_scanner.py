@@ -1,4 +1,4 @@
-"""IXF Scanner — Westermo Industrial Switch/Router. simulate=True."""
+"""IXF Scanner - Westermo Industrial Switch/Router. simulate=True."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptInteger, mute,

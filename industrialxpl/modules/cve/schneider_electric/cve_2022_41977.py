@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2022-41977 — Schneider Electric EcoStruxure Operator Terminal (HIGH CVSS 7.8).
+"""IXF CVE CVE-2022-41977 - Schneider Electric EcoStruxure Operator Terminal (HIGH CVSS 7.8).
 
 Exploit type: Stack buffer overflow local
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Schneider Electric EcoStruxure Operator Terminal may be present. CVE-2022-41977 HIGH CVSS 7.8.")
+            print_success(f"Port {self.port} open - Schneider Electric EcoStruxure Operator Terminal may be present. CVE-2022-41977 HIGH CVSS 7.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

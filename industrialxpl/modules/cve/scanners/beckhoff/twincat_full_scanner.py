@@ -1,4 +1,4 @@
-"""IXF Scanner — Beckhoff TwinCAT/ADS System Discovery."""
+"""IXF Scanner - Beckhoff TwinCAT/ADS System Discovery."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptInteger, mute,

@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2021-25678 — Siemens SIMATIC NET PC Software (HIGH CVSS 7.5).
+"""IXF CVE CVE-2021-25678 - Siemens SIMATIC NET PC Software (HIGH CVSS 7.5).
 
 Exploit type: Denial of service network
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Siemens SIMATIC NET PC Software may be present. CVE-2021-25678 HIGH CVSS 7.5.")
+            print_success(f"Port {self.port} open - Siemens SIMATIC NET PC Software may be present. CVE-2021-25678 HIGH CVSS 7.5.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

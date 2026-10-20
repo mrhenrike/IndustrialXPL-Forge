@@ -1,7 +1,7 @@
-"""IXF CVE Module — DESIGN-ENIP-NOAUTH — Generic EtherNet/IP CIP all vendors.
+"""IXF CVE Module - DESIGN-ENIP-NOAUTH - Generic EtherNet/IP CIP all vendors.
 
 Severity: HIGH (CVSS 7.5)
-Type: CIP protocol no built-in authentication — unauthenticated command
+Type: CIP protocol no built-in authentication - unauthenticated command
 CISA Advisory: N/A
 
 Level B module: port fingerprint + version context.
@@ -32,16 +32,16 @@ _CVSS = "7.5"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "DESIGN-ENIP-NOAUTH — Generic EtherNet/IP CIP all vendors (HIGH)",
-        "description":   "CIP protocol no built-in authentication — unauthenticated command. "
+        "name":          "DESIGN-ENIP-NOAUTH - Generic EtherNet/IP CIP all vendors (HIGH)",
+        "description":   "CIP protocol no built-in authentication - unauthenticated command. "
                          "Affects Generic EtherNet/IP CIP all vendors. CVSS 7.5 (HIGH). "
                          "Level B: fingerprint + version check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    ("https://nvd.nist.gov/vuln/detail/DESIGN-ENIP-NOAUTH",),
         "devices":       ("Generic EtherNet/IP CIP all vendors",),
         "impact":        "HIGH",
-        "exploit_type":  "CIP protocol no built-in authentication — unauthenticated command",
-        "source_poc":    "Static catalog Level B — set check() target for version confirmation",
+        "exploit_type":  "CIP protocol no built-in authentication - unauthenticated command",
+        "source_poc":    "Static catalog Level B - set check() target for version confirmation",
         "cve":           "DESIGN-ENIP-NOAUTH",
         "cvss":          "7.5",
         "severity":      "HIGH",
@@ -78,7 +78,7 @@ class Exploit(Exploit):
         if self.simulate:
             DestructiveGate.print_simulation(
                 description=(
-                    "DESIGN-ENIP-NOAUTH (HIGH CVSS 7.5): CIP protocol no built-in authentication — unauthenticated command. "
+                    "DESIGN-ENIP-NOAUTH (HIGH CVSS 7.5): CIP protocol no built-in authentication - unauthenticated command. "
                     "Affects: Generic EtherNet/IP CIP all vendors. "
                     f"Would fingerprint {self.target}:{self.port} and confirm if device version "
                     "is in the affected range."
@@ -90,8 +90,8 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for DESIGN-ENIP-NOAUTH...")
         if self.check():
             print_success(
-                f"Service port {self.port} open on {self.target} — Generic EtherNet/IP CIP all vendors may be present. "
-                "DESIGN-ENIP-NOAUTH HIGH CVSS 7.5: CIP protocol no built-in authentication — unauthenticated command. "
+                f"Service port {self.port} open on {self.target} - Generic EtherNet/IP CIP all vendors may be present. "
+                "DESIGN-ENIP-NOAUTH HIGH CVSS 7.5: CIP protocol no built-in authentication - unauthenticated command. "
                 "Manual version verification required to confirm vulnerability."
             )
             print_warning("CISA Advisory: N/A")

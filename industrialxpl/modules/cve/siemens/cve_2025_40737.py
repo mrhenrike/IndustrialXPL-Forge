@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2025-40737 — Siemens SINEC NMS.
+"""IXF CVE Module - CVE-2025-40737 - Siemens SINEC NMS.
 
 Missing authentication 2025
 
@@ -32,8 +32,8 @@ _SEVERITY      = "CRITICAL"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2025-40737 — Siemens SINEC NMS (CRITICAL)",
-        "description":   "Siemens SINEC NMS — Missing authentication 2025. "
+        "name":          "CVE-2025-40737 - Siemens SINEC NMS (CRITICAL)",
+        "description":   "Siemens SINEC NMS - Missing authentication 2025. "
                          "CVSS 9.3 (CRITICAL). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2025-40737...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Siemens SINEC NMS may be present. "
+                f"Port {self.port} open on {self.target} - Siemens SINEC NMS may be present. "
                 "CVE-2025-40737 (CRITICAL CVSS 9.3): Missing authentication 2025. "
                 "Manual version verification required."
             )

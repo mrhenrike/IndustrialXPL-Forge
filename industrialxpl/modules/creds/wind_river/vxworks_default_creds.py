@@ -1,4 +1,4 @@
-"""IXF Default Credentials — Wind River VxWorks RTOS."""
+"""IXF Default Credentials - Wind River VxWorks RTOS."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptString, mute,

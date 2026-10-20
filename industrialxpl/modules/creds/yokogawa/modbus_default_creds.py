@@ -1,4 +1,4 @@
-"""IXF Default Credentials — Yokogawa CENTUM VP / ProSafe-RS. simulate=True."""
+"""IXF Default Credentials - Yokogawa CENTUM VP / ProSafe-RS. simulate=True."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptString, mute,

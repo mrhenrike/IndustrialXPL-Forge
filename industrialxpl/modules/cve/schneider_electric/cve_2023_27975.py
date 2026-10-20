@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2023-27975 — Schneider Electric EcoStruxure Power Automation (CRITICAL CVSS 9.8).
+"""IXF CVE CVE-2023-27975 - Schneider Electric EcoStruxure Power Automation (CRITICAL CVSS 9.8).
 
 Exploit type: Improper authentication RCE
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Schneider Electric EcoStruxure Power Automation may be present. CVE-2023-27975 CRITICAL CVSS 9.8.")
+            print_success(f"Port {self.port} open - Schneider Electric EcoStruxure Power Automation may be present. CVE-2023-27975 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

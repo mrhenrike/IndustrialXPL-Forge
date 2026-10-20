@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""IXF Global Vendors Wave 2 — comprehensive worldwide OT/ICS vendor coverage.
+"""IXF Global Vendors Wave 2 - comprehensive worldwide OT/ICS vendor coverage.
 
 Covers vendors from all regions and market segments not yet in IXF:
   - Process Instrumentation: Endress+Hauser, Vega, Pepperl+Fuchs, Turck, IFM
@@ -23,7 +23,7 @@ MODULES = ROOT / "industrialxpl" / "modules"
 AUTHOR = "Andre Henrique (mrhenrike)"
 
 CVE_T = '''\
-"""IXF {cve} — {vendor} {product}. CVSS {cvss}. simulate=True."""
+"""IXF {cve} - {vendor} {product}. CVSS {cvss}. simulate=True."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, mute,
@@ -67,7 +67,7 @@ class Exploit(Exploit):
 '''
 
 SCANNER_T = '''\
-"""IXF Scanner — {vendor} {product}. simulate=True."""
+"""IXF Scanner - {vendor} {product}. simulate=True."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptInteger, mute,
@@ -171,7 +171,7 @@ BATCH = [
                  80, "9.8", "CRITICAL", "CRITICAL", "Auth bypass web interface",
                  ["https://www.cisa.gov/uscert/ics/advisories/icsa-21-343-02"],
                  ["T0859","T0836"], ["Credential Access"],
-                 "VEGA level/radar sensors web interface authentication bypass — control level setpoints",
+                 "VEGA level/radar sensors web interface authentication bypass - control level setpoints",
                  "Access VEGA sensor web port 80, bypass auth, modify level setpoints and alarm thresholds")),
 
     # ── PEPPERL+FUCHS ──────────────────────────────────────────────────────────
@@ -180,7 +180,7 @@ BATCH = [
                  80, "9.8", "CRITICAL", "CRITICAL", "Command injection RCE",
                  ["https://www.cisa.gov/uscert/ics/advisories/icsa-21-208-01"],
                  ["T0866","T0822"], ["Initial Access"],
-                 "Pepperl+Fuchs IO-Link Master web interface command injection — RCE on industrial gateway",
+                 "Pepperl+Fuchs IO-Link Master web interface command injection - RCE on industrial gateway",
                  "POST crafted request to ICE1 port 80, inject OS commands, RCE on IO-Link master")),
 
     (lambda: scanner("cve/scanners/pepperl_fuchs/pf_io_link_scanner.py",
@@ -204,7 +204,7 @@ BATCH = [
                  80, "9.8", "CRITICAL", "CRITICAL", "SQL injection auth bypass",
                  ["https://www.cisa.gov/uscert/ics/advisories/icsa-23-194-02"],
                  ["T0819","T0832"], ["Initial Access"],
-                 "IFM Electronic ecoomatMobile SQL injection — auth bypass and process data access",
+                 "IFM Electronic ecoomatMobile SQL injection - auth bypass and process data access",
                  "POST SQLi to IFM web interface port 80, bypass auth, read all sensor process data")),
 
     # ── HIMA (Safety Systems) ─────────────────────────────────────────────────
@@ -213,7 +213,7 @@ BATCH = [
                  1089, "9.8", "CRITICAL", "CATASTROPHIC", "PROFIsafe validation bypass",
                  ["https://www.cisa.gov/uscert/ics/advisories/icsa-19-099-01"],
                  ["T0816","T0880"], ["Inhibit Response Function"],
-                 "HIMA safety PLC PROFIsafe validation bypass — disable emergency shutdown systems",
+                 "HIMA safety PLC PROFIsafe validation bypass - disable emergency shutdown systems",
                  "Exploit PROFIsafe validation flaw on HIMA HIMatrix, disable SIS functions, bypass E-Stop")),
 
     (lambda: scanner("cve/scanners/hima/hima_safety_plc_scanner.py",
@@ -228,7 +228,7 @@ BATCH = [
                  80, "9.8", "CRITICAL", "CRITICAL", "Auth bypass web interface",
                  ["https://www.cisa.gov/uscert/ics/advisories/icsa-22-249-01"],
                  ["T0859","T0832"], ["Credential Access"],
-                 "Landis+Gyr E360 smart meter web auth bypass — access meter configuration and consumption data",
+                 "Landis+Gyr E360 smart meter web auth bypass - access meter configuration and consumption data",
                  "Access E360 port 80 without credentials, read meter data, modify tariff settings")),
 
     # ── ITRON (Smart Grid) ────────────────────────────────────────────────────
@@ -255,7 +255,7 @@ BATCH = [
                  80, "9.8", "CRITICAL", "CRITICAL", "Authentication bypass",
                  ["https://www.cisa.gov/uscert/ics/advisories/icsa-23-096-02"],
                  ["T0859","T0836"], ["Credential Access"],
-                 "Hach SC1500 water quality analyzer authentication bypass — modify chlorine/pH setpoints",
+                 "Hach SC1500 water quality analyzer authentication bypass - modify chlorine/pH setpoints",
                  "Access SC1500 web port 80, bypass auth, modify chlorine dosing setpoints and alarm limits")),
 
     # ── PROMINENT (Chemical Dosing) ────────────────────────────────────────────
@@ -264,7 +264,7 @@ BATCH = [
                  80, "9.8", "CRITICAL", "CRITICAL", "Remote code execution",
                  ["https://www.cisa.gov/uscert/ics/advisories/icsa-21-152-01"],
                  ["T0866","T0836"], ["Initial Access"],
-                 "ProMinent Webmaster chemical dosing controller RCE — manipulate chemical feed rates",
+                 "ProMinent Webmaster chemical dosing controller RCE - manipulate chemical feed rates",
                  "Send malformed HTTP to ProMinent Webmaster port 80, RCE, control chemical dosing pumps")),
 
     # ── KONGSBERG MARITIME ────────────────────────────────────────────────────
@@ -273,16 +273,16 @@ BATCH = [
                  443, "9.8", "CRITICAL", "CATASTROPHIC", "Default credentials DP system",
                  ["https://www.cisa.gov/uscert/ics/advisories/icsa-21-152-04"],
                  ["T0859","T0836"], ["Credential Access"],
-                 "Kongsberg K-Pos dynamic positioning system default credentials — ship navigation control",
+                 "Kongsberg K-Pos dynamic positioning system default credentials - ship navigation control",
                  "Access K-Pos web port 443 with default creds, modify DP setpoints, compromise vessel control")),
 
     # ── WARTSILA ──────────────────────────────────────────────────────────────
     (lambda: cve("cve/wartsila/cve_2022_3078_wartsila_ecs_rce.py",
                  "CVE-2022-3078", "Wartsila", "Engine Control System (ECS)",
-                 502, "9.8", "CRITICAL", "CATASTROPHIC", "Modbus missing auth — engine control",
+                 502, "9.8", "CRITICAL", "CATASTROPHIC", "Modbus missing auth - engine control",
                  ["https://www.cisa.gov/uscert/ics/advisories/icsa-22-228-05"],
                  ["T1692.001","T0836"], ["Impair Process Control"],
-                 "Wartsila marine ECS Modbus missing authentication — ship engine control manipulation",
+                 "Wartsila marine ECS Modbus missing authentication - ship engine control manipulation",
                  "Connect Wartsila ECS Modbus TCP port 502, write engine speed setpoints, control ship engines")),
 
     # ── KEYENCE ────────────────────────────────────────────────────────────────
@@ -300,13 +300,13 @@ BATCH = [
                      ["https://www.keyence.com/"],
                      "CVE-2022-21798")),
 
-    # ── CHINT (China — very common in Asia/LATAM) ──────────────────────────────
+    # ── CHINT (China - very common in Asia/LATAM) ──────────────────────────────
     (lambda: cve("cve/chint/cve_2023_28353_chint_ntcp_default_creds.py",
                  "CVE-2023-28353", "CHINT", "NTCP Smart Circuit Breaker",
                  80, "9.8", "CRITICAL", "CRITICAL", "Default credentials IoT/OT device",
                  ["https://www.cisa.gov/uscert/ics/advisories/icsa-23-083-02"],
                  ["T0859","T0836"], ["Credential Access"],
-                 "CHINT smart circuit breaker default credentials — widely deployed in Chinese industrial facilities",
+                 "CHINT smart circuit breaker default credentials - widely deployed in Chinese industrial facilities",
                  "Connect CHINT NTCP web port 80, login admin/admin, control circuit breaker remotely")),
 
     # ── INOVANCE TECHNOLOGY (China) ────────────────────────────────────────────
@@ -333,7 +333,7 @@ BATCH = [
                  80, "9.8", "CRITICAL", "CRITICAL", "Authentication bypass",
                  ["https://www.cisa.gov/uscert/ics/advisories/icsa-23-250-03"],
                  ["T0859","T0836"], ["Credential Access"],
-                 "Sofrel LS-4x RTU (French water network infrastructure) auth bypass — control water valves",
+                 "Sofrel LS-4x RTU (French water network infrastructure) auth bypass - control water valves",
                  "Access Sofrel LS-4x web port 80 without auth, modify water network telemetry setpoints")),
 
     # ── LENZE ─────────────────────────────────────────────────────────────────
@@ -360,7 +360,7 @@ BATCH = [
                  80, "9.8", "CRITICAL", "CRITICAL", "Default credentials building controller",
                  ["https://www.cisa.gov/uscert/ics/advisories/icsa-23-068-02"],
                  ["T0859","T0836"], ["Credential Access"],
-                 "Honeywell Spyder building automation controller default credentials — HVAC control",
+                 "Honeywell Spyder building automation controller default credentials - HVAC control",
                  "Login Spyder web port 80 with default creds, modify building HVAC setpoints and schedules")),
 
     # ── GE VERNOVA / GRID SOLUTIONS ────────────────────────────────────────────
@@ -369,7 +369,7 @@ BATCH = [
                  80, "9.8", "CRITICAL", "CATASTROPHIC", "Unauthenticated RCE power grid HMI",
                  ["https://www.cisa.gov/uscert/ics/advisories/icsa-24-037-02"],
                  ["T0866","T0827"], ["Initial Access"],
-                 "GE Vernova Grid Solutions SCADA HMI unauthenticated RCE — power grid substation control",
+                 "GE Vernova Grid Solutions SCADA HMI unauthenticated RCE - power grid substation control",
                  "Send crafted request to Grid Solutions HMI port 80, RCE, control power grid substations")),
 
     # ── BENTLEY SYSTEMS ────────────────────────────────────────────────────────
@@ -378,7 +378,7 @@ BATCH = [
                  80, "9.8", "CRITICAL", "CRITICAL", "Remote code execution water management",
                  ["https://www.cisa.gov/uscert/ics/advisories/icsa-23-220-02"],
                  ["T0866","T0836"], ["Initial Access"],
-                 "Bentley Systems AMULET water management RCE — control water distribution networks",
+                 "Bentley Systems AMULET water management RCE - control water distribution networks",
                  "Send malformed HTTP to AMULET port 80, buffer overflow, RCE on water management server")),
 
     # ── NATIONAL INSTRUMENTS (NI) ──────────────────────────────────────────────
@@ -402,7 +402,7 @@ BATCH = [
                  80, "9.8", "CRITICAL", "CRITICAL", "Command injection",
                  ["https://www.cisa.gov/uscert/ics/advisories/icsa-22-060-01"],
                  ["T0866","T0822"], ["Initial Access"],
-                 "Digi ConnectME serial-to-IP gateway web command injection — pivot to OT serial devices",
+                 "Digi ConnectME serial-to-IP gateway web command injection - pivot to OT serial devices",
                  "POST to ConnectME admin web port 80, inject OS commands, RCE on serial gateway")),
 
     # ── CARLO GAVAZZI ─────────────────────────────────────────────────────────
@@ -411,7 +411,7 @@ BATCH = [
                  502, "9.8", "CRITICAL", "CRITICAL", "Default Modbus credentials",
                  ["https://www.cisa.gov/uscert/ics/advisories/icsa-21-308-03"],
                  ["T0859","T0836"], ["Credential Access"],
-                 "Carlo Gavazzi RCO controller default Modbus credentials — widely used in Europe for energy/building",
+                 "Carlo Gavazzi RCO controller default Modbus credentials - widely used in Europe for energy/building",
                  "Connect Carlo Gavazzi Modbus TCP port 502, default creds, control energy management system")),
 
     # ── SCHWEITZER ENGINEERING (additional) ────────────────────────────────────
@@ -420,7 +420,7 @@ BATCH = [
                  443, "9.1", "CRITICAL", "CATASTROPHIC", "Auth bypass substation SDN",
                  ["https://www.cisa.gov/uscert/ics/advisories/icsa-23-166-02"],
                  ["T0859","T0827"], ["Credential Access"],
-                 "Schweitzer SEL-5056 SDN switch auth bypass — substation network control",
+                 "Schweitzer SEL-5056 SDN switch auth bypass - substation network control",
                  "Access SEL-5056 port 443 without auth, modify SDN switching rules, disrupt substation comms")),
 
     # ── YOKOGAWA (additional) ─────────────────────────────────────────────────
@@ -429,7 +429,7 @@ BATCH = [
                  2101, "9.8", "CRITICAL", "CRITICAL", "Stack overflow RCE in RTU",
                  ["https://www.yokogawa.com/security-advisory/2023/"],
                  ["T0866","T0836"], ["Initial Access"],
-                 "Yokogawa STARDOM FCN/FCJ RTU stack overflow via crafted network packet — RCE",
+                 "Yokogawa STARDOM FCN/FCJ RTU stack overflow via crafted network packet - RCE",
                  "Send oversized packet to STARDOM RTU port 2101, stack overflow, RCE on RTU")),
 
     # ── ROCKWELL (additional 2024/2025) ────────────────────────────────────────
@@ -465,7 +465,7 @@ BATCH = [
                  4840, "9.1", "CRITICAL", "CATASTROPHIC", "Safety system bypass OPC UA",
                  ["https://search.abb.com/library/Download.aspx?DocumentID=9AKK108466A7002"],
                  ["T0816","T0880"], ["Inhibit Response Function"],
-                 "ABB System 800xA Safety OPC UA missing auth — bypass safety interlocks via OPC UA",
+                 "ABB System 800xA Safety OPC UA missing auth - bypass safety interlocks via OPC UA",
                  "Connect 800xA Safety OPC UA port 4840, write safety tags, disable emergency shutdowns")),
 
     # ── EMERSON (additional) ──────────────────────────────────────────────────

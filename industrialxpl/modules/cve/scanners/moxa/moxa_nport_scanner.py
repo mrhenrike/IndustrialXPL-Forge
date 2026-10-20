@@ -1,4 +1,4 @@
-"""IXF Scanner — Moxa NPort/MGate Serial Gateway Discovery."""
+"""IXF Scanner - Moxa NPort/MGate Serial Gateway Discovery."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptInteger, mute,

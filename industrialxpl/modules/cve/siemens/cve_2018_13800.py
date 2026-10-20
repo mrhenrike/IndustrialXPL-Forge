@@ -45,4 +45,4 @@ class Exploit(Exploit):
                 description=f"CVE-2018-13800: {self.target}:{self.port}.  Remote code execution arbitrary file upload. CVSS 9.8.",
                 mitre_techniques=["T0883"],
             ); return
-        print_success(f"CVE-2018-13800 CRITICAL — port {self.port} open.") if self.check() else print_error("Not responding.")
+        print_success(f"CVE-2018-13800 CRITICAL - port {self.port} open.") if self.check() else print_error("Not responding.")

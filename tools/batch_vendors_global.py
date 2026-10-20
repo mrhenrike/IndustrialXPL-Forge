@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""IXF Global Vendor Coverage — ALL OT/ICS/SCADA/HMI manufacturers on the planet.
+"""IXF Global Vendor Coverage - ALL OT/ICS/SCADA/HMI manufacturers on the planet.
 
 Creates scan, check, security assessment, and CVE exploitation modules for:
   - Japan/Asia: Yokogawa, Fuji Electric, Keyence, Panasonic, LS Electric, Delta, Fatek
@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 MODULES_DIR = ROOT / "industrialxpl" / "modules" / "cve"
 
-CVE_TEMPLATE = '''"""IXF CVE Module — {cve} ({vendor} {product}).
+CVE_TEMPLATE = '''"""IXF CVE Module - {cve} ({vendor} {product}).
 
 CVSS: {cvss} ({severity}) | CWE: {cwe}
 Affected: {affected}
@@ -40,7 +40,7 @@ from industrialxpl.core.exploit import (
 
 class Exploit(Exploit):
     __info__ = {{
-        "name":             "{cve} — {vendor} {product} {vuln_type}",
+        "name":             "{cve} - {vendor} {product} {vuln_type}",
         "description":      "{short_desc}",
         "authors":          ("Andre Henrique (@mrhenrike)",),
         "references":       {refs},
@@ -84,7 +84,7 @@ class Exploit(Exploit):
         {live_code}
 '''
 
-SCANNER_TEMPLATE = '''"""IXF Scanner — {vendor} {product} Discovery & Security Assessment.
+SCANNER_TEMPLATE = '''"""IXF Scanner - {vendor} {product} Discovery & Security Assessment.
 
 Discovers and fingerprints {vendor} {product} devices on the network.
 Checks for: {checks}
@@ -207,13 +207,13 @@ CVES = [
          cve="CVE-2023-6448", vendor="Unitronics", product="Unistream PLC",
          port=20256, cvss=10.0, severity="CRITICAL", cwe="CWE-1188",
          affected="Unistream PLC all firmware",
-         vuln_type="Default credentials — PLC full control",
-         short_desc="Unitronics Unistream default creds (CISA alert 2023) — water utilities targeted, CVSS 10.0.",
+         vuln_type="Default credentials - PLC full control",
+         short_desc="Unitronics Unistream default creds (CISA alert 2023) - water utilities targeted, CVSS 10.0.",
          simulation_steps=(
              "Step 1: Connect to Unistream PLC management on TCP/20256\n"
              "Step 2: Authenticate with default credentials (1111 or empty password)\n"
-             "Step 3: Full PLC control — read/write I/O, change setpoints\n"
-             "Step 4: Target: water/wastewater PLCs — CISA/FBI emergency advisory Dec 2023"
+             "Step 3: Full PLC control - read/write I/O, change setpoints\n"
+             "Step 4: Target: water/wastewater PLCs - CISA/FBI emergency advisory Dec 2023"
          ),
          poc_ref="https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-335a",
          refs=["https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-335a",
@@ -231,11 +231,11 @@ CVES = [
              "Step 1: Connect to Unitronics Vision on PCOM UDP/IP port 20256\n"
              "Step 2: Send PCOM protocol command without authentication\n"
              "Step 3: Execute arbitrary commands via PCOM command injection\n"
-             "Step 4: Full PLC process control — write coils, registers, I/O"
+             "Step 4: Full PLC process control - write coils, registers, I/O"
          ),
          poc_ref="https://www.cisa.gov/uscert/ics/advisories/icsa-24-016-01",
          refs=["https://www.cisa.gov/uscert/ics/advisories/icsa-24-016-01"],
-         impact="CRITICAL", exploit_type="Missing Authentication — RCE",
+         impact="CRITICAL", exploit_type="Missing Authentication - RCE",
          mitre=["T0866","T0836"], tactics=["Initial Access"]),
 
     # ── YOKOGAWA ─────────────────────────────────────────────────────────────
@@ -243,7 +243,7 @@ CVES = [
          cve="CVE-2022-30993", vendor="Yokogawa", product="FAST/TOOLS SCADA",
          port=80, cvss=9.8, severity="CRITICAL", cwe="CWE-611",
          affected="FAST/TOOLS R9.01 to R10.04",
-         vuln_type="XML External Entity (XXE) injection — RCE",
+         vuln_type="XML External Entity (XXE) injection - RCE",
          short_desc="Yokogawa FAST/TOOLS XXE injection leading to server-side file disclosure and RCE.",
          simulation_steps=(
              "Step 1: Send crafted XML request to FAST/TOOLS web service\n"
@@ -260,17 +260,17 @@ CVES = [
          cve="CVE-2023-35984", vendor="Yokogawa", product="CENTUM VP DCS",
          port=20111, cvss=9.8, severity="CRITICAL", cwe="CWE-120",
          affected="CENTUM VP R6.01.10 to R6.10.00",
-         vuln_type="Buffer overflow in Vnet/IP — RCE",
-         short_desc="Yokogawa CENTUM VP Vnet/IP buffer overflow — unauthenticated RCE on DCS controller.",
+         vuln_type="Buffer overflow in Vnet/IP - RCE",
+         short_desc="Yokogawa CENTUM VP Vnet/IP buffer overflow - unauthenticated RCE on DCS controller.",
          simulation_steps=(
              "Step 1: Send oversized Vnet/IP frame to CENTUM VP on port 20111\n"
              "Step 2: Buffer overflow in Vnet/IP protocol handler\n"
              "Step 3: Overwrite return address in DCS process\n"
-             "Step 4: Remote code execution — DCS controller compromised"
+             "Step 4: Remote code execution - DCS controller compromised"
          ),
          poc_ref="https://www.yokogawa.com/security-advisory/",
          refs=["https://nvd.nist.gov/vuln/detail/CVE-2023-35984"],
-         impact="CRITICAL", exploit_type="Buffer Overflow — RCE",
+         impact="CRITICAL", exploit_type="Buffer Overflow - RCE",
          mitre=["T0866"], tactics=["Initial Access"]),
 
     # ── EMERSON ──────────────────────────────────────────────────────────────
@@ -278,13 +278,13 @@ CVES = [
          cve="CVE-2022-29965", vendor="Emerson", product="ROC800 RTU",
          port=4000, cvss=9.8, severity="CRITICAL", cwe="CWE-798",
          affected="ROC800 all firmware versions",
-         vuln_type="Hardcoded credentials — ROC protocol",
+         vuln_type="Hardcoded credentials - ROC protocol",
          short_desc="Emerson ROC800 RTU hardcoded credentials allow full ROC protocol access.",
          simulation_steps=(
              "Step 1: Connect to ROC800 on TCP/4000 (ROC+ protocol)\n"
              "Step 2: Authenticate with hardcoded credentials (published in CVE)\n"
              "Step 3: Read/write all ROC800 I/O and configuration\n"
-             "Step 4: Used in oil & gas SCADA — pipeline measurement RTUs"
+             "Step 4: Used in oil & gas SCADA - pipeline measurement RTUs"
          ),
          poc_ref="https://www.cisa.gov/uscert/ics/advisories/icsa-22-200-03",
          refs=["https://www.cisa.gov/uscert/ics/advisories/icsa-22-200-03"],
@@ -295,8 +295,8 @@ CVES = [
          cve="CVE-2020-10636", vendor="Emerson", product="DeltaV DCS Web UI",
          port=80, cvss=7.5, severity="HIGH", cwe="CWE-22",
          affected="DeltaV v11.3.1 to v14.FP4",
-         vuln_type="Path traversal — arbitrary file read",
-         short_desc="Emerson DeltaV web interface path traversal — read arbitrary files including credentials.",
+         vuln_type="Path traversal - arbitrary file read",
+         short_desc="Emerson DeltaV web interface path traversal - read arbitrary files including credentials.",
          simulation_steps=(
              "Step 1: Send HTTP GET to DeltaV web UI on port 80\n"
              "Step 2: Use path traversal: /../../DeltaV/OPC/etc/passwd\n"
@@ -312,17 +312,17 @@ CVES = [
          cve="CVE-2022-30311", vendor="Emerson", product="Rosemount 370XA Analyzer",
          port=502, cvss=9.8, severity="CRITICAL", cwe="CWE-119",
          affected="Rosemount 370XA Gas Chromatograph",
-         vuln_type="Memory corruption — RCE via Modbus",
-         short_desc="Emerson Rosemount 370XA process gas analyzer memory corruption via Modbus — RCE.",
+         vuln_type="Memory corruption - RCE via Modbus",
+         short_desc="Emerson Rosemount 370XA process gas analyzer memory corruption via Modbus - RCE.",
          simulation_steps=(
              "Step 1: Connect to Rosemount 370XA on Modbus TCP port 502\n"
              "Step 2: Send crafted Modbus request with oversized payload\n"
              "Step 3: Memory corruption in Modbus handler\n"
-             "Step 4: RCE on gas chromatograph — affects gas analysis accuracy"
+             "Step 4: RCE on gas chromatograph - affects gas analysis accuracy"
          ),
          poc_ref="https://www.cisa.gov/uscert/ics/advisories/icsa-22-237-03",
          refs=["https://www.cisa.gov/uscert/ics/advisories/icsa-22-237-03"],
-         impact="CRITICAL", exploit_type="Memory Corruption — RCE",
+         impact="CRITICAL", exploit_type="Memory Corruption - RCE",
          mitre=["T0866","T0832"], tactics=["Initial Access"]),
 
     # ── DELTA ELECTRONICS (Taiwan) ────────────────────────────────────────────
@@ -330,34 +330,34 @@ CVES = [
          cve="CVE-2021-26415", vendor="Delta Electronics", product="DIAEnergie",
          port=8080, cvss=9.8, severity="CRITICAL", cwe="CWE-89",
          affected="DIAEnergie 1.7.5 and earlier",
-         vuln_type="SQL injection — authentication bypass + RCE",
-         short_desc="Delta Electronics DIAEnergie SQL injection — auth bypass and OS command execution.",
+         vuln_type="SQL injection - authentication bypass + RCE",
+         short_desc="Delta Electronics DIAEnergie SQL injection - auth bypass and OS command execution.",
          simulation_steps=(
              "Step 1: Navigate to DIAEnergie login page on port 8080\n"
              "Step 2: Inject SQL payload: admin'-- in username field\n"
-             "Step 3: Authentication bypassed — access energy management system\n"
+             "Step 3: Authentication bypassed - access energy management system\n"
              "Step 4: Exploit stored proc for OS command execution"
          ),
          poc_ref="https://www.cisa.gov/uscert/ics/advisories/icsa-21-076-01",
          refs=["https://www.cisa.gov/uscert/ics/advisories/icsa-21-076-01"],
-         impact="CRITICAL", exploit_type="SQL Injection — Auth Bypass",
+         impact="CRITICAL", exploit_type="SQL Injection - Auth Bypass",
          mitre=["T0866","T0819"], tactics=["Initial Access"]),
 
     dict(subdir="delta_electronics", filename="cve_2021_38405_dopsoft_hmi_bof.py",
          cve="CVE-2021-38405", vendor="Delta Electronics", product="DOPSoft HMI",
          port=80, cvss=9.8, severity="CRITICAL", cwe="CWE-121",
          affected="DOPSoft 2.00.07 and earlier",
-         vuln_type="Stack-based buffer overflow — RCE via HMI file",
+         vuln_type="Stack-based buffer overflow - RCE via HMI file",
          short_desc="Delta Electronics DOPSoft HMI stack overflow when processing malformed project files.",
          simulation_steps=(
              "Step 1: Craft malicious DOPSoft project file (.dop)\n"
              "Step 2: Send to operator via spearphishing or web\n"
              "Step 3: Operator opens .dop file in DOPSoft\n"
-             "Step 4: Stack buffer overflow — RCE on HMI workstation"
+             "Step 4: Stack buffer overflow - RCE on HMI workstation"
          ),
          poc_ref="https://www.cisa.gov/uscert/ics/advisories/icsa-21-259-01",
          refs=["https://www.cisa.gov/uscert/ics/advisories/icsa-21-259-01"],
-         impact="CRITICAL", exploit_type="Stack Buffer Overflow — RCE",
+         impact="CRITICAL", exploit_type="Stack Buffer Overflow - RCE",
          mitre=["T0865","T0866"], tactics=["Initial Access"]),
 
     dict(subdir="delta_electronics", filename="cve_2021_43548_dvp_hardcoded_creds.py",
@@ -370,7 +370,7 @@ CVES = [
              "Step 1: Connect to Delta DVP PLC on Modbus TCP port 502\n"
              "Step 2: Use hardcoded engineering credentials (published in advisory)\n"
              "Step 3: Read/write all I/O coils and holding registers\n"
-             "Step 4: Modify process setpoints — manufacturing process control"
+             "Step 4: Modify process setpoints - manufacturing process control"
          ),
          poc_ref="https://www.cisa.gov/uscert/ics/advisories/icsa-21-307-01",
          refs=["https://www.cisa.gov/uscert/ics/advisories/icsa-21-307-01"],
@@ -382,13 +382,13 @@ CVES = [
          cve="CVE-2022-4100", vendor="WAGO", product="PFC200 Controller",
          port=502, cvss=9.8, severity="CRITICAL", cwe="CWE-306",
          affected="WAGO PFC200 CS 2ETH firmware",
-         vuln_type="Modbus TCP missing authentication — full I/O access",
-         short_desc="WAGO PFC200 accepts Modbus TCP without authentication — full I/O read/write.",
+         vuln_type="Modbus TCP missing authentication - full I/O access",
+         short_desc="WAGO PFC200 accepts Modbus TCP without authentication - full I/O read/write.",
          simulation_steps=(
              "Step 1: Connect to WAGO PFC200 on Modbus TCP port 502\n"
              "Step 2: No authentication required\n"
-             "Step 3: FC03/FC04 Read registers — full I/O state dump\n"
-             "Step 4: FC05/FC06/FC15/FC16 Write — control all digital/analog outputs"
+             "Step 3: FC03/FC04 Read registers - full I/O state dump\n"
+             "Step 4: FC05/FC06/FC15/FC16 Write - control all digital/analog outputs"
          ),
          poc_ref="https://www.cisa.gov/uscert/ics/advisories/icsa-22-298-07",
          refs=["https://www.cisa.gov/uscert/ics/advisories/icsa-22-298-07"],
@@ -399,17 +399,17 @@ CVES = [
          cve="CVE-2019-12103", vendor="WAGO", product="e!COCKPIT Engineering",
          port=4840, cvss=9.8, severity="CRITICAL", cwe="CWE-502",
          affected="e!COCKPIT 1.x before 1.9.0.6",
-         vuln_type="Deserialization — RCE in engineering workstation",
+         vuln_type="Deserialization - RCE in engineering workstation",
          short_desc="WAGO e!COCKPIT engineering software deserialization RCE via malicious project file.",
          simulation_steps=(
              "Step 1: Craft malicious e!COCKPIT project file\n"
              "Step 2: Deliver via spearphishing or shared drive\n"
              "Step 3: Engineer opens project in e!COCKPIT\n"
-             "Step 4: Deserialization gadget triggers — RCE on engineering workstation"
+             "Step 4: Deserialization gadget triggers - RCE on engineering workstation"
          ),
          poc_ref="https://www.cisa.gov/uscert/ics/advisories/icsa-19-260-01",
          refs=["https://www.cisa.gov/uscert/ics/advisories/icsa-19-260-01"],
-         impact="CRITICAL", exploit_type="Deserialization — RCE",
+         impact="CRITICAL", exploit_type="Deserialization - RCE",
          mitre=["T0865","T0817"], tactics=["Initial Access"]),
 
     # ── JOHNSON CONTROLS ─────────────────────────────────────────────────────
@@ -417,13 +417,13 @@ CVES = [
          cve="CVE-2023-4486", vendor="Johnson Controls", product="Metasys BAS",
          port=443, cvss=9.8, severity="CRITICAL", cwe="CWE-288",
          affected="Metasys 10.x to 12.0.1",
-         vuln_type="Authentication bypass — BAS full control",
-         short_desc="Johnson Controls Metasys building automation system authentication bypass — full BAS access.",
+         vuln_type="Authentication bypass - BAS full control",
+         short_desc="Johnson Controls Metasys building automation system authentication bypass - full BAS access.",
          simulation_steps=(
              "Step 1: Access Metasys web interface on port 443\n"
              "Step 2: Bypass authentication via crafted session token\n"
              "Step 3: Access all building systems: HVAC, lighting, access control\n"
-             "Step 4: Modify setpoints — building environment manipulation"
+             "Step 4: Modify setpoints - building environment manipulation"
          ),
          poc_ref="https://www.cisa.gov/uscert/ics/advisories/icsa-23-234-02",
          refs=["https://www.cisa.gov/uscert/ics/advisories/icsa-23-234-02"],
@@ -434,7 +434,7 @@ CVES = [
          cve="CVE-2021-27660", vendor="Johnson Controls", product="Metasys ADS/ADX/OAS",
          port=443, cvss=8.8, severity="HIGH", cwe="CWE-79",
          affected="Metasys ADS/ADX/OAS 10.x to 11.0.2",
-         vuln_type="Stored XSS — admin privilege escalation",
+         vuln_type="Stored XSS - admin privilege escalation",
          short_desc="Johnson Controls Metasys stored XSS leads to admin privilege escalation.",
          simulation_steps=(
              "Step 1: Inject malicious JavaScript into Metasys object name\n"
@@ -452,13 +452,13 @@ CVES = [
          cve="CVE-2023-4256", vendor="ICONICS/Mitsubishi", product="GENESIS64 SCADA",
          port=8080, cvss=9.8, severity="CRITICAL", cwe="CWE-22",
          affected="GENESIS64 v10.97.3 and earlier",
-         vuln_type="Path traversal — arbitrary file read/write",
-         short_desc="ICONICS GENESIS64 SCADA path traversal — arbitrary file read including configs and credentials.",
+         vuln_type="Path traversal - arbitrary file read/write",
+         short_desc="ICONICS GENESIS64 SCADA path traversal - arbitrary file read including configs and credentials.",
          simulation_steps=(
              "Step 1: Access GENESIS64 web interface on port 8080\n"
              "Step 2: Use path traversal: /../../../Windows/System32/drivers/etc/hosts\n"
-             "Step 3: Read GENESIS64 config files — SCADA tags, server creds\n"
-             "Step 4: Write arbitrary files — deploy webshell for persistent access"
+             "Step 3: Read GENESIS64 config files - SCADA tags, server creds\n"
+             "Step 4: Write arbitrary files - deploy webshell for persistent access"
          ),
          poc_ref="https://www.cisa.gov/uscert/ics/advisories/icsa-23-248-02",
          refs=["https://www.cisa.gov/uscert/ics/advisories/icsa-23-248-02"],
@@ -469,17 +469,17 @@ CVES = [
          cve="CVE-2022-45117", vendor="ICONICS/Mitsubishi", product="GENESIS64",
          port=8080, cvss=9.8, severity="CRITICAL", cwe="CWE-502",
          affected="GENESIS64 v10.97.2 and earlier",
-         vuln_type="Deserialization — unauthenticated RCE",
+         vuln_type="Deserialization - unauthenticated RCE",
          short_desc="ICONICS GENESIS64 deserialization leading to unauthenticated remote code execution.",
          simulation_steps=(
              "Step 1: Connect to GENESIS64 API endpoint on port 8080\n"
              "Step 2: Send crafted serialized object payload\n"
              "Step 3: Deserialization gadget chain triggers in .NET runtime\n"
-             "Step 4: RCE on SCADA server — full GENESIS64 compromise"
+             "Step 4: RCE on SCADA server - full GENESIS64 compromise"
          ),
          poc_ref="https://www.cisa.gov/uscert/ics/advisories/icsa-22-322-02",
          refs=["https://www.cisa.gov/uscert/ics/advisories/icsa-22-322-02"],
-         impact="CRITICAL", exploit_type="Deserialization — RCE",
+         impact="CRITICAL", exploit_type="Deserialization - RCE",
          mitre=["T0866","T0843"], tactics=["Initial Access"]),
 
     # ── PTC KEPServerEX / Kepware ─────────────────────────────────────────────
@@ -487,17 +487,17 @@ CVES = [
          cve="CVE-2023-29444", vendor="PTC/Kepware", product="KEPServerEX",
          port=49320, cvss=9.1, severity="CRITICAL", cwe="CWE-122",
          affected="KEPServerEX v6.x to v6.14",
-         vuln_type="Heap buffer overflow — unauthenticated RCE",
-         short_desc="PTC KEPServerEX heap buffer overflow — unauthenticated RCE on OPC DA/UA server.",
+         vuln_type="Heap buffer overflow - unauthenticated RCE",
+         short_desc="PTC KEPServerEX heap buffer overflow - unauthenticated RCE on OPC DA/UA server.",
          simulation_steps=(
              "Step 1: Connect to KEPServerEX OPC DA/UA on port 49320\n"
              "Step 2: Send oversized OPC DA request\n"
              "Step 3: Heap overflow in OPC server process\n"
-             "Step 4: RCE on KEPServer — gateway to all connected PLC tags"
+             "Step 4: RCE on KEPServer - gateway to all connected PLC tags"
          ),
          poc_ref="https://www.cisa.gov/uscert/ics/advisories/icsa-23-157-02",
          refs=["https://www.cisa.gov/uscert/ics/advisories/icsa-23-157-02"],
-         impact="CRITICAL", exploit_type="Heap Buffer Overflow — RCE",
+         impact="CRITICAL", exploit_type="Heap Buffer Overflow - RCE",
          mitre=["T0866","T0836"], tactics=["Initial Access"]),
 
     # ── AVEVA / Wonderware ────────────────────────────────────────────────────
@@ -505,17 +505,17 @@ CVES = [
          cve="CVE-2022-37300", vendor="AVEVA", product="System Platform / InTouch",
          port=5413, cvss=9.8, severity="CRITICAL", cwe="CWE-502",
          affected="System Platform 2020 R2 SP1 and earlier",
-         vuln_type="Deserialization — RCE on SCADA server",
-         short_desc="AVEVA System Platform deserialization RCE — full SCADA server compromise.",
+         vuln_type="Deserialization - RCE on SCADA server",
+         short_desc="AVEVA System Platform deserialization RCE - full SCADA server compromise.",
          simulation_steps=(
              "Step 1: Connect to ArchestrA Galaxy Repository on port 5413\n"
              "Step 2: Send serialized .NET object with gadget chain\n"
              "Step 3: Deserialization triggers in System Platform service\n"
-             "Step 4: RCE on SCADA server — access to all InTouch/System Platform data"
+             "Step 4: RCE on SCADA server - access to all InTouch/System Platform data"
          ),
          poc_ref="https://www.cisa.gov/uscert/ics/advisories/icsa-22-307-01",
          refs=["https://www.cisa.gov/uscert/ics/advisories/icsa-22-307-01"],
-         impact="CRITICAL", exploit_type="Deserialization — RCE",
+         impact="CRITICAL", exploit_type="Deserialization - RCE",
          mitre=["T0866","T0843"], tactics=["Initial Access"]),
 
     # ── SCHWEITZER ENGINEERING (SEL) ──────────────────────────────────────────
@@ -523,7 +523,7 @@ CVES = [
          cve="CVE-2023-2267", vendor="Schweitzer Engineering", product="SEL-5037 SDNet",
          port=443, cvss=7.5, severity="HIGH", cwe="CWE-400",
          affected="SEL-5037 SDNet all versions before 2.03.07",
-         vuln_type="Denial of service — management interface crash",
+         vuln_type="Denial of service - management interface crash",
          short_desc="Schweitzer SEL-5037 SDNet management interface DoS via malformed HTTPS request.",
          simulation_steps=(
              "Step 1: Send malformed HTTPS request to SEL-5037 on port 443\n"
@@ -541,17 +541,17 @@ CVES = [
          cve="CVE-2019-13533", vendor="Pilz", product="PNOZmulti / PSS4000",
          port=4840, cvss=9.8, severity="CRITICAL", cwe="CWE-306",
          affected="PNOZmulti 2 all versions, PSS4000 all versions",
-         vuln_type="Missing authentication on OPC UA — safety PLC control",
-         short_desc="Pilz safety PLC OPC UA missing auth — unauthenticated access to safety controller.",
+         vuln_type="Missing authentication on OPC UA - safety PLC control",
+         short_desc="Pilz safety PLC OPC UA missing auth - unauthenticated access to safety controller.",
          simulation_steps=(
              "Step 1: Connect to Pilz PSS4000 OPC UA server on port 4840\n"
-             "Step 2: Anonymous session — no credentials needed\n"
+             "Step 2: Anonymous session - no credentials needed\n"
              "Step 3: Browse all safety program nodes and I/O tags\n"
-             "Step 4: Write to safety-relevant tags — bypass E-Stop / safety functions"
+             "Step 4: Write to safety-relevant tags - bypass E-Stop / safety functions"
          ),
          poc_ref="https://www.cisa.gov/uscert/ics/advisories/icsa-19-281-02",
          refs=["https://www.cisa.gov/uscert/ics/advisories/icsa-19-281-02"],
-         impact="CRITICAL", exploit_type="Missing Authentication — Safety Bypass",
+         impact="CRITICAL", exploit_type="Missing Authentication - Safety Bypass",
          mitre=["T0816","T0821"], tactics=["Impair Process Control"]),
 
     # ── B&R INDUSTRIAL AUTOMATION (ABB subsidiary) ───────────────────────────
@@ -559,8 +559,8 @@ CVES = [
          cve="CVE-2022-1137", vendor="B&R Automation", product="APROL DCS",
          port=4840, cvss=9.8, severity="CRITICAL", cwe="CWE-78",
          affected="APROL R4.2-07 and earlier",
-         vuln_type="Command injection — unauthenticated RCE on DCS",
-         short_desc="B&R Automation APROL DCS command injection — unauthenticated RCE via OPC UA.",
+         vuln_type="Command injection - unauthenticated RCE on DCS",
+         short_desc="B&R Automation APROL DCS command injection - unauthenticated RCE via OPC UA.",
          simulation_steps=(
              "Step 1: Connect to APROL OPC UA server on port 4840\n"
              "Step 2: Send crafted Method Call with injected OS commands\n"
@@ -569,7 +569,7 @@ CVES = [
          ),
          poc_ref="https://www.cisa.gov/uscert/ics/advisories/icsa-22-104-04",
          refs=["https://www.cisa.gov/uscert/ics/advisories/icsa-22-104-04"],
-         impact="CRITICAL", exploit_type="Command Injection — RCE",
+         impact="CRITICAL", exploit_type="Command Injection - RCE",
          mitre=["T0866","T0836"], tactics=["Initial Access"]),
 
     # ── FESTO ─────────────────────────────────────────────────────────────────
@@ -577,17 +577,17 @@ CVES = [
          cve="CVE-2022-3833", vendor="Festo", product="CPX-AP-I / AX",
          port=4840, cvss=9.8, severity="CRITICAL", cwe="CWE-321",
          affected="CPX-AP-I all firmware, CMMT-AS all firmware",
-         vuln_type="Hardcoded cryptographic key — OPC UA session hijack",
-         short_desc="Festo CPX-AP-I hardcoded OPC UA certificate key — all devices share same key.",
+         vuln_type="Hardcoded cryptographic key - OPC UA session hijack",
+         short_desc="Festo CPX-AP-I hardcoded OPC UA certificate key - all devices share same key.",
          simulation_steps=(
              "Step 1: Extract hardcoded private key from Festo CPX-AP-I firmware\n"
              "Step 2: Perform MitM on OPC UA session (port 4840)\n"
              "Step 3: Decrypt all OPC UA communications with hardcoded key\n"
-             "Step 4: Forge authenticated commands — control pneumatic actuators"
+             "Step 4: Forge authenticated commands - control pneumatic actuators"
          ),
          poc_ref="https://www.cisa.gov/uscert/ics/advisories/icsa-22-298-05",
          refs=["https://www.cisa.gov/uscert/ics/advisories/icsa-22-298-05"],
-         impact="CRITICAL", exploit_type="Hardcoded Key — Session Hijack",
+         impact="CRITICAL", exploit_type="Hardcoded Key - Session Hijack",
          mitre=["T0855","T0830"], tactics=["Collection"]),
 
     # ── RED LION CONTROLS ─────────────────────────────────────────────────────
@@ -595,8 +595,8 @@ CVES = [
          cve="CVE-2023-0223", vendor="Red Lion Controls", product="Crimson 3.0/3.2 HMI/SCADA",
          port=789, cvss=9.8, severity="CRITICAL", cwe="CWE-1188",
          affected="Crimson 3.0 before 3.0.044.0086, Crimson 3.2 before 3.2.057.0",
-         vuln_type="Default credentials — HMI/SCADA full access",
-         short_desc="Red Lion Crimson HMI/SCADA default credentials — full system access.",
+         vuln_type="Default credentials - HMI/SCADA full access",
+         short_desc="Red Lion Crimson HMI/SCADA default credentials - full system access.",
          simulation_steps=(
              "Step 1: Connect to Red Lion Crimson HMI on port 789\n"
              "Step 2: Authenticate with default credentials (admin/admin or empty)\n"
@@ -613,17 +613,17 @@ CVES = [
          cve="CVE-2022-2988", vendor="Weintek", product="EasyBuilder Pro HMI",
          port=8080, cvss=9.8, severity="CRITICAL", cwe="CWE-120",
          affected="EasyBuilder Pro v6.07.02 and earlier",
-         vuln_type="Buffer overflow — RCE via malformed HMI project",
-         short_desc="Weintek EasyBuilder Pro HMI buffer overflow via malformed project file — RCE.",
+         vuln_type="Buffer overflow - RCE via malformed HMI project",
+         short_desc="Weintek EasyBuilder Pro HMI buffer overflow via malformed project file - RCE.",
          simulation_steps=(
              "Step 1: Craft malicious .emtp HMI project file\n"
              "Step 2: Engineer opens file in EasyBuilder Pro\n"
              "Step 3: Buffer overflow in project parser\n"
-             "Step 4: RCE on engineering workstation — Weintek HMI now attacker-controlled"
+             "Step 4: RCE on engineering workstation - Weintek HMI now attacker-controlled"
          ),
          poc_ref="https://www.cisa.gov/uscert/ics/advisories/icsa-22-228-03",
          refs=["https://www.cisa.gov/uscert/ics/advisories/icsa-22-228-03"],
-         impact="CRITICAL", exploit_type="Buffer Overflow — RCE",
+         impact="CRITICAL", exploit_type="Buffer Overflow - RCE",
          mitre=["T0865","T0866"], tactics=["Initial Access"]),
 
     # ── AUTOMATIONDIRECT (USA) ─────────────────────────────────────────────────
@@ -632,12 +632,12 @@ CVES = [
          port=28784, cvss=8.8, severity="HIGH", cwe="CWE-319",
          affected="CLICK PLC CPU modules CPX-SX-101-A1",
          vuln_type="Cleartext transmission of sensitive information",
-         short_desc="AutomationDirect CLICK PLC transmits credentials in cleartext — intercept and reuse.",
+         short_desc="AutomationDirect CLICK PLC transmits credentials in cleartext - intercept and reuse.",
          simulation_steps=(
              "Step 1: Perform MitM on CLICK PLC network traffic\n"
              "Step 2: Capture programming software communication on port 28784\n"
              "Step 3: Extract credentials transmitted in cleartext\n"
-             "Step 4: Use credentials to access PLC — read/write program and I/O"
+             "Step 4: Use credentials to access PLC - read/write program and I/O"
          ),
          poc_ref="https://www.cisa.gov/uscert/ics/advisories/icsa-22-228-04",
          refs=["https://www.cisa.gov/uscert/ics/advisories/icsa-22-228-04"],
@@ -649,13 +649,13 @@ CVES = [
          cve="CVE-2023-2744", vendor="Eaton", product="XC300 PLC",
          port=4840, cvss=9.8, severity="CRITICAL", cwe="CWE-1188",
          affected="XC300 controller firmware all versions",
-         vuln_type="Default credentials — PLC full access via OPC UA",
-         short_desc="Eaton XC300 PLC default OPC UA credentials — full controller access.",
+         vuln_type="Default credentials - PLC full access via OPC UA",
+         short_desc="Eaton XC300 PLC default OPC UA credentials - full controller access.",
          simulation_steps=(
              "Step 1: Connect to XC300 OPC UA server on port 4840\n"
              "Step 2: Use default credentials (admin/admin)\n"
-             "Step 3: Browse all OPC UA nodes — full I/O state\n"
-             "Step 4: Write to process tags — control XC300 outputs"
+             "Step 3: Browse all OPC UA nodes - full I/O state\n"
+             "Step 4: Write to process tags - control XC300 outputs"
          ),
          poc_ref="https://www.cisa.gov/uscert/ics/advisories/icsa-23-131-08",
          refs=["https://www.cisa.gov/uscert/ics/advisories/icsa-23-131-08"],
@@ -667,17 +667,17 @@ CVES = [
          cve="CVE-2022-40619", vendor="Fuji Electric", product="Monitouch V10 HMI",
          port=80, cvss=9.8, severity="CRITICAL", cwe="CWE-121",
          affected="Monitouch V10 Series v1.9.9 and earlier",
-         vuln_type="Stack-based buffer overflow — RCE via HMI web interface",
-         short_desc="Fuji Electric Monitouch V10 HMI stack overflow via web interface — RCE.",
+         vuln_type="Stack-based buffer overflow - RCE via HMI web interface",
+         short_desc="Fuji Electric Monitouch V10 HMI stack overflow via web interface - RCE.",
          simulation_steps=(
              "Step 1: Send malformed HTTP request to Monitouch V10 on port 80\n"
              "Step 2: Stack overflow in HTTP handler\n"
-             "Step 3: RCE on HMI device — full display and I/O control\n"
+             "Step 3: RCE on HMI device - full display and I/O control\n"
              "Step 4: Modify process display, inject false readings"
          ),
          poc_ref="https://www.cisa.gov/uscert/ics/advisories/icsa-22-298-06",
          refs=["https://www.cisa.gov/uscert/ics/advisories/icsa-22-298-06"],
-         impact="CRITICAL", exploit_type="Stack Buffer Overflow — RCE",
+         impact="CRITICAL", exploit_type="Stack Buffer Overflow - RCE",
          mitre=["T0866","T0822"], tactics=["Initial Access"]),
 
     # ── LS ELECTRIC (Korea) ───────────────────────────────────────────────────
@@ -685,13 +685,13 @@ CVES = [
          cve="CVE-2022-3232", vendor="LS Electric", product="XGK Series PLC",
          port=502, cvss=7.5, severity="HIGH", cwe="CWE-400",
          affected="XGK-CPUU all firmware versions",
-         vuln_type="Modbus TCP flood — CPU stop",
+         vuln_type="Modbus TCP flood - CPU stop",
          short_desc="LS Electric XGK PLC Modbus TCP flood causes CPU to enter STOP state.",
          simulation_steps=(
              "Step 1: Connect to LS Electric XGK PLC on Modbus TCP port 502\n"
              "Step 2: Send rapid Modbus requests (100+ per second)\n"
-             "Step 3: PLC CPU overloaded — enters STOP state\n"
-             "Step 4: All I/O outputs de-energized — process halted"
+             "Step 3: PLC CPU overloaded - enters STOP state\n"
+             "Step 4: All I/O outputs de-energized - process halted"
          ),
          poc_ref="https://www.cisa.gov/uscert/ics/advisories/icsa-22-270-01",
          refs=["https://www.cisa.gov/uscert/ics/advisories/icsa-22-270-01"],
@@ -703,17 +703,17 @@ CVES = [
          cve="CVE-2022-1318", vendor="Opto 22", product="groov EPIC",
          port=443, cvss=9.8, severity="CRITICAL", cwe="CWE-269",
          affected="groov EPIC firmware prior to 3.4.2",
-         vuln_type="Privilege escalation — from user to root",
-         short_desc="Opto 22 groov EPIC privilege escalation — authenticated user to root shell.",
+         vuln_type="Privilege escalation - from user to root",
+         short_desc="Opto 22 groov EPIC privilege escalation - authenticated user to root shell.",
          simulation_steps=(
              "Step 1: Authenticate to groov EPIC web API with any user account\n"
              "Step 2: Exploit privilege escalation vulnerability in API endpoint\n"
              "Step 3: Gain root shell on groov EPIC Linux system\n"
-             "Step 4: Full control — modify IIoT logic, access all I/O, pivot to OT network"
+             "Step 4: Full control - modify IIoT logic, access all I/O, pivot to OT network"
          ),
          poc_ref="https://www.cisa.gov/uscert/ics/advisories/icsa-22-116-06",
          refs=["https://www.cisa.gov/uscert/ics/advisories/icsa-22-116-06"],
-         impact="CRITICAL", exploit_type="Privilege Escalation — Root",
+         impact="CRITICAL", exploit_type="Privilege Escalation - Root",
          mitre=["T0890","T0822"], tactics=["Privilege Escalation"]),
 
     # ── AVEVA PI System (Historian) ───────────────────────────────────────────
@@ -721,8 +721,8 @@ CVES = [
          cve="CVE-2022-2513", vendor="OSIsoft/AVEVA", product="PI Web API",
          port=443, cvss=8.6, severity="HIGH", cwe="CWE-918",
          affected="PI Web API 2021 SP3 and earlier",
-         vuln_type="Server-Side Request Forgery (SSRF) — internal network access",
-         short_desc="AVEVA PI Web API SSRF — pivot to internal OT network from historian server.",
+         vuln_type="Server-Side Request Forgery (SSRF) - internal network access",
+         short_desc="AVEVA PI Web API SSRF - pivot to internal OT network from historian server.",
          simulation_steps=(
              "Step 1: Authenticate to PI Web API on port 443\n"
              "Step 2: Send crafted request with internal URL in parameter\n"
@@ -739,8 +739,8 @@ CVES = [
          cve="CVE-2023-44317", vendor="Siemens", product="SIMATIC S7-1500",
          port=102, cvss=9.1, severity="CRITICAL", cwe="CWE-345",
          affected="S7-1500 CPU V3.0 and earlier (non-V version)",
-         vuln_type="Unverified firmware — persistent backdoor via crafted update",
-         short_desc="Siemens S7-1500 accepts malicious firmware update without verification — persistent RCE.",
+         vuln_type="Unverified firmware - persistent backdoor via crafted update",
+         short_desc="Siemens S7-1500 accepts malicious firmware update without verification - persistent RCE.",
          simulation_steps=(
              "Step 1: Connect to S7-1500 TIA Portal interface on port 102\n"
              "Step 2: Upload crafted firmware signed with leaked private key\n"
@@ -756,8 +756,8 @@ CVES = [
          cve="CVE-2023-38380", vendor="Siemens", product="SIMATIC HMI Comfort Panels",
          port=161, cvss=7.5, severity="HIGH", cwe="CWE-400",
          affected="SIMATIC HMI Comfort Panels all V17 and earlier",
-         vuln_type="SNMP flood — HMI denial of service",
-         short_desc="Siemens SIMATIC HMI Comfort Panel DoS via SNMP flood — display freezes.",
+         vuln_type="SNMP flood - HMI denial of service",
+         short_desc="Siemens SIMATIC HMI Comfort Panel DoS via SNMP flood - display freezes.",
          simulation_steps=(
              "Step 1: Send SNMP v1/v2c flood to HMI on UDP/161\n"
              "Step 2: HMI network stack overwhelmed\n"
@@ -774,12 +774,12 @@ CVES = [
          cve="CVE-2024-21914", vendor="Rockwell Automation", product="FactoryTalk Services Platform",
          port=1433, cvss=9.8, severity="CRITICAL", cwe="CWE-89",
          affected="FactoryTalk Services Platform v6.40 and earlier",
-         vuln_type="SQL injection — authentication bypass + data exfiltration",
-         short_desc="Rockwell FactoryTalk Services Platform SQL injection — bypass auth and dump SCADA DB.",
+         vuln_type="SQL injection - authentication bypass + data exfiltration",
+         short_desc="Rockwell FactoryTalk Services Platform SQL injection - bypass auth and dump SCADA DB.",
          simulation_steps=(
              "Step 1: Connect to FactoryTalk web services\n"
              "Step 2: Inject SQL payload in authentication parameter\n"
-             "Step 3: Bypass authentication — access all FactoryTalk resources\n"
+             "Step 3: Bypass authentication - access all FactoryTalk resources\n"
              "Step 4: Dump user credentials, PLC tags, alarm history"
          ),
          poc_ref="https://www.cisa.gov/uscert/ics/advisories/icsa-24-016-06",
@@ -792,17 +792,17 @@ CVES = [
          cve="CVE-2021-22707", vendor="Schneider Electric", product="Modicon M340",
          port=502, cvss=9.8, severity="CRITICAL", cwe="CWE-306",
          affected="M340 BMXP34 CPU V3.20 and earlier",
-         vuln_type="Missing authentication — unauthenticated RCE",
-         short_desc="Schneider Modicon M340 missing Modbus auth — unauthenticated program upload/download.",
+         vuln_type="Missing authentication - unauthenticated RCE",
+         short_desc="Schneider Modicon M340 missing Modbus auth - unauthenticated program upload/download.",
          simulation_steps=(
              "Step 1: Connect to M340 Modbus TCP on port 502\n"
              "Step 2: Use Unity Pro protocol without authentication\n"
              "Step 3: Upload malicious PLC program via Modbus FC\n"
-             "Step 4: M340 executes attacker PLC code — full process control"
+             "Step 4: M340 executes attacker PLC code - full process control"
          ),
          poc_ref="https://www.se.com/ww/en/download/document/SEVD-2021-313-06/",
          refs=["https://www.se.com/ww/en/download/document/SEVD-2021-313-06/"],
-         impact="CRITICAL", exploit_type="Missing Authentication — Program Upload",
+         impact="CRITICAL", exploit_type="Missing Authentication - Program Upload",
          mitre=["T0839","T0836"], tactics=["Persistence"]),
 
     # ── ABB (additional) ──────────────────────────────────────────────────────
@@ -815,7 +815,7 @@ CVES = [
          simulation_steps=(
              "Step 1: Connect to ABB AC500 OPC UA server on port 4840\n"
              "Step 2: Send malformed OPC UA Hello/Activate session request\n"
-             "Step 3: OPC UA server crashes — PLC communications lost\n"
+             "Step 3: OPC UA server crashes - PLC communications lost\n"
              "Step 4: Loss of remote monitoring and control"
          ),
          poc_ref="https://search.abb.com/library/Download.aspx?DocumentID=9AKK108466A2764",

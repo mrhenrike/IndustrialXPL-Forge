@@ -1,4 +1,4 @@
-"""S2OPC lab wrapper — optional native build (Apache-2.0)."""
+"""S2OPC lab wrapper - optional native build (Apache-2.0)."""
 
 
 import shutil
@@ -11,7 +11,7 @@ def s2opc_status() -> dict[str, Any]:
         "success": True,
         "simulate": True,
         "cmake": bool(cmake),
-        "fallback": "asyncua (Python) — pip install industrialxpl-forge[ot]",
+        "fallback": "asyncua (Python) - pip install industrialxpl-forge[ot]",
         "note": "S2OPC native build skipped when cmake absent",
         "skip_native": not cmake,
     }

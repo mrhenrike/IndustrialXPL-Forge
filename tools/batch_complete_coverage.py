@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""IXF Complete Coverage Batch — fill all remaining plan gaps.
+"""IXF Complete Coverage Batch - fill all remaining plan gaps.
 
 Covers:
   1. LATAM/Brazil vendors: WEG, ALTUS, ELIPSE, NOVUS + CVEs
@@ -23,7 +23,7 @@ MODULES = ROOT / "industrialxpl" / "modules"
 # ─────────────────────────────────────────────────────────────────────────────
 
 CVE_T = '''\
-"""IXF {cve} — {vendor} {product}. CVSS {cvss}. simulate=True default."""
+"""IXF {cve} - {vendor} {product}. CVSS {cvss}. simulate=True default."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, mute,
@@ -63,7 +63,7 @@ class Exploit(Exploit):
 '''
 
 CREDS_T = '''\
-"""IXF Default Credentials — {vendor} {product}. simulate=True."""
+"""IXF Default Credentials - {vendor} {product}. simulate=True."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptString, mute,
@@ -102,7 +102,7 @@ class Exploit(Exploit):
 '''
 
 SCANNER_T = '''\
-"""IXF Scanner — {vendor} {product} Discovery. simulate=True."""
+"""IXF Scanner - {vendor} {product} Discovery. simulate=True."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptInteger, OptPort, mute,
@@ -150,7 +150,7 @@ class Exploit(Exploit):
 '''
 
 PROTO_T = '''\
-"""IXF Protocol Abuse — {name}. No CVE — design weakness. simulate=True."""
+"""IXF Protocol Abuse - {name}. No CVE - design weakness. simulate=True."""
 import socket
 import struct
 import time
@@ -166,7 +166,7 @@ class Exploit(Exploit):
         "references": {refs},
         "devices": {devices},
         "impact": "{impact}", "exploit_type": "Protocol Design Abuse (No CVE)",
-        "cve": "N/A", "cvss": "N/A — design weakness", "severity": "{impact}",
+        "cve": "N/A", "cvss": "N/A - design weakness", "severity": "{impact}",
         "mitre_techniques": {mitre}, "mitre_tactics": {tactics},
     }}
     target = OptIP("", "Target IP")
@@ -185,14 +185,14 @@ class Exploit(Exploit):
         if self.simulate:
             DestructiveGate.print_simulation(
                 description="{name}\\n{sim}", mitre_techniques={mitre})
-            print_info("No CVE — inherent protocol design weakness")
+            print_info("No CVE - inherent protocol design weakness")
             return
         print_status("[{proto}] Sending to {{}}:{{}}...".format(self.target, self.port))
         print_info("Live: implement protocol-specific commands")
 '''
 
 ASSESS_T = '''\
-"""IXF Security Assessment — {name}. simulate=True."""
+"""IXF Security Assessment - {name}. simulate=True."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptInteger, OptPort, mute,
@@ -243,7 +243,7 @@ def write_if_new(path: Path, content: str) -> bool:
 # ─────────────────────────────────────────────────────────────────────────────
 
 LATAM_CVES = [
-    # WEG (Brazil) — largest motor/drive/PLC manufacturer in LATAM
+    # WEG (Brazil) - largest motor/drive/PLC manufacturer in LATAM
     dict(path="cve/weg/cve_2023_39952_weg_motor_scan_rce.py",
          cve="CVE-2023-39952", vendor="WEG", product="Motor Scan IIoT Gateway",
          port=80, cvss="9.8", sev="CRITICAL", impact="CRITICAL",
@@ -255,25 +255,25 @@ LATAM_CVES = [
     dict(path="cve/weg/cve_2022_48194_cfw_hmi_default_creds.py",
          cve="CVE-2022-48194", vendor="WEG", product="CFW-11 VFD HMI",
          port=502, cvss="9.8", sev="CRITICAL", impact="CRITICAL",
-         xtype="Default credentials — VFD control", refs=["https://www.cisa.gov/uscert/ics"],
+         xtype="Default credentials - VFD control", refs=["https://www.cisa.gov/uscert/ics"],
          mitre=["T0859","T0836"], tactics=["Credential Access"],
          desc="WEG CFW-11 variable frequency drive default credentials allow full motor control",
          sim="Connect Modbus TCP port 502, write default creds, control motor speed/torque"),
 
-    # ALTUS (Brazil) — PLCs widely used in Brazilian industry
+    # ALTUS (Brazil) - PLCs widely used in Brazilian industry
     dict(path="cve/altus/cve_2021_38155_duo_plc_auth_bypass.py",
          cve="CVE-2021-38155", vendor="ALTUS", product="Duo PLC Series",
          port=502, cvss="9.8", sev="CRITICAL", impact="CRITICAL",
-         xtype="Missing authentication — Modbus TCP", refs=["https://www.cisa.gov/uscert/ics"],
+         xtype="Missing authentication - Modbus TCP", refs=["https://www.cisa.gov/uscert/ics"],
          mitre=["T1692.001","T0836"], tactics=["Impair Process Control"],
-         desc="ALTUS Duo PLC accepts Modbus TCP without authentication — full I/O control",
+         desc="ALTUS Duo PLC accepts Modbus TCP without authentication - full I/O control",
          sim="Connect Modbus TCP port 502, FC03/16 read/write all I/O without auth"),
 
-    # NOVUS (Brazil) — temperature/process controllers
+    # NOVUS (Brazil) - temperature/process controllers
     dict(path="cve/novus/cve_2022_26518_novus_default_creds.py",
          cve="CVE-2022-26518", vendor="NOVUS", product="N20K/RHT/DigiRail Controllers",
          port=502, cvss="9.8", sev="CRITICAL", impact="CRITICAL",
-         xtype="Default credentials — process controller", refs=["https://www.cisa.gov/uscert/ics"],
+         xtype="Default credentials - process controller", refs=["https://www.cisa.gov/uscert/ics"],
          mitre=["T0859","T0836"], tactics=["Credential Access"],
          desc="NOVUS industrial controllers default Modbus credentials allow temperature setpoint manipulation",
          sim="Connect Modbus TCP port 502, write SP_HIGH register, override temperature setpoints"),
@@ -290,9 +290,9 @@ LATAM_CVES = [
     dict(path="cve/rockwell/cve_2025_21694_logix_dos.py",
          cve="CVE-2025-21694", vendor="Rockwell", product="Logix5000 Controllers",
          port=44818, cvss="7.5", sev="HIGH", impact="HIGH",
-         xtype="Denial of service — EtherNet/IP", refs=["https://www.cisa.gov/uscert/ics"],
+         xtype="Denial of service - EtherNet/IP", refs=["https://www.cisa.gov/uscert/ics"],
          mitre=["T0814"], tactics=["Inhibit Response Function"],
-         desc="Rockwell Logix5000 crashes on malformed EtherNet/IP request — production halt",
+         desc="Rockwell Logix5000 crashes on malformed EtherNet/IP request - production halt",
          sim="Send malformed EtherNet/IP packet to port 44818, PLC fault mode, production stops"),
 
     dict(path="cve/schneider/cve_2025_22146_m580_remote_cmd.py",
@@ -316,7 +316,7 @@ LATAM_CVES = [
          port=445, cvss="7.8", sev="HIGH", impact="HIGH",
          xtype="Windows LPE on OT SCADA server", refs=["https://msrc.microsoft.com/"],
          mitre=["T0890","T0822"], tactics=["Privilege Escalation"],
-         desc="Windows privilege escalation on Honeywell Experion PKS SCADA server — domain admin to system",
+         desc="Windows privilege escalation on Honeywell Experion PKS SCADA server - domain admin to system",
          sim="Gain limited access to Experion SCADA Windows server, exploit LPE, gain SYSTEM on DCS"),
 
     dict(path="cve/ge/cve_2025_25697_ifix_rce.py",
@@ -332,7 +332,7 @@ LATAM_CVES = [
          port=20111, cvss="9.8", sev="CRITICAL", impact="CRITICAL",
          xtype="Stack overflow RCE via Vnet/IP", refs=["https://www.yokogawa.com/security-advisory/"],
          mitre=["T0866"], tactics=["Initial Access"],
-         desc="Yokogawa CENTUM CS 3000 DCS stack overflow via crafted Vnet/IP packet — RCE",
+         desc="Yokogawa CENTUM CS 3000 DCS stack overflow via crafted Vnet/IP packet - RCE",
          sim="Send crafted Vnet/IP frame to CS3000 port 20111, stack overflow, RCE on DCS controller"),
 
     dict(path="cve/delta_electronics/cve_2025_0513_diascreen_bof.py",
@@ -393,7 +393,7 @@ PROTO_EXPLOITS = [
          refs=["https://www.can-cia.org/"],
          devices=["CANopen slaves", "Industrial drives", "Robotic arms", "Elevator controllers"],
          impact="HIGH", mitre=["T0814","T0826"], tactics=["Inhibit Response Function"],
-         sim="Send CANopen NMT Master Control frame: COB-ID=0x000, data=[0x02, 0x00]\n0x02=STOP, 0x00=all nodes\nAll CANopen nodes transition to STOPPED state\nAll PDO communications stop — actuators hold last position"),
+         sim="Send CANopen NMT Master Control frame: COB-ID=0x000, data=[0x02, 0x00]\n0x02=STOP, 0x00=all nodes\nAll CANopen nodes transition to STOPPED state\nAll PDO communications stop - actuators hold last position"),
 
     dict(path="exploits/protocols/powerlink/powerlink_mn_spoof.py",
          name="EtherNet/POWERLINK Managing Node Spoofing",

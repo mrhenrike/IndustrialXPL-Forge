@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2024-2655 — AVEVA PI Server (HIGH CVSS 8.7).
+"""IXF CVE CVE-2024-2655 - AVEVA PI Server (HIGH CVSS 8.7).
 
 Exploit type: Denial of service resource exhaustion
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — AVEVA PI Server may be present. CVE-2024-2655 HIGH CVSS 8.7.")
+            print_success(f"Port {self.port} open - AVEVA PI Server may be present. CVE-2024-2655 HIGH CVSS 8.7.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2023-2071 — Rockwell Automation FactoryTalk View ME (CRITICAL CVSS 9.8).
+"""IXF CVE CVE-2023-2071 - Rockwell Automation FactoryTalk View ME (CRITICAL CVSS 9.8).
 
 Exploit type: Remote code execution buffer overflow
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Rockwell Automation FactoryTalk View ME may be present. CVE-2023-2071 CRITICAL CVSS 9.8.")
+            print_success(f"Port {self.port} open - Rockwell Automation FactoryTalk View ME may be present. CVE-2023-2071 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

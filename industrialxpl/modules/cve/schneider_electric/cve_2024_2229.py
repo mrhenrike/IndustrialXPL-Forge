@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2024-2229 — Schneider Electric EcoStruxure Power Build Rapsody (HIGH CVSS 7.8).
+"""IXF CVE CVE-2024-2229 - Schneider Electric EcoStruxure Power Build Rapsody (HIGH CVSS 7.8).
 
 Exploit type: Remote code execution
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Schneider Electric EcoStruxure Power Build Rapsody may be present. CVE-2024-2229 HIGH CVSS 7.8.")
+            print_success(f"Port {self.port} open - Schneider Electric EcoStruxure Power Build Rapsody may be present. CVE-2024-2229 HIGH CVSS 7.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2020-15782 — Siemens SIMATIC S7-1500 (CRITICAL CVSS 9.1).
+"""IXF CVE CVE-2020-15782 - Siemens SIMATIC S7-1500 (CRITICAL CVSS 9.1).
 
 Exploit type: Remote code execution via OS commands
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Siemens SIMATIC S7-1500 may be present. CVE-2020-15782 CRITICAL CVSS 9.1.")
+            print_success(f"Port {self.port} open - Siemens SIMATIC S7-1500 may be present. CVE-2020-15782 CRITICAL CVSS 9.1.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

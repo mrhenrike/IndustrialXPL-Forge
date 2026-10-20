@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2015-7937 — Schneider Electric TM221 Modbus.
+"""IXF CVE Module - CVE-2015-7937 - Schneider Electric TM221 Modbus.
 
 CPU crash via FC 0x71
 
@@ -32,8 +32,8 @@ _SEVERITY      = "HIGH"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2015-7937 — Schneider Electric TM221 Modbus (HIGH)",
-        "description":   "Schneider Electric TM221 Modbus — CPU crash via FC 0x71. "
+        "name":          "CVE-2015-7937 - Schneider Electric TM221 Modbus (HIGH)",
+        "description":   "Schneider Electric TM221 Modbus - CPU crash via FC 0x71. "
                          "CVSS 7.8 (HIGH). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2015-7937...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Schneider Electric TM221 Modbus may be present. "
+                f"Port {self.port} open on {self.target} - Schneider Electric TM221 Modbus may be present. "
                 "CVE-2015-7937 (HIGH CVSS 7.8): CPU crash via FC 0x71. "
                 "Manual version verification required."
             )

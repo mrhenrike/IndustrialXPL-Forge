@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2020-6970 — Honeywell MB-Secure Mass Flow Controller (CRITICAL CVSS 9.8).
+"""IXF CVE CVE-2020-6970 - Honeywell MB-Secure Mass Flow Controller (CRITICAL CVSS 9.8).
 
 Exploit type: Buffer overflow RCE unauthenticated
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Honeywell MB-Secure Mass Flow Controller may be present. CVE-2020-6970 CRITICAL CVSS 9.8.")
+            print_success(f"Port {self.port} open - Honeywell MB-Secure Mass Flow Controller may be present. CVE-2020-6970 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

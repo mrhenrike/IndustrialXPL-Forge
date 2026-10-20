@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2023-49722 — CODESYS V3 development system (CRITICAL CVSS 9.8).
+"""IXF CVE CVE-2023-49722 - CODESYS V3 development system (CRITICAL CVSS 9.8).
 
 Exploit type: Deserialization arbitrary code execution
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — CODESYS V3 development system may be present. CVE-2023-49722 CRITICAL CVSS 9.8.")
+            print_success(f"Port {self.port} open - CODESYS V3 development system may be present. CVE-2023-49722 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

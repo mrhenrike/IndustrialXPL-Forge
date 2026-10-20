@@ -19,9 +19,9 @@ $ ixf
   | || | | | (_| | |_| \__ \ |_| |  | |  /  \| |   | |___  |  _| (_) | | | (_| |  __/
  |___|_| |_|\__,_|\__,_|___/\__|_|  |_| /_/\_\_|   |_____| |_|  \___/|_|  \__, |\___|
                                                                               |___/
-  IndustrialXPL-Forge v1.0.12 — OT/ICS/SCADA Security Assessment Framework
+  IndustrialXPL-Forge v1.0.12 - OT/ICS/SCADA Security Assessment Framework
   Author: André Henrique (@mrhenrike) | União Geek | https://uniaogeek.com.br/
-  Python-First. Pure Python — install with 
+  Python-First. Pure Python - install with 
         $extras = $args[0].Groups[1].Value
         "pip install industrialxpl-forge$extras"
     .
@@ -35,7 +35,7 @@ ixf >
 ```
 ixf > help
 
-  IndustrialXPL-Forge — Command Reference
+  IndustrialXPL-Forge - Command Reference
   ═══════════════════════════════════════════════════════════════════════════
 
   Module Navigation
@@ -107,7 +107,7 @@ ixf >
 ```
 ixf > stats
 
-  IndustrialXPL-Forge — Module Statistics
+  IndustrialXPL-Forge - Module Statistics
   ═══════════════════════════════════════════════════════════════════════════
 
   Total Modules          1193
@@ -229,11 +229,11 @@ ixf (Modbus TCP Device Detect) > show info
   references        : ['https://www.modbus.org/specs.php',
                        'https://attack.mitre.org/techniques/T0888/']
   tags              : ['modbus', 'tcp', 'scanner', 'discovery', 'ot']
-  platform          : All (Python-First, Tier 0 — no extra packages required)
+  platform          : All (Python-First, Tier 0 - no extra packages required)
 
 ixf (Modbus TCP Device Detect) > show options
 
-  Options — Modbus TCP Device Detect
+  Options - Modbus TCP Device Detect
   ═══════════════════════════════════════════════════════════════════════════
   +──────────────+─────────────────+──────────+─────────────────────────────────────────+
   | Option       | Value           | Required | Description                             |
@@ -259,13 +259,13 @@ ixf (Modbus TCP Device Detect) > check
 [*] Sending Modbus FC4 Read Input Registers request...
 [*] Payload (hex): 00 01 00 00 00 06 01 04 00 00 00 01
 [*] Response received in 12ms
-[+] REACHABLE — TCP port 502 open
-[+] VULNERABLE — Modbus device detected (Transaction ID 0x0001 echoed; FC4 response received)
+[+] REACHABLE - TCP port 502 open
+[+] VULNERABLE - Modbus device detected (Transaction ID 0x0001 echoed; FC4 response received)
 [+] Device banner: Unit ID 1 responded; Input Register[0] = 0x0043
 
 ixf (Modbus TCP Device Detect) > run
 
-  [SIMULATE MODE — no packets sent]
+  [SIMULATE MODE - no packets sent]
   ═══════════════════════════════════════════════════════════════════════════
   Module:   Modbus TCP Device Detect
   Target:   192.168.1.100:502
@@ -291,7 +291,7 @@ ixf (Modbus TCP Device Detect) > run
 
   [i] MITRE ATT&CK for ICS: T0888 (Remote System Information Discovery)
   [i] MITRE ATT&CK for ICS: T0802 (Automated Collection)
-  [i] Severity: LOW — read-only detection; no modification of device state
+  [i] Severity: LOW - read-only detection; no modification of device state
 
   [i] To run live: set simulate false
   [i] check command performs a live probe regardless of simulate setting
@@ -340,11 +340,11 @@ ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > show info
                        'https://www.cisa.gov/ics-advisories']
   patch             : No full patch available; Siemens recommends network segmentation
   tags              : ['siemens', 's7', 'tls', 'mitm', 'critical', 'plc']
-  platform          : Python-First; Tier 0 (socket, ssl) — no extras required
+  platform          : Python-First; Tier 0 (socket, ssl) - no extras required
 
 ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > show options
 
-  Options — CVE-2021-22681 Siemens S7-1200/1500 PLC
+  Options - CVE-2021-22681 Siemens S7-1200/1500 PLC
   ═══════════════════════════════════════════════════════════════════════════
   +──────────────────+─────────────+──────────+──────────────────────────────────────────────+
   | Option           | Value       | Required | Description                                  |
@@ -365,10 +365,10 @@ ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > set target 192.168.1.50
 
 ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > run
 
-  [SIMULATE MODE — no packets sent]
+  [SIMULATE MODE - no packets sent]
   ═══════════════════════════════════════════════════════════════════════════
-  CVE-2021-22681 — Siemens S7-1200/1500 Hardcoded TLS Key
-  CVSS 9.8 (CRITICAL) — Hardcoded global private key enables full MitM decryption
+  CVE-2021-22681 - Siemens S7-1200/1500 Hardcoded TLS Key
+  CVSS 9.8 (CRITICAL) - Hardcoded global private key enables full MitM decryption
 
   Target: 192.168.1.50:102
 
@@ -394,7 +394,7 @@ ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > run
           S7comm+ PDUs. Possible actions:
             - Read/write any memory area (DB, QB, IB, MB)
             - Start/stop PLC CPU
-            - Download modified PLC program (T0843 — Program Download)
+            - Download modified PLC program (T0843 - Program Download)
             - Clear PLC program
 
   [i] MITRE ATT&CK for ICS: T0830 (Man in the Middle)
@@ -482,9 +482,9 @@ ixf (Tridium Niagara 4 Default Credentials) > set target 10.0.0.55
 
 ixf (Tridium Niagara 4 Default Credentials) > run
 
-  [SIMULATE MODE — no packets sent]
+  [SIMULATE MODE - no packets sent]
   ═══════════════════════════════════════════════════════════════════════════
-  Tridium Niagara 4 — Default Credential Test
+  Tridium Niagara 4 - Default Credential Test
   Target: https://10.0.0.55:443
 
   Credential pairs that would be tested (live mode):
@@ -526,7 +526,7 @@ ixf > mitre-scan 192.168.1.0/24
 [*] Running in simulate mode (no packets sent)
 [*] Sweeping 90 techniques across all discovered hosts
 
-  [TA0108 — Initial Access]
+  [TA0108 - Initial Access]
   ─────────────────────────────────────────────────────────────────────────
   [*] T0810 Drive-by Compromise        ... simulate  [queued]
   [*] T0817 Drive-by Compromise        ... simulate  [queued]
@@ -538,7 +538,7 @@ ixf > mitre-scan 192.168.1.0/24
   [*] T0850 Software Deployment Tools  ... simulate  [queued]
   [*] T0862 Supply Chain Compromise    ... simulate  [queued]
 
-  [TA0104 — Execution]
+  [TA0104 - Execution]
   ─────────────────────────────────────────────────────────────────────────
   [*] T0806 Brute Force I/O            ... simulate  [queued]
   [*] T0807 Command-Line Interface     ... simulate  [queued]
@@ -551,19 +551,19 @@ ixf > mitre-scan 192.168.1.0/24
 
 [*] Sweep complete.
 
-  MITRE ATT&CK for ICS — Sweep Results: 192.168.1.0/24
+  MITRE ATT&CK for ICS - Sweep Results: 192.168.1.0/24
   ═══════════════════════════════════════════════════════════════════════════
   Tactic                                Tested    Potential Findings
   ─────────────────────────────────────────────────────────────────────────
   Initial Access (TA0108)               9/9       T0822 (external RDP found)
   Execution (TA0104)                    8/9       T0806 (Modbus write accessible)
-  Persistence (TA0110)                  6/8       —
-  Privilege Escalation (TA0111)         5/7       —
+  Persistence (TA0110)                  6/8       -
+  Privilege Escalation (TA0111)         5/7       -
   Evasion (TA0103)                      4/5       T0878 (alarm suppression possible)
   Discovery (TA0102)                    8/8       T0888 (Modbus devices found)
   Lateral Movement (TA0109)             7/9       T0812 (shared credentials detected)
   Collection (TA0100)                   6/6       T0802 (tag read accessible)
-  Command and Control (TA0101)          4/5       —
+  Command and Control (TA0101)          4/5       -
   Inhibit Response Function (TA0107)    5/9       T0803 (block reporting)
   Impair Process Control (TA0106)       7/10      T0806, T0836 (parameter write)
   Impact (TA0105)                       5/10      T0826 (loss of availability risk)
@@ -571,7 +571,7 @@ ixf > mitre-scan 192.168.1.0/24
   TOTAL                                96/103 (93%)   6 potential findings
 
 ixf > ttp T0843 192.168.1.100
-[*] MITRE Technique: T0843 — Program Download
+[*] MITRE Technique: T0843 - Program Download
 [*] Running all modules mapped to T0843 against 192.168.1.100 (simulate)
 
   [1/8] cve/siemens/cve_2022_1161_controllogix_modified_fw    simulate  CHECKED
@@ -584,12 +584,12 @@ ixf > ttp T0843 192.168.1.100
   [8/8] assessment/mitre_ics/t0843_program_upload             simulate  CHECKED
 
 [+] T0843 sweep complete: 8 modules run, 2 potential matches
-[+] Potential: cve/siemens/cve_2022_1161 — port 102 reachable, S7comm device detected
-[+] Potential: exploits/protocols/s7comm/s7_program_download — S7 read confirmed
+[+] Potential: cve/siemens/cve_2022_1161 - port 102 reachable, S7comm device detected
+[+] Potential: exploits/protocols/s7comm/s7_program_download - S7 read confirmed
 
 ixf > mitre-coverage
 
-  MITRE ATT&CK for ICS — Coverage Report
+  MITRE ATT&CK for ICS - Coverage Report
   ═══════════════════════════════════════════════════════════════════════════
   Tactic                              Covered    Total    Pct
   ─────────────────────────────────────────────────────────────────────────
@@ -609,11 +609,11 @@ ixf > mitre-coverage
   TOTAL                                96        103       93%
 
   Top 5 uncovered techniques:
-    T0816  Device Restart/Shutdown        (impact — no module yet)
-    T0835  Manipulate I/O Image           (impact — firmware dependent)
-    T0882  Theft of Operational Info      (collection — OSINT based)
-    T0858  Remote File Copy              (lateral movement — protocol-specific)
-    T0845  Program Upload                 (persistence — variant coverage partial)
+    T0816  Device Restart/Shutdown        (impact - no module yet)
+    T0835  Manipulate I/O Image           (impact - firmware dependent)
+    T0882  Theft of Operational Info      (collection - OSINT based)
+    T0858  Remote File Copy              (lateral movement - protocol-specific)
+    T0845  Program Upload                 (persistence - variant coverage partial)
 
   Navigator layer: ixf > report navigator
   ═══════════════════════════════════════════════════════════════════════════
@@ -657,7 +657,7 @@ ixf > assess iec62443/zone_conduit_audit
 ixf > assess nist_sp800_82/control_checklist
 [*] Running NIST SP 800-82r3 ICS Security Control Checklist...
 
-  NIST SP 800-82r3 — ICS Security Control Checklist
+  NIST SP 800-82r3 - ICS Security Control Checklist
   ═══════════════════════════════════════════════════════════════════════════
   Control Domain     ID      Check                              Priority
   ─────────────────────────────────────────────────────────────────────────
@@ -686,10 +686,10 @@ ixf > assess nist_sp800_82/control_checklist
 
 ixf > assess risk/ics_risk_scorer
 [*] Running ICS Risk Scoring Model...
-[*] No target set — showing methodology and worst-case scenario.
+[*] No target set - showing methodology and worst-case scenario.
 [*] Set 'target' to analyze a specific host.
 
-  ICS Risk Score Methodology — CISA/ICS-CERT Framework
+  ICS Risk Score Methodology - CISA/ICS-CERT Framework
   ═══════════════════════════════════════════════════════════════════════════
   Risk Factor                  Weight   Worst-Case Score    Your Score
   ─────────────────────────────────────────────────────────────────────────
@@ -699,7 +699,7 @@ ixf > assess risk/ics_risk_scorer
   Patch level                   15%     HIGH     (12/15)    [set target]
   Logging/monitoring             5%     MEDIUM   (3/5)      [set target]
   ─────────────────────────────────────────────────────────────────────────
-  Composite Score:              95/100 (CRITICAL — Internet-facing, no auth)
+  Composite Score:              95/100 (CRITICAL - Internet-facing, no auth)
   ─────────────────────────────────────────────────────────────────────────
   [i] Score 0-30: LOW risk     Score 31-60: MEDIUM    61-80: HIGH    81+: CRITICAL
   [i] Reference: CISA ICS Risk Scoring Methodology
@@ -759,11 +759,11 @@ ixf > sast /opt/plc-projects/reactor_control.st
 [*] Analysis complete (3.2 seconds)
 
   ═══════════════════════════════════════════════════════════════════════════
-  SAST Report — /opt/plc-projects/reactor_control.st
+  SAST Report - /opt/plc-projects/reactor_control.st
   Provider: OpenAI GPT-4o | Language: Structured Text (IEC 61131-3)
   ═══════════════════════════════════════════════════════════════════════════
 
-  FINDING 001 — CRITICAL
+  FINDING 001 - CRITICAL
   ─────────────────────────────────────────────────────────────────────────
   Title       : Integer overflow in temperature setpoint validation
   Location    : Line 142, Function Block FB_ReactorControl
@@ -787,7 +787,7 @@ ixf > sast /opt/plc-projects/reactor_control.st
       xSafetyTrip := TRUE;
     END_IF;
 
-  FINDING 002 — HIGH
+  FINDING 002 - HIGH
   ─────────────────────────────────────────────────────────────────────────
   Title       : Hardcoded authentication bypass in remote setpoint function
   Location    : Line 287, Function FB_RemoteSetpoint
@@ -804,7 +804,7 @@ ixf > sast /opt/plc-projects/reactor_control.st
                 (assign from non-networked variable). Enforce authentication
                 at network layer (OPC UA with certificate auth).
 
-  FINDING 003 — HIGH
+  FINDING 003 - HIGH
   ─────────────────────────────────────────────────────────────────────────
   Title       : Missing safe state on communication loss
   Location    : Line 412, Network communication block
@@ -817,7 +817,7 @@ ixf > sast /opt/plc-projects/reactor_control.st
   Remediation : On `xCommOK` timeout, immediately set all controlled
                 outputs to the defined safe position (valve closed, pump off).
 
-  FINDING 004 — MEDIUM
+  FINDING 004 - MEDIUM
   ─────────────────────────────────────────────────────────────────────────
   Title       : No range validation on Modbus-written analog setpoints
   Location    : Line 201-218, Function FC_WriteSetpoints
@@ -828,7 +828,7 @@ ixf > sast /opt/plc-projects/reactor_control.st
   Impact      : Actuator damage; process disruption.
   Remediation : Add LIMIT() function call around all Modbus-written values.
 
-  FINDING 005 — LOW
+  FINDING 005 - LOW
   ─────────────────────────────────────────────────────────────────────────
   Title       : Unused debug output retained in production code
   Location    : Lines 589-601
@@ -861,7 +861,7 @@ ixf (CVE-2019-13946 Siemens PROFINET DoS) > set target 192.168.1.100
 
 ixf (CVE-2019-13946 Siemens PROFINET DoS) > set simulate false
 [*] simulate => False
-[!] LIVE MODE ENABLED — packets will be sent to target.
+[!] LIVE MODE ENABLED - packets will be sent to target.
 
 ixf (CVE-2019-13946 Siemens PROFINET DoS) > show options
 
@@ -882,7 +882,7 @@ ixf (CVE-2019-13946 Siemens PROFINET DoS) > set destructive true
 ixf (CVE-2019-13946 Siemens PROFINET DoS) > run
 
   ████████████████████████████████████████████████████████████████████████
-  ██  DESTRUCTIVE MODE — HIGH IMPACT                                     ██
+  ██  DESTRUCTIVE MODE - HIGH IMPACT                                     ██
   ████████████████████████████████████████████████████████████████████████
 
   Module  : CVE-2019-13946 Siemens PROFINET DoS
@@ -908,7 +908,7 @@ ixf (CVE-2019-13946 Siemens PROFINET DoS) > run
 [*] Sending via raw socket on eth0...
 [*] Packet sent (1 packet, 64 bytes)
 [*] Waiting for response (timeout: 5s)...
-[!] No response received — device may have crashed or dropped connection
+[!] No response received - device may have crashed or dropped connection
 [+] Result: Device at 192.168.1.100 stopped responding after malformed DCP packet
 [+] CVE-2019-13946 confirmed exploitable on target
 [!] DESTRUCTIVE OPERATION LOGGED: .log/destructive_ops_2026-06-01.log
@@ -924,7 +924,7 @@ ixf (CVE-2019-13946 Siemens PROFINET DoS) >
 ```
 ixf > nse status
 
-  NSE Scripts — Status
+  NSE Scripts - Status
   ═══════════════════════════════════════════════════════════════════════════
   Nmap version    : 7.95 (found at /usr/bin/nmap)
   Scripts dir     : /usr/share/nmap/scripts/
@@ -973,7 +973,7 @@ PORT      STATE SERVICE
 |   Protocol: S7comm (Siemens S7 PLC detected)
 |   Device:   SIMATIC S7-1500
 |   Firmware: V2.9.5
-|_  Risk:     HIGH — S7comm unauthenticated access
+|_  Risk:     HIGH - S7comm unauthenticated access
 
 Nmap scan report for 192.168.1.100
 Host is up (0.0009s latency).
@@ -983,7 +983,7 @@ PORT    STATE SERVICE
 |   Protocol: Modbus TCP
 |   Vendor:   Unknown (generic Modbus device)
 |   Unit IDs: 1, 2, 3 (responded)
-|_  Risk:     HIGH — Modbus TCP unauthenticated
+|_  Risk:     HIGH - Modbus TCP unauthenticated
 
 Nmap done: 256 IP addresses (2 hosts up) scanned in 18.43 seconds
 ```

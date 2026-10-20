@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2023-39476 — Inductive Automation Ignition.
+"""IXF CVE Module - CVE-2023-39476 - Inductive Automation Ignition.
 
 Java deserial pre-auth RCE
 
@@ -32,8 +32,8 @@ _SEVERITY      = "CRITICAL"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2023-39476 — Inductive Automation Ignition (CRITICAL)",
-        "description":   "Inductive Automation Ignition — Java deserial pre-auth RCE. "
+        "name":          "CVE-2023-39476 - Inductive Automation Ignition (CRITICAL)",
+        "description":   "Inductive Automation Ignition - Java deserial pre-auth RCE. "
                          "CVSS 9.8 (CRITICAL). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2023-39476...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Inductive Automation Ignition may be present. "
+                f"Port {self.port} open on {self.target} - Inductive Automation Ignition may be present. "
                 "CVE-2023-39476 (CRITICAL CVSS 9.8): Java deserial pre-auth RCE. "
                 "Manual version verification required."
             )

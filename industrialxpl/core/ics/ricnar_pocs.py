@@ -1,4 +1,4 @@
-"""Ricnar Exploit Solutions PoCs — MIT payload specs (REFERENCE_ONLY)."""
+"""Ricnar Exploit Solutions PoCs - MIT payload specs (REFERENCE_ONLY)."""
 
 
 from typing import Any

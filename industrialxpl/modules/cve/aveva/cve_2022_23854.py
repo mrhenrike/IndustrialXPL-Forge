@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2022-23854 — AVEVA AVEVA InTouch Access Anywhere (CRITICAL CVSS 9.8).
+"""IXF CVE CVE-2022-23854 - AVEVA AVEVA InTouch Access Anywhere (CRITICAL CVSS 9.8).
 
 Exploit type: Remote code execution path traversal
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — AVEVA AVEVA InTouch Access Anywhere may be present. CVE-2022-23854 CRITICAL CVSS 9.8.")
+            print_success(f"Port {self.port} open - AVEVA AVEVA InTouch Access Anywhere may be present. CVE-2022-23854 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

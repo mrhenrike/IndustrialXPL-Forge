@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2023-35985 — Yokogawa CENTUM VP engineering (HIGH CVSS 7.5).
+"""IXF CVE CVE-2023-35985 - Yokogawa CENTUM VP engineering (HIGH CVSS 7.5).
 
 Exploit type: Path traversal arbitrary file access
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Yokogawa CENTUM VP engineering may be present. CVE-2023-35985 HIGH CVSS 7.5.")
+            print_success(f"Port {self.port} open - Yokogawa CENTUM VP engineering may be present. CVE-2023-35985 HIGH CVSS 7.5.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

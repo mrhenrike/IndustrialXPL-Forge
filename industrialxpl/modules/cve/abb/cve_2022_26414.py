@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2022-26414 — ABB multiple OT products.
+"""IXF CVE Module - CVE-2022-26414 - ABB multiple OT products.
 
 Hardcoded key (ICEFALL)
 
@@ -32,8 +32,8 @@ _SEVERITY      = "HIGH"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2022-26414 — ABB multiple OT products (HIGH)",
-        "description":   "ABB multiple OT products — Hardcoded key (ICEFALL). "
+        "name":          "CVE-2022-26414 - ABB multiple OT products (HIGH)",
+        "description":   "ABB multiple OT products - Hardcoded key (ICEFALL). "
                          "CVSS 7.4 (HIGH). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2022-26414...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — ABB multiple OT products may be present. "
+                f"Port {self.port} open on {self.target} - ABB multiple OT products may be present. "
                 "CVE-2022-26414 (HIGH CVSS 7.4): Hardcoded key (ICEFALL). "
                 "Manual version verification required."
             )

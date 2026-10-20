@@ -1,4 +1,4 @@
-"""open-plc-utils CLI wrapper — MIT vendor reference."""
+"""open-plc-utils CLI wrapper - MIT vendor reference."""
 
 
 import shutil
@@ -12,5 +12,5 @@ def open_plc_status() -> dict[str, Any]:
         "simulate": True,
         "binary": plc or "not installed",
         "fallback": "ixf modbus/s7 scanners",
-        "bacsfuzz": {"available": False, "note": "OPTIONAL_SKIP — serial BACnet lab only"},
+        "bacsfuzz": {"available": False, "note": "OPTIONAL_SKIP - serial BACnet lab only"},
     }

@@ -538,7 +538,7 @@ PC Worx properties parsed by this script are:
 
 From Phoenix Contact product webpage [Link](https://www.phoenixcontact.com/online/portal/us?1dmy&urile=wcm:path:/usen/web/main/products/subcategory_pages/programming_p-19-05/8b777145-e7f2-4eaa-ae5e-4dacdce30223/8b777145-e7f2-4eaa-ae5e-4dacdce30223)
 
-> PC Worx is the consistent engineering software for all controllers from Phoenix Contact. It combines programming - according to IEC 61131, fieldbus configuration and system diagnostics – in a single software solution. This provides optimum interaction between hardware and software. PC Worx can be used to implement complex automation concepts. Depending on the number of I/Os to be supported, you have two versions to choose from: PC WORX BASIC and PC WORX PRO. 
+> PC Worx is the consistent engineering software for all controllers from Phoenix Contact. It combines programming - according to IEC 61131, fieldbus configuration and system diagnostics - in a single software solution. This provides optimum interaction between hardware and software. PC Worx can be used to implement complex automation concepts. Depending on the number of I/Os to be supported, you have two versions to choose from: PC WORX BASIC and PC WORX PRO. 
 	
 ####Installation
 

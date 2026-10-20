@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2025-6204 — Dassault Systemes DELMIA Apriso.
+"""IXF CVE Module - CVE-2025-6204 - Dassault Systemes DELMIA Apriso.
 
 File upload path traversal webshell
 
@@ -32,8 +32,8 @@ _SEVERITY      = "HIGH"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2025-6204 — Dassault Systemes DELMIA Apriso (HIGH)",
-        "description":   "Dassault Systemes DELMIA Apriso — File upload path traversal webshell. "
+        "name":          "CVE-2025-6204 - Dassault Systemes DELMIA Apriso (HIGH)",
+        "description":   "Dassault Systemes DELMIA Apriso - File upload path traversal webshell. "
                          "CVSS 8.8 (HIGH). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2025-6204...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Dassault Systemes DELMIA Apriso may be present. "
+                f"Port {self.port} open on {self.target} - Dassault Systemes DELMIA Apriso may be present. "
                 "CVE-2025-6204 (HIGH CVSS 8.8): File upload path traversal webshell. "
                 "Manual version verification required."
             )

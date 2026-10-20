@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2012-3040 — Siemens S7-1200 HTTP.
+"""IXF CVE Module - CVE-2012-3040 - Siemens S7-1200 HTTP.
 
 Cross-site scripting web server
 
@@ -32,8 +32,8 @@ _SEVERITY      = "MEDIUM"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2012-3040 — Siemens S7-1200 HTTP (MEDIUM)",
-        "description":   "Siemens S7-1200 HTTP — Cross-site scripting web server. "
+        "name":          "CVE-2012-3040 - Siemens S7-1200 HTTP (MEDIUM)",
+        "description":   "Siemens S7-1200 HTTP - Cross-site scripting web server. "
                          "CVSS 4.3 (MEDIUM). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2012-3040...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Siemens S7-1200 HTTP may be present. "
+                f"Port {self.port} open on {self.target} - Siemens S7-1200 HTTP may be present. "
                 "CVE-2012-3040 (MEDIUM CVSS 4.3): Cross-site scripting web server. "
                 "Manual version verification required."
             )

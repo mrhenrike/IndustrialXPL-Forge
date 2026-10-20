@@ -1,4 +1,4 @@
-"""Per-protocol OT probes — stdlib + optional pymodbus."""
+"""Per-protocol OT probes - stdlib + optional pymodbus."""
 
 
 import socket

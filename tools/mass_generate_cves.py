@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Mass CVE stub generator — Medium/High/Critical only. Vendor-specific catalogs."""
+"""Mass CVE stub generator - Medium/High/Critical only. Vendor-specific catalogs."""
 
 import re
 import sys
@@ -9,7 +9,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 MODULES_CVE  = PROJECT_ROOT / "industrialxpl" / "modules" / "cve"
 MODULES_CVE.mkdir(parents=True, exist_ok=True)
 
-STUB = '''"""IXF CVE {cve_id} — {vendor} {product} ({severity} CVSS {cvss}).
+STUB = '''"""IXF CVE {cve_id} - {vendor} {product} ({severity} CVSS {cvss}).
 
 Exploit type: {exploit_type}
 CISA Advisory: {cisa}
@@ -69,7 +69,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success("Port {{}} open — {vendor} {product} may be present. {cve_id} {severity} CVSS {cvss}.".format(self.port))
+            print_success("Port {{}} open - {vendor} {product} may be present. {cve_id} {severity} CVSS {cvss}.".format(self.port))
             print_warning("CISA: {cisa}")
         else:
             print_info("{{}}:{{}} not responding.".format(self.target, self.port))

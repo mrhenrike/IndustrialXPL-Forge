@@ -4,12 +4,12 @@
     "torii": {
       "type": "analyze",
       "vectors": ["telnet", "ssh", "multi-arch"],
-      "note": "ELF corpus + YARA — no propagation"
+      "note": "ELF corpus + YARA - no propagation"
     },
     "hajime": {
       "type": "analyze",
       "vectors": ["p2p", "telnet", "iot"],
-      "note": "Peer-to-peer botnet — analyze-only"
+      "note": "Peer-to-peer botnet - analyze-only"
     }
   },
   "yara_available": false,

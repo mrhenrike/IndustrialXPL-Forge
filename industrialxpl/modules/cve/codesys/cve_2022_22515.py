@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2022-22515 — CODESYS V3 runtime web server (HIGH CVSS 7.5).
+"""IXF CVE CVE-2022-22515 - CODESYS V3 runtime web server (HIGH CVSS 7.5).
 
 Exploit type: Uncontrolled resource consumption DoS
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — CODESYS V3 runtime web server may be present. CVE-2022-22515 HIGH CVSS 7.5.")
+            print_success(f"Port {self.port} open - CODESYS V3 runtime web server may be present. CVE-2022-22515 HIGH CVSS 7.5.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

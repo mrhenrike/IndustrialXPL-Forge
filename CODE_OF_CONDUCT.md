@@ -1,4 +1,4 @@
-# Code of Conduct — IndustrialXPL-Forge
+# Code of Conduct - IndustrialXPL-Forge
 
 ## Our Commitment
 

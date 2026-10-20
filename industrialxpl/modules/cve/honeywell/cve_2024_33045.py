@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2024-33045 — Honeywell Niagara IQ Pro (CRITICAL CVSS 9.1).
+"""IXF CVE CVE-2024-33045 - Honeywell Niagara IQ Pro (CRITICAL CVSS 9.1).
 
 Exploit type: Authentication bypass door controller
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Honeywell Niagara IQ Pro may be present. CVE-2024-33045 CRITICAL CVSS 9.1.")
+            print_success(f"Port {self.port} open - Honeywell Niagara IQ Pro may be present. CVE-2024-33045 CRITICAL CVSS 9.1.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

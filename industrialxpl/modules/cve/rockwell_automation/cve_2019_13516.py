@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2019-13516 — Rockwell Automation FactoryTalk Diagnostics (HIGH CVSS 7.5).
+"""IXF CVE CVE-2019-13516 - Rockwell Automation FactoryTalk Diagnostics (HIGH CVSS 7.5).
 
 Exploit type: Denial of service UDP
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Rockwell Automation FactoryTalk Diagnostics may be present. CVE-2019-13516 HIGH CVSS 7.5.")
+            print_success(f"Port {self.port} open - Rockwell Automation FactoryTalk Diagnostics may be present. CVE-2019-13516 HIGH CVSS 7.5.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

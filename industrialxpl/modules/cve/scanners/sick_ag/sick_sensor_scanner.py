@@ -1,4 +1,4 @@
-"""IXF Scanner — SICK AG Safety/Sensor Devices Discovery."""
+"""IXF Scanner - SICK AG Safety/Sensor Devices Discovery."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptInteger, mute,

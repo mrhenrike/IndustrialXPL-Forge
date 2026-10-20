@@ -45,4 +45,4 @@ class Exploit(Exploit):
                 description=f"CVE-2024-2426: {self.target}:{self.port}.  Authentication bypass remote. CVSS 9.8.",
                 mitre_techniques=["T0883"],
             ); return
-        print_success(f"CVE-2024-2426 CRITICAL — port {self.port} open.") if self.check() else print_error("Not responding.")
+        print_success(f"CVE-2024-2426 CRITICAL - port {self.port} open.") if self.check() else print_error("Not responding.")

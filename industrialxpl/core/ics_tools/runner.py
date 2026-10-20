@@ -1,4 +1,4 @@
-"""Run incorporated ics-tools — IXF native handlers first, vendor fallback."""
+"""Run incorporated ics-tools - IXF native handlers first, vendor fallback."""
 
 
 import csv
@@ -118,7 +118,7 @@ class IcsToolsRunner:
             return {"success": False, "error": str(exc)}
 
     def compile_vendor(self, slug: str, simulate: bool = False) -> dict[str, Any]:
-        """Compile .sln / native helpers where present (sixnet C# — metadata only)."""
+        """Compile .sln / native helpers where present (sixnet C# - metadata only)."""
         fam = self.catalog.get(slug)
         if not fam:
             return {"error": "Unknown ics-tool"}
@@ -139,7 +139,7 @@ class IcsToolsRunner:
                 return {"success": False, "error": str(exc)}
         return {
             "success": True,
-            "note": "No native compile required — run via python/nmap module",
+            "note": "No native compile required - run via python/nmap module",
             "vendor": str(fam.vendor_path),
         }
 

@@ -1,7 +1,7 @@
-"""IXF CVE Module — DESIGN-MODBUS-NOAUTH — Generic Modbus TCP all vendors.
+"""IXF CVE Module - DESIGN-MODBUS-NOAUTH - Generic Modbus TCP all vendors.
 
 Severity: CRITICAL (CVSS 9.1)
-Type: No authentication by protocol design — unauthenticated read/write
+Type: No authentication by protocol design - unauthenticated read/write
 CISA Advisory: N/A
 
 Level B module: port fingerprint + version context.
@@ -32,16 +32,16 @@ _CVSS = "9.1"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "DESIGN-MODBUS-NOAUTH — Generic Modbus TCP all vendors (CRITICAL)",
-        "description":   "No authentication by protocol design — unauthenticated read/write. "
+        "name":          "DESIGN-MODBUS-NOAUTH - Generic Modbus TCP all vendors (CRITICAL)",
+        "description":   "No authentication by protocol design - unauthenticated read/write. "
                          "Affects Generic Modbus TCP all vendors. CVSS 9.1 (CRITICAL). "
                          "Level B: fingerprint + version check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    ("https://nvd.nist.gov/vuln/detail/DESIGN-MODBUS-NOAUTH",),
         "devices":       ("Generic Modbus TCP all vendors",),
         "impact":        "CRITICAL",
-        "exploit_type":  "No authentication by protocol design — unauthenticated read/write",
-        "source_poc":    "Static catalog Level B — set check() target for version confirmation",
+        "exploit_type":  "No authentication by protocol design - unauthenticated read/write",
+        "source_poc":    "Static catalog Level B - set check() target for version confirmation",
         "cve":           "DESIGN-MODBUS-NOAUTH",
         "cvss":          "9.1",
         "severity":      "CRITICAL",
@@ -78,7 +78,7 @@ class Exploit(Exploit):
         if self.simulate:
             DestructiveGate.print_simulation(
                 description=(
-                    "DESIGN-MODBUS-NOAUTH (CRITICAL CVSS 9.1): No authentication by protocol design — unauthenticated read/write. "
+                    "DESIGN-MODBUS-NOAUTH (CRITICAL CVSS 9.1): No authentication by protocol design - unauthenticated read/write. "
                     "Affects: Generic Modbus TCP all vendors. "
                     f"Would fingerprint {self.target}:{self.port} and confirm if device version "
                     "is in the affected range."
@@ -90,8 +90,8 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for DESIGN-MODBUS-NOAUTH...")
         if self.check():
             print_success(
-                f"Service port {self.port} open on {self.target} — Generic Modbus TCP all vendors may be present. "
-                "DESIGN-MODBUS-NOAUTH CRITICAL CVSS 9.1: No authentication by protocol design — unauthenticated read/write. "
+                f"Service port {self.port} open on {self.target} - Generic Modbus TCP all vendors may be present. "
+                "DESIGN-MODBUS-NOAUTH CRITICAL CVSS 9.1: No authentication by protocol design - unauthenticated read/write. "
                 "Manual version verification required to confirm vulnerability."
             )
             print_warning("CISA Advisory: N/A")

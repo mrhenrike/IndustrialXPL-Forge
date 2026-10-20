@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2020-7560 — Schneider Electric EcoStruxure Control Expert (CRITICAL CVSS 9.0).
+"""IXF CVE CVE-2020-7560 - Schneider Electric EcoStruxure Control Expert (CRITICAL CVSS 9.0).
 
 Exploit type: Remote code execution
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Schneider Electric EcoStruxure Control Expert may be present. CVE-2020-7560 CRITICAL CVSS 9.0.")
+            print_success(f"Port {self.port} open - Schneider Electric EcoStruxure Control Expert may be present. CVE-2020-7560 CRITICAL CVSS 9.0.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

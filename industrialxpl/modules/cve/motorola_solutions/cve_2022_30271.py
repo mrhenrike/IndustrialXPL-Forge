@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2022-30271 — Motorola Solutions ACE3600.
+"""IXF CVE Module - CVE-2022-30271 - Motorola Solutions ACE3600.
 
 Hardcoded SSH key
 
@@ -32,8 +32,8 @@ _SEVERITY      = "CRITICAL"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2022-30271 — Motorola Solutions ACE3600 (CRITICAL)",
-        "description":   "Motorola Solutions ACE3600 — Hardcoded SSH key. "
+        "name":          "CVE-2022-30271 - Motorola Solutions ACE3600 (CRITICAL)",
+        "description":   "Motorola Solutions ACE3600 - Hardcoded SSH key. "
                          "CVSS 9.8 (CRITICAL). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2022-30271...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Motorola Solutions ACE3600 may be present. "
+                f"Port {self.port} open on {self.target} - Motorola Solutions ACE3600 may be present. "
                 "CVE-2022-30271 (CRITICAL CVSS 9.8): Hardcoded SSH key. "
                 "Manual version verification required."
             )

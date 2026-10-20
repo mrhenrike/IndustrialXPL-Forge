@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2025-5086 — Dassault Systemes DELMIA Apriso.
+"""IXF CVE Module - CVE-2025-5086 - Dassault Systemes DELMIA Apriso.
 
 Insecure deserialization RCE
 
@@ -32,8 +32,8 @@ _SEVERITY      = "CRITICAL"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2025-5086 — Dassault Systemes DELMIA Apriso (CRITICAL)",
-        "description":   "Dassault Systemes DELMIA Apriso — Insecure deserialization RCE. "
+        "name":          "CVE-2025-5086 - Dassault Systemes DELMIA Apriso (CRITICAL)",
+        "description":   "Dassault Systemes DELMIA Apriso - Insecure deserialization RCE. "
                          "CVSS 9.8 (CRITICAL). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2025-5086...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Dassault Systemes DELMIA Apriso may be present. "
+                f"Port {self.port} open on {self.target} - Dassault Systemes DELMIA Apriso may be present. "
                 "CVE-2025-5086 (CRITICAL CVSS 9.8): Insecure deserialization RCE. "
                 "Manual version verification required."
             )

@@ -15,7 +15,7 @@
 [![MITRE ATT&CK ICS](https://img.shields.io/badge/MITRE%20ATT%26CK%20ICS-v19-red)](https://attack.mitre.org/matrices/ics/)
 [![Platform](https://img.shields.io/badge/Platform-OT%20%7C%20ICS%20%7C%20SCADA%20%7C%20IIoT-darkred)](https://github.com/mrhenrike/IndustrialXPL-Forge)
 
-**Python-First. Pure Python implementation — install and run with a single `pip install`.**
+**Python-First. Pure Python implementation - install and run with a single `pip install`.**
 
 ---
 
@@ -50,8 +50,8 @@ OSINT → Discovery → Fingerprint → Vulnerability Check → Exploit → Repo
 ```
 
 **Key features:**
-- **Python-First**: all core functionality works with `pip install industrialxpl-forge` — external runtimes (C, Go, Java) are optional accelerators with Python fallbacks built in
-- **SafeMode opt-in**: `set simulate true` or `setg simulate true` — prints payload without sending; live probes use `simulate=false` (default)
+- **Python-First**: all core functionality works with `pip install industrialxpl-forge` - external runtimes (C, Go, Java) are optional accelerators with Python fallbacks built in
+- **SafeMode opt-in**: `set simulate true` or `setg simulate true` - prints payload without sending; live probes use `simulate=false` (default)
 - **MITRE ATT&CK for ICS v19**: 79 techniques mapped, `ttp T0843 192.168.1.100` syntax
 - **CVE coverage**: 3,300+ ICS/OT CVEs from CVSS 0.1 to 10.0
 - **50 vendors**: Siemens, Schneider, Rockwell, ABB, Honeywell, Emerson, WEG, and more
@@ -114,8 +114,8 @@ ixf > search CVE-2015-5374
 ixf > search modbus
 
 # Execute a TTP-ID against a target
-ixf > ttp T0843 192.168.1.100          # Program Download — all modules
-ixf > ttp T0878 10.0.0.0/24            # Alarm Suppression — subnet sweep
+ixf > ttp T0843 192.168.1.100          # Program Download - all modules
+ixf > ttp T0878 10.0.0.0/24            # Alarm Suppression - subnet sweep
 ixf > ttp-list --tactic evasion        # List all Evasion TTP-IDs
 
 # MITRE ATT&CK for ICS sweep
@@ -138,7 +138,7 @@ ixf > mitre-report layer               # ATT&CK Navigator JSON layer
 
 ## SafeMode / DestructiveMode
 
-**Modules default to `simulate=false`** — read probes and protocol checks may hit the wire on `check()` / `run()`. Enable SafeMode explicitly:
+**Modules default to `simulate=false`** - read probes and protocol checks may hit the wire on `check()` / `run()`. Enable SafeMode explicitly:
 
 ```
 ixf (FrostyGoop) > set simulate true
@@ -164,21 +164,21 @@ All destructive operations are logged to `.log/destructive_ops_YYYY-MM-DD.log`.
 
 ## Noise Level in OT Environments
 
-IXF is designed to be the **least aggressive scanner** for OT/ICS assets. Unlike Nmap, which generates SYN packets, OS detection probes, and multiple script PDUs per port, IXF sends a single well-formed protocol PDU — identical to what a legitimate engineering workstation would send.
+IXF is designed to be the **least aggressive scanner** for OT/ICS assets. Unlike Nmap, which generates SYN packets, OS detection probes, and multiple script PDUs per port, IXF sends a single well-formed protocol PDU - identical to what a legitimate engineering workstation would send.
 
 ```
 Tool / Mode              Noise    Risk in OT environments
 ---------------------------------------------------------
-tcpdump (passive)        1/5  ||||                Zero — listen only
-Wireshark (passive)      1/5  ||||                Zero — listen only
+tcpdump (passive)        1/5  ||||                Zero - listen only
+Wireshark (passive)      1/5  ||||                Zero - listen only
 IXF check()              2/5  ||||||||            1 TCP conn, 1 valid PDU
-IXF run() simulate=true  2/5  ||||||||            Identical to check() — no writes
+IXF run() simulate=true  2/5  ||||||||            Identical to check() - no writes
 nmap -sS -T1             3/5  ||||||||||||        SYN scan, half-open TCP
 IXF run() simulate=false 3/5  ||||||||||||        1 conn, 1 read PDU (FC03/FC43)
 nmap -sS -T2 (OT safe)   3/5  ||||||||||||        Acceptable with conservative timing
 nmap -sV -T3             4/5  ||||||||||||||||    Version probes per port
 nmap --script modbus-*   4/5  ||||||||||||||||    Scripts send multiple PDUs
-nmap -A (aggressive)     5/5  ||||||||||||||||||||  OS detect + scripts — AVOID in OT
+nmap -A (aggressive)     5/5  ||||||||||||||||||||  OS detect + scripts - AVOID in OT
 nmap -T4 / -T5           5/5  ||||||||||||||||||||  NEVER in OT. May crash assets.
 ```
 
@@ -223,9 +223,9 @@ setg OUTPUT output.txt
 | **0** | Python stdlib | socket, struct, select | Always |
 | **1** | pip install | pymodbus, scapy, rich, requests | Yes |
 | **2** | pip extras | asyncua, cpppo, python-can | Optional |
-| **3** | External runtimes | ruby, node, java, gcc, go | **Optional — Python fallback always available** |
+| **3** | External runtimes | ruby, node, java, gcc, go | **Optional - Python fallback always available** |
 
-All SCADA framework modules are implemented natively in Python — no additional tools required.
+All SCADA framework modules are implemented natively in Python - no additional tools required.
 
 ---
 

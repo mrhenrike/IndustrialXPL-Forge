@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2025-13911 — Inductive Automation Ignition.
+"""IXF CVE Module - CVE-2025-13911 - Inductive Automation Ignition.
 
 Python sandbox SYSTEM escape
 
@@ -32,8 +32,8 @@ _SEVERITY      = "HIGH"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2025-13911 — Inductive Automation Ignition (HIGH)",
-        "description":   "Inductive Automation Ignition — Python sandbox SYSTEM escape. "
+        "name":          "CVE-2025-13911 - Inductive Automation Ignition (HIGH)",
+        "description":   "Inductive Automation Ignition - Python sandbox SYSTEM escape. "
                          "CVSS 7.2 (HIGH). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2025-13911...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Inductive Automation Ignition may be present. "
+                f"Port {self.port} open on {self.target} - Inductive Automation Ignition may be present. "
                 "CVE-2025-13911 (HIGH CVSS 7.2): Python sandbox SYSTEM escape. "
                 "Manual version verification required."
             )

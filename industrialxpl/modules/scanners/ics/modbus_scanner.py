@@ -1,5 +1,5 @@
 # Author: Andre Henrique (@mrhenrike) | Uniao Geek
-"""Modbus/TCP ICS Scanner — device identification and register/coil enumeration.
+"""Modbus/TCP ICS Scanner - device identification and register/coil enumeration.
 
 Modes (set explicitly on the module):
   simulate=true

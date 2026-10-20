@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2023-46280 — Siemens SIMATIC WinCC OA (HIGH CVSS 8.7).
+"""IXF CVE CVE-2023-46280 - Siemens SIMATIC WinCC OA (HIGH CVSS 8.7).
 
 Exploit type: Remote code execution
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Siemens SIMATIC WinCC OA may be present. CVE-2023-46280 HIGH CVSS 8.7.")
+            print_success(f"Port {self.port} open - Siemens SIMATIC WinCC OA may be present. CVE-2023-46280 HIGH CVSS 8.7.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2017-6026 — Schneider Electric M221.
+"""IXF CVE Module - CVE-2017-6026 - Schneider Electric M221.
 
 Session hijack
 
@@ -32,8 +32,8 @@ _SEVERITY      = "HIGH"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2017-6026 — Schneider Electric M221 (HIGH)",
-        "description":   "Schneider Electric M221 — Session hijack. "
+        "name":          "CVE-2017-6026 - Schneider Electric M221 (HIGH)",
+        "description":   "Schneider Electric M221 - Session hijack. "
                          "CVSS 7.5 (HIGH). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2017-6026...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Schneider Electric M221 may be present. "
+                f"Port {self.port} open on {self.target} - Schneider Electric M221 may be present. "
                 "CVE-2017-6026 (HIGH CVSS 7.5): Session hijack. "
                 "Manual version verification required."
             )

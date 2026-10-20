@@ -1,4 +1,4 @@
-"""IXF Scanner — Hollysys MACS-S DCS Discovery."""
+"""IXF Scanner - Hollysys MACS-S DCS Discovery."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptInteger, mute,

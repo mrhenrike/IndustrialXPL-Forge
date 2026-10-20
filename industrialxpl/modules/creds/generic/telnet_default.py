@@ -69,4 +69,4 @@ class Exploit(_Exploit):
             )
             return
         print_status(f"Testing Telnet credentials on {self.target}:{self.port}…")
-        print_info("Telnet bruteforce requires manual interaction — use check() for port scan.")
+        print_info("Telnet bruteforce requires manual interaction - use check() for port scan.")

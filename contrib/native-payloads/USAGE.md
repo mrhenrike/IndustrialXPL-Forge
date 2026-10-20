@@ -1,4 +1,4 @@
-# IXF Native Payloads — Authorized Use Only
+# IXF Native Payloads - Authorized Use Only
 
 This directory contains native implementations of ICS/OT malware techniques
 for use in authorized security assessments and penetration tests.

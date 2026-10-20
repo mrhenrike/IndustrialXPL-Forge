@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2024-30034 — Siemens SIMATIC WinCC Runtime Advanced (HIGH CVSS 8.8).
+"""IXF CVE CVE-2024-30034 - Siemens SIMATIC WinCC Runtime Advanced (HIGH CVSS 8.8).
 
 Exploit type: Remote code execution OLE DB
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Siemens SIMATIC WinCC Runtime Advanced may be present. CVE-2024-30034 HIGH CVSS 8.8.")
+            print_success(f"Port {self.port} open - Siemens SIMATIC WinCC Runtime Advanced may be present. CVE-2024-30034 HIGH CVSS 8.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

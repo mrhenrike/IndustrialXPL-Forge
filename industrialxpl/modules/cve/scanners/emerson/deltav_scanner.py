@@ -1,4 +1,4 @@
-"""IXF Scanner — Emerson DeltaV DCS Discovery."""
+"""IXF Scanner - Emerson DeltaV DCS Discovery."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptInteger, mute,

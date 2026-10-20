@@ -1,4 +1,4 @@
-"""OT vendor broadcast scanner — F04 native module."""
+"""OT vendor broadcast scanner - F04 native module."""
 from industrialxpl.core.exploit import Exploit, OptBool, OptIP, mute, print_table, print_warning
 from industrialxpl.core.ics.vendors import VENDOR_NAMES, simulate_all
 

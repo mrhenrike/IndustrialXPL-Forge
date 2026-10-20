@@ -1,4 +1,4 @@
-"""IXF Scanner — Kinco K5 Series PLC Discovery."""
+"""IXF Scanner - Kinco K5 Series PLC Discovery."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptInteger, mute,

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Wave 2 — No-CVE protocol abuse exploits for IXF.
+"""Wave 2 - No-CVE protocol abuse exploits for IXF.
 
 Covers inherent design vulnerabilities in:
   - IEC 61850 GOOSE/MMS (no auth in legacy)
@@ -20,12 +20,12 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 MODULES_DIR = ROOT / "industrialxpl" / "modules" / "exploits" / "protocols"
 
-TEMPLATE = '''"""IXF Protocol Abuse Exploit (No CVE) — {name}.
+TEMPLATE = '''"""IXF Protocol Abuse Exploit (No CVE) - {name}.
 
 {description}
 
 Protocol design limitation / missing authentication by design.
-NOT a CVE — inherent protocol weakness exploitable without patching.
+NOT a CVE - inherent protocol weakness exploitable without patching.
 
 simulate=True (default). Live execution requires explicit authorization.
 """
@@ -51,7 +51,7 @@ class Exploit(Exploit):
         "exploit_type":     "Protocol Design Abuse (No CVE)",
         "source_poc":       "IXF native implementation",
         "cve":              "N/A",
-        "cvss":             "N/A — design weakness",
+        "cvss":             "N/A - design weakness",
         "severity":         "{impact}",
         "mitre_techniques": {mitre},
         "mitre_tactics":    {tactics},
@@ -79,7 +79,7 @@ class Exploit(Exploit):
                 description="{name}\\n{simulation_steps}",
                 mitre_techniques={mitre},
             )
-            print_info("No CVE — inherent protocol design weakness")
+            print_info("No CVE - inherent protocol design weakness")
             return
         print_status("[{proto}] Sending to {{}}:{{}}...".format(self.target, self.port))
         {live_code}
@@ -111,7 +111,7 @@ BATCH = [
     dict(
         subdir="iec61850", filename="goose_spoofing_injection.py",
         name="IEC 61850 GOOSE Message Spoofing",
-        short_desc="IEC 61850 GOOSE (Generic Object Oriented Substation Event) spoofing — inject false protection relay events without authentication.",
+        short_desc="IEC 61850 GOOSE (Generic Object Oriented Substation Event) spoofing - inject false protection relay events without authentication.",
         description="IEC 61850 GOOSE uses Ethernet multicast with no authentication or encryption by default in legacy deployments. "
                     "Attacker on same LAN segment can inject spoofed GOOSE messages to trip circuit breakers or block legitimate events.",
         proto="GOOSE/L2", port=102,
@@ -124,14 +124,14 @@ BATCH = [
             "Phase 1: Capture legitimate GOOSE multicast (dst: 01:0C:CD:01:00:XX)\n"
             "Phase 2: Forge GOOSE PDU with allData stNum increment (+1 from current)\n"
             "Phase 3: Send spoofed GOOSE with goID matching target relay\n"
-            "Phase 4: Relay processes forged event — trips circuit breaker or blocks trip\n"
+            "Phase 4: Relay processes forged event - trips circuit breaker or blocks trip\n"
             "Requires: Layer 2 access to substation LAN (IED network)"
         ),
     ),
     dict(
         subdir="iec61850", filename="goose_flooding_dos.py",
         name="IEC 61850 GOOSE Flooding DoS",
-        short_desc="IEC 61850 GOOSE multicast flood — overwhelm protection relay processing, delay or block legitimate protection events.",
+        short_desc="IEC 61850 GOOSE multicast flood - overwhelm protection relay processing, delay or block legitimate protection events.",
         description="Flooding IEC 61850 GOOSE multicast frames to protection relays can overwhelm their processing capacity, "
                     "causing delays in legitimate protection events and potentially leading to equipment damage.",
         proto="GOOSE/L2", port=102,
@@ -145,7 +145,7 @@ BATCH = [
             "Phase 2: Send at line rate (~100,000 frames/sec on 100Mbps)\n"
             "Phase 3: Relay CPU saturated processing GOOSE flood\n"
             "Phase 4: Legitimate protection GOOSE events delayed/dropped\n"
-            "Risk: Relay fails to respond to real fault — equipment damage"
+            "Risk: Relay fails to respond to real fault - equipment damage"
         ),
     ),
     dict(
@@ -162,16 +162,16 @@ BATCH = [
         tactics=["Impair Process Control"],
         simulation_steps=(
             "Phase 1: Establish MMS Initiate on TCP/102 (no credentials required in legacy)\n"
-            "Phase 2: MMS Identify — enumerate logical nodes and data objects\n"
-            "Phase 3: MMS Write — setVal on XCBR1.Pos.ctlVal (circuit breaker position)\n"
-            "Phase 4: Circuit breaker opens/closes — localized power outage\n"
+            "Phase 2: MMS Identify - enumerate logical nodes and data objects\n"
+            "Phase 3: MMS Write - setVal on XCBR1.Pos.ctlVal (circuit breaker position)\n"
+            "Phase 4: Circuit breaker opens/closes - localized power outage\n"
             "Affects: Substations using IEC 61850 ed.1 without access control"
         ),
     ),
     dict(
         subdir="opcua", filename="opcua_session_hijack.py",
         name="OPC UA Unauthenticated Session Abuse",
-        short_desc="OPC UA server with None security mode — read/write nodes without authentication. Design flaw in misconfigured deployments.",
+        short_desc="OPC UA server with None security mode - read/write nodes without authentication. Design flaw in misconfigured deployments.",
         description="OPC UA servers configured with SecurityMode=None (anonymous) allow any client to connect "
                     "without credentials and read/write all nodes including process setpoints and safety parameters.",
         proto="OPC UA", port=4840,
@@ -182,17 +182,17 @@ BATCH = [
         tactics=["Impair Process Control"],
         simulation_steps=(
             "Phase 1: Connect to OPC UA port 4840 with SecurityMode=None\n"
-            "Phase 2: CreateSession — anonymous, no credentials\n"
-            "Phase 3: Browse namespace — list all nodes and their NodeIds\n"
-            "Phase 4: ReadValue on process tags — extract all setpoints\n"
-            "Phase 5: WriteValue on writable nodes — modify setpoints\n"
+            "Phase 2: CreateSession - anonymous, no credentials\n"
+            "Phase 3: Browse namespace - list all nodes and their NodeIds\n"
+            "Phase 4: ReadValue on process tags - extract all setpoints\n"
+            "Phase 5: WriteValue on writable nodes - modify setpoints\n"
             "Common: Many Kepware/Matrikon OPC UA servers ship with None mode"
         ),
     ),
     dict(
         subdir="opcua", filename="opcua_node_enumeration.py",
         name="OPC UA Anonymous Node Enumeration",
-        short_desc="OPC UA anonymous browse — enumerate all server nodes, tags, and metadata without credentials.",
+        short_desc="OPC UA anonymous browse - enumerate all server nodes, tags, and metadata without credentials.",
         description="OPC UA anonymous browsing reveals complete industrial plant topology including all process tags, "
                     "alarm setpoints, device descriptions, and network addresses.",
         proto="OPC UA", port=4840,
@@ -203,17 +203,17 @@ BATCH = [
         tactics=["Collection"],
         simulation_steps=(
             "Phase 1: Connect OPC UA TCP port 4840 anonymous\n"
-            "Phase 2: GetEndpoints — discover all available endpoints\n"
-            "Phase 3: BrowseRequest from RootFolder — recursive tree walk\n"
+            "Phase 2: GetEndpoints - discover all available endpoints\n"
+            "Phase 3: BrowseRequest from RootFolder - recursive tree walk\n"
             "Phase 4: Extract all NodeIds, BrowseNames, DataTypes\n"
-            "Phase 5: Read all Variable nodes — complete process data map\n"
+            "Phase 5: Read all Variable nodes - complete process data map\n"
             "Output: Full OPC UA namespace in JSON/CSV format"
         ),
     ),
     dict(
         subdir="dnp3", filename="dnp3_data_spoofing.py",
         name="DNP3 Response Spoofing / False Data Injection",
-        short_desc="DNP3 lacks authentication in many deployments — spoof unsolicited response packets to inject false sensor readings.",
+        short_desc="DNP3 lacks authentication in many deployments - spoof unsolicited response packets to inject false sensor readings.",
         description="DNP3 protocol without Secure Authentication v5 allows spoofed unsolicited responses. "
                     "Attacker can inject false analog input values, making operators see incorrect sensor data.",
         proto="DNP3", port=20000,
@@ -227,7 +227,7 @@ BATCH = [
             "Phase 2: Craft spoofed response with source=RTU address, dest=master\n"
             "Phase 3: Set analog inputs to false values (pressure=0, flow=9999)\n"
             "Phase 4: Inject via UDP or TCP man-in-the-middle\n"
-            "Phase 5: SCADA master displays false data — operators misled\n"
+            "Phase 5: SCADA master displays false data - operators misled\n"
             "Requires: DNP3 without SAv5 (still common in legacy SCADA)"
         ),
     ),
@@ -247,14 +247,14 @@ BATCH = [
             "Phase 1: Capture DNP3 CROB (Control Relay Output Block) command to RTU\n"
             "Phase 2: Record full TCP/UDP session with control frame\n"
             "Phase 3: Replay captured frame against same or different RTU\n"
-            "Phase 4: RTU executes replayed command — opens circuit breaker\n"
+            "Phase 4: RTU executes replayed command - opens circuit breaker\n"
             "Requires: No SAv5 challenge-response authentication"
         ),
     ),
     dict(
         subdir="enip", filename="cip_read_all_tags.py",
         name="EtherNet/IP CIP Tag Enumeration (No Auth)",
-        short_desc="EtherNet/IP CIP tag enumeration without authentication — list and read all controller tags.",
+        short_desc="EtherNet/IP CIP tag enumeration without authentication - list and read all controller tags.",
         description="Allen-Bradley/Rockwell PLCs expose all tag data via CIP List Tags service without authentication. "
                     "Attacker can enumerate entire tag database and read all process values.",
         proto="EtherNet/IP", port=44818,
@@ -266,15 +266,15 @@ BATCH = [
         simulation_steps=(
             "Phase 1: Register EtherNet/IP session on port 44818\n"
             "Phase 2: Send CIP List Tags service (service code 0x55)\n"
-            "Phase 3: Receive full tag database — all tag names, types, dimensions\n"
-            "Phase 4: Send CIP Read Tag service for each tag — read all values\n"
+            "Phase 3: Receive full tag database - all tag names, types, dimensions\n"
+            "Phase 4: Send CIP Read Tag service for each tag - read all values\n"
             "Reveals: Complete process state, setpoints, counts, status bits"
         ),
     ),
     dict(
         subdir="enip", filename="cip_multi_request_dos.py",
         name="EtherNet/IP CIP Multi-Request DoS",
-        short_desc="EtherNet/IP CIP Multiple Service Packet abuse — send oversized multi-request to crash EIP stack.",
+        short_desc="EtherNet/IP CIP Multiple Service Packet abuse - send oversized multi-request to crash EIP stack.",
         description="The CIP Multiple Service Packet (service 0x0A) allows bundling multiple requests. "
                     "Crafted malformed multi-request can overflow CIP stack on susceptible PLCs.",
         proto="EtherNet/IP", port=44818,
@@ -294,7 +294,7 @@ BATCH = [
     dict(
         subdir="modbus", filename="modbus_write_coil_flood.py",
         name="Modbus Write Single Coil Flood",
-        short_desc="Flood Modbus FC05 (Write Single Coil) to rapidly toggle digital outputs — physical process disruption.",
+        short_desc="Flood Modbus FC05 (Write Single Coil) to rapidly toggle digital outputs - physical process disruption.",
         description="Rapidly toggling digital output coils via Modbus FC05 can damage field equipment (solenoids, relays, actuators) "
                     "through excessive switching cycles and cause process instability.",
         proto="Modbus", port=502,
@@ -307,14 +307,14 @@ BATCH = [
             "Phase 1: Connect to Modbus TCP port 502\n"
             "Phase 2: Send FC05 Write Single Coil: coil=0, value=0xFF00 (ON)\n"
             "Phase 3: Immediately send FC05: coil=0, value=0x0000 (OFF)\n"
-            "Phase 4: Repeat at 1000 Hz — 1000 toggles/second\n"
+            "Phase 4: Repeat at 1000 Hz - 1000 toggles/second\n"
             "Physical damage: Solenoid/relay burnout, actuator wear, valve damage"
         ),
     ),
     dict(
         subdir="modbus", filename="modbus_unauthorized_coil_set.py",
         name="Modbus Unauthorized Output Coil Write",
-        short_desc="Modbus FC05/FC15 coil write without authentication — set PLC digital outputs to arbitrary state.",
+        short_desc="Modbus FC05/FC15 coil write without authentication - set PLC digital outputs to arbitrary state.",
         description="Modbus TCP has no authentication. Any host on the network can write any coil/register. "
                     "This allows unauthorized control of PLC digital outputs controlling physical actuators.",
         proto="Modbus", port=502,
@@ -325,16 +325,16 @@ BATCH = [
         tactics=["Impair Process Control"],
         simulation_steps=(
             "Phase 1: Connect TCP to port 502 (no auth)\n"
-            "Phase 2: FC01 Read Coils — determine current coil states\n"
-            "Phase 3: FC05 Write Single Coil — set output coil to target state\n"
-            "Phase 4: FC03 Verify write — confirm state change\n"
+            "Phase 2: FC01 Read Coils - determine current coil states\n"
+            "Phase 3: FC05 Write Single Coil - set output coil to target state\n"
+            "Phase 4: FC03 Verify write - confirm state change\n"
             "Impact: Actuators, valves, motors controlled by attacker"
         ),
     ),
     dict(
         subdir="cc_link", filename="cc_link_ie_broadcast_stop.py",
         name="CC-Link IE Field Network Broadcast Stop",
-        short_desc="CC-Link IE Field Network cyclic communication stop via broadcast — Mitsubishi PLC communication disruption.",
+        short_desc="CC-Link IE Field Network cyclic communication stop via broadcast - Mitsubishi PLC communication disruption.",
         description="CC-Link IE Field Network (Mitsubishi) uses cyclic communication without authentication. "
                     "Broadcast frames with station address 0xFF can disrupt all connected stations.",
         proto="CC-Link IE", port=61450,
@@ -348,13 +348,13 @@ BATCH = [
             "Phase 2: Send cyclic data request with broadcast station number (0xFF)\n"
             "Phase 3: All slave stations receive conflicting cyclic data\n"
             "Phase 4: CC-Link IE network enters error state\n"
-            "Phase 5: Mitsubishi PLCs stop receiving input data — outputs hold last state"
+            "Phase 5: Mitsubishi PLCs stop receiving input data - outputs hold last state"
         ),
     ),
     dict(
         subdir="s7", filename="s7_cpu_time_manipulate.py",
         name="Siemens S7 CPU Clock Manipulation",
-        short_desc="Siemens S7comm SET_DATETIME without authentication — manipulate PLC real-time clock, disrupt time-based logic.",
+        short_desc="Siemens S7comm SET_DATETIME without authentication - manipulate PLC real-time clock, disrupt time-based logic.",
         description="S7comm allows setting the PLC system clock without authentication on S7-300/400. "
                     "Time-based logic (schedules, time stamps, alarms) can be disrupted by setting clock forward/backward.",
         proto="S7comm", port=102,
@@ -368,13 +368,13 @@ BATCH = [
             "Phase 2: Send SET_DATETIME request with manipulated timestamp\n"
             "Phase 3: PLC system clock set to target date/time\n"
             "Phase 4: Time-based scheduled events trigger at wrong time\n"
-            "Phase 5: Alarm timestamps incorrect — forensic audit trails corrupted"
+            "Phase 5: Alarm timestamps incorrect - forensic audit trails corrupted"
         ),
     ),
     dict(
         subdir="s7", filename="s7_read_system_status.py",
         name="Siemens S7 System Status Read",
-        short_desc="S7comm read system status without authentication — enumerate PLC CPU, firmware, memory, running modules.",
+        short_desc="S7comm read system status without authentication - enumerate PLC CPU, firmware, memory, running modules.",
         description="Siemens S7comm allows extensive system information read without authentication: "
                     "CPU type, firmware version, memory usage, loaded modules, and network configuration.",
         proto="S7comm", port=102,
@@ -385,10 +385,10 @@ BATCH = [
         tactics=["Discovery"],
         simulation_steps=(
             "Phase 1: Connect to S7 on port 102 via COTP\n"
-            "Phase 2: S7comm Read SZL (System Status List) 0x0011 — CPU ID\n"
-            "Phase 3: SZL 0x0131 — diagnostic buffer\n"
-            "Phase 4: SZL 0x0174 — module info (firmware, serial, order no.)\n"
-            "Phase 5: SZL 0x0232 — communication info\n"
+            "Phase 2: S7comm Read SZL (System Status List) 0x0011 - CPU ID\n"
+            "Phase 3: SZL 0x0131 - diagnostic buffer\n"
+            "Phase 4: SZL 0x0174 - module info (firmware, serial, order no.)\n"
+            "Phase 5: SZL 0x0232 - communication info\n"
             "Output: Complete PLC fingerprint for targeted attack planning"
         ),
     ),
@@ -396,7 +396,7 @@ BATCH = [
         subdir="serial", filename="serial_to_ethernet_pass_replay.py",
         name="Serial-to-Ethernet Gateway Protocol Replay",
         short_desc="Serial-to-Ethernet gateways (Moxa, Lantronix, Digi) forward raw Modbus/DNP3 serial frames without validation.",
-        description="Serial-to-Ethernet converters used in OT act as transparent tunnels — they do not validate "
+        description="Serial-to-Ethernet converters used in OT act as transparent tunnels - they do not validate "
                     "or authenticate the serial protocol frames. Attacker with TCP access can replay or inject "
                     "any Modbus RTU or DNP3 serial frame to the connected field device.",
         proto="Raw TCP (serial tunnel)", port=4001,
@@ -410,7 +410,7 @@ BATCH = [
             "Phase 2: Send raw Modbus RTU frame (with CRC) directly over TCP\n"
             "Phase 3: Gateway forwards frame transparently to serial RS485 bus\n"
             "Phase 4: Modbus slave device responds to attacker's command\n"
-            "Phase 5: Replay captured legitimate frames — complete process control"
+            "Phase 5: Replay captured legitimate frames - complete process control"
         ),
     ),
 ]

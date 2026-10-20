@@ -45,4 +45,4 @@ class Exploit(Exploit):
                 description=f"CVE-2024-4609: {self.target}:{self.port}.  Denial of service Modbus protocol. CVSS 7.5.",
                 mitre_techniques=["T0883"],
             ); return
-        print_success(f"CVE-2024-4609 HIGH — port {self.port} open.") if self.check() else print_error("Not responding.")
+        print_success(f"CVE-2024-4609 HIGH - port {self.port} open.") if self.check() else print_error("Not responding.")

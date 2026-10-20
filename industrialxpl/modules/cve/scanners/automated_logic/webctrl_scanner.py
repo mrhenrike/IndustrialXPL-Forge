@@ -1,4 +1,4 @@
-"""IXF Scanner — Automated Logic WebCTRL BAS Discovery."""
+"""IXF Scanner - Automated Logic WebCTRL BAS Discovery."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptInteger, mute,

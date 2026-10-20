@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""IXF CVE Stub Generator — Static catalog, Medium/High/Critical only (CVSS >= 4.0).
+"""IXF CVE Stub Generator - Static catalog, Medium/High/Critical only (CVSS >= 4.0).
 
 Generates Level A (full PoC where available) and Level B (version-check) modules.
-Level C (CVSS < 4.0 info/disclosure) is NOT generated — out of scope.
+Level C (CVSS < 4.0 info/disclosure) is NOT generated - out of scope.
 
-Repo is STATIC — no NVD API crawler. New CVEs added on demand via this catalog.
+Repo is STATIC - no NVD API crawler. New CVEs added on demand via this catalog.
 
 Run: python tools/generate_cve_stubs.py
 """
@@ -20,12 +20,12 @@ RESOURCES_CVE = PROJECT_ROOT / "industrialxpl" / "resources" / "cve"
 MODULES_CVE.mkdir(parents=True, exist_ok=True)
 RESOURCES_CVE.mkdir(parents=True, exist_ok=True)
 
-# ── CVE Catalog — Medium/High/Critical ONLY (CVSS >= 4.0) ─────────────────
+# ── CVE Catalog - Medium/High/Critical ONLY (CVSS >= 4.0) ─────────────────
 # Format: (CVE_ID, Vendor, Product, CVSS, Severity, ExploitType, CISA_Advisory)
 # Severity must be MEDIUM (4.0-6.9), HIGH (7.0-8.9), or CRITICAL (9.0-10.0)
 CATALOG = [
 
-    # ── OT:ICEFALL 2022 — Vedere Labs / Forescout ──────────────────────────
+    # ── OT:ICEFALL 2022 - Vedere Labs / Forescout ──────────────────────────
     ("CVE-2022-29953","Emerson","DeltaV","9.1","CRITICAL","Unauthenticated protocol logic download","ICSA-22-167-06"),
     ("CVE-2022-29957","Emerson","Ovation DCS","9.1","CRITICAL","Unauthenticated protocol","ICSA-22-167-04"),
     ("CVE-2022-29958","Emerson","Ovation Engineering WS","9.1","CRITICAL","Unauthenticated firmware access","ICSA-22-167-04"),
@@ -54,7 +54,7 @@ CATALOG = [
     ("CVE-2022-37300","Schneider Electric","EcoStruxure platform","9.8","CRITICAL","Authentication bypass vulnerability","N/A"),
     ("CVE-2022-34662","Siemens","S7 PROFINET stack","7.5","HIGH","Denial of service via crafted packets","N/A"),
 
-    # ── VxWorks URGENT/11 2019 — Armis Research ────────────────────────────
+    # ── VxWorks URGENT/11 2019 - Armis Research ────────────────────────────
     ("CVE-2019-12256","Wind River","VxWorks 6.x RTOS","9.8","CRITICAL","TCP stack overflow RCE pre-auth","N/A"),
     ("CVE-2019-12255","Wind River","VxWorks 6.x RTOS","9.8","CRITICAL","TCP Urgent pointer OOB read RCE","N/A"),
     ("CVE-2019-12257","Wind River","VxWorks 6.x RTOS","8.8","HIGH","DHCP client heap buffer overflow","N/A"),
@@ -248,15 +248,15 @@ CATALOG = [
     ("CVE-2012-6435","Koyo","DirectLOGIC ECOM module","7.8","HIGH","Cleartext credential transmission","N/A"),
 
     # ── General ICS insecure by design (CVSS >= 4.0 by OT context) ────────
-    ("DESIGN-MODBUS-NOAUTH","Generic","Modbus TCP all vendors","9.1","CRITICAL","No authentication by protocol design — unauthenticated read/write","N/A"),
-    ("DESIGN-S7COMM-NOAUTH","Siemens","S7comm pre-S7comm+ protocol","9.1","CRITICAL","No authentication by protocol design — unauthenticated PLC control","N/A"),
+    ("DESIGN-MODBUS-NOAUTH","Generic","Modbus TCP all vendors","9.1","CRITICAL","No authentication by protocol design - unauthenticated read/write","N/A"),
+    ("DESIGN-S7COMM-NOAUTH","Siemens","S7comm pre-S7comm+ protocol","9.1","CRITICAL","No authentication by protocol design - unauthenticated PLC control","N/A"),
     ("DESIGN-DNP3-NOSA","Generic","DNP3 without Secure Authentication v5","9.1","CRITICAL","Replay attack unauthenticated control no Secure Auth","N/A"),
-    ("DESIGN-ENIP-NOAUTH","Generic","EtherNet/IP CIP all vendors","7.5","HIGH","CIP protocol no built-in authentication — unauthenticated command","N/A"),
+    ("DESIGN-ENIP-NOAUTH","Generic","EtherNet/IP CIP all vendors","7.5","HIGH","CIP protocol no built-in authentication - unauthenticated command","N/A"),
 ]
 
 print(f"Total CVEs in catalog (Medium/High/Critical only): {len(CATALOG)}")
 
-STUB_TEMPLATE = '''"""IXF CVE Module — {cve_id} — {vendor} {product}.
+STUB_TEMPLATE = '''"""IXF CVE Module - {cve_id} - {vendor} {product}.
 
 Severity: {severity} (CVSS {cvss})
 Type: {exploit_type}
@@ -290,7 +290,7 @@ _CVSS = "{cvss}"
 
 class Exploit(Exploit):
     __info__ = {{
-        "name":          "{cve_id} — {vendor} {product} ({severity})",
+        "name":          "{cve_id} - {vendor} {product} ({severity})",
         "description":   "{exploit_type}. "
                          "Affects {vendor} {product}. CVSS {cvss} ({severity}). "
                          "Level B: fingerprint + version check.",
@@ -299,7 +299,7 @@ class Exploit(Exploit):
         "devices":       ("{vendor} {product}",),
         "impact":        "{impact}",
         "exploit_type":  "{exploit_type}",
-        "source_poc":    "Static catalog Level B — set check() target for version confirmation",
+        "source_poc":    "Static catalog Level B - set check() target for version confirmation",
         "cve":           "{cve_id}",
         "cvss":          "{cvss}",
         "severity":      "{severity}",
@@ -348,7 +348,7 @@ class Exploit(Exploit):
         print_status("Checking {{}}:{{}} for {cve_id}...".format(self.target, self.port))
         if self.check():
             print_success(
-                "Service port {{}} open on {{}} — {vendor} {product} may be present. "
+                "Service port {{}} open on {{}} - {vendor} {product} may be present. "
                 "{cve_id} {severity} CVSS {cvss}: {exploit_type}. "
                 "Manual version verification required to confirm vulnerability.".format(
                     self.port, self.target)

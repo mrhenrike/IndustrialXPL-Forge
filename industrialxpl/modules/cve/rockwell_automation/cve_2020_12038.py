@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2020-12038 — Rockwell Automation Studio 5000.
+"""IXF CVE Module - CVE-2020-12038 - Rockwell Automation Studio 5000.
 
 Authentication bypass
 
@@ -32,8 +32,8 @@ _SEVERITY      = "CRITICAL"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2020-12038 — Rockwell Automation Studio 5000 (CRITICAL)",
-        "description":   "Rockwell Automation Studio 5000 — Authentication bypass. "
+        "name":          "CVE-2020-12038 - Rockwell Automation Studio 5000 (CRITICAL)",
+        "description":   "Rockwell Automation Studio 5000 - Authentication bypass. "
                          "CVSS 9.8 (CRITICAL). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2020-12038...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Rockwell Automation Studio 5000 may be present. "
+                f"Port {self.port} open on {self.target} - Rockwell Automation Studio 5000 may be present. "
                 "CVE-2020-12038 (CRITICAL CVSS 9.8): Authentication bypass. "
                 "Manual version verification required."
             )

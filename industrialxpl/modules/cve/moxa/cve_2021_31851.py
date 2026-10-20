@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2021-31851 — Moxa UC-8200 Series IPC (CRITICAL CVSS 9.8).
+"""IXF CVE CVE-2021-31851 - Moxa UC-8200 Series IPC (CRITICAL CVSS 9.8).
 
 Exploit type: Firmware signing bypass RCE
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Moxa UC-8200 Series IPC may be present. CVE-2021-31851 CRITICAL CVSS 9.8.")
+            print_success(f"Port {self.port} open - Moxa UC-8200 Series IPC may be present. CVE-2021-31851 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

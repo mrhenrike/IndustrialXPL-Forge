@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2021-33010 — AVEVA HistorianServer.
+"""IXF CVE Module - CVE-2021-33010 - AVEVA HistorianServer.
 
 Severity: HIGH (CVSS 7.5)
 Type: Denial of service remote
@@ -32,7 +32,7 @@ _CVSS = "7.5"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2021-33010 — AVEVA HistorianServer (HIGH)",
+        "name":          "CVE-2021-33010 - AVEVA HistorianServer (HIGH)",
         "description":   "Denial of service remote. "
                          "Affects AVEVA HistorianServer. CVSS 7.5 (HIGH). "
                          "Level B: fingerprint + version check.",
@@ -41,7 +41,7 @@ class Exploit(Exploit):
         "devices":       ("AVEVA HistorianServer",),
         "impact":        "HIGH",
         "exploit_type":  "Denial of service remote",
-        "source_poc":    "Static catalog Level B — set check() target for version confirmation",
+        "source_poc":    "Static catalog Level B - set check() target for version confirmation",
         "cve":           "CVE-2021-33010",
         "cvss":          "7.5",
         "severity":      "HIGH",
@@ -90,7 +90,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2021-33010...")
         if self.check():
             print_success(
-                f"Service port {self.port} open on {self.target} — AVEVA HistorianServer may be present. "
+                f"Service port {self.port} open on {self.target} - AVEVA HistorianServer may be present. "
                 "CVE-2021-33010 HIGH CVSS 7.5: Denial of service remote. "
                 "Manual version verification required to confirm vulnerability."
             )

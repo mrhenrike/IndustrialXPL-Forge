@@ -1,5 +1,5 @@
 # Author: André Henrique (LinkedIn/X: @mrhenrike)
-"""S7comm+ (S7 Communication Plus) Scanner — Siemens S7-1200/S7-1500 PLC detection.
+"""S7comm+ (S7 Communication Plus) Scanner - Siemens S7-1200/S7-1500 PLC detection.
 
 S7comm+ is the updated S7 communication protocol used in Siemens S7-1200 and
 S7-1500 PLCs. It runs over ISO-on-TCP (RFC 1006) on TCP/102.
@@ -101,7 +101,7 @@ def _s7plus_scan(host: str, port: int, timeout: int) -> dict | None:
         sock.close()
 
         if not resp2 or len(resp2) < 30:
-            return {"host": host, "port": port, "note": "TPKT/COTP OK — S7comm+ session response too short"}
+            return {"host": host, "port": port, "note": "TPKT/COTP OK - S7comm+ session response too short"}
 
         # Look for printable string segments (order code, version strings)
         # The response contains TLV-encoded fields; we search for known patterns
@@ -138,7 +138,7 @@ def _s7plus_scan(host: str, port: int, timeout: int) -> dict | None:
 
 
 class Exploit(BaseExploit):
-    """S7comm+ (S7-1200/S7-1500) PLC Scanner — identity extraction.
+    """S7comm+ (S7-1200/S7-1500) PLC Scanner - identity extraction.
 
     Author: André Henrique (LinkedIn/X: @mrhenrike)
     Version: 1.0.0
@@ -154,7 +154,7 @@ class Exploit(BaseExploit):
         ),
         "authors": (
             "wenzhe zhu <jtrkid[at]gmail.com> (ISF icssploit)",
-            "André Henrique (@mrhenrike) — EmbedXPL-Forge port",
+            "André Henrique (@mrhenrike) - EmbedXPL-Forge port",
         ),
         "references": (
             "https://www.siemens.com/global/en/products/automation/systems/industrial/plc.html",

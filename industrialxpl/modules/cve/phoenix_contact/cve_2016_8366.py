@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2016-8366 — Phoenix Contact WebVisit HMI.
+"""IXF CVE Module - CVE-2016-8366 - Phoenix Contact WebVisit HMI.
 
 Severity: MEDIUM (CVSS 5.0)
 Type: Password plaintext disclosure via HTTP
@@ -32,7 +32,7 @@ _CVSS = "5.0"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2016-8366 — Phoenix Contact WebVisit HMI (MEDIUM)",
+        "name":          "CVE-2016-8366 - Phoenix Contact WebVisit HMI (MEDIUM)",
         "description":   "Password plaintext disclosure via HTTP. "
                          "Affects Phoenix Contact WebVisit HMI. CVSS 5.0 (MEDIUM). "
                          "Level B: fingerprint + version check.",
@@ -41,7 +41,7 @@ class Exploit(Exploit):
         "devices":       ("Phoenix Contact WebVisit HMI",),
         "impact":        "MEDIUM",
         "exploit_type":  "Password plaintext disclosure via HTTP",
-        "source_poc":    "Static catalog Level B — set check() target for version confirmation",
+        "source_poc":    "Static catalog Level B - set check() target for version confirmation",
         "cve":           "CVE-2016-8366",
         "cvss":          "5.0",
         "severity":      "MEDIUM",
@@ -90,7 +90,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2016-8366...")
         if self.check():
             print_success(
-                f"Service port {self.port} open on {self.target} — Phoenix Contact WebVisit HMI may be present. "
+                f"Service port {self.port} open on {self.target} - Phoenix Contact WebVisit HMI may be present. "
                 "CVE-2016-8366 MEDIUM CVSS 5.0: Password plaintext disclosure via HTTP. "
                 "Manual version verification required to confirm vulnerability."
             )

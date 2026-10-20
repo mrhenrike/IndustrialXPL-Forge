@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2021-27452 — GE MU320E RTU controller (CRITICAL CVSS 9.8).
+"""IXF CVE CVE-2021-27452 - GE MU320E RTU controller (CRITICAL CVSS 9.8).
 
 Exploit type: Hard-coded credentials bypass
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — GE MU320E RTU controller may be present. CVE-2021-27452 CRITICAL CVSS 9.8.")
+            print_success(f"Port {self.port} open - GE MU320E RTU controller may be present. CVE-2021-27452 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

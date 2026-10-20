@@ -1,4 +1,4 @@
-"""IXF Default Credentials — Advantech WebAccess SCADA/HMI."""
+"""IXF Default Credentials - Advantech WebAccess SCADA/HMI."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptString, mute,

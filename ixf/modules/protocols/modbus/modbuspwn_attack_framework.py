@@ -1,4 +1,4 @@
-"""ModBusPwn Integration — Modbus TCP Recon and Register Attack Framework.
+"""ModBusPwn Integration - Modbus TCP Recon and Register Attack Framework.
 
 Source: InfoSec-DB/ModBusPwn (https://github.com/InfoSec-DB/ModBusPwn)
 License: MIT
@@ -25,7 +25,7 @@ from ixf.core.exploit import Base, OptBool, OptInt, OptIP, OptPort, OptString, p
 
 
 class Exploit(Base):
-    """ModBusPwn — Modbus TCP Recon and Register Attack (IXF Integration).
+    """ModBusPwn - Modbus TCP Recon and Register Attack (IXF Integration).
 
     Wraps the ModBusPwn framework to provide:
     - Full device scan (all supported function codes)
@@ -43,7 +43,7 @@ class Exploit(Base):
         ),
         "authors": (
             "InfoSec-DB (ModBusPwn original)",
-            "Andre Henrique (@mrhenrike) — IXF integration",
+            "Andre Henrique (@mrhenrike) - IXF integration",
         ),
         "references": (
             "https://github.com/InfoSec-DB/ModBusPwn",
@@ -92,7 +92,7 @@ class Exploit(Base):
                 client.close()
                 return True
             else:
-                print_status(f"FC03 error: {result} — trying other FCs")
+                print_status(f"FC03 error: {result} - trying other FCs")
                 # Try FC01 (coils)
                 r2 = client.read_coils(0, 1, slave=int(self.unit_id))
                 if not r2.isError():
@@ -202,7 +202,7 @@ class Exploit(Base):
                 if not self.destructive_gate:
                     print_error(
                         "Register writes require destructive_gate=True "
-                        "(this modifies PLC/ICS device state — potentially dangerous)"
+                        "(this modifies PLC/ICS device state - potentially dangerous)"
                     )
                     return
                 addr = int(self.write_address)

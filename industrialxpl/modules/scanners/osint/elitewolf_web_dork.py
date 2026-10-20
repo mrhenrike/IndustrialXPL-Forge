@@ -73,7 +73,7 @@ class Exploit(Exploit):
                         "without authentication. Non-destructive: HTTP GET only.",
         "authors":      ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":   (
-            "NSA ELITEWOLF — OT/ICS OSINT Wordlist",
+            "NSA ELITEWOLF - OT/ICS OSINT Wordlist",
             "https://github.com/nsacyber/ELITEWOLF",
         ),
         "devices":      ("Allen-Bradley/Rockwell PLCs", "Schweitzer SEL relays", "Siemens SIMATIC"),
@@ -158,18 +158,18 @@ class Exploit(Exploit):
                         if status in (200, 301, 302, 401, 403):
                             found.append((vendor[:20], path[:40], str(status)))
                             if status == 200:
-                                print_success(f"[ELITEWOLF] {vendor} — HTTP {status} {url}")
+                                print_success(f"[ELITEWOLF] {vendor} - HTTP {status} {url}")
                             else:
-                                print_info(f"[ELITEWOLF] {vendor} — HTTP {status} {url}")
+                                print_info(f"[ELITEWOLF] {vendor} - HTTP {status} {url}")
                 except urllib.error.HTTPError as e:
                     if e.code in (401, 403):
                         found.append((vendor[:20], path[:40], str(e.code)))
-                        print_info(f"[ELITEWOLF] {vendor} — HTTP {e.code} {url}")
+                        print_info(f"[ELITEWOLF] {vendor} - HTTP {e.code} {url}")
                 except Exception:
                     pass
 
         if found:
             print_table(["Vendor", "Path", "HTTP Status"], found,
-                        title=f"ELITEWOLF Endpoints Found — {self.target}")
+                        title=f"ELITEWOLF Endpoints Found - {self.target}")
         else:
             print_info(f"[ELITEWOLF] No diagnostic endpoints found on {self.target}.")

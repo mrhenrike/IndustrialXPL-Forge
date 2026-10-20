@@ -4,17 +4,17 @@ IXF bundles 8 custom Nmap Scripting Engine (NSE) scripts for OT/ICS network reco
 
 ---
 
-## Overview — Why IXF Provides NSE Scripts
+## Overview - Why IXF Provides NSE Scripts
 
 Nmap's standard NSE library includes general-purpose network discovery scripts, but has limited coverage for industrial protocols such as Modbus TCP, Siemens S7comm, EtherNet/IP, DNP3, BACnet, and OPC UA. IXF's NSE scripts fill this gap by:
 
-1. **Protocol-aware scanning** — understanding ICS protocol handshakes and responses
-2. **Vendor fingerprinting** — identifying specific PLC/RTU models from response characteristics
-3. **Security check integration** — flagging insecure configurations (default credentials, unauthenticated access, exposed programming ports)
-4. **IXF workflow integration** — generating output that feeds directly into IXF module selection
-5. **Honeypot detection** — identifying fake ICS targets to avoid misleading assessment results
+1. **Protocol-aware scanning** - understanding ICS protocol handshakes and responses
+2. **Vendor fingerprinting** - identifying specific PLC/RTU models from response characteristics
+3. **Security check integration** - flagging insecure configurations (default credentials, unauthenticated access, exposed programming ports)
+4. **IXF workflow integration** - generating output that feeds directly into IXF module selection
+5. **Honeypot detection** - identifying fake ICS targets to avoid misleading assessment results
 
-NSE scripts run within Nmap's sandboxed Lua environment, making them safe to deploy and easy to customize. All 8 IXF scripts are passive/read-only — they send only valid protocol queries, never exploit payloads.
+NSE scripts run within Nmap's sandboxed Lua environment, making them safe to deploy and easy to customize. All 8 IXF scripts are passive/read-only - they send only valid protocol queries, never exploit payloads.
 
 ---
 
@@ -25,7 +25,7 @@ NSE scripts run within Nmap's sandboxed Lua environment, making them safe to dep
 - **IXF installed** (`
         $extras = $args[0].Groups[1].Value
         "pip install industrialxpl-forge$extras"
-    `) — provides the NSE scripts
+    `) - provides the NSE scripts
 - Scripts work on Linux, macOS, and Windows
 
 **Verify Nmap version:**
@@ -40,7 +40,7 @@ nmap --version
 
 ### Method 1: IXF Shell (`nse install`)
 
-The recommended method — IXF auto-detects the Nmap scripts directory and installs all 8 scripts:
+The recommended method - IXF auto-detects the Nmap scripts directory and installs all 8 scripts:
 
 ```
 ixf > nse install
@@ -153,7 +153,7 @@ PORT      STATE SERVICE    VERSION
 102/tcp   open  iso-tsap
 | ics-sweep:
 |   S7comm: OPEN
-|   S7comm+ (TLS): DETECTED — S7-1200/1500 series
+|   S7comm+ (TLS): DETECTED - S7-1200/1500 series
 |   Vendor: Siemens (inferred)
 |   Model: S7-1500 CPU (from COTP connection response)
 |_  IXF: use cve/siemens/cve_2021_22681_s7_1200_hardcoded_key
@@ -207,7 +207,7 @@ Nmap done: 1 IP address (1 host up) scanned in 5.27 seconds
 
 ### Description
 
-Tests a curated list of default credentials against ICS web interfaces, management panels, and SSH/Telnet endpoints. Covers 35+ vendors with their known factory defaults. All tests are performed against HTTP/HTTPS/SSH/Telnet — no Modbus or ICS protocol authentication is tested by this script.
+Tests a curated list of default credentials against ICS web interfaces, management panels, and SSH/Telnet endpoints. Covers 35+ vendors with their known factory defaults. All tests are performed against HTTP/HTTPS/SSH/Telnet - no Modbus or ICS protocol authentication is tested by this script.
 
 ### Categories
 
@@ -257,7 +257,7 @@ PORT    STATE SERVICE
 |     Testing 8 default credential pairs...
 |     [+] SUCCESS: admin/moxa
 |     Path: /login.html
-|_    Login successful — full admin access confirmed
+|_    Login successful - full admin access confirmed
 
 443/tcp closed https
 
@@ -312,10 +312,10 @@ PORT      STATE SERVICE
 | ics-plc-program-access:
 |   S7comm: OPEN and UNAUTHENTICATED
 |   Connection: COTP + S7comm handshake succeeded without credentials
-|   CPU State: RUN (via SZL read — S7 System Status List access)
+|   CPU State: RUN (via SZL read - S7 System Status List access)
 |   PLC Program: Downloadable without authentication
 |   Block count: 47 OB/FB/FC/DB blocks accessible
-|   VULNERABILITY: T0843 (Program Download) — any host can overwrite PLC program
+|   VULNERABILITY: T0843 (Program Download) - any host can overwrite PLC program
 |_  CVE: CVE-2021-22681 (if S7-1200/1500) | Severity: CRITICAL
 
 44818/tcp open  EtherNet/IP
@@ -328,9 +328,9 @@ PORT      STATE SERVICE
 20256/tcp closed pcom
 502/tcp   open  mbnet
 | ics-plc-program-access:
-|   Modbus TCP: OPEN — NO AUTHENTICATION (by protocol design)
+|   Modbus TCP: OPEN - NO AUTHENTICATION (by protocol design)
 |   All holding registers accessible: FC01/02/03/04 (read) + FC05/06/15/16 (write)
-|   NOTE: Modbus TCP has no authentication mechanism — any host can read/write
+|   NOTE: Modbus TCP has no authentication mechanism - any host can read/write
 |_  IXF: exploits/protocols/modbus/modbus_write_single_register
 
 Host script results:
@@ -348,7 +348,7 @@ Nmap done: 1 IP address (1 host up) scanned in 6.18 seconds
 
 ### Description
 
-Detects Safety Instrumented System (SIS) interfaces on the network. Identifies Triconex, HIMA, Pilz, and other safety PLC endpoints. Reports potential exposure — safety systems should typically be air-gapped or at minimum on separate isolated networks.
+Detects Safety Instrumented System (SIS) interfaces on the network. Identifies Triconex, HIMA, Pilz, and other safety PLC endpoints. Reports potential exposure - safety systems should typically be air-gapped or at minimum on separate isolated networks.
 
 ### Categories
 
@@ -395,7 +395,7 @@ PORT      STATE SERVICE
 |   EtherNet/IP: CIP Safety device detected
 |   Product: "GuardLogix 5570" (Rockwell Safety PLC)
 |   Safety level: PLe/SIL3 (per device datasheet)
-|   MEDIUM: Safety PLC EtherNet/IP accessible — verify network isolation
+|   MEDIUM: Safety PLC EtherNet/IP accessible - verify network isolation
 |_  IXF: exploits/protocols/ethernet_ip_cip_safety/
 
 Host script results:
@@ -456,8 +456,8 @@ PORT      STATE SERVICE
 |   Hardware Version: 1
 |   CPUType: CPU 1516-3 PN/DP
 |   Known CVEs for this firmware version:
-|     CVE-2021-22681 (CVSS 9.8): Hardcoded TLS key — ALL firmware versions affected
-|     CVE-2022-38465 (CVSS 9.8): S7comm global private key — ALL firmware versions
+|     CVE-2021-22681 (CVSS 9.8): Hardcoded TLS key - ALL firmware versions affected
+|     CVE-2022-38465 (CVSS 9.8): S7comm global private key - ALL firmware versions
 |     Status: No patch available for CVE-2021-22681 (requires hardware replacement)
 |_  IXF: cve CVE-2021-22681
 
@@ -472,8 +472,8 @@ PORT      STATE SERVICE
 |   Object ID 0x06 (Model Name): BMXP342020H
 |   Firmware: V3.30
 |   Known CVEs:
-|     CVE-2022-24323 (CVSS 7.5): Malformed Modbus request DoS — V3.20 and below
-|     Status: V3.30 — check patch bulletin SEVD-2022-116-01
+|     CVE-2022-24323 (CVSS 7.5): Malformed Modbus request DoS - V3.20 and below
+|     Status: V3.30 - check patch bulletin SEVD-2022-116-01
 |_  IXF: cve CVE-2022-24323
 
 44818/tcp open  EtherNet/IP
@@ -485,8 +485,8 @@ PORT      STATE SERVICE
 |   Firmware: 33.011
 |   Serial: 0x12AB34CD
 |   Known CVEs:
-|     CVE-2022-1161 (CVSS 10.0): Modified firmware upload — V33 and below
-|     CVE-2023-3595 (CVSS 9.8): RCE via EtherNet/IP — V33 and below
+|     CVE-2022-1161 (CVSS 10.0): Modified firmware upload - V33 and below
+|     CVE-2023-3595 (CVSS 9.8): RCE via EtherNet/IP - V33 and below
 |_  IXF: cve CVE-2022-1161
 
 Nmap done: 1 IP address (1 host up) scanned in 7.91 seconds
@@ -621,7 +621,7 @@ PORT      STATE SERVICE
 |   Station Name: "SIEMENS-S7-1516"
 |   Project Name: "PlantControl_v3.2"
 |   Plant designation: "Building A, Level 2"
-|_  Security: S7comm+ TLS detected — check CVE-2021-22681
+|_  Security: S7comm+ TLS detected - check CVE-2021-22681
 
 502/tcp   open  mbnet
 | ics-enumerate:
@@ -715,19 +715,19 @@ PORT    STATE SERVICE
 |     Response 1: 4.2ms
 |     Response 2: 4.1ms
 |     Response 3: 4.3ms
-|     Variance: 0.1ms (LOW — consistent with real hardware)
+|     Variance: 0.1ms (LOW - consistent with real hardware)
 |   Protocol behavior:
 |     COTP error codes: Correct (per RFC 905)
-|     PDU length: Correct (480 bytes max — S7-1516 spec)
+|     PDU length: Correct (480 bytes max - S7-1516 spec)
 |     SZL response: Authentic hardware fingerprint
 |     Unknown function handling: Correct error code returned
 |   Conclusion: REAL DEVICE (confidence 92%)
-|_  IXF: Target appears genuine — proceed with assessment
+|_  IXF: Target appears genuine - proceed with assessment
 
 502/tcp open  mbnet
 | ics-honeypot-detect:
 |   Modbus TCP analysis:
-|   Timing: 2.1ms ± 0.2ms (LOW variance — real hardware)
+|   Timing: 2.1ms ± 0.2ms (LOW variance - real hardware)
 |   Function code 0x41 (invalid): Correct error 0x01 (ILLEGAL FUNCTION)
 |   Exception code: 0x04 (correct behavior for undefined FC)
 |_  Conclusion: REAL DEVICE (confidence 88%)
@@ -749,7 +749,7 @@ PORT    STATE SERVICE
 |     Response 1: 2.1ms
 |     Response 2: 145.3ms   <-- ANOMALY: latency spike suggests software emulation
 |     Response 3: 3.0ms
-|     Variance: 70+ ms (HIGH — inconsistent with real hardware)
+|     Variance: 70+ ms (HIGH - inconsistent with real hardware)
 |   Protocol behavior:
 |     Function code 0x42 (invalid): ACCEPTED with generic response (WRONG)
 |       Real Modbus devices return exception 0x01 for invalid FC
@@ -763,7 +763,7 @@ PORT    STATE SERVICE
 |     [!] Invalid FC accepted without error (incomplete emulation)
 |     [!] Generic vendor name in MEI response
 |   Conclusion: PROBABLE HONEYPOT (confidence 91%)
-|   [!] Verify before proceeding — results may not reflect real infrastructure
+|   [!] Verify before proceeding - results may not reflect real infrastructure
 |_  Honeypot frameworks: Conpot, GridPot, S4x Industrial Honeypot
 
 Nmap done: 1 IP address (1 host up) scanned in 12.41 seconds
@@ -922,7 +922,7 @@ nmap --script ics-custom-example -p 502 192.168.1.100
 
 ## Troubleshooting Permissions
 
-### Linux — Permission Denied for Raw Sockets
+### Linux - Permission Denied for Raw Sockets
 
 ```bash
 # Scripts requiring raw sockets (Layer 2, PROFINET) need root:
@@ -933,7 +933,7 @@ su -
 nmap --script ics-sweep 192.168.1.0/24
 ```
 
-### Windows — Administrator Required
+### Windows - Administrator Required
 
 ```cmd
 # Run as Administrator in elevated Command Prompt or PowerShell

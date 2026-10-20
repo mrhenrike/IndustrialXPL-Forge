@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2023-38380 — Siemens SCALANCE X-200RNA (HIGH CVSS 8.6).
+"""IXF CVE CVE-2023-38380 - Siemens SCALANCE X-200RNA (HIGH CVSS 8.6).
 
 Exploit type: Denial of service OSPF overflow
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Siemens SCALANCE X-200RNA may be present. CVE-2023-38380 HIGH CVSS 8.6.")
+            print_success(f"Port {self.port} open - Siemens SCALANCE X-200RNA may be present. CVE-2023-38380 HIGH CVSS 8.6.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

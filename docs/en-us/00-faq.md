@@ -8,11 +8,11 @@ IndustrialXPL-Forge (IXF) is a Python-native security assessment and exploitatio
 
 ### Is IXF a replacement for Metasploit?
 
-No. IXF is purpose-built for OT/ICS environments. Where Metasploit covers general IT exploitation, IXF specializes in industrial protocols (Modbus, S7comm, DNP3, IEC 104, OPC UA, EtherNet/IP), ICS-specific CVEs, and OT-specific assessment frameworks (IEC 62443, NIST 800-82r3, MITRE ATT&CK for ICS). All core modules are native Python — no Metasploit installation required.
+No. IXF is purpose-built for OT/ICS environments. Where Metasploit covers general IT exploitation, IXF specializes in industrial protocols (Modbus, S7comm, DNP3, IEC 104, OPC UA, EtherNet/IP), ICS-specific CVEs, and OT-specific assessment frameworks (IEC 62443, NIST 800-82r3, MITRE ATT&CK for ICS). All core modules are native Python - no Metasploit installation required.
 
 ### Is IXF legal to use?
 
-IXF is intended **exclusively for authorized security testing, research, and education**. Using it against systems you do not own or have explicit written permission to test is illegal in most jurisdictions. OT/ICS systems control critical physical infrastructure — unauthorized access can cause physical harm, equipment damage, and service disruption.
+IXF is intended **exclusively for authorized security testing, research, and education**. Using it against systems you do not own or have explicit written permission to test is illegal in most jurisdictions. OT/ICS systems control critical physical infrastructure - unauthorized access can cause physical harm, equipment damage, and service disruption.
 
 ### Does IXF require root/administrator privileges?
 
@@ -101,7 +101,7 @@ ixf > search CVE-2021-22681
 ixf > use scanners/ics/modbus_detect
 ixf > set target 192.168.1.100
 ixf > run
-  [SIMULATE MODE — no packets sent]
+  [SIMULATE MODE - no packets sent]
   ...
 ```
 
@@ -111,7 +111,7 @@ ixf > run
 ixf > set simulate false
 ixf > set destructive true
 ixf > run
-  [DESTRUCTIVE MODE — requires confirmation]
+  [DESTRUCTIVE MODE - requires confirmation]
   ...
 ```
 
@@ -149,9 +149,9 @@ ixf > ttp T0866 192.168.1.100 --output results.json
 
 ### Where are session logs stored?
 
-- `./industrialxpl.log` — rotating session log (500 KB max)
-- `./.log/destructive_ops_YYYY-MM-DD.log` — destructive operation audit log
-- `~/.ixf_history` — command history
+- `./industrialxpl.log` - rotating session log (500 KB max)
+- `./.log/destructive_ops_YYYY-MM-DD.log` - destructive operation audit log
+- `~/.ixf_history` - command history
 
 ---
 
@@ -196,8 +196,8 @@ obj.run()  # runs in simulate mode
 
 ### What is the difference between Level A and Level B modules?
 
-- **Level A**: Full end-to-end PoC — exploits the vulnerability and demonstrates impact
-- **Level B**: Version check/fingerprint — identifies if the target is likely vulnerable based on service version
+- **Level A**: Full end-to-end PoC - exploits the vulnerability and demonstrates impact
+- **Level B**: Version check/fingerprint - identifies if the target is likely vulnerable based on service version
 
 ---
 
@@ -277,7 +277,7 @@ ixf > nse install
 
 ### Nmap is not installed. Can I still use the NSE scripts?
 
-Yes — the .nse files are stored in `industrialxpl/resources/nse_scripts/`. Copy them manually to your Nmap scripts directory after installing Nmap.
+Yes - the .nse files are stored in `industrialxpl/resources/nse_scripts/`. Copy them manually to your Nmap scripts directory after installing Nmap.
 
 ### Where is the Nmap scripts directory on different platforms?
 

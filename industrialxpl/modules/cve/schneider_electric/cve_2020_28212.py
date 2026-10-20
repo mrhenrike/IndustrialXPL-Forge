@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2020-28212 — Schneider Electric EcoStruxure Operator Terminal.
+"""IXF CVE Module - CVE-2020-28212 - Schneider Electric EcoStruxure Operator Terminal.
 
 Severity: CRITICAL (CVSS 9.8)
 Type: Authentication bypass
@@ -32,7 +32,7 @@ _CVSS = "9.8"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2020-28212 — Schneider Electric EcoStruxure Operator Terminal (CRITICAL)",
+        "name":          "CVE-2020-28212 - Schneider Electric EcoStruxure Operator Terminal (CRITICAL)",
         "description":   "Authentication bypass. "
                          "Affects Schneider Electric EcoStruxure Operator Terminal. CVSS 9.8 (CRITICAL). "
                          "Level B: fingerprint + version check.",
@@ -41,7 +41,7 @@ class Exploit(Exploit):
         "devices":       ("Schneider Electric EcoStruxure Operator Terminal",),
         "impact":        "CRITICAL",
         "exploit_type":  "Authentication bypass",
-        "source_poc":    "Static catalog Level B — set check() target for version confirmation",
+        "source_poc":    "Static catalog Level B - set check() target for version confirmation",
         "cve":           "CVE-2020-28212",
         "cvss":          "9.8",
         "severity":      "CRITICAL",
@@ -90,7 +90,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2020-28212...")
         if self.check():
             print_success(
-                f"Service port {self.port} open on {self.target} — Schneider Electric EcoStruxure Operator Terminal may be present. "
+                f"Service port {self.port} open on {self.target} - Schneider Electric EcoStruxure Operator Terminal may be present. "
                 "CVE-2020-28212 CRITICAL CVSS 9.8: Authentication bypass. "
                 "Manual version verification required to confirm vulnerability."
             )

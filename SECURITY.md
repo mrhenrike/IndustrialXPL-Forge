@@ -1,4 +1,4 @@
-# Security Policy — IndustrialXPL-Forge
+# Security Policy - IndustrialXPL-Forge
 
 ## Scope
 
@@ -10,7 +10,7 @@ IndustrialXPL-Forge (IXF) is an offensive and defensive security research framew
 
 ## Authorized Use Only
 
-IXF modules — including malware analysis, compilation, and botnet research tools — must **only** be used on:
+IXF modules - including malware analysis, compilation, and botnet research tools - must **only** be used on:
 
 - Systems you own
 - Isolated lab environments with no production connectivity
@@ -52,7 +52,7 @@ If IXF helps you discover a vulnerability in deployed OT equipment:
 
 ## Safe Defaults
 
-- `simulate=false` by default — modules may send read probes on `check()` / `run()`
+- `simulate=false` by default - modules may send read probes on `check()` / `run()`
 - Use `set simulate true` or `setg simulate true` for SafeMode (no live payloads)
 - Destructive writes require `destructive=true` plus impact-level confirmation
 - All destructive operations are logged under `.log/destructive_ops_*.log`

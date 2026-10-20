@@ -1,14 +1,14 @@
-"""PolyExploitRunner — Python-First multi-language exploit orchestrator.
+"""PolyExploitRunner - Python-First multi-language exploit orchestrator.
 
 Default mode: Python fallback (no external runtimes required).
 External runtimes (ruby, node, java, gcc, go, pwsh) are OPTIONAL accelerators.
 If a runtime is absent, the Python fallback implementation is used silently.
 
 Tier system:
-    Tier 0: Python stdlib (socket, struct, select) — always available
-    Tier 1: pip install (pymodbus, scapy, requests, paramiko) — required
-    Tier 2: pip extras (asyncua, cpppo, python-can) — optional
-    Tier 3: external runtimes — optional, graceful fallback exists
+    Tier 0: Python stdlib (socket, struct, select) - always available
+    Tier 1: pip install (pymodbus, scapy, requests, paramiko) - required
+    Tier 2: pip extras (asyncua, cpppo, python-can) - optional
+    Tier 3: external runtimes - optional, graceful fallback exists
 """
 
 import logging
@@ -80,7 +80,7 @@ class PolyExploitRunner:
     def _warn_fallback(self, runtime: str) -> None:
         hint = RUNTIME_HINTS.get(runtime, f"install {runtime}")
         print_warning(
-            f"[poly] '{runtime}' not found — using Python fallback. "
+            f"[poly] '{runtime}' not found - using Python fallback. "
             f"To use the native runtime: {hint}"
         )
 
@@ -105,7 +105,7 @@ class PolyExploitRunner:
     def run_ruby(self, script_path: str, args: list) -> tuple[int, str, str]:
         if not self.check_runtime("ruby"):
             self._warn_fallback("ruby")
-            return -1, "", "ruby not found — Python fallback required"
+            return -1, "", "ruby not found - Python fallback required"
         return self._run(["ruby", script_path] + args)
 
     def run_msf_module(
@@ -120,7 +120,7 @@ class PolyExploitRunner:
         """
         if not self.check_runtime("msfconsole"):
             self._warn_fallback("msfconsole")
-            return -1, "", "msfconsole not found — use Python fallback implementation"
+            return -1, "", "msfconsole not found - use Python fallback implementation"
 
         rc_lines = [f"use {module_path}"]
         for k, v in options.items():
@@ -135,7 +135,7 @@ class PolyExploitRunner:
     def compile_and_run_c(self, source_path: str, args: list) -> tuple[int, str, str]:
         if not self.check_runtime("gcc"):
             self._warn_fallback("gcc")
-            return -1, "", "gcc not found — Python fallback required"
+            return -1, "", "gcc not found - Python fallback required"
         bin_path = PROJECT_TMP / Path(source_path).stem
         ret, out, err = self._run(["gcc", source_path, "-o", str(bin_path), "-lpthread"])
         if ret != 0:
@@ -145,7 +145,7 @@ class PolyExploitRunner:
     def compile_and_run_cpp(self, source_path: str, args: list) -> tuple[int, str, str]:
         if not self.check_runtime("g++"):
             self._warn_fallback("g++")
-            return -1, "", "g++ not found — Python fallback required"
+            return -1, "", "g++ not found - Python fallback required"
         bin_path = PROJECT_TMP / Path(source_path).stem
         ret, out, err = self._run(["g++", source_path, "-o", str(bin_path), "-lstdc++"])
         if ret != 0:
@@ -155,7 +155,7 @@ class PolyExploitRunner:
     def run_java(self, jar_or_source: str, args: list) -> tuple[int, str, str]:
         if not self.check_runtime("java"):
             self._warn_fallback("java")
-            return -1, "", "java not found — Python fallback required"
+            return -1, "", "java not found - Python fallback required"
         if jar_or_source.endswith(".java"):
             if not self.check_runtime("javac"):
                 return -1, "", "javac not found"
@@ -176,13 +176,13 @@ class PolyExploitRunner:
             return -1, "", "ts-node/npx not found"
         if not self.check_runtime("node"):
             self._warn_fallback("node")
-            return -1, "", "node not found — Python fallback required"
+            return -1, "", "node not found - Python fallback required"
         return self._run(["node", script_path] + args)
 
     def run_go(self, source_path: str, args: list) -> tuple[int, str, str]:
         if not self.check_runtime("go"):
             self._warn_fallback("go")
-            return -1, "", "go not found — Python fallback required"
+            return -1, "", "go not found - Python fallback required"
         return self._run(["go", "run", source_path] + args)
 
     def run_powershell(self, script_path: str, args: list) -> tuple[int, str, str]:
@@ -204,5 +204,5 @@ class PolyExploitRunner:
         print_table(
             ["Runtime", "Status", "Install Hint"],
             rows,
-            title="Tier 3 External Runtimes (all optional — Python fallback available)",
+            title="Tier 3 External Runtimes (all optional - Python fallback available)",
         )

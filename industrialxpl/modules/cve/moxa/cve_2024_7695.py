@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2024-7695 — Moxa PT-G503 industrial switch (CRITICAL CVSS 9.8).
+"""IXF CVE CVE-2024-7695 - Moxa PT-G503 industrial switch (CRITICAL CVSS 9.8).
 
 Exploit type: Authentication bypass
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Moxa PT-G503 industrial switch may be present. CVE-2024-7695 CRITICAL CVSS 9.8.")
+            print_success(f"Port {self.port} open - Moxa PT-G503 industrial switch may be present. CVE-2024-7695 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

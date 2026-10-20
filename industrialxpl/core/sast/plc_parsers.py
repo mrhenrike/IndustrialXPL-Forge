@@ -1,11 +1,11 @@
 """IXF PLC/RTU Source Code Parser with LLM-safe Sanitization.
 
 Supports the 5 IEC 61131-3 languages plus vendor-specific formats:
-  ST  — Structured Text (.st, .iecst, .scl)
-  LD  — Ladder Diagram (.lad, .ld)
-  FBD — Function Block Diagram (.fbd)
-  IL  — Instruction List (.il, .awl, .stl)
-  SFC — Sequential Function Chart (.sfc)
+  ST  - Structured Text (.st, .iecst, .scl)
+  LD  - Ladder Diagram (.lad, .ld)
+  FBD - Function Block Diagram (.fbd)
+  IL  - Instruction List (.il, .awl, .stl)
+  SFC - Sequential Function Chart (.sfc)
   + Siemens SCL/STL/AWL, CODESYS .project, ABB .ap1, L5X, etc.
 
 Sanitization before LLM submission:
@@ -226,7 +226,7 @@ def sanitize_for_llm(raw: str) -> tuple[str, list[str]]:
     text = raw
     redactions: list[str] = []
 
-    # 1. Credentials and secrets (highest priority — full value masked)
+    # 1. Credentials and secrets (highest priority - full value masked)
     for pattern, label in [
         (_RE_CREDENTIAL,   "credential assignment"),
         (_RE_PASS_INLINE,  "inline password"),
@@ -246,7 +246,7 @@ def sanitize_for_llm(raw: str) -> tuple[str, list[str]]:
         redactions.append(f"{count} connection string(s) redacted")
     text = _RE_CONN_STRING.sub("[CONNSTRING_REDACTED]", text)
 
-    # 3. Public IP addresses only (private IPs preserved — important for topology analysis)
+    # 3. Public IP addresses only (private IPs preserved - important for topology analysis)
     pub_ips = _RE_PUBLIC_IP.findall(text)
     if pub_ips:
         redactions.append(f"{len(pub_ips)} public IP(s) redacted: {', '.join(set(pub_ips[:3]))}")
@@ -332,11 +332,11 @@ def _extract_security_context(raw: str, sanitized: str, pf: ParsedPLCFile) -> No
         if pattern.search(src):
             pf.network_access.append(label)
 
-    # Hardcoded values — use RAW content (never sent to LLM, used for reporting)
+    # Hardcoded values - use RAW content (never sent to LLM, used for reporting)
     for m in _RE_HARDCODED_PASS.finditer(raw):
         pf.hardcoded_values.append({
             "type":    "hardcoded_credential",
-            "context": "[content redacted — hardcoded credential detected]",
+            "context": "[content redacted - hardcoded credential detected]",
         })
 
     # Private IPs preserved for topology analysis
@@ -487,7 +487,7 @@ def build_llm_payload(project: PLCProject, max_chars: int = 32000) -> str:
 
         findings_str = "\n".join(f"  [{f}]" for f in findings) if findings else ""
 
-        # Sanitized source — proportional allocation per file
+        # Sanitized source - proportional allocation per file
         per_file_budget = max(500, budget // max(1, len(project.files)))
         sanitized_snippet = pf.sanitized_content[:per_file_budget]
         if len(pf.sanitized_content) > per_file_budget:

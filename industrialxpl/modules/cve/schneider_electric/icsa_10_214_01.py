@@ -1,4 +1,4 @@
-"""IXF CVE Module — ICSA-10-214-01 — Schneider Electric SCADAPack VxWorks.
+"""IXF CVE Module - ICSA-10-214-01 - Schneider Electric SCADAPack VxWorks.
 
 VxWorks WDB debug port exposed
 
@@ -32,8 +32,8 @@ _SEVERITY      = "CRITICAL"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "ICSA-10-214-01 — Schneider Electric SCADAPack VxWorks (CRITICAL)",
-        "description":   "Schneider Electric SCADAPack VxWorks — VxWorks WDB debug port exposed. "
+        "name":          "ICSA-10-214-01 - Schneider Electric SCADAPack VxWorks (CRITICAL)",
+        "description":   "Schneider Electric SCADAPack VxWorks - VxWorks WDB debug port exposed. "
                          "CVSS 9.8 (CRITICAL). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for ICSA-10-214-01...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Schneider Electric SCADAPack VxWorks may be present. "
+                f"Port {self.port} open on {self.target} - Schneider Electric SCADAPack VxWorks may be present. "
                 "ICSA-10-214-01 (CRITICAL CVSS 9.8): VxWorks WDB debug port exposed. "
                 "Manual version verification required."
             )

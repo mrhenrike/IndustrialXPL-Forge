@@ -45,4 +45,4 @@ class Exploit(Exploit):
                 description=f"CVE-2018-14821: {self.target}:{self.port}.  Denial of service. CVSS 7.5.",
                 mitre_techniques=["T0883"],
             ); return
-        print_success(f"CVE-2018-14821 HIGH — port {self.port} open.") if self.check() else print_error("Not responding.")
+        print_success(f"CVE-2018-14821 HIGH - port {self.port} open.") if self.check() else print_error("Not responding.")

@@ -3,15 +3,15 @@
 Complete reference for all 36 IXF interactive shell commands (35 original + `nse`).
 
 **Shell prompts:**
-- `ixf >` — global context, no module loaded
-- `ixf (Module Name) >` — module loaded and active
+- `ixf >` - global context, no module loaded
+- `ixf (Module Name) >` - module loaded and active
 
 **Output prefix conventions:**
-- `[*]` — status / informational
-- `[+]` — success / positive finding
-- `[-]` — error / negative result / not found
-- `[!]` — warning / destructive action
-- `[i]` — informational note
+- `[*]` - status / informational
+- `[+]` - success / positive finding
+- `[-]` - error / negative result / not found
+- `[!]` - warning / destructive action
+- `[i]` - informational note
 
 Commands with hyphens (e.g. `mitre-scan`) work with or without hyphens internally. All commands are case-insensitive. Tab completion is available for module paths.
 
@@ -19,20 +19,20 @@ Commands with hyphens (e.g. `mitre-scan`) work with or without hyphens internall
 
 ## Table of Contents
 
-1. [Navigation](#navigation) — `help`, `exit`, `use`, `back`
-2. [Module Options](#module-options) — `set`, `setg`, `unsetg`
-3. [Module Inspection](#module-inspection) — `show` (info/options/advanced/devices/all)
-4. [Execution](#execution) — `run`, `check`
-5. [Discovery](#discovery) — `search`, `discover`
-6. [CVE Commands](#cve-commands) — `cve`, `cve-scan`
-7. [Reports](#reports) — `report` (json/html/markdown)
-8. [MITRE ATT&CK for ICS](#mitre-attck-for-ics) — `mitre`, `mitre-list`, `mitre-scan`, `mitre-all`, `mitre-coverage`, `mitre-report`, `mitre-tactic`
-9. [TTP Execution](#ttp-execution) — `ttp`, `ttp-check`, `ttp-simulate`, `ttp-list`
-10. [Assessment](#assessment) — `assess`
-11. [Statistics & Coverage](#statistics--coverage) — `stats`, `vendors`, `protocols`, `coverage`
-12. [LLM / SAST](#llm--sast) — `llm-key`, `llm-status`, `sast`
-13. [Utility](#utility) — `exec`
-14. [NSE Scripts](#nse-scripts) — `nse` (install/list/status/--force)
+1. [Navigation](#navigation) - `help`, `exit`, `use`, `back`
+2. [Module Options](#module-options) - `set`, `setg`, `unsetg`
+3. [Module Inspection](#module-inspection) - `show` (info/options/advanced/devices/all)
+4. [Execution](#execution) - `run`, `check`
+5. [Discovery](#discovery) - `search`, `discover`
+6. [CVE Commands](#cve-commands) - `cve`, `cve-scan`
+7. [Reports](#reports) - `report` (json/html/markdown)
+8. [MITRE ATT&CK for ICS](#mitre-attck-for-ics) - `mitre`, `mitre-list`, `mitre-scan`, `mitre-all`, `mitre-coverage`, `mitre-report`, `mitre-tactic`
+9. [TTP Execution](#ttp-execution) - `ttp`, `ttp-check`, `ttp-simulate`, `ttp-list`
+10. [Assessment](#assessment) - `assess`
+11. [Statistics & Coverage](#statistics--coverage) - `stats`, `vendors`, `protocols`, `coverage`
+12. [LLM / SAST](#llm--sast) - `llm-key`, `llm-status`, `sast`
+13. [Utility](#utility) - `exec`
+14. [NSE Scripts](#nse-scripts) - `nse` (install/list/status/--force)
 
 ---
 
@@ -48,12 +48,12 @@ Display the global help menu or module-specific help when a module is loaded.
 
 **Parameters:** none
 
-**Example 1 — Global help menu:**
+**Example 1 - Global help menu:**
 
 ```
 ixf > help
 
-  IndustrialXPL-Forge v1.0.13 — IXF Shell Commands
+  IndustrialXPL-Forge v1.0.13 - IXF Shell Commands
   ─────────────────────────────────────────────────────────────────────
   GLOBAL COMMANDS
     help                           Show this help menu
@@ -94,7 +94,7 @@ ixf > help
     exit                           Exit IXF
 ```
 
-**Example 2 — Module-specific help (when module is loaded):**
+**Example 2 - Module-specific help (when module is loaded):**
 
 ```
 ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > help
@@ -119,7 +119,7 @@ ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > help
   [i] Type 'show info' for module metadata
 ```
 
-**Example 3 — Help when no module is loaded (global):**
+**Example 3 - Help when no module is loaded (global):**
 
 ```
 ixf > help
@@ -149,21 +149,21 @@ Exit the IXF shell cleanly. Saves readline history to `~/.ixf_history`.
 
 **Parameters:** none
 
-**Example 1 — Exit from global context:**
+**Example 1 - Exit from global context:**
 
 ```
 ixf > exit
 [*] Exiting IndustrialXPL-Forge. Stay safe.
 ```
 
-**Example 2 — Exit from module context:**
+**Example 2 - Exit from module context:**
 
 ```
 ixf (Modbus TCP Device Detect) > exit
 [*] Exiting IndustrialXPL-Forge. Stay safe.
 ```
 
-**Example 3 — Exit with Ctrl+D (EOF):**
+**Example 3 - Exit with Ctrl+D (EOF):**
 
 ```
 ixf > ^D
@@ -177,7 +177,7 @@ ixf > exit now
 [*] Exiting IndustrialXPL-Forge. Stay safe.
 ```
 
-> Extra arguments after `exit` are silently ignored — exit always succeeds.
+> Extra arguments after `exit` are silently ignored - exit always succeeds.
 
 **Related commands:** `help`, `back`
 
@@ -195,9 +195,9 @@ Load a module by its path. Accepts slash notation (`scanners/ics/modbus_detect`)
 
 | Argument | Type | Required | Default | Valid Values | Validation |
 |----------|------|----------|---------|--------------|------------|
-| module_path | string | yes | — | Any path under `modules/` (slash or dot) | Must resolve to an importable Python module with `__info__` and `run()` |
+| module_path | string | yes | - | Any path under `modules/` (slash or dot) | Must resolve to an importable Python module with `__info__` and `run()` |
 
-**Example 1 — Load a scanner module:**
+**Example 1 - Load a scanner module:**
 
 ```
 ixf > use scanners/ics/modbus_detect
@@ -207,7 +207,7 @@ ixf > use scanners/ics/modbus_detect
 ixf (Modbus TCP Device Detect) >
 ```
 
-**Example 2 — Load a CVE exploit module:**
+**Example 2 - Load a CVE exploit module:**
 
 ```
 ixf > use cve/siemens/cve_2021_22681_s7_1200_hardcoded_key
@@ -217,7 +217,7 @@ ixf > use cve/siemens/cve_2021_22681_s7_1200_hardcoded_key
 ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) >
 ```
 
-**Example 3 — Load using dot notation (equivalent):**
+**Example 3 - Load using dot notation (equivalent):**
 
 ```
 ixf > use cve.siemens.cve_2021_22681_s7_1200_hardcoded_key
@@ -225,17 +225,17 @@ ixf > use cve.siemens.cve_2021_22681_s7_1200_hardcoded_key
 [*] CVE: CVE-2021-22681 | CVSS: 9.8 | Impact: CRITICAL
 ```
 
-**Example 4 — Module requires optional runtime:**
+**Example 4 - Module requires optional runtime:**
 
 ```
 ixf > use cve/malware/frostygoop_modbus_heating
 [!] Module requires 'go' runtime. Python fallback available.
     Install Go: https://go.dev/dl/
-[*] Module loaded: FrostyGoop Modbus Heating Attack (Go) — Extended
+[*] Module loaded: FrostyGoop Modbus Heating Attack (Go) - Extended
 [*] CVE: N/A | CVSS: N/A | Impact: CATASTROPHIC
 ```
 
-**Example 5 — Switch modules while one is already loaded:**
+**Example 5 - Switch modules while one is already loaded:**
 
 ```
 ixf (Modbus TCP Device Detect) > use cve/honeywell/cve_2023_5389_experion_rce
@@ -245,7 +245,7 @@ ixf (Modbus TCP Device Detect) > use cve/honeywell/cve_2023_5389_experion_rce
 ixf (CVE-2023-5389 Honeywell Experion PKS RCE) >
 ```
 
-**Error scenario — Module not found:**
+**Error scenario - Module not found:**
 
 ```
 ixf > use scanners/ics/nonexistent_scanner
@@ -253,7 +253,7 @@ ixf > use scanners/ics/nonexistent_scanner
 [i] Try: search nonexistent_scanner
 ```
 
-**Error scenario — Module path required:**
+**Error scenario - Module path required:**
 
 ```
 ixf > use
@@ -272,18 +272,18 @@ Unload the current module and return to the global context. No effect if no modu
 
 **Syntax:** `back`
 
-**Context:** module only (safe to run from global — silently ignored)
+**Context:** module only (safe to run from global - silently ignored)
 
 **Parameters:** none
 
-**Example 1 — Standard back from module:**
+**Example 1 - Standard back from module:**
 
 ```
 ixf (Modbus TCP Device Detect) > back
 ixf >
 ```
 
-**Example 2 — Back after setting options (options are discarded):**
+**Example 2 - Back after setting options (options are discarded):**
 
 ```
 ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > set target 192.168.1.50
@@ -293,7 +293,7 @@ ixf >
 [i] Module options cleared. Global options (setg) are still active.
 ```
 
-**Example 3 — Back from global (no-op):**
+**Example 3 - Back from global (no-op):**
 
 ```
 ixf > back
@@ -320,12 +320,12 @@ Set an option on the currently loaded module. Changes apply immediately to the l
 
 | Argument | Type | Required | Default | Valid Values | Validation |
 |----------|------|----------|---------|--------------|------------|
-| option | string | yes | — | Any option name declared in the module | Case-insensitive match |
-| value | varies | yes | — | Depends on option type: string, int, bool, IP | Type-checked; range-checked where applicable |
+| option | string | yes | - | Any option name declared in the module | Case-insensitive match |
+| value | varies | yes | - | Depends on option type: string, int, bool, IP | Type-checked; range-checked where applicable |
 
 **Boolean values accepted:** `true`, `false`, `yes`, `no`, `on`, `off`, `1`, `0`
 
-**Example 1 — Set target IP and port:**
+**Example 1 - Set target IP and port:**
 
 ```
 ixf (Modbus TCP Device Detect) > set target 192.168.1.100
@@ -335,7 +335,7 @@ ixf (Modbus TCP Device Detect) > set port 5020
 [*] port => 5020
 ```
 
-**Example 2 — Set boolean options:**
+**Example 2 - Set boolean options:**
 
 ```
 ixf (Modbus TCP Device Detect) > set simulate false
@@ -348,7 +348,7 @@ ixf (Modbus TCP Device Detect) > set verbose yes
 [*] verbose => True
 ```
 
-**Example 3 — Set timeout and verify with show options:**
+**Example 3 - Set timeout and verify with show options:**
 
 ```
 ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > set timeout 15
@@ -358,19 +358,19 @@ ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > set target 10.0.0.50
 [*] target => 10.0.0.50
 
 ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > show options
-     Options — CVE-2021-22681 Siemens S7-1200/1500 PLC
+     Options - CVE-2021-22681 Siemens S7-1200/1500 PLC
 +-------------+-----------+----------+----------------------------------------------+
 | Option      | Value     | Required | Description                                  |
 |-------------+-----------+----------+----------------------------------------------|
 | target      | 10.0.0.50 | yes      | Target Siemens S7-1200 IP                    |
 | port        | 102       | no       | S7comm port (default 102)                    |
-| simulate    | True      | no       | Simulate — no packets sent (default: True)   |
-| destructive | False     | no       | Live exploitation — may cause irreversible   |
+| simulate    | True      | no       | Simulate - no packets sent (default: True)   |
+| destructive | False     | no       | Live exploitation - may cause irreversible   |
 | timeout     | 15        | no       | Connection timeout in seconds                |
 +-------------+-----------+----------+----------------------------------------------+
 ```
 
-**Error scenario — Invalid port value:**
+**Error scenario - Invalid port value:**
 
 ```
 ixf (Modbus TCP Device Detect) > set port 99999
@@ -380,7 +380,7 @@ ixf (Modbus TCP Device Detect) > set port abc
 [-] Validation error for 'port': Expected integer, got 'abc'
 ```
 
-**Error scenario — Unknown option:**
+**Error scenario - Unknown option:**
 
 ```
 ixf (Modbus TCP Device Detect) > set badoption value
@@ -388,7 +388,7 @@ ixf (Modbus TCP Device Detect) > set badoption value
 [i] Available options: target, port, simulate, destructive, timeout, verbose
 ```
 
-**Error scenario — No module loaded:**
+**Error scenario - No module loaded:**
 
 ```
 ixf > set target 192.168.1.1
@@ -411,12 +411,12 @@ Set a global option that persists across all modules in the current session. Whe
 
 | Argument | Type | Required | Default | Valid Values | Validation |
 |----------|------|----------|---------|--------------|------------|
-| option | string | yes | — | Any option name | Case-insensitive |
-| value | varies | yes | — | String, int, or bool depending on option | Same as `set` |
+| option | string | yes | - | Any option name | Case-insensitive |
+| value | varies | yes | - | String, int, or bool depending on option | Same as `set` |
 
 **Common global options:** `target`, `timeout`, `simulate`, `destructive`, `verbose`
 
-**Example 1 — Set global target then load multiple modules:**
+**Example 1 - Set global target then load multiple modules:**
 
 ```
 ixf > setg target 10.0.0.100
@@ -427,11 +427,11 @@ ixf > use scanners/ics/modbus_detect
 [*] target already set from global: 10.0.0.100
 
 ixf (Modbus TCP Device Detect) > run
-  [SIMULATE MODE — no packets sent]
+  [SIMULATE MODE - no packets sent]
   [i] Would scan 10.0.0.100:502 for Modbus TCP device...
 ```
 
-**Example 2 — Set global simulate=false for an authorized session:**
+**Example 2 - Set global simulate=false for an authorized session:**
 
 ```
 ixf > setg simulate false
@@ -442,7 +442,7 @@ ixf > setg timeout 30
 [*] Global: timeout => 30
 ```
 
-**Example 3 — Chain multiple setg with module use:**
+**Example 3 - Chain multiple setg with module use:**
 
 ```
 ixf > setg target 192.168.10.0/24
@@ -456,7 +456,7 @@ ixf > use cve/schneider_electric/cve_2022_24323_modicon_m340_dos
 [*] target already set from global: 192.168.10.0/24
 
 ixf (CVE-2022-24323 Modicon M340 DoS) > show options
-     Options — CVE-2022-24323 Modicon M340 DoS
+     Options - CVE-2022-24323 Modicon M340 DoS
 +-------------+-----------------+----------+---------------------------------------+
 | Option      | Value           | Required | Description                           |
 |-------------+-----------------+----------+---------------------------------------|
@@ -468,7 +468,7 @@ ixf (CVE-2022-24323 Modicon M340 DoS) > show options
 +-------------+-----------------+----------+---------------------------------------+
 ```
 
-**Error scenario — Missing value:**
+**Error scenario - Missing value:**
 
 ```
 ixf > setg target
@@ -492,9 +492,9 @@ Remove a previously set global option. After unset, modules will use their own d
 
 | Argument | Type | Required | Default | Valid Values | Validation |
 |----------|------|----------|---------|--------------|------------|
-| option | string | yes | — | Any previously set global option | Silently no-ops if not set |
+| option | string | yes | - | Any previously set global option | Silently no-ops if not set |
 
-**Example 1 — Unset target:**
+**Example 1 - Unset target:**
 
 ```
 ixf > setg target 10.0.0.1
@@ -504,7 +504,7 @@ ixf > unsetg target
 [*] Global 'target' cleared.
 ```
 
-**Example 2 — Unset simulate to restore per-module defaults:**
+**Example 2 - Unset simulate to restore per-module defaults:**
 
 ```
 ixf > setg simulate false
@@ -515,14 +515,14 @@ ixf > unsetg simulate
 [i] Modules will now use their own default (simulate=True).
 ```
 
-**Example 3 — Unset non-existent global (no-op):**
+**Example 3 - Unset non-existent global (no-op):**
 
 ```
 ixf > unsetg nonexistent
 [*] Global 'nonexistent' not set (no-op).
 ```
 
-**Error scenario — No argument:**
+**Error scenario - No argument:**
 
 ```
 ixf > unsetg
@@ -557,25 +557,25 @@ Display module information. Without subcommand defaults to `options`.
 | `devices` | Target device types and firmware versions |
 | `all` | Both `info` and `options` combined |
 
-**Example 1 — `show options` (default):**
+**Example 1 - `show options` (default):**
 
 ```
 ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > show options
 
-     Options — CVE-2021-22681 Siemens S7-1200/1500 PLC
+     Options - CVE-2021-22681 Siemens S7-1200/1500 PLC
 +-------------+-----------+----------+----------------------------------------------+
 | Option      | Value     | Required | Description                                  |
 |-------------+-----------+----------+----------------------------------------------|
 | target      |           | yes      | Target Siemens S7-1200/1500 IP address       |
 | port        | 102       | no       | S7comm TCP port (default: 102)               |
-| simulate    | True      | no       | Simulate only — no packets sent              |
+| simulate    | True      | no       | Simulate only - no packets sent              |
 | destructive | False     | no       | Enable live exploitation (irreversible risk) |
 | timeout     | 10        | no       | Connection timeout in seconds (1-300)        |
 +-------------+-----------+----------+----------------------------------------------+
 [i] Required options not set: target
 ```
 
-**Example 2 — `show info`:**
+**Example 2 - `show info`:**
 
 ```
 ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > show info
@@ -590,7 +590,7 @@ ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > show info
                     https://nvd.nist.gov/vuln/detail/CVE-2021-22681
   devices         : Siemens S7-1200 (all firmware), Siemens S7-1500 (all firmware)
   impact          : CRITICAL
-  exploit_type    : Hardcoded Key — MitM/Decryption/Firmware Exfiltration
+  exploit_type    : Hardcoded Key - MitM/Decryption/Firmware Exfiltration
   cve             : CVE-2021-22681
   cvss            : 9.8
   severity        : CRITICAL
@@ -598,12 +598,12 @@ ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > show info
   mitre_tactics   : Collection, Lateral Movement
 ```
 
-**Example 3 — `show advanced`:**
+**Example 3 - `show advanced`:**
 
 ```
 ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > show advanced
 
-     Advanced Options — CVE-2021-22681 Siemens S7-1200/1500 PLC
+     Advanced Options - CVE-2021-22681 Siemens S7-1200/1500 PLC
 +-------------------+-------+----------+-----------------------------------------+
 | Option            | Value | Required | Description                             |
 |-------------------+-------+----------+-----------------------------------------|
@@ -614,7 +614,7 @@ ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > show advanced
 +-------------------+-------+----------+-----------------------------------------+
 ```
 
-**Example 4 — `show devices`:**
+**Example 4 - `show devices`:**
 
 ```
 ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > show devices
@@ -627,7 +627,7 @@ ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > show devices
   Siemens ET 200SP CPU       All versions        ET 200SP open controller
 ```
 
-**Example 5 — `show all`:**
+**Example 5 - `show all`:**
 
 ```
 ixf (Modbus TCP Device Detect) > show all
@@ -644,27 +644,27 @@ ixf (Modbus TCP Device Detect) > show all
   cve             : N/A
   cvss            : N/A
 
-     Options — Modbus TCP Device Detect
+     Options - Modbus TCP Device Detect
 +-------------+-------+----------+---------------------------------------------------+
 | Option      | Value | Required | Description                                       |
 |-------------+-------+----------+---------------------------------------------------|
 | target      |       | yes      | Target IP or CIDR range                           |
 | port        | 502   | no       | Modbus TCP port                                   |
-| simulate    | True  | no       | Simulate — no packets sent                        |
+| simulate    | True  | no       | Simulate - no packets sent                        |
 | destructive | False | no       | Enable real execution                             |
 | timeout     | 10    | no       | Connection timeout (seconds)                      |
 | unit_id     | 1     | no       | Modbus unit identifier (1-255)                    |
 +-------------+-------+----------+---------------------------------------------------+
 ```
 
-**Error scenario — show without module:**
+**Error scenario - show without module:**
 
 ```
 ixf > show options
 [-] No module loaded. Use 'use <module>' first.
 ```
 
-**Error scenario — Invalid subcommand:**
+**Error scenario - Invalid subcommand:**
 
 ```
 ixf (Modbus TCP Device Detect) > show bad
@@ -690,10 +690,10 @@ Execute the loaded module. Behavior is controlled by the `simulate` and `destruc
 | simulate | destructive | Behavior |
 |----------|-------------|----------|
 | `True` (default) | any | Print simulation output only; no packets sent |
-| `False` | `False` | Run `check()` probe only — read-only |
+| `False` | `False` | Run `check()` probe only - read-only |
 | `False` | `True` | Full exploit with DestructiveGate confirmation for HIGH/CRITICAL/CATASTROPHIC |
 
-**Example 1 — Default simulate mode (scanner):**
+**Example 1 - Default simulate mode (scanner):**
 
 ```
 ixf (Modbus TCP Device Detect) > set target 192.168.1.100
@@ -701,7 +701,7 @@ ixf (Modbus TCP Device Detect) > set target 192.168.1.100
 
 ixf (Modbus TCP Device Detect) > run
 
-  [SIMULATE MODE — no packets sent]
+  [SIMULATE MODE - no packets sent]
   ─────────────────────────────────────────────────────────────────
   [i] What would happen:
       Modbus TCP Device Detect on 192.168.1.100:502
@@ -717,7 +717,7 @@ ixf (Modbus TCP Device Detect) > run
   [i] To run live: set simulate false (no destructive action for LOW impact)
 ```
 
-**Example 2 — Simulate mode with CRITICAL CVE:**
+**Example 2 - Simulate mode with CRITICAL CVE:**
 
 ```
 ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > set target 10.0.0.50
@@ -725,25 +725,25 @@ ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > set target 10.0.0.50
 
 ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > run
 
-  [SIMULATE MODE — no packets sent]
+  [SIMULATE MODE - no packets sent]
   ─────────────────────────────────────────────────────────────────
   [i] What would happen:
-      CVE-2021-22681 — Siemens S7-1200/1500 Hardcoded TLS Key Exploit
+      CVE-2021-22681 - Siemens S7-1200/1500 Hardcoded TLS Key Exploit
 
       Phase 1 [S7comm+ Connect]: TCP to 10.0.0.50:102, negotiate S7comm+ TLS
       Phase 2 [Key Extraction]:  Use hardcoded private key (known, extracted from firmware)
       Phase 3 [MitM Position]:   Intercept STEP 7/TIA Portal ↔ PLC communications
       Phase 4 [Decrypt Payload]: Decrypt engineering traffic, extract ladder logic
       Phase 5 [Modify Logic]:    Optionally inject modified PLC program via authenticated session
-      Phase 6 [Persistence]:     Download modified program — persists across PLC restart
+      Phase 6 [Persistence]:     Download modified program - persists across PLC restart
 
   [i] Payload (hex): 03 00 00 1F 02 F0 80 32 01 00 00 00 01 00 0E 00 00 04 01 12 04 11 44 01 00 FF
   [i] MITRE ATT&CK for ICS: T0830 (Adversary-in-the-Middle), T0855 (Unauthorized Command Message)
   [i] To run live: set simulate false + set destructive true
-  [!] This is a CRITICAL impact module — DestructiveGate confirmation required for live execution
+  [!] This is a CRITICAL impact module - DestructiveGate confirmation required for live execution
 ```
 
-**Example 3 — Live destructive run (HIGH impact with confirmation):**
+**Example 3 - Live destructive run (HIGH impact with confirmation):**
 
 ```
 ixf (CVE-2022-24323 Modicon M340 DoS) > set target 10.0.1.20
@@ -758,14 +758,14 @@ ixf (CVE-2022-24323 Modicon M340 DoS) > set destructive true
 ixf (CVE-2022-24323 Modicon M340 DoS) > run
 
   ██████████████████████████████████████████████████████████
-  ██  DESTRUCTIVE MODE — HIGH IMPACT                      ██
+  ██  DESTRUCTIVE MODE - HIGH IMPACT                      ██
   ██  Device restart / process stop. Requires operator   ██
   ██  intervention to recover.                           ██
   ██████████████████████████████████████████████████████████
 
   Module:  CVE-2022-24323 Modicon M340 DoS
   Target:  10.0.1.20:502
-  Impact:  HIGH — Modicon M340 forced stop via malformed Modbus request
+  Impact:  HIGH - Modicon M340 forced stop via malformed Modbus request
 
   Type the following string EXACTLY to confirm (case-sensitive):
   I ACCEPT FULL RESPONSIBILITY FOR THIS DESTRUCTIVE OPERATION
@@ -774,18 +774,18 @@ ixf (CVE-2022-24323 Modicon M340 DoS) > run
 [*] Confirmed. Audit entry written. Executing...
 [*] Connecting to 10.0.1.20:502...
 [+] Connection established. Sending malformed Modbus PDU...
-[+] Target unresponsive after 3 seconds — DoS likely successful
+[+] Target unresponsive after 3 seconds - DoS likely successful
 [*] Audit entry: .log/destructive_ops_2026-06-01.log
 ```
 
-**Error scenario — Required option not set:**
+**Error scenario - Required option not set:**
 
 ```
 ixf (Modbus TCP Device Detect) > run
 [-] Required option 'target' not set. Use: set target <IP>
 ```
 
-**Error scenario — No module loaded:**
+**Error scenario - No module loaded:**
 
 ```
 ixf > run
@@ -798,7 +798,7 @@ ixf > run
 
 ### `check`
 
-Run a read-only connectivity and vulnerability probe. Calls the module's `check()` method. No exploit payloads are sent — only safe fingerprinting queries. Does not require `destructive=true`.
+Run a read-only connectivity and vulnerability probe. Calls the module's `check()` method. No exploit payloads are sent - only safe fingerprinting queries. Does not require `destructive=true`.
 
 **Syntax:** `check`
 
@@ -806,7 +806,7 @@ Run a read-only connectivity and vulnerability probe. Calls the module's `check(
 
 **Parameters:** none
 
-**Example 1 — Check confirms vulnerability:**
+**Example 1 - Check confirms vulnerability:**
 
 ```
 ixf (Modbus TCP Device Detect) > set target 192.168.1.100
@@ -816,13 +816,13 @@ ixf (Modbus TCP Device Detect) > check
 [*] Checking 192.168.1.100:502...
 [*] TCP connection: OK
 [*] Sending Modbus FC04 probe...
-[+] VULNERABLE — Modbus device detected
+[+] VULNERABLE - Modbus device detected
 [+] Device: Schneider Electric Modicon M340 (inferred from register layout)
 [+] Unit IDs responding: 1, 2
 [i] To exploit: run (with simulate=false + destructive=true for destructive modules)
 ```
 
-**Example 2 — Check fails (port closed):**
+**Example 2 - Check fails (port closed):**
 
 ```
 ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > set target 192.168.1.50
@@ -830,12 +830,12 @@ ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > set target 192.168.1.50
 
 ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) > check
 [*] Checking 192.168.1.50:102...
-[-] NOT VULNERABLE — Port 102 not reachable or S7comm+ not detected
+[-] NOT VULNERABLE - Port 102 not reachable or S7comm+ not detected
 [-] Connection timeout after 10s
 [i] Verify target is a Siemens S7-1200/1500 with S7comm+ enabled
 ```
 
-**Example 3 — Check shows partial vulnerability:**
+**Example 3 - Check shows partial vulnerability:**
 
 ```
 ixf (CVE-2023-6448 Unitronics UniStream PLC) > set target 10.0.0.25
@@ -844,20 +844,20 @@ ixf (CVE-2023-6448 Unitronics UniStream PLC) > set target 10.0.0.25
 ixf (CVE-2023-6448 Unitronics UniStream PLC) > check
 [*] Checking 10.0.0.25:20256...
 [*] PCOM port 20256: OPEN
-[+] Unitronics PLC detected — PCOM protocol confirmed
-[!] POTENTIAL — Web interface detected on :8080 (authentication check needed)
+[+] Unitronics PLC detected - PCOM protocol confirmed
+[!] POTENTIAL - Web interface detected on :8080 (authentication check needed)
 [i] Device may be vulnerable to CVE-2023-6448 (default credentials + path traversal)
 [i] Run 'run' to simulate full exploit chain
 ```
 
-**Error scenario — No module loaded:**
+**Error scenario - No module loaded:**
 
 ```
 ixf > check
 [-] No module loaded. Use 'use <module>' first.
 ```
 
-**Error scenario — Module has no check() method:**
+**Error scenario - Module has no check() method:**
 
 ```
 ixf (IEC 62443 Zone Conduit Audit) > check
@@ -882,9 +882,9 @@ Search the module index for modules matching a keyword, CVE ID, vendor name, pro
 
 | Argument | Type | Required | Default | Valid Values | Validation |
 |----------|------|----------|---------|--------------|------------|
-| term | string | yes | — | Any substring | Case-insensitive substring match |
+| term | string | yes | - | Any substring | Case-insensitive substring match |
 
-**Example 1 — Search by CVE:**
+**Example 1 - Search by CVE:**
 
 ```
 ixf > search CVE-2022-29965
@@ -897,7 +897,7 @@ ixf > search CVE-2022-29965
 [*] 1 result(s) found.
 ```
 
-**Example 2 — Search by vendor:**
+**Example 2 - Search by vendor:**
 
 ```
 ixf > search siemens
@@ -918,7 +918,7 @@ ixf > search siemens
 [*] 47 result(s) found (showing 30). Use a more specific term to narrow results.
 ```
 
-**Example 3 — Search by protocol:**
+**Example 3 - Search by protocol:**
 
 ```
 ixf > search dnp3
@@ -935,7 +935,7 @@ ixf > search dnp3
 [*] 5 result(s) found.
 ```
 
-**Example 4 — Search by category:**
+**Example 4 - Search by category:**
 
 ```
 ixf > search default_creds
@@ -955,7 +955,7 @@ ixf > search default_creds
 [*] 34 result(s) found.
 ```
 
-**Error scenario — No results:**
+**Error scenario - No results:**
 
 ```
 ixf > search xyznotavendor123
@@ -964,7 +964,7 @@ ixf > search xyznotavendor123
 [i] Try a different keyword: vendor name, CVE ID, protocol, or category
 ```
 
-**Error scenario — Empty search term:**
+**Error scenario - Empty search term:**
 
 ```
 ixf > search
@@ -990,9 +990,9 @@ Launch an OT device discovery sweep on a subnet. Guides the user toward the appr
 
 | Argument | Type | Required | Default | Valid Values | Validation |
 |----------|------|----------|---------|--------------|------------|
-| CIDR | string | yes | — | IPv4 CIDR notation (e.g. `192.168.1.0/24`) or single IP | Basic CIDR format validation |
+| CIDR | string | yes | - | IPv4 CIDR notation (e.g. `192.168.1.0/24`) or single IP | Basic CIDR format validation |
 
-**Example 1 — Subnet discovery with guidance:**
+**Example 1 - Subnet discovery with guidance:**
 
 ```
 ixf > discover 192.168.1.0/24
@@ -1000,7 +1000,7 @@ ixf > discover 192.168.1.0/24
 [*] Module loaded: Modbus TCP Device Detect
 [*] target => 192.168.1.0/24
 
-[i] OT Discovery Workflow — 192.168.1.0/24
+[i] OT Discovery Workflow - 192.168.1.0/24
     ─────────────────────────────────────────────────────────────────
     1. Protocol sweep (all 50 protocols):
        ixf > ttp T0846 192.168.1.0/24
@@ -1014,11 +1014,11 @@ ixf > discover 192.168.1.0/24
        nmap --script ics-sweep -p 102,502,47808,4840,20000 192.168.1.0/24
 
 ixf (Modbus TCP Device Detect) > run
-  [SIMULATE MODE — no packets sent]
+  [SIMULATE MODE - no packets sent]
   [i] Would scan 192.168.1.0-255:502 for Modbus TCP devices...
 ```
 
-**Example 2 — Single host discovery:**
+**Example 2 - Single host discovery:**
 
 ```
 ixf > discover 10.0.0.1
@@ -1029,16 +1029,16 @@ ixf > discover 10.0.0.1
     ixf > ttp T0846 10.0.0.1
 ```
 
-**Example 3 — Class B network (large subnet):**
+**Example 3 - Class B network (large subnet):**
 
 ```
 ixf > discover 10.10.0.0/16
 [*] Loading scanners/ics/modbus_detect for OT sweep on 10.10.0.0/16...
-[!] Large subnet (65536 hosts) — consider scanning a /24 segment first
+[!] Large subnet (65536 hosts) - consider scanning a /24 segment first
 [i] For a faster sweep: use scanners/ics/modbus_detect + set target 10.10.0.0/24
 ```
 
-**Error scenario — Invalid CIDR:**
+**Error scenario - Invalid CIDR:**
 
 ```
 ixf > discover 192.168.300.0/24
@@ -1066,9 +1066,9 @@ Find and load a module by CVE identifier. Supports CVE, CNVD, and ICS-CERT advis
 
 | Argument | Type | Required | Default | Valid Values | Validation |
 |----------|------|----------|---------|--------------|------------|
-| CVE-ID | string | yes | — | CVE-YYYY-NNNNN, CNVD-YYYY-NNNNN, ICSA-YY-NNN-NN | Substring match on module paths |
+| CVE-ID | string | yes | - | CVE-YYYY-NNNNN, CNVD-YYYY-NNNNN, ICSA-YY-NNN-NN | Substring match on module paths |
 
-**Example 1 — Unique CVE match (auto-loads):**
+**Example 1 - Unique CVE match (auto-loads):**
 
 ```
 ixf > cve CVE-2021-22681
@@ -1079,7 +1079,7 @@ ixf > cve CVE-2021-22681
 ixf (CVE-2021-22681 Siemens S7-1200/1500 PLC) >
 ```
 
-**Example 2 — Another unique match:**
+**Example 2 - Another unique match:**
 
 ```
 ixf > cve CVE-2023-6448
@@ -1088,7 +1088,7 @@ ixf > cve CVE-2023-6448
 [*] Vendor: Unitronics | Product: Vision/UniStream PLC
 ```
 
-**Example 3 — Multiple matches (disambiguation menu):**
+**Example 3 - Multiple matches (disambiguation menu):**
 
 ```
 ixf > cve CVE-2022-3232
@@ -1103,7 +1103,7 @@ ixf > cve CVE-2022-3232
 [*] Module loaded: CVE-2022-3232 LS Electric XGK Modbus DoS
 ```
 
-**Error scenario — CVE not found:**
+**Error scenario - CVE not found:**
 
 ```
 ixf > cve CVE-2099-99999
@@ -1112,7 +1112,7 @@ ixf > cve CVE-2099-99999
 [i] IXF may not yet cover this CVE. Contribute: CONTRIBUTING.md
 ```
 
-**Error scenario — No argument:**
+**Error scenario - No argument:**
 
 ```
 ixf > cve
@@ -1126,7 +1126,7 @@ ixf > cve
 
 ### `cve-scan <CIDR>`
 
-Discover OT assets on a subnet and suggest a CVE testing workflow. This command is a guided placeholder — it loads the discovery module and prints recommendations for targeted CVE testing.
+Discover OT assets on a subnet and suggest a CVE testing workflow. This command is a guided placeholder - it loads the discovery module and prints recommendations for targeted CVE testing.
 
 **Syntax:** `cve-scan <CIDR>`
 
@@ -1136,26 +1136,26 @@ Discover OT assets on a subnet and suggest a CVE testing workflow. This command 
 
 | Argument | Type | Required | Default | Valid Values | Validation |
 |----------|------|----------|---------|--------------|------------|
-| CIDR | string | yes | — | IPv4 CIDR or single IP | Basic CIDR validation |
+| CIDR | string | yes | - | IPv4 CIDR or single IP | Basic CIDR validation |
 
-**Example 1 — CVE scan workflow:**
+**Example 1 - CVE scan workflow:**
 
 ```
 ixf > cve-scan 192.168.1.0/24
 [i] CVE scan workflow for 192.168.1.0/24:
-    Step 1 — Discover assets:
+    Step 1 - Discover assets:
       ixf > mitre-scan discovery 192.168.1.0/24
-    Step 2 — Identify vendors from scan results
-    Step 3 — Load targeted CVE modules:
+    Step 2 - Identify vendors from scan results
+    Step 3 - Load targeted CVE modules:
       ixf > cve CVE-2021-22681     (if Siemens PLCs found)
       ixf > cve CVE-2023-6448     (if Unitronics PLCs found)
       ixf > cve CVE-2022-29965    (if Emerson ROC800 found)
-    Step 4 — Run check() to confirm:
+    Step 4 - Run check() to confirm:
       ixf > check
 [i] For automated TTP sweep: ttp T0819 192.168.1.0/24
 ```
 
-**Example 2 — With known vendor:**
+**Example 2 - With known vendor:**
 
 ```
 ixf > cve-scan 10.0.0.0/24
@@ -1184,7 +1184,7 @@ Generate an assessment report from the current session. Captures all modules run
 |----------|------|----------|---------|--------------|------------|
 | format | string | no | `json` | `json`, `html`, `markdown` | Case-insensitive |
 
-**Example 1 — JSON report:**
+**Example 1 - JSON report:**
 
 ```
 ixf > report json
@@ -1194,7 +1194,7 @@ ixf > report json
 [i] Path: ./ixf_report_20260601_153045.json
 ```
 
-**Example 2 — HTML report:**
+**Example 2 - HTML report:**
 
 ```
 ixf > report html
@@ -1203,7 +1203,7 @@ ixf > report html
 [i] Open in browser: file:///opt/ixf/ixf_report_20260601_153112.html
 ```
 
-**Example 3 — Markdown report:**
+**Example 3 - Markdown report:**
 
 ```
 ixf > report markdown
@@ -1212,7 +1212,7 @@ ixf > report markdown
 [i] Compatible with GitHub, Confluence, Notion, and most wikis
 ```
 
-**Error scenario — No session data:**
+**Error scenario - No session data:**
 
 ```
 ixf > report json
@@ -1221,7 +1221,7 @@ ixf > report json
 [+] Report saved: ixf_report_20260601_153300.json (empty session)
 ```
 
-**Error scenario — Invalid format:**
+**Error scenario - Invalid format:**
 
 ```
 ixf > report xml
@@ -1246,9 +1246,9 @@ List all modules that implement a specific MITRE ATT&CK for ICS technique.
 
 | Argument | Type | Required | Default | Valid Values | Validation |
 |----------|------|----------|---------|--------------|------------|
-| TID | string | yes | — | MITRE technique ID (e.g. `T0843`, `T0843.001`) | Must start with T0 |
+| TID | string | yes | - | MITRE technique ID (e.g. `T0843`, `T0843.001`) | Must start with T0 |
 
-**Example 1 — Technique with multiple modules:**
+**Example 1 - Technique with multiple modules:**
 
 ```
 ixf > mitre T0843
@@ -1262,7 +1262,7 @@ ixf > mitre T0843
 [*] 5 module(s) cover T0843.
 ```
 
-**Example 2 — Technique with one module:**
+**Example 2 - Technique with one module:**
 
 ```
 ixf > mitre T0806
@@ -1272,7 +1272,7 @@ ixf > mitre T0806
 [*] 1 module(s) cover T0806.
 ```
 
-**Example 3 — Subtechnique:**
+**Example 3 - Subtechnique:**
 
 ```
 ixf > mitre T0846.001
@@ -1284,7 +1284,7 @@ ixf > mitre T0846.001
 [*] 3 module(s) cover T0846.001.
 ```
 
-**Error scenario — Unknown technique:**
+**Error scenario - Unknown technique:**
 
 ```
 ixf > mitre T9999
@@ -1309,13 +1309,13 @@ List all mapped MITRE ATT&CK for ICS techniques with module counts. Optionally f
 
 | Argument | Type | Required | Default | Valid Values | Validation |
 |----------|------|----------|---------|--------------|------------|
-| tactic | string | no | — (all) | Tactic name: `discovery`, `execution`, `persistence`, `lateral-movement`, `collection`, `command-and-control`, `evasion`, `privilege-escalation`, `initial-access`, `inhibit-response-function`, `impair-process-control`, `impact`; or TA-ID | Case-insensitive |
+| tactic | string | no | - (all) | Tactic name: `discovery`, `execution`, `persistence`, `lateral-movement`, `collection`, `command-and-control`, `evasion`, `privilege-escalation`, `initial-access`, `inhibit-response-function`, `impair-process-control`, `impact`; or TA-ID | Case-insensitive |
 
-**Example 1 — List all techniques:**
+**Example 1 - List all techniques:**
 
 ```
 ixf > mitre-list
-  MITRE ATT&CK for ICS — Technique Index (74 techniques)
+  MITRE ATT&CK for ICS - Technique Index (74 techniques)
   ─────────────────────────────────────────────────────────────────
   TID     Name                                   Modules  Tactic
   T0800   Activate Firmware Update Mode           1       Inhibit Response Function
@@ -1405,11 +1405,11 @@ ixf > mitre-list
   TOTAL: 74 techniques | 12 tactics
 ```
 
-**Example 2 — Filter by tactic:**
+**Example 2 - Filter by tactic:**
 
 ```
 ixf > mitre-list discovery
-  MITRE ATT&CK for ICS — Discovery Techniques (TA0102)
+  MITRE ATT&CK for ICS - Discovery Techniques (TA0102)
   ─────────────────────────────────────────────────────────────────
   TID     Name                                   Modules
   T0808   Control Device Identification           1
@@ -1427,7 +1427,7 @@ ixf > mitre-list discovery
   11 techniques in Discovery (TA0102)
 ```
 
-**Error scenario — Unknown tactic:**
+**Error scenario - Unknown tactic:**
 
 ```
 ixf > mitre-list unknowntactic
@@ -1453,11 +1453,11 @@ Run all modules mapped to a MITRE tactic or single technique against a target. A
 
 | Argument | Type | Required | Default | Valid Values | Validation |
 |----------|------|----------|---------|--------------|------------|
-| tactic or TID | string | yes | — | Tactic name/alias, TA-ID (e.g. `TA0102`), or technique ID (e.g. `T0843`) | Case-insensitive |
-| target | string | yes | — | Target IP, hostname, or CIDR range | Basic IP/CIDR validation |
-| `--destructive` | flag | no | — | Disable simulate mode (authorized labs only) | Triggers DestructiveGate for each module |
+| tactic or TID | string | yes | - | Tactic name/alias, TA-ID (e.g. `TA0102`), or technique ID (e.g. `T0843`) | Case-insensitive |
+| target | string | yes | - | Target IP, hostname, or CIDR range | Basic IP/CIDR validation |
+| `--destructive` | flag | no | - | Disable simulate mode (authorized labs only) | Triggers DestructiveGate for each module |
 
-**Example 1 — Tactic sweep on subnet:**
+**Example 1 - Tactic sweep on subnet:**
 
 ```
 ixf > mitre-scan discovery 192.168.1.0/24
@@ -1465,14 +1465,14 @@ ixf > mitre-scan discovery 192.168.1.0/24
 [*] simulate=True (safe mode)
 [*] 11 techniques | approx. 28 modules
   ─────────────────────────────────────────────────────────────────
-  [*] T0808 — Control Device Identification (1 module)...
+  [*] T0808 - Control Device Identification (1 module)...
     [SIMULATE] Would probe OT devices for asset identification data
-  [*] T0840 — Network Connection Enumeration (2 modules)...
+  [*] T0840 - Network Connection Enumeration (2 modules)...
     [SIMULATE] Would enumerate Modbus TCP connections on 192.168.1.0/24
     [SIMULATE] Would enumerate EtherNet/IP connections on 192.168.1.0/24
-  [*] T0842 — Network Sniffing (3 modules)...
+  [*] T0842 - Network Sniffing (3 modules)...
     [SIMULATE] Would capture OT protocol traffic (passive analysis)
-  [*] T0846 — Remote System Discovery (8 modules)...
+  [*] T0846 - Remote System Discovery (8 modules)...
     [SIMULATE] Modbus TCP scan: 192.168.1.0/24:502
     [SIMULATE] S7comm scan: 192.168.1.0/24:102
     [SIMULATE] DNP3 scan: 192.168.1.0/24:20000
@@ -1481,14 +1481,14 @@ ixf > mitre-scan discovery 192.168.1.0/24
     [SIMULATE] EtherNet/IP scan: 192.168.1.0/24:44818
     [SIMULATE] Omron FINS scan: 192.168.1.0/24:9600
     [SIMULATE] IEC 104 scan: 192.168.1.0/24:2404
-  [*] T0861 — Point and Tag Identification (2 modules)...
+  [*] T0861 - Point and Tag Identification (2 modules)...
     ...
   ─────────────────────────────────────────────────────────────────
 [+] Tactic sweep complete: 11 techniques, 28 modules executed (simulate)
 [i] To generate report: report json
 ```
 
-**Example 2 — Single technique sweep:**
+**Example 2 - Single technique sweep:**
 
 ```
 ixf > mitre-scan T0843 192.168.1.100
@@ -1503,7 +1503,7 @@ ixf > mitre-scan T0843 192.168.1.100
 [+] T0843 sweep complete: 5 modules (simulate)
 ```
 
-**Error scenario — Target required:**
+**Error scenario - Target required:**
 
 ```
 ixf > mitre-scan discovery
@@ -1518,7 +1518,7 @@ ixf > mitre-scan discovery
 
 ### `mitre-all <target>`
 
-Sweep all 74+ mapped MITRE ATT&CK for ICS techniques against a target. Always runs in simulate mode — cannot be overridden to destructive.
+Sweep all 74+ mapped MITRE ATT&CK for ICS techniques against a target. Always runs in simulate mode - cannot be overridden to destructive.
 
 **Syntax:** `mitre-all <target>`
 
@@ -1528,9 +1528,9 @@ Sweep all 74+ mapped MITRE ATT&CK for ICS techniques against a target. Always ru
 
 | Argument | Type | Required | Default | Valid Values | Validation |
 |----------|------|----------|---------|--------------|------------|
-| target | string | yes | — | Target IP, hostname, or CIDR range | Basic IP/CIDR validation |
+| target | string | yes | - | Target IP, hostname, or CIDR range | Basic IP/CIDR validation |
 
-**Example 1 — Full sweep:**
+**Example 1 - Full sweep:**
 
 ```
 ixf > mitre-all 192.168.1.100
@@ -1538,12 +1538,12 @@ ixf > mitre-all 192.168.1.100
 [*] Running 74 techniques across 12 tactics...
 [*] Estimated time: ~5-10 minutes depending on timeout settings
   ─────────────────────────────────────────────────────────────────
-  Tactic: Initial Access (TA0108) — 9 techniques
-  [SIMULATE] T0812 — Default Credentials...
-  [SIMULATE] T0817 — Drive-by Compromise...
+  Tactic: Initial Access (TA0108) - 9 techniques
+  [SIMULATE] T0812 - Default Credentials...
+  [SIMULATE] T0817 - Drive-by Compromise...
   ...
-  Tactic: Discovery (TA0102) — 11 techniques
-  [SIMULATE] T0840 — Network Connection Enumeration...
+  Tactic: Discovery (TA0102) - 11 techniques
+  [SIMULATE] T0840 - Network Connection Enumeration...
   ...
   [all 74 techniques run]
   ─────────────────────────────────────────────────────────────────
@@ -1552,7 +1552,7 @@ ixf > mitre-all 192.168.1.100
 [i] Generate Navigator layer: mitre-report layer
 ```
 
-**Error scenario — No target:**
+**Error scenario - No target:**
 
 ```
 ixf > mitre-all
@@ -1574,7 +1574,7 @@ Display coverage percentage per MITRE ATT&CK for ICS tactic and overall.
 
 **Parameters:** none
 
-**Example 1 — Coverage report:**
+**Example 1 - Coverage report:**
 
 ```
 ixf > mitre-coverage
@@ -1619,7 +1619,7 @@ Generate a MITRE ATT&CK for ICS coverage report or ATT&CK Navigator-compatible l
 |----------|------|----------|---------|--------------|------------|
 | format | string | no | `layer` | `layer` (Navigator JSON), `json` (raw data), `html` (HTML report) | Case-insensitive |
 
-**Example 1 — ATT&CK Navigator layer:**
+**Example 1 - ATT&CK Navigator layer:**
 
 ```
 ixf > mitre-report layer
@@ -1630,7 +1630,7 @@ ixf > mitre-report layer
 [i] Color coding: red=CATASTROPHIC, orange=CRITICAL, yellow=HIGH, blue=covered
 ```
 
-**Example 2 — HTML report:**
+**Example 2 - HTML report:**
 
 ```
 ixf > mitre-report html
@@ -1639,7 +1639,7 @@ ixf > mitre-report html
 [i] Coverage: 93% (96/103 techniques)
 ```
 
-**Example 3 — JSON raw data:**
+**Example 3 - JSON raw data:**
 
 ```
 ixf > mitre-report json
@@ -1683,18 +1683,18 @@ Execute all modules mapped to a specific MITRE technique ID against a target. By
 
 | Argument | Type | Required | Default | Valid Values | Validation |
 |----------|------|----------|---------|--------------|------------|
-| TID | string | yes | — | MITRE technique ID (e.g. `T0843`, `T0843.001`) | Must start with T0 |
-| target | string | yes | — | Target IP, hostname, or CIDR range | IP/CIDR validation |
-| `--destructive` | flag | no | — | Disable simulate mode; requires DestructiveGate confirmation per module | Only for authorized labs |
-| `--stop-on-first` | flag | no | — | Stop after first confirmed hit | N/A |
-| `--output <file>` | string | no | — | Save results to specified file (JSON) | Valid path |
+| TID | string | yes | - | MITRE technique ID (e.g. `T0843`, `T0843.001`) | Must start with T0 |
+| target | string | yes | - | Target IP, hostname, or CIDR range | IP/CIDR validation |
+| `--destructive` | flag | no | - | Disable simulate mode; requires DestructiveGate confirmation per module | Only for authorized labs |
+| `--stop-on-first` | flag | no | - | Stop after first confirmed hit | N/A |
+| `--output <file>` | string | no | - | Save results to specified file (JSON) | Valid path |
 | `--rate-limit <ms>` | int | no | 0 | Milliseconds between module executions | 0-60000 |
 
-**Example 1 — Basic TTP sweep:**
+**Example 1 - Basic TTP sweep:**
 
 ```
 ixf > ttp T0843 192.168.1.100
-[*] TTP T0843 (Program Download) — 5 modules — simulate=True
+[*] TTP T0843 (Program Download) - 5 modules - simulate=True
 [*] Running module 1/5: cve/siemens/cve_2021_22681_s7_1200_hardcoded_key
   [SIMULATE] CVE-2021-22681 would attempt S7comm+ TLS MitM on 192.168.1.100:102
 [*] Running module 2/5: cve/siemens/cve_2022_38465_s7_global_key
@@ -1704,16 +1704,16 @@ ixf > ttp T0843 192.168.1.100
 [*] Running module 4/5: exploits/protocols/s7comm/s7_unauthorized_cpu_control
   [SIMULATE] Would send S7 unauthorized STOP command to 192.168.1.100:102
 [*] Running module 5/5: assessment/mitre_ics/t0843_program_upload
-  [SIMULATE] T0843 assessment module — assessing program upload protections
+  [SIMULATE] T0843 assessment module - assessing program upload protections
 [+] T0843 sweep complete: 5 modules, 5 simulate runs
 [i] To run live: ttp T0843 192.168.1.100 --destructive (authorized lab only)
 ```
 
-**Example 2 — Subnet TTP with rate limit:**
+**Example 2 - Subnet TTP with rate limit:**
 
 ```
 ixf > ttp T0878 10.0.0.0/24 --rate-limit 500
-[*] TTP T0878 (Alarm Suppression) — subnet 10.0.0.0/24 — 500ms between modules
+[*] TTP T0878 (Alarm Suppression) - subnet 10.0.0.0/24 - 500ms between modules
 [*] simulate=True | 3 modules
   [SIMULATE] Module 1: exploits/protocols/modbus/modbus_alarm_suppression
   [500ms wait]
@@ -1723,11 +1723,11 @@ ixf > ttp T0878 10.0.0.0/24 --rate-limit 500
 [+] T0878 sweep complete: 3 modules on /24
 ```
 
-**Example 3 — Stop-on-first with output file:**
+**Example 3 - Stop-on-first with output file:**
 
 ```
 ixf > ttp T0859 192.168.1.1 --stop-on-first --output results.json
-[*] TTP T0859 (Valid Accounts) — stop-on-first — output: results.json
+[*] TTP T0859 (Valid Accounts) - stop-on-first - output: results.json
 [*] simulate=True | 6 modules
 [*] Module 1/6: creds/siemens/ssh_default_creds
   [SIMULATE] Would test 47 default SSH credentials against 192.168.1.1:22
@@ -1735,7 +1735,7 @@ ixf > ttp T0859 192.168.1.1 --stop-on-first --output results.json
 [+] Results saved: results.json
 ```
 
-**Error scenario — Unknown TID:**
+**Error scenario - Unknown TID:**
 
 ```
 ixf > ttp T9999 192.168.1.1
@@ -1749,7 +1749,7 @@ ixf > ttp T9999 192.168.1.1
 
 ### `ttp-check <TID> <target>`
 
-Run only the `check()` probe for all modules mapped to a technique — read-only, no exploit payloads. Always safe.
+Run only the `check()` probe for all modules mapped to a technique - read-only, no exploit payloads. Always safe.
 
 **Syntax:** `ttp-check <TID> <target>`
 
@@ -1759,25 +1759,25 @@ Run only the `check()` probe for all modules mapped to a technique — read-only
 
 | Argument | Type | Required | Default | Valid Values | Validation |
 |----------|------|----------|---------|--------------|------------|
-| TID | string | yes | — | MITRE technique ID | Must start with T0 |
-| target | string | yes | — | Target IP or CIDR | IP/CIDR validation |
+| TID | string | yes | - | MITRE technique ID | Must start with T0 |
+| target | string | yes | - | Target IP or CIDR | IP/CIDR validation |
 
-**Example 1 — Check T0843 modules:**
+**Example 1 - Check T0843 modules:**
 
 ```
 ixf > ttp-check T0843 192.168.1.100
 [*] T0843 check-only sweep on 192.168.1.100...
 [*] 5 modules (read-only probes only)
-  [*] cve/siemens/cve_2021_22681_s7_1200_hardcoded_key — checking 192.168.1.100:102...
-    [+] POTENTIAL — Port 102 open, S7comm+ banner detected
-  [*] cve/siemens/cve_2022_38465_s7_global_key — checking 192.168.1.100:102...
-    [+] POTENTIAL — Same device as above
-  [*] cve/rockwell/cve_2022_1161_controllogix_modified_fw — checking 192.168.1.100:44818...
-    [-] NOT VULNERABLE — Port 44818 closed
-  [*] exploits/protocols/s7comm/s7_unauthorized_cpu_control — checking 192.168.1.100:102...
-    [+] POTENTIAL — S7comm accessible without authentication
-  [*] assessment/mitre_ics/t0843_program_upload — assessment (no check method)
-    [i] Skipped — assessment module, no check() method
+  [*] cve/siemens/cve_2021_22681_s7_1200_hardcoded_key - checking 192.168.1.100:102...
+    [+] POTENTIAL - Port 102 open, S7comm+ banner detected
+  [*] cve/siemens/cve_2022_38465_s7_global_key - checking 192.168.1.100:102...
+    [+] POTENTIAL - Same device as above
+  [*] cve/rockwell/cve_2022_1161_controllogix_modified_fw - checking 192.168.1.100:44818...
+    [-] NOT VULNERABLE - Port 44818 closed
+  [*] exploits/protocols/s7comm/s7_unauthorized_cpu_control - checking 192.168.1.100:102...
+    [+] POTENTIAL - S7comm accessible without authentication
+  [*] assessment/mitre_ics/t0843_program_upload - assessment (no check method)
+    [i] Skipped - assessment module, no check() method
 [+] T0843 check complete: 3 potential, 1 not vulnerable, 1 skipped
 [i] Run 'ttp T0843 192.168.1.100' to see simulation details
 ```
@@ -1798,15 +1798,15 @@ Force simulate mode for all modules mapped to a technique. Prints what each modu
 
 | Argument | Type | Required | Default | Valid Values | Validation |
 |----------|------|----------|---------|--------------|------------|
-| TID | string | yes | — | MITRE technique ID | Must start with T0 |
-| target | string | yes | — | Target IP or CIDR | IP/CIDR validation |
+| TID | string | yes | - | MITRE technique ID | Must start with T0 |
+| target | string | yes | - | Target IP or CIDR | IP/CIDR validation |
 
-**Example 1 — Simulate T0866:**
+**Example 1 - Simulate T0866:**
 
 ```
 ixf > ttp-simulate T0866 192.168.1.100
 [*] T0866 (Exploitation of Remote Services) simulation on 192.168.1.100 (simulate forced)
-[*] simulate=True (forced — cannot be overridden)
+[*] simulate=True (forced - cannot be overridden)
 [*] 3 modules:
   [SIMULATE] Module 1: cve/emerson/cve_2022_29965_roc800_hardcoded_creds
     Would send hardcoded credentials to ROC800 REST API on 192.168.1.100:443
@@ -1833,13 +1833,13 @@ List all MITRE ATT&CK for ICS technique IDs (TTPs) with module counts. Optionall
 
 | Argument | Type | Required | Default | Valid Values | Validation |
 |----------|------|----------|---------|--------------|------------|
-| `--tactic` | string | no | — (all) | Tactic name or alias | Case-insensitive |
+| `--tactic` | string | no | - (all) | Tactic name or alias | Case-insensitive |
 
-**Example 1 — List all TTPs:**
+**Example 1 - List all TTPs:**
 
 ```
 ixf > ttp-list
-  TTP Index — All Techniques (74 total)
+  TTP Index - All Techniques (74 total)
   ─────────────────────────────────────────────────────────────────
   TID     Name                                    Modules   Tactic
   T0800   Activate Firmware Update Mode           1         Inhibit Response Function
@@ -1859,11 +1859,11 @@ ixf > ttp-list
   [74 entries total]
 ```
 
-**Example 2 — Filter by tactic:**
+**Example 2 - Filter by tactic:**
 
 ```
 ixf > ttp-list --tactic evasion
-  TTP Index — Evasion (TA0103) — 5 techniques
+  TTP Index - Evasion (TA0103) - 5 techniques
   ─────────────────────────────────────────────────────────────────
   TID     Name                                    Modules
   T0820   Exploitation of Remote Services          3
@@ -1895,9 +1895,9 @@ Load and immediately execute an assessment module. Equivalent to `use assessment
 
 | Argument | Type | Required | Default | Valid Values | Validation |
 |----------|------|----------|---------|--------------|------------|
-| module_path | string | yes | — | Path relative to `assessment/` (with or without `assessment/` prefix) | Must resolve to an assessment module |
+| module_path | string | yes | - | Path relative to `assessment/` (with or without `assessment/` prefix) | Must resolve to an assessment module |
 
-**Example 1 — IEC 62443 audit:**
+**Example 1 - IEC 62443 audit:**
 
 ```
 ixf > assess iec62443/zone_conduit_audit
@@ -1917,7 +1917,7 @@ ixf > assess iec62443/zone_conduit_audit
   [i] IEC 62443-3-3: Security Level target SL2 baseline requirements
 ```
 
-**Example 2 — NIST SP 800-82r3 checklist:**
+**Example 2 - NIST SP 800-82r3 checklist:**
 
 ```
 ixf > assess nist_sp800_82/control_checklist
@@ -1937,7 +1937,7 @@ ixf > assess nist_sp800_82/control_checklist
   ──────────────────────────────────────────────────────────────────
 ```
 
-**Example 3 — Risk scorer:**
+**Example 3 - Risk scorer:**
 
 ```
 ixf > assess risk/ics_risk_scorer
@@ -1955,13 +1955,13 @@ ixf > assess risk/ics_risk_scorer
   Composite Score: 8.7 / 10 (CRITICAL)
 ```
 
-**Example 4 — ICS Kill Chain:**
+**Example 4 - ICS Kill Chain:**
 
 ```
 ixf > assess threat_intel/ics_kill_chain
 [*] Running ICS Kill Chain Assessment...
 
-  ICS Kill Chain — Phases
+  ICS Kill Chain - Phases
   ──────────────────────────────────────────────────────────────────
   Phase 1  [Recon]            External reconnaissance of exposed OT assets
   Phase 2  [Weaponization]    ICS malware / custom payload development
@@ -1975,7 +1975,7 @@ ixf > assess threat_intel/ics_kill_chain
   [i] MITRE ATT&CK for ICS maps to phases 4-8
 ```
 
-**Error scenario — Module not found:**
+**Error scenario - Module not found:**
 
 ```
 ixf > assess badpath/bad_module
@@ -1999,11 +1999,11 @@ Display module statistics, vendor coverage, and MITRE ATT&CK coverage summary.
 
 **Parameters:** none
 
-**Example 1 — Statistics output:**
+**Example 1 - Statistics output:**
 
 ```
 ixf > stats
-[i] IXF Module Statistics — IndustrialXPL-Forge v1.0.13
+[i] IXF Module Statistics - IndustrialXPL-Forge v1.0.13
 
   Total Modules: 1193
   ──────────────────────────────────────────────────────────────────
@@ -2060,9 +2060,9 @@ List all 150 covered OT/ICS vendors with CVE module counts. Optional substring f
 
 | Argument | Type | Required | Default | Valid Values | Validation |
 |----------|------|----------|---------|--------------|------------|
-| filter | string | no | — (all) | Any substring | Case-insensitive substring match on vendor name |
+| filter | string | no | - (all) | Any substring | Case-insensitive substring match on vendor name |
 
-**Example 1 — List all vendors (abbreviated):**
+**Example 1 - List all vendors (abbreviated):**
 
 ```
 ixf > vendors
@@ -2095,7 +2095,7 @@ ixf > vendors
 [i] Filter: vendors <term>  (e.g. vendors japan)
 ```
 
-**Example 2 — Filter by vendor name:**
+**Example 2 - Filter by vendor name:**
 
 ```
 ixf > vendors siemens
@@ -2108,7 +2108,7 @@ ixf > vendors siemens
 [i] Load: use cve/siemens/cve_2021_22681_s7_1200_hardcoded_key
 ```
 
-**Example 3 — Filter by region:**
+**Example 3 - Filter by region:**
 
 ```
 ixf > vendors japan
@@ -2125,7 +2125,7 @@ ixf > vendors japan
   ───────────────────────────────────────────────────────────────
 ```
 
-**Example 4 — Filter by country:**
+**Example 4 - Filter by country:**
 
 ```
 ixf > vendors germany
@@ -2134,7 +2134,7 @@ ixf > vendors germany
   Siemens, Beckhoff, WAGO, Pilz, Bihl+Wiedemann, Lenze, Phoenix Contact, SEW-Eurodrive
 ```
 
-**Example 5 — Filter by protocol/product:**
+**Example 5 - Filter by protocol/product:**
 
 ```
 ixf > vendors scada
@@ -2147,7 +2147,7 @@ ixf > vendors scada
   Measuresoft (SCADA)                      2 CVE modules
 ```
 
-**Error scenario — No matches:**
+**Error scenario - No matches:**
 
 ```
 ixf > vendors nonexistentvendor
@@ -2169,7 +2169,7 @@ List all 50 covered OT/ICS protocols with exploit module counts and default port
 
 **Parameters:** none
 
-**Example 1 — Protocol list:**
+**Example 1 - Protocol list:**
 
 ```
 ixf > protocols
@@ -2215,7 +2215,7 @@ ixf > protocols
   Serial-to-Ethernet       4001 TCP       2         exploits/protocols/serial/
   Modbus RTU               Serial/GW      3         exploits/protocols/modbus/
   PROFIBUS PA              1962 (gw)      1         exploits/protocols/profibus_pa/
-  IO-Link                  —              1         exploits/protocols/iolink/
+  IO-Link                  -              1         exploits/protocols/iolink/
   INTERBUS                 1962 (gw)      1         exploits/protocols/interbus/
   CompoNet                 9600 (gw)      1         exploits/protocols/componet/
   EtherNet/POWERLINK       L2             1         exploits/protocols/powerlink/
@@ -2265,10 +2265,10 @@ Configure an LLM provider API key for SAST analysis. Keys are stored in-session 
 
 | Argument | Type | Required | Default | Valid Values | Validation |
 |----------|------|----------|---------|--------------|------------|
-| provider | string | yes | — | `openai`, `anthropic`, `gemini`, `deepseek`, `grok` | Exact match |
-| api_key | string | yes | — | Provider-specific API key string | Length > 0; stored in memory only |
+| provider | string | yes | - | `openai`, `anthropic`, `gemini`, `deepseek`, `grok` | Exact match |
+| api_key | string | yes | - | Provider-specific API key string | Length > 0; stored in memory only |
 
-**Example 1 — Configure Gemini:**
+**Example 1 - Configure Gemini:**
 
 ```
 ixf > llm-key gemini AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -2276,35 +2276,35 @@ ixf > llm-key gemini AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 [i] Key is stored in-session only. Set GOOGLE_AI_STUDIO_API_KEY env var to persist.
 ```
 
-**Example 2 — Configure OpenAI:**
+**Example 2 - Configure OpenAI:**
 
 ```
 ixf > llm-key openai sk-svcacct-AbCdEfGhIjKlMnOpQrStUvWxYz0123456789AbCdEfGhIjKlMn
 [+] LLM key configured: provider=openai len=71
 ```
 
-**Example 3 — Configure Anthropic:**
+**Example 3 - Configure Anthropic:**
 
 ```
 ixf > llm-key anthropic sk-ant-api03-XXXXXXXXXXXXXXXXXXXXX
 [+] LLM key configured: provider=anthropic len=40
 ```
 
-**Example 4 — Configure DeepSeek:**
+**Example 4 - Configure DeepSeek:**
 
 ```
 ixf > llm-key deepseek sk-deepseek-XXXXXXXXXXXXXXXXXXXXXXXXXX
 [+] LLM key configured: provider=deepseek len=37
 ```
 
-**Example 5 — Configure Grok (xAI):**
+**Example 5 - Configure Grok (xAI):**
 
 ```
 ixf > llm-key grok xai-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 [+] LLM key configured: provider=grok len=50
 ```
 
-**Error scenario — Invalid provider:**
+**Error scenario - Invalid provider:**
 
 ```
 ixf > llm-key mistral sk-xxx
@@ -2312,7 +2312,7 @@ ixf > llm-key mistral sk-xxx
 [i] Valid providers: openai, anthropic, gemini, deepseek, grok
 ```
 
-**Error scenario — Missing arguments:**
+**Error scenario - Missing arguments:**
 
 ```
 ixf > llm-key openai
@@ -2334,7 +2334,7 @@ Display the configuration status of all LLM providers. Shows which providers are
 
 **Parameters:** none
 
-**Example 1 — Only Gemini configured:**
+**Example 1 - Only Gemini configured:**
 
 ```
 ixf > llm-status
@@ -2352,7 +2352,7 @@ ixf > llm-status
   [i] Provider selection: OpenAI → Anthropic → Gemini → DeepSeek → Grok
 ```
 
-**Example 2 — Multiple configured (OpenAI takes priority):**
+**Example 2 - Multiple configured (OpenAI takes priority):**
 
 ```
 ixf > llm-status
@@ -2369,7 +2369,7 @@ ixf > llm-status
   Active provider: openai (gpt-4o)   [highest priority]
 ```
 
-**Example 3 — None configured:**
+**Example 3 - None configured:**
 
 ```
 ixf > llm-status
@@ -2404,9 +2404,9 @@ Run offline LLM-powered SAST analysis on PLC/RTU source code. Code is sanitized 
 
 | Argument | Type | Required | Default | Valid Values | Validation |
 |----------|------|----------|---------|--------------|------------|
-| path | string | yes | — | Path to PLC source file or project directory | Must exist on filesystem |
+| path | string | yes | - | Path to PLC source file or project directory | Must exist on filesystem |
 | `--mode` | string | no | `sast` | `sast`, `reverse`, `diff`, `exploit-gen` | Case-insensitive |
-| `--diff` | string | no | — | Second file/path for diff mode | Must exist; only valid with `--mode diff` |
+| `--diff` | string | no | - | Second file/path for diff mode | Must exist; only valid with `--mode diff` |
 
 **Supported file extensions:** `.st`, `.fbd`, `.ladder`, `.il`, `.sfc`, `.cfc`, `.xml`, `.aml`, `.py`, `.c`, `.cpp`, `.go`, `.js`, `.rb`, `.pl`, `.java`
 
@@ -2414,12 +2414,12 @@ Run offline LLM-powered SAST analysis on PLC/RTU source code. Code is sanitized 
 
 | Mode | Description |
 |------|-------------|
-| `sast` | Full vulnerability analysis — setpoints, safety, authentication, network, logic flaws |
+| `sast` | Full vulnerability analysis - setpoints, safety, authentication, network, logic flaws |
 | `reverse` | Reverse engineer binary/compiled PLC firmware or opaque code |
 | `diff` | Compare two versions of PLC code for unauthorized changes |
 | `exploit-gen` | Generate proof-of-concept exploit based on SAST findings |
 
-**Example 1 — SAST mode on directory:**
+**Example 1 - SAST mode on directory:**
 
 ```
 ixf > sast /opt/plc_projects/water_treatment/ --mode sast
@@ -2437,8 +2437,8 @@ ixf > sast /opt/plc_projects/water_treatment/ --mode sast
     Location: water_treatment.st, line 48
     Type:     Input Validation Flaw / Unsafe Setpoint
     Code:     SP_CHLORINE_HIGH := 4000.0;  (* TODO: add validation *)
-    Attack Vector: Modbus FC16 write to HR[200] (DOSE_FACTOR) — no authentication
-    Physical Impact: 4000 mg/L chlorine — 2000x WHO safe limit (2.0 mg/L)
+    Attack Vector: Modbus FC16 write to HR[200] (DOSE_FACTOR) - no authentication
+    Physical Impact: 4000 mg/L chlorine - 2000x WHO safe limit (2.0 mg/L)
                      Lethal dose for infants; mass casualty potential
     MITRE ATT&CK for ICS: T0836 (Modify Parameter), T0880 (Alarm Suppression)
     Remediation: Validate DOSE_FACTOR := MIN(DOSE_FACTOR, 2.0);
@@ -2452,12 +2452,12 @@ ixf > sast /opt/plc_projects/water_treatment/ --mode sast
                  if pH sensor read and setpoint check happen in same PLC scan
     Physical Impact: Dangerous pH excursion (pH < 2 or pH > 12)
     MITRE: T0831 (Manipulation of Control), T0836 (Modify Parameter)
-    Remediation: Add mutex locking — IF ACID_PUMP THEN BASE_PUMP := FALSE; END_IF
+    Remediation: Add mutex locking - IF ACID_PUMP THEN BASE_PUMP := FALSE; END_IF
 
   FINDING [SEVERITY: HIGH]: Unauthenticated PLC Programming Interface
     Location: network_config.st, line 12
     Type:     Missing Authentication
-    Description: PROGRAMMING_PORT := 502; (* No auth — dev mode left enabled *)
+    Description: PROGRAMMING_PORT := 502; (* No auth - dev mode left enabled *)
     Attack Vector: Any host on OT network can download new PLC program
     MITRE: T0843 (Program Download)
     Remediation: Disable programming port in production; require engineering station auth
@@ -2471,7 +2471,7 @@ ixf > sast /opt/plc_projects/water_treatment/ --mode sast
   FINDING [SEVERITY: LOW]: Missing Watchdog Timer
     Location: main.st, entire file
     Type:     Missing Safety Control
-    Description: No watchdog timer detected — PLC could hang without recovery
+    Description: No watchdog timer detected - PLC could hang without recovery
     Remediation: Add WDT_Enable := TRUE; WDT_Timeout := 500; (* ms *)
 
   ═══════════════════════════════════════════════════════════════
@@ -2479,7 +2479,7 @@ ixf > sast /opt/plc_projects/water_treatment/ --mode sast
   Report saved: .tmp/sast_results/water_treatment_report.md
 ```
 
-**Example 2 — diff mode:**
+**Example 2 - diff mode:**
 
 ```
 ixf > sast /backup/plc_v1.st --mode diff --diff /current/plc_v2.st
@@ -2508,7 +2508,7 @@ ixf > sast /backup/plc_v1.st --mode diff --diff /current/plc_v2.st
     Action: IMMEDIATE rollback to v1; investigate how change was introduced
 ```
 
-**Example 3 — exploit-gen mode:**
+**Example 3 - exploit-gen mode:**
 
 ```
 ixf > sast /opt/plc_projects/water_treatment/water_treatment.st --mode exploit-gen
@@ -2541,7 +2541,7 @@ ixf > sast /opt/plc_projects/water_treatment/water_treatment.st --mode exploit-g
   [i] MITRE: T0836 (Modify Parameter) | Physical Impact: CATASTROPHIC
 ```
 
-**Error scenario — LLM not configured:**
+**Error scenario - LLM not configured:**
 
 ```
 ixf > sast /opt/plc.st
@@ -2550,7 +2550,7 @@ ixf > sast /opt/plc.st
 [i] Or: export GOOGLE_AI_STUDIO_API_KEY=AIzaSy...
 ```
 
-**Error scenario — File not found:**
+**Error scenario - File not found:**
 
 ```
 ixf > sast /nonexistent/path.st
@@ -2575,9 +2575,9 @@ Execute an arbitrary shell command and display output. Timeout: 30 seconds. For 
 
 | Argument | Type | Required | Default | Valid Values | Validation |
 |----------|------|----------|---------|--------------|------------|
-| command | string | yes | — | Any shell command string | Parsed with shlex; 30-second timeout |
+| command | string | yes | - | Any shell command string | Parsed with shlex; 30-second timeout |
 
-**Example 1 — Ping a target:**
+**Example 1 - Ping a target:**
 
 ```
 ixf > exec ping 192.168.1.100 -c 3
@@ -2589,7 +2589,7 @@ PING 192.168.1.100 (192.168.1.100) 56(84) bytes of data.
 3 packets transmitted, 3 received, 0% packet loss, time 2000ms
 ```
 
-**Example 2 — Run env doctor:**
+**Example 2 - Run env doctor:**
 
 ```
 ixf > exec python tools/env_doctor.py
@@ -2604,7 +2604,7 @@ ixf > exec python tools/env_doctor.py
   ...
 ```
 
-**Example 3 — nmap scan from within IXF:**
+**Example 3 - nmap scan from within IXF:**
 
 ```
 ixf > exec nmap -sV -p 102,502,47808,4840,20000 192.168.1.100
@@ -2617,14 +2617,14 @@ PORT      STATE SERVICE     VERSION
 47808/udp open  bacnet
 ```
 
-**Error scenario — Command not found:**
+**Error scenario - Command not found:**
 
 ```
 ixf > exec nonexistentcommand
 [-] exec error: [Errno 2] No such file or directory: 'nonexistentcommand'
 ```
 
-**Error scenario — Timeout:**
+**Error scenario - Timeout:**
 
 ```
 ixf > exec sleep 60
@@ -2650,7 +2650,7 @@ Manage IXF Nmap NSE scripts. Install ICS/OT-specific scripts into the Nmap scrip
 | Argument | Type | Required | Default | Valid Values | Validation |
 |----------|------|----------|---------|--------------|------------|
 | subcommand | string | no | `status` | `install`, `list`, `status` | Case-insensitive |
-| `--force` | flag | no | — | Overwrite existing scripts (only with `install`) | N/A |
+| `--force` | flag | no | - | Overwrite existing scripts (only with `install`) | N/A |
 
 | Subcommand | Description |
 |------------|-------------|
@@ -2659,7 +2659,7 @@ Manage IXF Nmap NSE scripts. Install ICS/OT-specific scripts into the Nmap scrip
 | `list` | List NSE scripts bundled with IXF (from `resources/nse_scripts/`) |
 | `status` | Show Nmap detection, scripts directory, and installation status |
 
-**Example 1 — `nse status` (Nmap installed, scripts not yet installed):**
+**Example 1 - `nse status` (Nmap installed, scripts not yet installed):**
 
 ```
 ixf > nse status
@@ -2691,7 +2691,7 @@ ixf > nse status
     Run: ixf > nse install
 ```
 
-**Example 2 — `nse install` (successful):**
+**Example 2 - `nse install` (successful):**
 
 ```
 ixf > nse install
@@ -2711,7 +2711,7 @@ ixf > nse install
 [i] For all ICS scripts: nmap --script "ics-*" -p 102,502,47808,4840,20000 <target>
 ```
 
-**Example 3 — `nse install --force` (overwrite existing):**
+**Example 3 - `nse install --force` (overwrite existing):**
 
 ```
 ixf > nse install --force
@@ -2728,7 +2728,7 @@ ixf > nse install --force
 [+] All 8 scripts force-reinstalled.
 ```
 
-**Example 4 — `nse list`:**
+**Example 4 - `nse list`:**
 
 ```
 ixf > nse list
@@ -2748,7 +2748,7 @@ ixf > nse list
 [i] Use: nmap --script <script_name> <target>
 ```
 
-**Example 5 — `nse status` (Nmap not installed):**
+**Example 5 - `nse status` (Nmap not installed):**
 
 ```
 ixf > nse status
@@ -2756,27 +2756,27 @@ ixf > nse status
 [i] IXF NSE scripts available : 8
 [i] IXF NSE scripts path      : /opt/ixf/industrialxpl/resources/nse_scripts/
 
-[-] Nmap NOT installed — download from https://nmap.org/download
+[-] Nmap NOT installed - download from https://nmap.org/download
 
 [!] Nmap not detected. Install Nmap to use these scripts.
     Scripts are stored in IXF at: /opt/ixf/industrialxpl/resources/nse_scripts/
     Once Nmap is installed, run: ixf > nse install
 ```
 
-**Error scenario — Permission denied during install:**
+**Error scenario - Permission denied during install:**
 
 ```
 ixf > nse install
 [*] Installing IXF NSE scripts into /usr/share/nmap/scripts/...
 [+] ics-sweep.nse                   → installed
-[-] ics-default-creds.nse: PermissionError — run as administrator (Windows) or with sudo (Linux/macOS)
-[-] ics-plc-program-access.nse: PermissionError — ...
+[-] ics-default-creds.nse: PermissionError - run as administrator (Windows) or with sudo (Linux/macOS)
+[-] ics-plc-program-access.nse: PermissionError - ...
 [!] 2 script(s) failed to install due to permissions.
 [i] Linux/macOS: sudo ixf nse install
 [i] Windows:     Run terminal as Administrator, then: ixf nse install
 ```
 
-**Error scenario — Nmap not found during install:**
+**Error scenario - Nmap not found during install:**
 
 ```
 ixf > nse install
@@ -2862,7 +2862,7 @@ All 36 IXF commands at a glance:
 | `Validation error for '<option>': <reason>` | Invalid option value | Check valid range/type |
 | `No LLM provider configured.` | SAST without API key | Run `llm-key <provider> <key>` |
 | `File not found: <path>` | SAST path invalid | Check path exists |
-| `PermissionError — run as administrator` | NSE install without sudo/admin | Rerun with `sudo` |
+| `PermissionError - run as administrator` | NSE install without sudo/admin | Rerun with `sudo` |
 | `Nmap scripts directory not found.` | Nmap not installed | Install Nmap first |
 | `exec timeout: command exceeded 30 seconds` | Long-running `exec` command | Use shell directly for long commands |
 

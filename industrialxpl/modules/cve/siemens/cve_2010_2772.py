@@ -1,4 +1,4 @@
-"""ICS CVE Module — CVE-2010-2772 — Siemens Step7 / Stuxnet (CRITICAL).
+"""ICS CVE Module - CVE-2010-2772 - Siemens Step7 / Stuxnet (CRITICAL).
 
 
 
@@ -17,7 +17,7 @@ from industrialxpl.core.exploit import (
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2010-2772 — Siemens Step7 / Stuxnet (CRITICAL)",
+        "name":          "CVE-2010-2772 - Siemens Step7 / Stuxnet (CRITICAL)",
         "description":   "",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -54,7 +54,7 @@ class Exploit(Exploit):
             sock.settimeout(self.timeout)
             sock.connect((self.target, self.port))
             sock.close()
-            # Port is open — device may be present
+            # Port is open - device may be present
             # Full version check requires protocol-specific fingerprinting
             return True  # POSSIBLY_VULNERABLE until version confirmed
         except Exception:
@@ -76,7 +76,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2010-2772...")
         if self.check():
             print_success(
-                f"Port {self.port} open — Siemens Step7 / Stuxnet MAY be present. "
+                f"Port {self.port} open - Siemens Step7 / Stuxnet MAY be present. "
                 "Verify version manually: affected=All Step7 versions < 5.5 SP1"
             )
         else:

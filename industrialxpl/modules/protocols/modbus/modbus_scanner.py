@@ -1,6 +1,6 @@
 """
 Modbus TCP/IP Attack Suite
-Native Python implementation of Modbus TCP attacks — port 502/TCP.
+Native Python implementation of Modbus TCP attacks - port 502/TCP.
 
 No authentication in Modbus protocol standard.
 Any node on the network can read/write arbitrary coils and registers.
@@ -94,7 +94,7 @@ class ModbusScanner:
 
     def read_holding_registers(self, host: str, start_addr: int = 0,
                                 count: int = 10, unit_id: int = 1) -> list[int] | None:
-        """FC 0x03 — Read holding registers (setpoints, process values)."""
+        """FC 0x03 - Read holding registers (setpoints, process values)."""
         data = struct.pack(">HH", start_addr, count)
         req = _build_modbus_tcp(unit_id, 0x03, data)
         try:
@@ -118,7 +118,7 @@ class ModbusScanner:
 
     def read_coils(self, host: str, start_addr: int = 0,
                    count: int = 8, unit_id: int = 1) -> list[bool] | None:
-        """FC 0x01 — Read coils (digital outputs state)."""
+        """FC 0x01 - Read coils (digital outputs state)."""
         data = struct.pack(">HH", start_addr, count)
         req = _build_modbus_tcp(unit_id, 0x01, data)
         try:
@@ -146,7 +146,7 @@ class ModbusScanner:
                            _simulate: bool = True,
                            _destructive: bool = False) -> bool:
         """
-        FC 0x05 — Write single coil.
+        FC 0x05 - Write single coil.
         PHYSICAL IMPACT: directly controls digital output (relay, solenoid, motor).
         value=True turns ON, value=False turns OFF.
         """
@@ -164,7 +164,7 @@ class ModbusScanner:
     def write_single_register(self, host: str, register_addr: int,
                                value: int, unit_id: int = 1) -> bool:
         """
-        FC 0x06 — Write single holding register.
+        FC 0x06 - Write single holding register.
         PHYSICAL IMPACT: modifies setpoints (temperature, pressure, speed).
         """
         data = struct.pack(">HH", register_addr, value & 0xFFFF)
@@ -179,7 +179,7 @@ class ModbusScanner:
 
     def write_multiple_registers(self, host: str, start_addr: int,
                                   values: list[int], unit_id: int = 1) -> bool:
-        """FC 0x10 — Write multiple holding registers."""
+        """FC 0x10 - Write multiple holding registers."""
         count = len(values)
         byte_count = count * 2
         regs = struct.pack(f">{'H' * count}", *values)

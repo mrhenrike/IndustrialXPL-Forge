@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2019-15102 — Moxa Device Manager.
+"""IXF CVE Module - CVE-2019-15102 - Moxa Device Manager.
 
 Buffer overflow RCE
 
@@ -32,8 +32,8 @@ _SEVERITY      = "CRITICAL"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2019-15102 — Moxa Device Manager (CRITICAL)",
-        "description":   "Moxa Device Manager — Buffer overflow RCE. "
+        "name":          "CVE-2019-15102 - Moxa Device Manager (CRITICAL)",
+        "description":   "Moxa Device Manager - Buffer overflow RCE. "
                          "CVSS 9.8 (CRITICAL). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2019-15102...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Moxa Device Manager may be present. "
+                f"Port {self.port} open on {self.target} - Moxa Device Manager may be present. "
                 "CVE-2019-15102 (CRITICAL CVSS 9.8): Buffer overflow RCE. "
                 "Manual version verification required."
             )

@@ -1,7 +1,7 @@
-"""IXF CVE Module — DESIGN-S7COMM-NOAUTH — Siemens S7comm pre-S7comm+ protocol.
+"""IXF CVE Module - DESIGN-S7COMM-NOAUTH - Siemens S7comm pre-S7comm+ protocol.
 
 Severity: CRITICAL (CVSS 9.1)
-Type: No authentication by protocol design — unauthenticated PLC control
+Type: No authentication by protocol design - unauthenticated PLC control
 CISA Advisory: N/A
 
 Level B module: port fingerprint + version context.
@@ -32,16 +32,16 @@ _CVSS = "9.1"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "DESIGN-S7COMM-NOAUTH — Siemens S7comm pre-S7comm+ protocol (CRITICAL)",
-        "description":   "No authentication by protocol design — unauthenticated PLC control. "
+        "name":          "DESIGN-S7COMM-NOAUTH - Siemens S7comm pre-S7comm+ protocol (CRITICAL)",
+        "description":   "No authentication by protocol design - unauthenticated PLC control. "
                          "Affects Siemens S7comm pre-S7comm+ protocol. CVSS 9.1 (CRITICAL). "
                          "Level B: fingerprint + version check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    ("https://nvd.nist.gov/vuln/detail/DESIGN-S7COMM-NOAUTH",),
         "devices":       ("Siemens S7comm pre-S7comm+ protocol",),
         "impact":        "CRITICAL",
-        "exploit_type":  "No authentication by protocol design — unauthenticated PLC control",
-        "source_poc":    "Static catalog Level B — set check() target for version confirmation",
+        "exploit_type":  "No authentication by protocol design - unauthenticated PLC control",
+        "source_poc":    "Static catalog Level B - set check() target for version confirmation",
         "cve":           "DESIGN-S7COMM-NOAUTH",
         "cvss":          "9.1",
         "severity":      "CRITICAL",
@@ -78,7 +78,7 @@ class Exploit(Exploit):
         if self.simulate:
             DestructiveGate.print_simulation(
                 description=(
-                    "DESIGN-S7COMM-NOAUTH (CRITICAL CVSS 9.1): No authentication by protocol design — unauthenticated PLC control. "
+                    "DESIGN-S7COMM-NOAUTH (CRITICAL CVSS 9.1): No authentication by protocol design - unauthenticated PLC control. "
                     "Affects: Siemens S7comm pre-S7comm+ protocol. "
                     f"Would fingerprint {self.target}:{self.port} and confirm if device version "
                     "is in the affected range."
@@ -90,8 +90,8 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for DESIGN-S7COMM-NOAUTH...")
         if self.check():
             print_success(
-                f"Service port {self.port} open on {self.target} — Siemens S7comm pre-S7comm+ protocol may be present. "
-                "DESIGN-S7COMM-NOAUTH CRITICAL CVSS 9.1: No authentication by protocol design — unauthenticated PLC control. "
+                f"Service port {self.port} open on {self.target} - Siemens S7comm pre-S7comm+ protocol may be present. "
+                "DESIGN-S7COMM-NOAUTH CRITICAL CVSS 9.1: No authentication by protocol design - unauthenticated PLC control. "
                 "Manual version verification required to confirm vulnerability."
             )
             print_warning("CISA Advisory: N/A")

@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2023-36022 — AVEVA PI Vision dashboard (HIGH CVSS 7.6).
+"""IXF CVE CVE-2023-36022 - AVEVA PI Vision dashboard (HIGH CVSS 7.6).
 
 Exploit type: Cross-site scripting stored
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — AVEVA PI Vision dashboard may be present. CVE-2023-36022 HIGH CVSS 7.6.")
+            print_success(f"Port {self.port} open - AVEVA PI Vision dashboard may be present. CVE-2023-36022 HIGH CVSS 7.6.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

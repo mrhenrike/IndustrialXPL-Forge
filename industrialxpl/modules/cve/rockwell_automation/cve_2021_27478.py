@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2021-27478 — Rockwell Automation EtherNet/IP.
+"""IXF CVE Module - CVE-2021-27478 - Rockwell Automation EtherNet/IP.
 
 Stack BOF RCE
 
@@ -32,8 +32,8 @@ _SEVERITY      = "CRITICAL"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2021-27478 — Rockwell Automation EtherNet/IP (CRITICAL)",
-        "description":   "Rockwell Automation EtherNet/IP — Stack BOF RCE. "
+        "name":          "CVE-2021-27478 - Rockwell Automation EtherNet/IP (CRITICAL)",
+        "description":   "Rockwell Automation EtherNet/IP - Stack BOF RCE. "
                          "CVSS 9.8 (CRITICAL). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2021-27478...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Rockwell Automation EtherNet/IP may be present. "
+                f"Port {self.port} open on {self.target} - Rockwell Automation EtherNet/IP may be present. "
                 "CVE-2021-27478 (CRITICAL CVSS 9.8): Stack BOF RCE. "
                 "Manual version verification required."
             )

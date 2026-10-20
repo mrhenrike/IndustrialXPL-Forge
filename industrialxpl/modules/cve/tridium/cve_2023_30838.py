@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2023-30838 — Tridium Niagara 4 Framework (CRITICAL CVSS 9.8).
+"""IXF CVE CVE-2023-30838 - Tridium Niagara 4 Framework (CRITICAL CVSS 9.8).
 
 Exploit type: Remote code execution auth bypass
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Tridium Niagara 4 Framework may be present. CVE-2023-30838 CRITICAL CVSS 9.8.")
+            print_success(f"Port {self.port} open - Tridium Niagara 4 Framework may be present. CVE-2023-30838 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

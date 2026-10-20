@@ -1,4 +1,4 @@
-"""IXF Scanner — GE CIMPLICITY/iFIX SCADA Discovery."""
+"""IXF Scanner - GE CIMPLICITY/iFIX SCADA Discovery."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptInteger, mute,

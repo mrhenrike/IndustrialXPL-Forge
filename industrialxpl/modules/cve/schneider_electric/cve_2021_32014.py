@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2021-32014 — Schneider Electric Modicon M340.
+"""IXF CVE Module - CVE-2021-32014 - Schneider Electric Modicon M340.
 
 No authentication
 
@@ -32,8 +32,8 @@ _SEVERITY      = "CRITICAL"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2021-32014 — Schneider Electric Modicon M340 (CRITICAL)",
-        "description":   "Schneider Electric Modicon M340 — No authentication. "
+        "name":          "CVE-2021-32014 - Schneider Electric Modicon M340 (CRITICAL)",
+        "description":   "Schneider Electric Modicon M340 - No authentication. "
                          "CVSS 9.8 (CRITICAL). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2021-32014...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Schneider Electric Modicon M340 may be present. "
+                f"Port {self.port} open on {self.target} - Schneider Electric Modicon M340 may be present. "
                 "CVE-2021-32014 (CRITICAL CVSS 9.8): No authentication. "
                 "Manual version verification required."
             )

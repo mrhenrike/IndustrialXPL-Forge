@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2019-6503 — GE CIMPLICITY HMI.
+"""IXF CVE Module - CVE-2019-6503 - GE CIMPLICITY HMI.
 
 Path traversal RCE
 
@@ -32,8 +32,8 @@ _SEVERITY      = "CRITICAL"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2019-6503 — GE CIMPLICITY HMI (CRITICAL)",
-        "description":   "GE CIMPLICITY HMI — Path traversal RCE. "
+        "name":          "CVE-2019-6503 - GE CIMPLICITY HMI (CRITICAL)",
+        "description":   "GE CIMPLICITY HMI - Path traversal RCE. "
                          "CVSS 9.8 (CRITICAL). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2019-6503...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — GE CIMPLICITY HMI may be present. "
+                f"Port {self.port} open on {self.target} - GE CIMPLICITY HMI may be present. "
                 "CVE-2019-6503 (CRITICAL CVSS 9.8): Path traversal RCE. "
                 "Manual version verification required."
             )

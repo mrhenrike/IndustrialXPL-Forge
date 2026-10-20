@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://uniaogeek.com.br/
+# Author: André Henrique (@mrhenrike) | União Geek - https://uniaogeek.com.br/
 
 import logging.handlers
 import platform

@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2022-31806 — CODESYS V3 runtime.
+"""IXF CVE Module - CVE-2022-31806 - CODESYS V3 runtime.
 
 Missing authentication
 
@@ -32,8 +32,8 @@ _SEVERITY      = "CRITICAL"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2022-31806 — CODESYS V3 runtime (CRITICAL)",
-        "description":   "CODESYS V3 runtime — Missing authentication. "
+        "name":          "CVE-2022-31806 - CODESYS V3 runtime (CRITICAL)",
+        "description":   "CODESYS V3 runtime - Missing authentication. "
                          "CVSS 9.8 (CRITICAL). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2022-31806...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — CODESYS V3 runtime may be present. "
+                f"Port {self.port} open on {self.target} - CODESYS V3 runtime may be present. "
                 "CVE-2022-31806 (CRITICAL CVSS 9.8): Missing authentication. "
                 "Manual version verification required."
             )

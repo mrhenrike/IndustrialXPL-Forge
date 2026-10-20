@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2014-0751 — GE CIMPLICITY BlackEnergy.
+"""IXF CVE Module - CVE-2014-0751 - GE CIMPLICITY BlackEnergy.
 
 Path traversal RCE APT
 
@@ -32,8 +32,8 @@ _SEVERITY      = "CRITICAL"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2014-0751 — GE CIMPLICITY BlackEnergy (CRITICAL)",
-        "description":   "GE CIMPLICITY BlackEnergy — Path traversal RCE APT. "
+        "name":          "CVE-2014-0751 - GE CIMPLICITY BlackEnergy (CRITICAL)",
+        "description":   "GE CIMPLICITY BlackEnergy - Path traversal RCE APT. "
                          "CVSS 9.0 (CRITICAL). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2014-0751...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — GE CIMPLICITY BlackEnergy may be present. "
+                f"Port {self.port} open on {self.target} - GE CIMPLICITY BlackEnergy may be present. "
                 "CVE-2014-0751 (CRITICAL CVSS 9.0): Path traversal RCE APT. "
                 "Manual version verification required."
             )

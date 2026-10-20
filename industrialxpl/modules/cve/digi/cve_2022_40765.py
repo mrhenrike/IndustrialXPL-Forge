@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2022-40765 — Digi ConnectPort X2 gateway (CRITICAL CVSS 9.8).
+"""IXF CVE CVE-2022-40765 - Digi ConnectPort X2 gateway (CRITICAL CVSS 9.8).
 
 Exploit type: Command injection unauthenticated
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Digi ConnectPort X2 gateway may be present. CVE-2022-40765 CRITICAL CVSS 9.8.")
+            print_success(f"Port {self.port} open - Digi ConnectPort X2 gateway may be present. CVE-2022-40765 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

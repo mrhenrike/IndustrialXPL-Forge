@@ -1,4 +1,4 @@
-"""Default credentials — ruggedcom (issue #5)."""
+"""Default credentials - ruggedcom (issue #5)."""
 from industrialxpl.core.exploit import OptPort
 from industrialxpl.modules.creds.generic.http_default import Exploit as HttpDefault
 

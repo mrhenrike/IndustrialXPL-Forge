@@ -1,4 +1,4 @@
-"""IXF CVE Module — ICSA-22-242-08 — Honeywell Trend Controls IQ4E.
+"""IXF CVE Module - ICSA-22-242-08 - Honeywell Trend Controls IQ4E.
 
 BACnet PIN plaintext (OT:ICEFALL)
 
@@ -32,8 +32,8 @@ _SEVERITY      = "HIGH"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "ICSA-22-242-08 — Honeywell Trend Controls IQ4E (HIGH)",
-        "description":   "Honeywell Trend Controls IQ4E — BACnet PIN plaintext (OT:ICEFALL). "
+        "name":          "ICSA-22-242-08 - Honeywell Trend Controls IQ4E (HIGH)",
+        "description":   "Honeywell Trend Controls IQ4E - BACnet PIN plaintext (OT:ICEFALL). "
                          "CVSS 8.6 (HIGH). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for ICSA-22-242-08...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Honeywell Trend Controls IQ4E may be present. "
+                f"Port {self.port} open on {self.target} - Honeywell Trend Controls IQ4E may be present. "
                 "ICSA-22-242-08 (HIGH CVSS 8.6): BACnet PIN plaintext (OT:ICEFALL). "
                 "Manual version verification required."
             )

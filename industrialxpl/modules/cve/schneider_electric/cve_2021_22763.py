@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2021-22763 — Schneider Electric EcoStruxure.
+"""IXF CVE Module - CVE-2021-22763 - Schneider Electric EcoStruxure.
 
 Severity: MEDIUM (CVSS 6.5)
 Type: Improper authentication
@@ -32,7 +32,7 @@ _CVSS = "6.5"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2021-22763 — Schneider Electric EcoStruxure (MEDIUM)",
+        "name":          "CVE-2021-22763 - Schneider Electric EcoStruxure (MEDIUM)",
         "description":   "Improper authentication. "
                          "Affects Schneider Electric EcoStruxure. CVSS 6.5 (MEDIUM). "
                          "Level B: fingerprint + version check.",
@@ -41,7 +41,7 @@ class Exploit(Exploit):
         "devices":       ("Schneider Electric EcoStruxure",),
         "impact":        "MEDIUM",
         "exploit_type":  "Improper authentication",
-        "source_poc":    "Static catalog Level B — set check() target for version confirmation",
+        "source_poc":    "Static catalog Level B - set check() target for version confirmation",
         "cve":           "CVE-2021-22763",
         "cvss":          "6.5",
         "severity":      "MEDIUM",
@@ -90,7 +90,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2021-22763...")
         if self.check():
             print_success(
-                f"Service port {self.port} open on {self.target} — Schneider Electric EcoStruxure may be present. "
+                f"Service port {self.port} open on {self.target} - Schneider Electric EcoStruxure may be present. "
                 "CVE-2021-22763 MEDIUM CVSS 6.5: Improper authentication. "
                 "Manual version verification required to confirm vulnerability."
             )

@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2015-0015 — Siemens S7-300 PROFIBUS.
+"""IXF CVE Module - CVE-2015-0015 - Siemens S7-300 PROFIBUS.
 
 I/O module stoppage DoS
 
@@ -32,8 +32,8 @@ _SEVERITY      = "HIGH"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2015-0015 — Siemens S7-300 PROFIBUS (HIGH)",
-        "description":   "Siemens S7-300 PROFIBUS — I/O module stoppage DoS. "
+        "name":          "CVE-2015-0015 - Siemens S7-300 PROFIBUS (HIGH)",
+        "description":   "Siemens S7-300 PROFIBUS - I/O module stoppage DoS. "
                          "CVSS 7.8 (HIGH). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2015-0015...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Siemens S7-300 PROFIBUS may be present. "
+                f"Port {self.port} open on {self.target} - Siemens S7-300 PROFIBUS may be present. "
                 "CVE-2015-0015 (HIGH CVSS 7.8): I/O module stoppage DoS. "
                 "Manual version verification required."
             )

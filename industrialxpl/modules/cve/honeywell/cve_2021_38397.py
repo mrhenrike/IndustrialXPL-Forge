@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2021-38397 — Honeywell Experion PKS.
+"""IXF CVE Module - CVE-2021-38397 - Honeywell Experion PKS.
 
 OS command injection
 
@@ -32,8 +32,8 @@ _SEVERITY      = "CRITICAL"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2021-38397 — Honeywell Experion PKS (CRITICAL)",
-        "description":   "Honeywell Experion PKS — OS command injection. "
+        "name":          "CVE-2021-38397 - Honeywell Experion PKS (CRITICAL)",
+        "description":   "Honeywell Experion PKS - OS command injection. "
                          "CVSS 10.0 (CRITICAL). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2021-38397...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Honeywell Experion PKS may be present. "
+                f"Port {self.port} open on {self.target} - Honeywell Experion PKS may be present. "
                 "CVE-2021-38397 (CRITICAL CVSS 10.0): OS command injection. "
                 "Manual version verification required."
             )

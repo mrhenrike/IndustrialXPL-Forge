@@ -1,4 +1,4 @@
-"""IXF Default Credentials — Beckhoff TwinCAT/ADS."""
+"""IXF Default Credentials - Beckhoff TwinCAT/ADS."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptString, mute,

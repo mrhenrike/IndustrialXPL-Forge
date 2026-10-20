@@ -1,4 +1,4 @@
-"""IXF Scanner — Mitsubishi Electric MELSEC iQ-R/iQ-F/Q Discovery."""
+"""IXF Scanner - Mitsubishi Electric MELSEC iQ-R/iQ-F/Q Discovery."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptInteger, mute,

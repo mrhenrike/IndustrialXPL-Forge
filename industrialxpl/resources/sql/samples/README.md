@@ -4,7 +4,7 @@ Committed SQLite templates for the malware/C2 lab. Each user generates local run
 
 | File | Purpose |
 |------|---------|
-| `botnet.db` | Bot registry (`bots`, `deploy_log`) — Go/Python C2 sync |
+| `botnet.db` | Bot registry (`bots`, `deploy_log`) - Go/Python C2 sync |
 | `mirai.db` | Mirai CNC schema (`users`, `history`, `whitelist`) + default `admin` user |
 | `c2_state.json` | Example persisted C2 settings (optional seed) |
 

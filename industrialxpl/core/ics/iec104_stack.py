@@ -1,4 +1,4 @@
-"""IEC 60870-5-104 stack — MIT stdlib (lib60870 REFERENCE_ONLY)."""
+"""IEC 60870-5-104 stack - MIT stdlib (lib60870 REFERENCE_ONLY)."""
 
 
 import struct

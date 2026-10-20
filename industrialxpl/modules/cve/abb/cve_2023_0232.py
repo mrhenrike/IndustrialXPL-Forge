@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2023-0232 — ABB REF615 REM615 protection relay (HIGH CVSS 7.5).
+"""IXF CVE CVE-2023-0232 - ABB REF615 REM615 protection relay (HIGH CVSS 7.5).
 
 Exploit type: Denial of service credentials
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — ABB REF615 REM615 protection relay may be present. CVE-2023-0232 HIGH CVSS 7.5.")
+            print_success(f"Port {self.port} open - ABB REF615 REM615 protection relay may be present. CVE-2023-0232 HIGH CVSS 7.5.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

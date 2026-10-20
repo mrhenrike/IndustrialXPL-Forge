@@ -1,13 +1,13 @@
-"""Modbus scan timing profiles — T0 (paranoid) to T5 (insane).
+"""Modbus scan timing profiles - T0 (paranoid) to T5 (insane).
 
 Mirrors Nmap timing templates behaviour adapted for Modbus/TCP:
 
-  T0  Paranoid   — 5 s timeout, 10 s between requests, 1 retry
-  T1  Sneaky     — 3 s timeout,  5 s between requests, 1 retry
-  T2  Polite     — 2 s timeout,  1 s between requests, 2 retries
-  T3  Normal     — 1 s timeout, 300 ms between requests, 3 retries  (default)
-  T4  Aggressive — 0.5 s timeout, 50 ms between requests, 2 retries
-  T5  Insane     — 0.2 s timeout,   0 ms between requests, 1 retry
+  T0  Paranoid   - 5 s timeout, 10 s between requests, 1 retry
+  T1  Sneaky     - 3 s timeout,  5 s between requests, 1 retry
+  T2  Polite     - 2 s timeout,  1 s between requests, 2 retries
+  T3  Normal     - 1 s timeout, 300 ms between requests, 3 retries  (default)
+  T4  Aggressive - 0.5 s timeout, 50 ms between requests, 2 retries
+  T5  Insane     - 0.2 s timeout,   0 ms between requests, 1 retry
 """
 
 
@@ -81,7 +81,7 @@ class ModbusTiming:
     @staticmethod
     def describe_all() -> str:
         lines = [
-            "Modbus Timing Profiles — accepted as T<n> OR slug name:",
+            "Modbus Timing Profiles - accepted as T<n> OR slug name:",
             "",
             "  Level  Slug          Timeout   Delay     Retries  Notes",
             "  -----  ------------  --------  --------  -------  -----",

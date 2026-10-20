@@ -1,4 +1,4 @@
-"""IXF Scanner — Inductive Automation Ignition SCADA Gateway Discovery."""
+"""IXF Scanner - Inductive Automation Ignition SCADA Gateway Discovery."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptInteger, mute,

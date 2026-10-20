@@ -213,7 +213,7 @@ def build_sast_prompt(project_summary: str, source_code: str) -> str:
     if len(source_code) > max_chars:
         source_code = (
             source_code[:max_chars]
-            + f"\n\n[... truncated at {max_chars} chars — {len(source_code)} total ...]"
+            + f"\n\n[... truncated at {max_chars} chars - {len(source_code)} total ...]"
         )
     return MAIN_SAST_PROMPT.format(
         project_summary=project_summary,

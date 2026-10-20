@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2011-1899 — Iconics Genesis32 WebHMI.
+"""IXF CVE Module - CVE-2011-1899 - Iconics Genesis32 WebHMI.
 
 ActiveX buffer overflow
 
@@ -32,8 +32,8 @@ _SEVERITY      = "CRITICAL"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2011-1899 — Iconics Genesis32 WebHMI (CRITICAL)",
-        "description":   "Iconics Genesis32 WebHMI — ActiveX buffer overflow. "
+        "name":          "CVE-2011-1899 - Iconics Genesis32 WebHMI (CRITICAL)",
+        "description":   "Iconics Genesis32 WebHMI - ActiveX buffer overflow. "
                          "CVSS 9.3 (CRITICAL). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2011-1899...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Iconics Genesis32 WebHMI may be present. "
+                f"Port {self.port} open on {self.target} - Iconics Genesis32 WebHMI may be present. "
                 "CVE-2011-1899 (CRITICAL CVSS 9.3): ActiveX buffer overflow. "
                 "Manual version verification required."
             )

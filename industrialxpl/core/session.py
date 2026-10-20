@@ -1,7 +1,7 @@
 """Session persistence for IndustrialXPL-Forge.
 
 Tracks scan history per host (keyed by IP+MAC) so subsequent runs
-can resume where they left off — similar to John the Ripper's session
+can resume where they left off - similar to John the Ripper's session
 restore.  All data is stored as JSON in ``~/.exf_sessions/``.
 
 Storage layout::
@@ -214,7 +214,7 @@ class HostSession:
         pending = len(self.modules_pending())
         vulns = len(self.vulns_found)
         return (
-            "{ip} ({mac}) [{vendor} {model}] — "
+            "{ip} ({mac}) [{vendor} {model}] - "
             "scans:{scans} tested:{tested} pending:{pending} vulns:{vulns}"
         ).format(
             ip=self.ip,

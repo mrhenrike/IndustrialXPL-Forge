@@ -1,4 +1,4 @@
-"""IXF Scanner — Schneider/Triconex Safety Instrumented System. simulate=True."""
+"""IXF Scanner - Schneider/Triconex Safety Instrumented System. simulate=True."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptInteger, mute,

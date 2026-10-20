@@ -54,7 +54,7 @@ def build_index(module_paths: list | None = None) -> None:
             techniques: list = info.get("mitre_techniques", [])
             for raw_tid in techniques:
                 # Handle "T0843.001" or "T0843 Program Download" formats
-                tid = raw_tid.split()[0].split("—")[0].strip()
+                tid = raw_tid.split()[0].split(" - ")[0].strip()
                 TECHNIQUE_INDEX.setdefault(tid, [])
                 if mod_path not in TECHNIQUE_INDEX[tid]:
                     TECHNIQUE_INDEX[tid].append(mod_path)
@@ -64,6 +64,6 @@ def build_index(module_paths: list | None = None) -> None:
                     if mod_path not in TACTIC_INDEX[tac]:
                         TACTIC_INDEX[tac].append(mod_path)
         except Exception as exc:
-            logger.debug("MITRE index: skip %s — %s", mod_path, exc)
+            logger.debug("MITRE index: skip %s - %s", mod_path, exc)
 
     _built = True

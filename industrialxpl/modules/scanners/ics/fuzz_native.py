@@ -1,4 +1,4 @@
-"""IXF native ICS fuzzer — protofire / ics-scada-fuzzer inspired (MIT reimplementation).
+"""IXF native ICS fuzzer - protofire / ics-scada-fuzzer inspired (MIT reimplementation).
 
 Usage (simulate default):
   ixf > use scanners/ics/fuzz_native
@@ -50,7 +50,7 @@ class Exploit(Exploit):
     protocol = OptString("modbus", "Protocol: modbus | s7")
     strategy = OptInteger(-1, "Strategy 0-7 or -1 for all")
     seed = OptInteger(42, "Mutation seed")
-    simulate = OptBool(True, "Simulate — print payloads only")
+    simulate = OptBool(True, "Simulate - print payloads only")
     destructive = OptBool(False, "Send mutated frames (lab only)")
 
     @mute
@@ -74,7 +74,7 @@ class Exploit(Exploit):
         )
 
         if self.simulate or not self.destructive:
-            print_warning(f"\n[IXF Fuzzer] simulate — {proto} / 8 strategies\n")
+            print_warning(f"\n[IXF Fuzzer] simulate - {proto} / 8 strategies\n")
             rows = [[c["strategy"], c["name"], c["len"], c["hex"][:48]] for c in camp["cases"]]
             if int(self.strategy) >= 0:
                 s = int(self.strategy) % 8
@@ -92,7 +92,7 @@ class Exploit(Exploit):
         if not self.target:
             print_error("Set target for live fuzz.")
             return
-        print_warning("[IXF Fuzzer] LIVE — sending is not enabled; use protocol modules with care.")
+        print_warning("[IXF Fuzzer] LIVE - sending is not enabled; use protocol modules with care.")
         print_status("Generated payload: {}".format(
             camp["cases"][0]["hex"] if camp["cases"] else ""
         ))

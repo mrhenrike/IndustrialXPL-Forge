@@ -1,4 +1,4 @@
-"""IXF Scanner — Generic HART Gateway Discovery. simulate=True."""
+"""IXF Scanner - Generic HART Gateway Discovery. simulate=True."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptInteger, OptPort, mute,

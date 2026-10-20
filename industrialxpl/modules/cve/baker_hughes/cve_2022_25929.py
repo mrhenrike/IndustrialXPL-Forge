@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2022-25929 — Baker Hughes Bently Nevada 3700.
+"""IXF CVE Module - CVE-2022-25929 - Baker Hughes Bently Nevada 3700.
 
 Unauthenticated (ICEFALL)
 
@@ -32,8 +32,8 @@ _SEVERITY      = "CRITICAL"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2022-25929 — Baker Hughes Bently Nevada 3700 (CRITICAL)",
-        "description":   "Baker Hughes Bently Nevada 3700 — Unauthenticated (ICEFALL). "
+        "name":          "CVE-2022-25929 - Baker Hughes Bently Nevada 3700 (CRITICAL)",
+        "description":   "Baker Hughes Bently Nevada 3700 - Unauthenticated (ICEFALL). "
                          "CVSS 9.1 (CRITICAL). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2022-25929...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Baker Hughes Bently Nevada 3700 may be present. "
+                f"Port {self.port} open on {self.target} - Baker Hughes Bently Nevada 3700 may be present. "
                 "CVE-2022-25929 (CRITICAL CVSS 9.1): Unauthenticated (ICEFALL). "
                 "Manual version verification required."
             )

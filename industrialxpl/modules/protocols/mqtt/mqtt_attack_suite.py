@@ -1,5 +1,5 @@
 """
-MQTT Attack Suite — Unauthenticated broker exploitation.
+MQTT Attack Suite - Unauthenticated broker exploitation.
 MQTT port 1883 (cleartext), 8883 (TLS). Common in IoT, IIoT (Sparkplug B).
 """
 # DISCLAIMER: FOR AUTHORIZED SECURITY RESEARCH AND PENETRATION TESTING ONLY.

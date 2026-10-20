@@ -1,4 +1,4 @@
-"""IXF Scanner — Advantech WebAccess SCADA/HMI Discovery."""
+"""IXF Scanner - Advantech WebAccess SCADA/HMI Discovery."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptInteger, mute,

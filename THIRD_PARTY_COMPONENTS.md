@@ -1,4 +1,4 @@
-# Third-Party Components — IndustrialXPL-Forge
+# Third-Party Components - IndustrialXPL-Forge
 
 **Version:** 1.0.0 (Phase 0)
 **Date:** 2026-09-18

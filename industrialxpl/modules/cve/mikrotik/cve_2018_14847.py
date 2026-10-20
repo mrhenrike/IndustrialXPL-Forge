@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2018-14847 — MikroTik RouterOS Winbox.
+"""IXF CVE Module - CVE-2018-14847 - MikroTik RouterOS Winbox.
 
 Credential disclosure
 
@@ -32,8 +32,8 @@ _SEVERITY      = "CRITICAL"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2018-14847 — MikroTik RouterOS Winbox (CRITICAL)",
-        "description":   "MikroTik RouterOS Winbox — Credential disclosure. "
+        "name":          "CVE-2018-14847 - MikroTik RouterOS Winbox (CRITICAL)",
+        "description":   "MikroTik RouterOS Winbox - Credential disclosure. "
                          "CVSS 9.1 (CRITICAL). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2018-14847...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — MikroTik RouterOS Winbox may be present. "
+                f"Port {self.port} open on {self.target} - MikroTik RouterOS Winbox may be present. "
                 "CVE-2018-14847 (CRITICAL CVSS 9.1): Credential disclosure. "
                 "Manual version verification required."
             )

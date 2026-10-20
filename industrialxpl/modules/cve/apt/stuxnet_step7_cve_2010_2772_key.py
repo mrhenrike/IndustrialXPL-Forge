@@ -1,4 +1,4 @@
-"""IXF Level A Exploit — CVE-2010-2772 — Siemens Step7 Stuxnet hardcoded key.
+"""IXF Level A Exploit - CVE-2010-2772 - Siemens Step7 Stuxnet hardcoded key.
 
 Source: https://github.com/Mewtwoz/InduGuard_vul_poc
 ExploitDB: EDB-N/A
@@ -56,6 +56,6 @@ class Exploit(Exploit):
                 mitre_techniques=["T1694.002","T0873.001"],
             ); return
         if self.check():
-            print_success(f"Port {self.port} open — Siemens Step7 Stuxnet hardcoded key. CVE-2010-2772 CRITICAL. Manual exploit: https://github.com/Mewtwoz/InduGuard_vul_poc")
+            print_success(f"Port {self.port} open - Siemens Step7 Stuxnet hardcoded key. CVE-2010-2772 CRITICAL. Manual exploit: https://github.com/Mewtwoz/InduGuard_vul_poc")
         else:
             print_error("Target not responding.")

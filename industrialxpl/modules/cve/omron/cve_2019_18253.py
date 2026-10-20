@@ -45,4 +45,4 @@ class Exploit(Exploit):
                 description=f"CVE-2019-18253: {self.target}:{self.port}.  Stack buffer overflow on file open. CVSS 7.8.",
                 mitre_techniques=["T0883"],
             ); return
-        print_success(f"CVE-2019-18253 HIGH — port {self.port} open.") if self.check() else print_error("Not responding.")
+        print_success(f"CVE-2019-18253 HIGH - port {self.port} open.") if self.check() else print_error("Not responding.")

@@ -65,7 +65,7 @@ _BANNER = rf"""
   IndustrialXPL-Forge v{VERSION} -- OT/ICS/SCADA Security Assessment Framework
   Author: Andre Henrique (@mrhenrike) | Uniao Geek | https://uniaogeek.com.br/
   Python-First. Pure Python -- pip install industrialxpl-forge
-  Type 'help' for commands.  simulate=false by default — set SIMULATE true for dry-run.
+  Type 'help' for commands.  simulate=false by default - set SIMULATE true for dry-run.
 """
 
 _GLOBAL_HELP = f"""
@@ -420,7 +420,7 @@ class IXFInterpreter(
         self._resume_persistent_c2()
 
     def _resume_persistent_c2(self) -> None:
-        """If C2_PERSIST / saved state — show bots reporting after IXF restart."""
+        """If C2_PERSIST / saved state - show bots reporting after IXF restart."""
         try:
             from industrialxpl.core.malware.c2_server import resume_on_startup
             r = resume_on_startup()
@@ -428,11 +428,11 @@ class IXFInterpreter(
                 return
             online = r.get("bots_online", 0)
             total = r.get("bots_total", 0)
-            pid = r.get("daemon_pid", "—")
+            pid = r.get("daemon_pid", " - ")
             cfg = r.get("config") or {}
             print_info(
-                "C2 persistente — {} bots online / {} total | py={} go={}".format(
-                    online, total, pid, r.get("go_cnc_pid", "—"),
+                "C2 persistente - {} bots online / {} total | py={} go={}".format(
+                    online, total, pid, r.get("go_cnc_pid", " - "),
                 )
             )
         except Exception:
@@ -633,13 +633,13 @@ class IXFInterpreter(
         # Section 3: Targeting (global convenience only -- protocol options stay in modules)
         target_rows = [
             ("TARGET",    self._get_global("target"),
-             "IP / hostname — default target when module TARGET is empty"),
+             "IP / hostname - default target when module TARGET is empty"),
             ("PORT",      self._get_global("port") or "(module default)",
-             "Port expression: 502 | 502,510 | 500-510 — applied on module load"),
+             "Port expression: 502 | 502,510 | 500-510 - applied on module load"),
             ("TRANSPORT", self._get_global("transport") or "(module default)",
-             "tcp | udp | both — applied on module load when supported"),
+             "tcp | udp | both - applied on module load when supported"),
             ("UNIT_ID",   self._get_global("unit_id") or "(module default)",
-             "Modbus unit ID 0-255 — applied on module load"),
+             "Modbus unit ID 0-255 - applied on module load"),
         ]
 
         print_table(["Option", "Current", "Description / Accepted Values"],

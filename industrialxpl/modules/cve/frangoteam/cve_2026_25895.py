@@ -1,4 +1,4 @@
-"""ICS CVE Module — CVE-2026-25895 — frangoteam FUXA SCADA (CRITICAL).
+"""ICS CVE Module - CVE-2026-25895 - frangoteam FUXA SCADA (CRITICAL).
 
 
 
@@ -17,7 +17,7 @@ from industrialxpl.core.exploit import (
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2026-25895 — frangoteam FUXA SCADA (CRITICAL)",
+        "name":          "CVE-2026-25895 - frangoteam FUXA SCADA (CRITICAL)",
         "description":   "",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -54,7 +54,7 @@ class Exploit(Exploit):
             sock.settimeout(self.timeout)
             sock.connect((self.target, self.port))
             sock.close()
-            # Port is open — device may be present
+            # Port is open - device may be present
             # Full version check requires protocol-specific fingerprinting
             return True  # POSSIBLY_VULNERABLE until version confirmed
         except Exception:
@@ -76,7 +76,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2026-25895...")
         if self.check():
             print_success(
-                f"Port {self.port} open — frangoteam FUXA SCADA MAY be present. "
+                f"Port {self.port} open - frangoteam FUXA SCADA MAY be present. "
                 "Verify version manually: affected=<= 1.2.9"
             )
         else:

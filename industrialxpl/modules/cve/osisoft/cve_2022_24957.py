@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2022-24957 — OSIsoft PI Server.
+"""IXF CVE Module - CVE-2022-24957 - OSIsoft PI Server.
 
 Buffer overflow
 
@@ -32,8 +32,8 @@ _SEVERITY      = "CRITICAL"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2022-24957 — OSIsoft PI Server (CRITICAL)",
-        "description":   "OSIsoft PI Server — Buffer overflow. "
+        "name":          "CVE-2022-24957 - OSIsoft PI Server (CRITICAL)",
+        "description":   "OSIsoft PI Server - Buffer overflow. "
                          "CVSS 9.8 (CRITICAL). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2022-24957...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — OSIsoft PI Server may be present. "
+                f"Port {self.port} open on {self.target} - OSIsoft PI Server may be present. "
                 "CVE-2022-24957 (CRITICAL CVSS 9.8): Buffer overflow. "
                 "Manual version verification required."
             )

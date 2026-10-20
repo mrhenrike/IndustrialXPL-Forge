@@ -1,4 +1,4 @@
-"""Unified Modbus toolkit — ModBusPwn-inspired MIT helpers."""
+"""Unified Modbus toolkit - ModBusPwn-inspired MIT helpers."""
 
 
 import struct
@@ -30,7 +30,7 @@ def simulate_toolkit(host: str = "127.0.0.1") -> dict[str, Any]:
             "fc03": build_fc03().hex(),
             "fc16": build_fc16().hex(),
         },
-        "shodan": "opt-in via SHODAN_API_KEY env — default offline",
+        "shodan": "opt-in via SHODAN_API_KEY env - default offline",
     }
 
 

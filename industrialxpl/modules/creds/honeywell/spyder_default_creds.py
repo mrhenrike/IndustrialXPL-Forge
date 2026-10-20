@@ -1,4 +1,4 @@
-"""IXF Default Credentials — Honeywell Spyder BAS Controller."""
+"""IXF Default Credentials - Honeywell Spyder BAS Controller."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptString, mute,

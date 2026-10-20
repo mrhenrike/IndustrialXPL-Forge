@@ -45,4 +45,4 @@ class Exploit(Exploit):
                 description=f"CVE-2020-28388: {self.target}:{self.port}.  Information disclosure log files. CVSS 5.3.",
                 mitre_techniques=["T0883"],
             ); return
-        print_success(f"CVE-2020-28388 MEDIUM — port {self.port} open.") if self.check() else print_error("Not responding.")
+        print_success(f"CVE-2020-28388 MEDIUM - port {self.port} open.") if self.check() else print_error("Not responding.")

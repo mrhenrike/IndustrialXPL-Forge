@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2022-35872 — Inductive Automation Ignition.
+"""IXF CVE Module - CVE-2022-35872 - Inductive Automation Ignition.
 
 ZIP deserial RCE Pwn2Own
 
@@ -32,8 +32,8 @@ _SEVERITY      = "HIGH"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2022-35872 — Inductive Automation Ignition (HIGH)",
-        "description":   "Inductive Automation Ignition — ZIP deserial RCE Pwn2Own. "
+        "name":          "CVE-2022-35872 - Inductive Automation Ignition (HIGH)",
+        "description":   "Inductive Automation Ignition - ZIP deserial RCE Pwn2Own. "
                          "CVSS 8.8 (HIGH). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2022-35872...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Inductive Automation Ignition may be present. "
+                f"Port {self.port} open on {self.target} - Inductive Automation Ignition may be present. "
                 "CVE-2022-35872 (HIGH CVSS 8.8): ZIP deserial RCE Pwn2Own. "
                 "Manual version verification required."
             )

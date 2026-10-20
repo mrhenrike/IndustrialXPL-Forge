@@ -45,4 +45,4 @@ class Exploit(Exploit):
                 description=f"CVE-2020-11999: {self.target}:{self.port}.  Deserialization code execution. CVSS 7.8.",
                 mitre_techniques=["T0883"],
             ); return
-        print_success(f"CVE-2020-11999 HIGH — port {self.port} open.") if self.check() else print_error("Not responding.")
+        print_success(f"CVE-2020-11999 HIGH - port {self.port} open.") if self.check() else print_error("Not responding.")

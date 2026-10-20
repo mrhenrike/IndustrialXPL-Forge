@@ -1,4 +1,4 @@
-"""MitreTacticSweeper — executes IXF modules by MITRE ATT&CK for ICS tactic or technique."""
+"""MitreTacticSweeper - executes IXF modules by MITRE ATT&CK for ICS tactic or technique."""
 
 import ipaddress
 import time
@@ -19,9 +19,9 @@ class MitreTacticSweeper:
         port:             Optional port override (0 = use module default).
         simulate:         If True, print payloads without sending.
         destructive:      If True, enable real write/destructive execution.
-        rate_limit_ms:    Milliseconds between modules (default 500ms — OT safe).
+        rate_limit_ms:    Milliseconds between modules (default 500ms - OT safe).
         stop_on_first_vuln: Stop after first VULNERABLE result.
-        check_only:       If True, only run check() — never run().
+        check_only:       If True, only run check() - never run().
         module_paths:     Pre-built module list (passed from interpreter).
     """
 
@@ -53,7 +53,7 @@ class MitreTacticSweeper:
         modules = TACTIC_INDEX.get(tactic_id, [])
         mode = "simulate" if self.simulate else "LIVE"
         print_status(
-            f"[mitre-sweep] Tactic: {tactic_name} ({tactic_id}) — {len(modules)} modules [{mode}]"
+            f"[mitre-sweep] Tactic: {tactic_name} ({tactic_id}) - {len(modules)} modules [{mode}]"
         )
         if not modules:
             print_error(f"No IXF modules found for tactic {tactic_id}.")
@@ -66,7 +66,7 @@ class MitreTacticSweeper:
         modules = TECHNIQUE_INDEX.get(tid, [])
         mode = "simulate" if self.simulate else "LIVE"
         print_status(
-            f"[ttp] Technique: {tid} — {len(modules)} modules [{mode}] — Target: {self.target}"
+            f"[ttp] Technique: {tid} - {len(modules)} modules [{mode}] - Target: {self.target}"
         )
         if not modules:
             print_error(f"No IXF modules for {tid}. Use 'ttp-list' to see all TTP-IDs.")
@@ -77,7 +77,7 @@ class MitreTacticSweeper:
         """Execute ALL IXF modules with MITRE mapping."""
         all_mods = list({m for mods in TECHNIQUE_INDEX.values() for m in mods})
         print_status(
-            f"[mitre-all] Full sweep — {len(all_mods)} unique modules [simulate={self.simulate}]"
+            f"[mitre-all] Full sweep - {len(all_mods)} unique modules [simulate={self.simulate}]"
         )
         return self._run_modules(all_mods, context="all")
 
@@ -145,7 +145,7 @@ class MitreTacticSweeper:
                     result["status"] = "CHECK_ERROR"
                     result["error"] = str(exc)[:120]
 
-                # run() — only if not check_only
+                # run() - only if not check_only
                 if not self.check_only and (self.simulate or is_vuln):
                     try:
                         mod.run()
@@ -158,7 +158,7 @@ class MitreTacticSweeper:
                     result["status"] = "SIMULATED ({})".format(result["status"])
 
                 if self.stop_on_first_vuln and is_vuln:
-                    print_success(f"[sweep] First VULNERABLE found: {path} — stopping.")
+                    print_success(f"[sweep] First VULNERABLE found: {path} - stopping.")
                     self.results.append(result)
                     break
 
@@ -188,7 +188,7 @@ class MitreTacticSweeper:
         print_table(
             ["Module", "Status", "MITRE Techniques"],
             rows,
-            title=f"MITRE Sweep — Target: {self.target}",
+            title=f"MITRE Sweep - Target: {self.target}",
         )
         vuln = sum(1 for r in self.results if "VULNERABLE" in r["status"])
         print_success(f"{vuln}/{len(self.results)} modules: VULNERABLE/POSSIBLY_VULNERABLE")

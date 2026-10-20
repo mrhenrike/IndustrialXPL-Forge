@@ -1,5 +1,5 @@
 # Author: André Henrique (LinkedIn/X: @mrhenrike)
-"""BACnet/IP Layer 3 Device Scanner — Who-Is / I-Am Enumeration (Port 47808/UDP).
+"""BACnet/IP Layer 3 Device Scanner - Who-Is / I-Am Enumeration (Port 47808/UDP).
 
 Performs a BACnet Layer 3 discovery by sending a BACnet Who-Is broadcast (or
 unicast) and collecting I-Am responses. Each responding device identifies itself
@@ -16,7 +16,7 @@ This scanner is a Layer 3 (IP-routable) variant of BACnet discovery,
 distinct from BACnet MS/TP (RS-485 serial) or BACnet Ethernet (Layer 2).
 
 References:
-  - ANSI/ASHRAE 135 — BACnet standard
+  - ANSI/ASHRAE 135 - BACnet standard
   - ICS-CERT Advisory ICSA-15-202-01
   - Project Redpoint (DigitalBond) BACnet scanning research
   - MITRE ATT&CK ICS: T0846 (Remote System Discovery), T0888 (Remote System Information Discovery)
@@ -59,7 +59,7 @@ _WHO_IS_UNICAST = bytes([
     0x00, 0x00, 0x00, 0x00,        # padding to 12 bytes
 ])
 
-# Known BACnet Vendor IDs (partial — extended from ASHRAE registry)
+# Known BACnet Vendor IDs (partial - extended from ASHRAE registry)
 _VENDOR_NAMES: dict = {
     0:   "ASHRAE",
     5:   "Siemens Building Technologies",
@@ -156,7 +156,7 @@ def _parse_i_am(data: bytes, src_ip: str) -> dict | None:
 
 
 class Exploit(Exploit):
-    """BACnet/IP Layer 3 Device Scanner — Who-Is / I-Am enumeration.
+    """BACnet/IP Layer 3 Device Scanner - Who-Is / I-Am enumeration.
 
     Author: André Henrique (LinkedIn/X: @mrhenrike)
     Version: 1.0.0
@@ -168,7 +168,7 @@ class Exploit(Exploit):
             "Sends a BACnet Who-Is broadcast (or unicast) on UDP/47808 and collects "
             "I-Am responses. Identifies responding devices by Device Instance number, "
             "Vendor ID/Name, and maximum APDU length. BACnet/IP carries no access "
-            "control — all discovered devices are directly accessible for further "
+            "control - all discovered devices are directly accessible for further "
             "read/write operations. Covers routed (Layer 3) BACnet/IP segments."
         ),
         "authors": ("Andre Henrique (@mrhenrike) | Uniao Geek",),
@@ -244,7 +244,7 @@ class Exploit(Exploit):
                             )
                         )
                     else:
-                        print_info(f"[BACnet-L3] Response from {src_ip} ({len(data)} B) — not I-Am")
+                        print_info(f"[BACnet-L3] Response from {src_ip} ({len(data)} B) - not I-Am")
                 except TimeoutError:
                     break
         finally:

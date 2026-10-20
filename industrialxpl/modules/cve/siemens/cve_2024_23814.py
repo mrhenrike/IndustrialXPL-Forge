@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2024-23814 — Siemens SIMATIC IPC BX-39A (CRITICAL CVSS 9.8).
+"""IXF CVE CVE-2024-23814 - Siemens SIMATIC IPC BX-39A (CRITICAL CVSS 9.8).
 
 Exploit type: OS command injection web interface
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Siemens SIMATIC IPC BX-39A may be present. CVE-2024-23814 CRITICAL CVSS 9.8.")
+            print_success(f"Port {self.port} open - Siemens SIMATIC IPC BX-39A may be present. CVE-2024-23814 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

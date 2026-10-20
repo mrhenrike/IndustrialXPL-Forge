@@ -1,4 +1,4 @@
-"""S7 packet builders — EDB 38964 / MSF simatic_s7_1200 inspired (MIT)."""
+"""S7 packet builders - EDB 38964 / MSF simatic_s7_1200 inspired (MIT)."""
 
 
 import struct

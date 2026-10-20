@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2024-10491 — Advantech ADAM-5550 industrial controller (CRITICAL CVSS 9.8).
+"""IXF CVE CVE-2024-10491 - Advantech ADAM-5550 industrial controller (CRITICAL CVSS 9.8).
 
 Exploit type: Unauthenticated remote code execution
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Advantech ADAM-5550 industrial controller may be present. CVE-2024-10491 CRITICAL CVSS 9.8.")
+            print_success(f"Port {self.port} open - Advantech ADAM-5550 industrial controller may be present. CVE-2024-10491 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

@@ -1,4 +1,4 @@
-# Legal Disclaimer — IndustrialXPL-Forge
+# Legal Disclaimer - IndustrialXPL-Forge
 
 **READ BEFORE USE**
 
@@ -23,7 +23,7 @@ TRISIS/TRITON, Bashlite, Akaja, and others) and ICS tooling references for **ope
 cybersecurity research and education**. This material is available on the public GitHub
 repository by deliberate maintainer decision.
 
-**You** — not the authors — bear full legal and ethical responsibility for how you use
+**You** - not the authors - bear full legal and ethical responsibility for how you use
 cloned code. See [TERMS_OF_USE.md](TERMS_OF_USE.md).
 
 - Compiled artifacts must remain in isolated lab environments
@@ -32,8 +32,8 @@ cloned code. See [TERMS_OF_USE.md](TERMS_OF_USE.md).
 
 ## Simulations vs Live Actions
 
-- **SafeMode**: `set simulate true` — describes actions without sending exploit payloads
-- **Live mode**: default `simulate=false` — may perform network reads and protocol probes
+- **SafeMode**: `set simulate true` - describes actions without sending exploit payloads
+- **Live mode**: default `simulate=false` - may perform network reads and protocol probes
 - **Destructive mode**: requires explicit `destructive=true` and confirmation gates
 
 Always verify authorization and scope before disabling simulate mode.
@@ -48,4 +48,4 @@ Questions about authorized use: **henrique.santos@uniaogeek.com.br**
 
 ---
 
-Copyright © André Henrique / União Geek. Licensed under MIT — see [LICENSE](LICENSE).
+Copyright © André Henrique / União Geek. Licensed under MIT - see [LICENSE](LICENSE).

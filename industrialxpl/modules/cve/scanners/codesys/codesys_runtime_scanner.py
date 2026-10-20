@@ -1,4 +1,4 @@
-"""IXF Scanner — CODESYS V3 Runtime Discovery."""
+"""IXF Scanner - CODESYS V3 Runtime Discovery."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptInteger, mute,

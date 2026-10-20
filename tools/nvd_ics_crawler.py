@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""IndustrialXPL-Forge — NVD ICS CVE Crawler.
+"""IndustrialXPL-Forge - NVD ICS CVE Crawler.
 
 Fetches ICS/OT/SCADA CVEs from NVD REST API v2.0 and generates:
-  1. resources/cve/ics_cve_database.json — structured CVE catalog
+  1. resources/cve/ics_cve_database.json - structured CVE catalog
   2. Module stub files in industrialxpl/modules/cve/<vendor>/ (Level B check modules)
 
 Usage:
@@ -55,7 +55,7 @@ SEVERITY_MAP = {
     "LOW":      (0.1, 3.9),
 }
 
-STUB_TEMPLATE = '''"""ICS CVE Module — {cve_id} — {vendor} {product} ({severity}).
+STUB_TEMPLATE = '''"""ICS CVE Module - {cve_id} - {vendor} {product} ({severity}).
 
 {description}
 
@@ -111,7 +111,7 @@ class Exploit(Exploit):
             sock.settimeout(self.timeout)
             sock.connect((self.target, self.port))
             sock.close()
-            # Port is open — device may be present
+            # Port is open - device may be present
             # Full version check requires protocol-specific fingerprinting
             return True  # POSSIBLY_VULNERABLE until version confirmed
         except Exception:
@@ -135,7 +135,7 @@ class Exploit(Exploit):
         print_status("Checking {{}}:{{}} for {cve_id}...".format(self.target, self.port))
         if self.check():
             print_success(
-                "Port {{}} open — {vendor} {product} MAY be present. "
+                "Port {{}} open - {vendor} {product} MAY be present. "
                 "Verify version manually: affected={affected}".format(self.port)
             )
         else:
@@ -223,7 +223,7 @@ def generate_stub(entry: dict, output_dir: Path) -> str:
         cve_id   = entry["cve_id"],
         vendor   = entry.get("vendor", "Unknown"),
         product  = entry.get("product", "device"),
-        name     = "{} — {} {} ({})".format(
+        name     = "{} - {} {} ({})".format(
             entry["cve_id"], entry.get("vendor", ""), entry.get("product", ""), entry.get("severity", "")
         )[:80],
         description  = desc,

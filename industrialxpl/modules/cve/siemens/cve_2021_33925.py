@@ -45,4 +45,4 @@ class Exploit(Exploit):
                 description=f"CVE-2021-33925: {self.target}:{self.port}.  Privilege escalation. CVSS 8.8.",
                 mitre_techniques=["T0883"],
             ); return
-        print_success(f"CVE-2021-33925 HIGH — port {self.port} open.") if self.check() else print_error("Not responding.")
+        print_success(f"CVE-2021-33925 HIGH - port {self.port} open.") if self.check() else print_error("Not responding.")

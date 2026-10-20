@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2022-1161 — Rockwell Automation CompactLogix.
+"""IXF CVE Module - CVE-2022-1161 - Rockwell Automation CompactLogix.
 
 Code injection
 
@@ -32,8 +32,8 @@ _SEVERITY      = "CRITICAL"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2022-1161 — Rockwell Automation CompactLogix (CRITICAL)",
-        "description":   "Rockwell Automation CompactLogix — Code injection. "
+        "name":          "CVE-2022-1161 - Rockwell Automation CompactLogix (CRITICAL)",
+        "description":   "Rockwell Automation CompactLogix - Code injection. "
                          "CVSS 10.0 (CRITICAL). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2022-1161...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Rockwell Automation CompactLogix may be present. "
+                f"Port {self.port} open on {self.target} - Rockwell Automation CompactLogix may be present. "
                 "CVE-2022-1161 (CRITICAL CVSS 10.0): Code injection. "
                 "Manual version verification required."
             )

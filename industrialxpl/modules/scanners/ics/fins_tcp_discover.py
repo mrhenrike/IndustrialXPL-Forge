@@ -1,4 +1,4 @@
-"""IXF Scanner — Omron FINS/TCP Discovery. simulate=True."""
+"""IXF Scanner - Omron FINS/TCP Discovery. simulate=True."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptInteger, OptPort, mute,

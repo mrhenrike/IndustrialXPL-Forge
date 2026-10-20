@@ -1,6 +1,6 @@
-# HANDOFF — IndustrialXPL-Forge (IXF)
+# HANDOFF - IndustrialXPL-Forge (IXF)
 
-## [2026-05-29 21:30] — Sessao de criacao inicial (Bloco 1 + Bloco 2 parcial)
+## [2026-05-29 21:30] - Sessao de criacao inicial (Bloco 1 + Bloco 2 parcial)
 
 ### Estado ao encerrar
 
@@ -12,20 +12,20 @@
 
 ### O que foi feito nesta sessao
 
-- `ixf.py` + `pyproject.toml` + `requirements.txt` — scaffold completo
-- `industrialxpl/core/exploit/` — exploit.py, option.py, printer.py, utils.py, exceptions.py, safety.py
-- `industrialxpl/interpreter.py` — shell IXF com 30+ comandos
-- `industrialxpl/core/mitre/` — sweeper.py, index.py, tactics.py, reporter.py
-- `industrialxpl/core/poly/poly_runner.py` — PolyExploitRunner Python-First
-- `industrialxpl/core/reporting/reporter.py` — IXFReporter
+- `ixf.py` + `pyproject.toml` + `requirements.txt` - scaffold completo
+- `industrialxpl/core/exploit/` - exploit.py, option.py, printer.py, utils.py, exceptions.py, safety.py
+- `industrialxpl/interpreter.py` - shell IXF com 30+ comandos
+- `industrialxpl/core/mitre/` - sweeper.py, index.py, tactics.py, reporter.py
+- `industrialxpl/core/poly/poly_runner.py` - PolyExploitRunner Python-First
+- `industrialxpl/core/reporting/reporter.py` - IXFReporter
 - **36 exploits ICS portados do EmbedXPL** (modbus, siemens, schneider, rockwell, qnx, vxworks, scada)
 - **17 scanners OT portados do EmbedXPL** (ics/ + asset/)
 - **20 modulos de creds portados do EmbedXPL** (abb, honeywell, moxa, omron, phoenix_contact, rockwell, schneider, siemens)
 - Modulos novos escritos: siprotec4_dos, allen_bradley_pccc_dos, modicon_start_stop, pcom_default_auth, modbus_client, modbus_detect, modbus_banner_grabbing, moxa_udp_discover, frostygoop_modbus_heating, fuxa_preauth_rce_cve_2026_25895
-- `resources/osint/shodan_ics_dorks.json` — 50+ dorks por vendor/protocolo
-- `resources/cve/ics_cve_database.json` — catalogo CVE inicial
-- `tools/env_doctor.py` — verificacao de ambiente bilíngue
-- `README.md` (en-US) + `README.pt-BR.md` — documentacao completa
+- `resources/osint/shodan_ics_dorks.json` - 50+ dorks por vendor/protocolo
+- `resources/cve/ics_cve_database.json` - catalogo CVE inicial
+- `tools/env_doctor.py` - verificacao de ambiente bilíngue
+- `README.md` (en-US) + `README.pt-BR.md` - documentacao completa
 
 ### Proximo passo imediato (retomar aqui)
 
@@ -74,7 +74,7 @@ python -c "from industrialxpl.interpreter import IXFInterpreter; i=IXFInterprete
 python tools/env_doctor.py
 ```
 
-## [2026-05-29 23:45] — MSF SCADA Ports + Malware TTP + Assessment Modules
+## [2026-05-29 23:45] - MSF SCADA Ports + Malware TTP + Assessment Modules
 
 ### Estado ao encerrar
 - Criados 17 novos modulos Python em industrialxpl/modules/
@@ -105,7 +105,7 @@ python tools/env_doctor.py
 - Windows: D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge\
 - Linux: /mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge/
 
-## [2026-05-29 23:45] — IXF LATAM vendors + CVE batch (20 modules)
+## [2026-05-29 23:45] - IXF LATAM vendors + CVE batch (20 modules)
 
 ### Estado ao encerrar
 - Criados 20 novos módulos no IndustrialXPL-Forge
@@ -187,7 +187,7 @@ python tools/env_doctor.py
 - Windows: D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge
 - Linux: /mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge
 
-## [2026-05-30 19:45] — Adicao de 20 novos modulos ICS/OT
+## [2026-05-30 19:45] - Adicao de 20 novos modulos ICS/OT
 
 ### Estado ao encerrar
 - Adicionados 12 modulos de protocol abuse (sem CVE) e 8 CVEs com PoC
@@ -246,7 +246,7 @@ python tools/env_doctor.py
 - Linux: /mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge
 
 
-## [2026-05-30 20:28] — Migração mrhenrike + PyPI 1.0.0 + CVE/Malware Wave 3
+## [2026-05-30 20:28] - Migração mrhenrike + PyPI 1.0.0 + CVE/Malware Wave 3
 
 ### Estado ao encerrar
 - Repositório migrado: Uniao-Geek/IndustrialXPL-Forge -> mrhenrike/IndustrialXPL-Forge
@@ -258,7 +258,7 @@ python tools/env_doctor.py
         "pip install industrialxpl-forge$extras"
      funcional (631 módulos indexados via pip)
 - CVE Wave 3: 49 novos módulos (Rockwell, Siemens, Schneider, ABB, Omron, GE, SAP, ActiveMQ)
-- Malwares: 26 TTPs — incluindo KillDisk.c, NotPetya.cpp, EKANS.py, CosmicEnergy.py nativos
+- Malwares: 26 TTPs - incluindo KillDisk.c, NotPetya.cpp, EKANS.py, CosmicEnergy.py nativos
 - No-CVE Wave 2: 15 módulos (IEC61850 GOOSE, OPC UA, CC-Link, S7 clock, serial gateway)
 - Total: 631/631 módulos validados sem erros
 
@@ -270,9 +270,9 @@ python tools/env_doctor.py
 - dist/industrialxpl_forge-1.0.0.tar.gz (519 KB)
 
 ### Commits realizados
-- aed06bf — Migrate to mrhenrike: update pyproject.toml, URLs, package name industrialxpl-forge 1.0.0
-- 9f4b6c8 — Expand CVE coverage to 631 modules: wave 3 CVEs + malware natives + no-CVE exploits
-- 0aea317 — Add comprehensive ICS malware TTP coverage (2010-2024): 26 malware modules
+- aed06bf - Migrate to mrhenrike: update pyproject.toml, URLs, package name industrialxpl-forge 1.0.0
+- 9f4b6c8 - Expand CVE coverage to 631 modules: wave 3 CVEs + malware natives + no-CVE exploits
+- 0aea317 - Add comprehensive ICS malware TTP coverage (2010-2024): 26 malware modules
 
 ### Próximo passo imediato
 - Testar SAST via LLM: configurar GOOGLE_AI_STUDIO_API_KEY ou OPENAI_API_KEY no env
@@ -282,7 +282,7 @@ python tools/env_doctor.py
 ### Pendências conhecidas
 - [ ] SAST LLM test pendente (chave de API não configurada no ambiente)
 - [ ] PyPI: enviar email de confirmação se PyPI pedir verificação de email
-- [ ] Imagem que o user tentou anexar não chegou — verificar se há metadados específicos de pyproject.toml a ajustar
+- [ ] Imagem que o user tentou anexar não chegou - verificar se há metadados específicos de pyproject.toml a ajustar
 - [ ] Expandir CVE coverage com mais Level A PoCs (atualmente ~631, meta 700+)
 - [ ] Documentação bilíngue completa de todos os módulos
 
@@ -302,7 +302,7 @@ python tools/env_doctor.py
 - GitHub: https://github.com/mrhenrike/IndustrialXPL-Forge
 
 
-## [2026-05-30 22:01] — Health check, cleanups, v1.0.9
+## [2026-05-30 22:01] - Health check, cleanups, v1.0.9
 
 ### Estado ao encerrar
 - 911 modulos validados (911/911 sem erros)
@@ -324,9 +324,9 @@ python tools/env_doctor.py
 - 8 modulos duplicados removidos
 
 ### Commits recentes
-- v1.0.9 — 919/911 modules, 151/150 vendors
-- v1.0.8 — 861 modules, 124 vendors (wave 3)
-- v1.0.7 — 803 modules, 97 vendors + banner + badges
+- v1.0.9 - 919/911 modules, 151/150 vendors
+- v1.0.8 - 861 modules, 124 vendors (wave 3)
+- v1.0.7 - 803 modules, 97 vendors + banner + badges
 
 ### Pendencias conhecidas
 - [ ] CI precisa de token TestPyPI se quiser testar upload em PR
@@ -347,7 +347,7 @@ python tools/env_doctor.py
 - PyPI: https://pypi.org/project/industrialxpl-forge/
 - GitHub: https://github.com/mrhenrike/IndustrialXPL-Forge
 
-## [2026-06-01 21:30] — Exhaustive docs rewrite: module system + safety gate
+## [2026-06-01 21:30] - Exhaustive docs rewrite: module system + safety gate
 
 ### Estado ao encerrar
 - Reescrita completa de docs/en-us/04-module-system.md (482 linhas → 2222 linhas)
@@ -370,16 +370,16 @@ python tools/env_doctor.py
 - Windows: D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge\docs\en-us\
 - Linux: /mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge/docs/en-us/
 
-## [2026-06-01 21:30] — Reescrita exaustiva do shell reference (03-shell-reference.md)
+## [2026-06-01 21:30] - Reescrita exaustiva do shell reference (03-shell-reference.md)
 
 ### Estado ao encerrar
 - Arquivo docs/en-us/03-shell-reference.md reescrito do zero com documentacao exaustiva
 - Todos os 35 comandos IXF documentados com sintaxe completa, tabelas de parametros, exemplos reais e cenarios de erro
-- Total: 3842 linhas (era 911 linhas — crescimento de 322%)
+- Total: 3842 linhas (era 911 linhas - crescimento de 322%)
 - Subcomandos documentados: show (5), nse (4), sast (4 modos), ttp (4 flags), report (3 formatos), mitre-report (3 formatos)
 
 ### Arquivos modificados
-- docs/en-us/03-shell-reference.md — reescrito completo
+- docs/en-us/03-shell-reference.md - reescrito completo
 
 ### Commits realizados
 - Nenhum commit nesta sessao
@@ -401,7 +401,7 @@ python tools/env_doctor.py
 - Windows: D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge
 - Linux: /mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge
 
-## [2026-06-01 18:30] — Rewrite docs 06, 07, 08 with exhaustive content
+## [2026-06-01 18:30] - Rewrite docs 06, 07, 08 with exhaustive content
 
 ### Estado ao encerrar
 - Reescrita completa de 3 arquivos de documentação do IndustrialXPL-Forge
@@ -424,7 +424,7 @@ python tools/env_doctor.py
 - Windows: D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge\docs\en-us\
 - Linux: /mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge/docs/en-us/
 
-## [2026-06-01 18:30] — Exhaustive documentation expansion (6 files)
+## [2026-06-01 18:30] - Exhaustive documentation expansion (6 files)
 
 ### Estado ao encerrar
 - Reescreveu 09-module-development.md (~405 → 1,500+ linhas) com template completo, 5 exemplos anotados (CVE, Scanner, Credentials, Assessment, Malware TTP), guia de todos os 10 tipos de Option, 5 padrões de check(), guia de run(), DestructiveGate reference, decorators @mute/@multi, multi-target scanning, validação, workflow de PR, testes sem Nmap, erros comuns e gerador de templates
@@ -465,7 +465,7 @@ python tools/env_doctor.py
 
 ---
 
-## [2026-06-01 21:30] — Reescrita exaustiva dos 12 documentos pt-BR
+## [2026-06-01 21:30] - Reescrita exaustiva dos 12 documentos pt-BR
 
 ### Estado ao encerrar
 - Todos os 12 arquivos de documentação pt-BR reescritos com conteúdo exaustivo em Português Brasileiro
@@ -473,18 +473,18 @@ python tools/env_doctor.py
 - Contagens de linha verificadas e todas acima das metas estabelecidas
 
 ### Arquivos modificados
-- `docs/pt-br/01-instalacao.md` — 969 linhas (meta: 600+)
-- `docs/pt-br/02-inicio-rapido.md` — 1078 linhas (meta: 700+)
-- `docs/pt-br/03-referencia-shell.md` — 2527 linhas (meta: 2000+)
-- `docs/pt-br/04-sistema-modulos.md` — 1607 linhas (meta: 1000+)
-- `docs/pt-br/05-safemode-destructivemode.md` — 917 linhas (meta: 700+)
-- `docs/pt-br/06-mitre-attack-ics.md` — 977 linhas (meta: 900+)
-- `docs/pt-br/07-sast-llm.md` — 948 linhas (meta: 800+)
-- `docs/pt-br/08-protocolos-vendors.md` — 1211 linhas (meta: 1200+)
-- `docs/pt-br/09-desenvolvimento-modulos.md` — 1425 linhas (meta: 1000+)
-- `docs/pt-br/10-cli-nao-interativo.md` — 1101 linhas (meta: 500+)
-- `docs/pt-br/11-poly-exploit-runner.md` — 769 linhas (meta: 600+)
-- `docs/pt-br/12-assessment-conformidade.md` — 802 linhas (meta: 800+)
+- `docs/pt-br/01-instalacao.md` - 969 linhas (meta: 600+)
+- `docs/pt-br/02-inicio-rapido.md` - 1078 linhas (meta: 700+)
+- `docs/pt-br/03-referencia-shell.md` - 2527 linhas (meta: 2000+)
+- `docs/pt-br/04-sistema-modulos.md` - 1607 linhas (meta: 1000+)
+- `docs/pt-br/05-safemode-destructivemode.md` - 917 linhas (meta: 700+)
+- `docs/pt-br/06-mitre-attack-ics.md` - 977 linhas (meta: 900+)
+- `docs/pt-br/07-sast-llm.md` - 948 linhas (meta: 800+)
+- `docs/pt-br/08-protocolos-vendors.md` - 1211 linhas (meta: 1200+)
+- `docs/pt-br/09-desenvolvimento-modulos.md` - 1425 linhas (meta: 1000+)
+- `docs/pt-br/10-cli-nao-interativo.md` - 1101 linhas (meta: 500+)
+- `docs/pt-br/11-poly-exploit-runner.md` - 769 linhas (meta: 600+)
+- `docs/pt-br/12-assessment-conformidade.md` - 802 linhas (meta: 800+)
 
 ### Próximo passo imediato
 - Revisar manualmente os exemplos de terminal para garantir consistência com a versão atual do código
@@ -497,7 +497,7 @@ python tools/env_doctor.py
 - Windows: `D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge\docs\pt-br\`
 - Linux: `/mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge/docs/pt-br/`
 
-## [2026-06-01 21:00] — Documentação pt-BR completa (14 arquivos)
+## [2026-06-01 21:00] - Documentação pt-BR completa (14 arquivos)
 
 ### Estado ao encerrar
 - Expandidos todos os 12 arquivos pt-BR existentes de documentação fina para versões completas
@@ -506,18 +506,18 @@ python tools/env_doctor.py
 - Conteúdo cobre 36 comandos, 13 tipos __info__, 10 tipos de opção, 7 níveis de impacto, 12 táticas MITRE, 50 protocolos, 150+ vendors, 18 módulos de assessment, 26 TTPs de malware, 8 scripts NSE
 
 ### Arquivos modificados/criados
-- docs/pt-br/03-referencia-shell.md (2000+ linhas — todos 36 comandos)
-- docs/pt-br/04-sistema-modulos.md (1000+ linhas — anatomia completa)
-- docs/pt-br/05-safemode-destructivemode.md (700+ linhas — 7 níveis impacto)
-- docs/pt-br/06-mitre-attack-ics.md (900+ linhas — 12 táticas cobertura)
-- docs/pt-br/07-sast-llm.md (800+ linhas — 5 providers, 4 modos)
-- docs/pt-br/08-protocolos-vendors.md (1200+ linhas — 50 protocolos, 150+ vendors)
-- docs/pt-br/09-desenvolvimento-modulos.md (1000+ linhas — dev guia completo)
-- docs/pt-br/10-cli-nao-interativo.md (500+ linhas — CI/CD, GitHub Actions)
-- docs/pt-br/11-poly-exploit-runner.md (600+ linhas — tiers, runtimes, logic bombs)
-- docs/pt-br/12-assessment-conformidade.md (800+ linhas — IEC 62443, NIST 800-82)
-- docs/pt-br/13-catalogo-modulos.md (NOVO — 1000+ linhas — catálogo completo)
-- docs/pt-br/14-scripts-nse.md (NOVO — 500+ linhas — 8 scripts NSE)
+- docs/pt-br/03-referencia-shell.md (2000+ linhas - todos 36 comandos)
+- docs/pt-br/04-sistema-modulos.md (1000+ linhas - anatomia completa)
+- docs/pt-br/05-safemode-destructivemode.md (700+ linhas - 7 níveis impacto)
+- docs/pt-br/06-mitre-attack-ics.md (900+ linhas - 12 táticas cobertura)
+- docs/pt-br/07-sast-llm.md (800+ linhas - 5 providers, 4 modos)
+- docs/pt-br/08-protocolos-vendors.md (1200+ linhas - 50 protocolos, 150+ vendors)
+- docs/pt-br/09-desenvolvimento-modulos.md (1000+ linhas - dev guia completo)
+- docs/pt-br/10-cli-nao-interativo.md (500+ linhas - CI/CD, GitHub Actions)
+- docs/pt-br/11-poly-exploit-runner.md (600+ linhas - tiers, runtimes, logic bombs)
+- docs/pt-br/12-assessment-conformidade.md (800+ linhas - IEC 62443, NIST 800-82)
+- docs/pt-br/13-catalogo-modulos.md (NOVO - 1000+ linhas - catálogo completo)
+- docs/pt-br/14-scripts-nse.md (NOVO - 500+ linhas - 8 scripts NSE)
 
 ### Próximo passo imediato
 - Atualizar docs/pt-br/_index.md para adicionar links para os arquivos 13 e 14 recém-criados
@@ -534,23 +534,23 @@ python tools/env_doctor.py
 - Windows: D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge\docs\pt-br\
 - Linux: /mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge/docs/pt-br/
 
-## [2026-06-01 21:45] — Comprehensive documentation expansion (9 files)
+## [2026-06-01 21:45] - Comprehensive documentation expansion (9 files)
 
 ### Estado ao encerrar
 - Expanded/wrote 9 documentation files under docs/en-us/ for IndustrialXPL-Forge
 - All files exceed their minimum line count targets
-- No code changes — documentation only
+- No code changes - documentation only
 
 ### Arquivos modificados
-- docs/en-us/03-shell-reference.md (2868 lines — all 36 commands fully documented)
-- docs/en-us/05-safemode-destructivemode.md (935 lines — all 7 impact levels, walkthroughs)
-- docs/en-us/07-sast-llm.md (905 lines — all 5 providers, 4 modes, 8 analysis categories)
-- docs/en-us/08-protocols-vendors.md (1562 lines — all 50 protocols, 150+ vendors)
-- docs/en-us/10-cli-noninteractive.md (1339 lines — 20 examples, CI/CD, Python API)
-- docs/en-us/11-poly-exploit-runner.md (930 lines — 8 runtimes, malware builder, cross-compile)
-- docs/en-us/12-assessment-compliance.md (1037 lines — 18 modules, full audit outputs)
-- docs/en-us/13-module-catalog.md (1585 lines — NEW file, complete module catalog)
-- docs/en-us/14-nse-scripts.md (1004 lines — NEW file, all 8 NSE scripts)
+- docs/en-us/03-shell-reference.md (2868 lines - all 36 commands fully documented)
+- docs/en-us/05-safemode-destructivemode.md (935 lines - all 7 impact levels, walkthroughs)
+- docs/en-us/07-sast-llm.md (905 lines - all 5 providers, 4 modes, 8 analysis categories)
+- docs/en-us/08-protocols-vendors.md (1562 lines - all 50 protocols, 150+ vendors)
+- docs/en-us/10-cli-noninteractive.md (1339 lines - 20 examples, CI/CD, Python API)
+- docs/en-us/11-poly-exploit-runner.md (930 lines - 8 runtimes, malware builder, cross-compile)
+- docs/en-us/12-assessment-compliance.md (1037 lines - 18 modules, full audit outputs)
+- docs/en-us/13-module-catalog.md (1585 lines - NEW file, complete module catalog)
+- docs/en-us/14-nse-scripts.md (1004 lines - NEW file, all 8 NSE scripts)
 
 ### Commits realizados
 - None (documentation expansion only)
@@ -575,17 +575,17 @@ python tools/env_doctor.py
 - Windows: D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge\docs\en-us\
 - Linux: /mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge/docs/en-us/
 
-## [2026-06-01 18:45] — Expand 6 docs to full specification
+## [2026-06-01 18:45] - Expand 6 docs to full specification
 
 ### Estado ao encerrar
 - Expandidos 6 arquivos de documentação para IXF (IndustrialXPL-Forge) conforme especificação
 - Arquivos modificados:
-  - docs/en-us/01-installation.md (1149 linhas — expansão completa com Docker, offline, venv, troubleshooting)
-  - docs/en-us/02-quick-start.md (1145 linhas — 10 sessões completas anotadas)
-  - docs/en-us/08-protocols-vendors.md (1562 linhas — todos 50 protocolos, 150+ vendors, exemplos completos)
-  - docs/en-us/12-assessment-compliance.md (1037 linhas — todos 18 módulos com output completo)
-  - docs/en-us/13-module-catalog.md (NOVO — 1585 linhas — catálogo completo de 976 módulos)
-  - docs/en-us/14-nse-scripts.md (NOVO — 1004 linhas — 8 scripts NSE com exemplos completos)
+  - docs/en-us/01-installation.md (1149 linhas - expansão completa com Docker, offline, venv, troubleshooting)
+  - docs/en-us/02-quick-start.md (1145 linhas - 10 sessões completas anotadas)
+  - docs/en-us/08-protocols-vendors.md (1562 linhas - todos 50 protocolos, 150+ vendors, exemplos completos)
+  - docs/en-us/12-assessment-compliance.md (1037 linhas - todos 18 módulos com output completo)
+  - docs/en-us/13-module-catalog.md (NOVO - 1585 linhas - catálogo completo de 976 módulos)
+  - docs/en-us/14-nse-scripts.md (NOVO - 1004 linhas - 8 scripts NSE com exemplos completos)
   - docs/en-us/_index.md (atualizado com entradas 13 e 14 e contagens corretas)
 
 ### Próximo passo imediato
@@ -607,7 +607,7 @@ python tools/env_doctor.py
 - Windows: D:\Projetos-SafeLabs\submodules\OT\IndustrialXPL-Forge\docs\en-us\
 - Linux: /mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge/docs/en-us/
 
-## [2026-06-01 21:45] — Expansão completa de documentação pt-BR
+## [2026-06-01 21:45] - Expansão completa de documentação pt-BR
 
 ### Estado ao encerrar
 - Expandidos 8 arquivos de documentação pt-BR que estavam com conteúdo thin (50-200 linhas → 700-1234 linhas)
@@ -615,16 +615,16 @@ python tools/env_doctor.py
 - Todos os 11 arquivos documentados atingiram ou superaram as contagens de linha alvo
 
 ### Arquivos modificados/criados
-- `docs/pt-br/05-safemode-destructivemode.md` — 767 linhas (alvo: 700+) ✓
-- `docs/pt-br/06-mitre-attack-ics.md` — 960 linhas (alvo: 900+) ✓
-- `docs/pt-br/07-sast-llm.md` — 883 linhas (alvo: 800+) ✓
-- `docs/pt-br/08-protocolos-vendors.md` — 1234 linhas (alvo: 1200+) ✓
-- `docs/pt-br/09-desenvolvimento-modulos.md` — 1170 linhas (alvo: 1000+) ✓
-- `docs/pt-br/10-cli-nao-interativo.md` — 849 linhas (alvo: 500+) ✓
-- `docs/pt-br/11-poly-exploit-runner.md` — 685 linhas (alvo: 600+) ✓
-- `docs/pt-br/12-assessment-conformidade.md` — 864 linhas (alvo: 800+) ✓
-- `docs/pt-br/13-catalogo-modulos.md` — 1204 linhas (novo, alvo: 1200+) ✓
-- `docs/pt-br/14-scripts-nse.md` — 648 linhas (novo, alvo: 500+) ✓
+- `docs/pt-br/05-safemode-destructivemode.md` - 767 linhas (alvo: 700+) ✓
+- `docs/pt-br/06-mitre-attack-ics.md` - 960 linhas (alvo: 900+) ✓
+- `docs/pt-br/07-sast-llm.md` - 883 linhas (alvo: 800+) ✓
+- `docs/pt-br/08-protocolos-vendors.md` - 1234 linhas (alvo: 1200+) ✓
+- `docs/pt-br/09-desenvolvimento-modulos.md` - 1170 linhas (alvo: 1000+) ✓
+- `docs/pt-br/10-cli-nao-interativo.md` - 849 linhas (alvo: 500+) ✓
+- `docs/pt-br/11-poly-exploit-runner.md` - 685 linhas (alvo: 600+) ✓
+- `docs/pt-br/12-assessment-conformidade.md` - 864 linhas (alvo: 800+) ✓
+- `docs/pt-br/13-catalogo-modulos.md` - 1204 linhas (novo, alvo: 1200+) ✓
+- `docs/pt-br/14-scripts-nse.md` - 648 linhas (novo, alvo: 500+) ✓
 
 ### Próximo passo imediato
 - Nenhuma pendência crítica na documentação pt-BR
@@ -646,7 +646,7 @@ python tools/env_doctor.py
 - Linux: `/mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge/docs/pt-br/`
 
 
-## [2026-06-02 01:41] — Auditoria final completa + v1.0.14
+## [2026-06-02 01:41] - Auditoria final completa + v1.0.14
 
 ### Estado ao encerrar
 - 975 módulos validados (975/975 sem erros)
@@ -697,7 +697,7 @@ python tools/env_doctor.py
 - Linux: /mnt/predator/Projetos-SafeLabs/submodules/OT/IndustrialXPL-Forge
 
 
-## [2026-06-02 01:49] — v1.0.15 final, zero pendencias confirmadas
+## [2026-06-02 01:49] - v1.0.15 final, zero pendencias confirmadas
 
 ### Estado ao encerrar
 - **972 modulos** validados (972/972, 0 erros)
@@ -933,14 +933,14 @@ Path: offsecforge/intel/industrialxpl_bridge.py (a implementar)
 ### O que foi feito nesta sessão
 - Estudo comportamental de 7 famílias ICS/SCADA: Stuxnet, TRITON, BlackEnergy, Shamoon, Narilam, ZeroCleare, EquationGroup
 - Identificado material local em Labs disponível para integração imediata:
-  - `d:\Projects\Labs\malware-samples\TRISIS-TRITON-HATMAN\` — YARA rules + código decompilado TriStation 1131
-  - `d:\Projects\Labs\malware-samples\ICS4U-Malware\` — SMAL (Stuxnet-like teaching tool) + Triton Python decompilado
-  - `d:\Projects\Labs\pcap-analysis\ICS-OT\` — PCAPs reais ICS/OT
+  - `d:\Projects\Labs\malware-samples\TRISIS-TRITON-HATMAN\` - YARA rules + código decompilado TriStation 1131
+  - `d:\Projects\Labs\malware-samples\ICS4U-Malware\` - SMAL (Stuxnet-like teaching tool) + Triton Python decompilado
+  - `d:\Projects\Labs\pcap-analysis\ICS-OT\` - PCAPs reais ICS/OT
 - Gap analysis completo: HDD firmware implant e USB C2 são referência apenas; TriStation e S7 block inject são PLAN
 
-### Próximo passo imediato (Bloco 2 — retomar aqui)
+### Próximo passo imediato (Bloco 2 - retomar aqui)
 
-1. **Bloco 2A — Recursos imediatos (sem código novo):**
+1. **Bloco 2A - Recursos imediatos (sem código novo):**
 `powershell
 cd "d:\Projects\UniaoGeek\XPL-Suite\IndustrialXPL-Forge"
 New-Item -ItemType Directory -Force "resources\yara\triton"
@@ -953,12 +953,12 @@ New-Item -ItemType Directory -Force "resources\pcaps"
 Copy-Item "d:\Projects\Labs\pcap-analysis\ICS-OT\*" `resources\pcaps\` -Recurse
 ```
 
-2. **Bloco 2B — Módulos TTP (código novo):**
-   - `modules/exploits/schneider/triton_tristation_abuse.py` — TriStation 1131 protocol abuse (T0800)
-   - `modules/exploits/scada/blackenergy_opc_enum.py` — OPC server enumeration (T0802)
-   - `modules/exploits/siemens/stuxnet_s7_block_inject.py` — Step 7 block injection (T0821)
-   - `modules/assessment/shamoon_mbr_resilience.py` — MBR wipe resilience test (T0826)
-   - `modules/assessment/narilam_db_corruption.py` — Historian/DB corruption test (T0882)
+2. **Bloco 2B - Módulos TTP (código novo):**
+   - `modules/exploits/schneider/triton_tristation_abuse.py` - TriStation 1131 protocol abuse (T0800)
+   - `modules/exploits/scada/blackenergy_opc_enum.py` - OPC server enumeration (T0802)
+   - `modules/exploits/siemens/stuxnet_s7_block_inject.py` - Step 7 block injection (T0821)
+   - `modules/assessment/shamoon_mbr_resilience.py` - MBR wipe resilience test (T0826)
+   - `modules/assessment/narilam_db_corruption.py` - Historian/DB corruption test (T0882)
 
 ### Pendências conhecidas
 - [ ] Bloco 2A: copiar TRISIS YARA + decompiled_code para resources/
@@ -967,7 +967,7 @@ Copy-Item "d:\Projects\Labs\pcap-analysis\ICS-OT\*" `resources\pcaps\` -Recurse
 - [ ] Bloco 2B: blackenergy_opc_enum.py
 - [ ] Bloco 2B: shamoon_mbr_resilience.py
 - [ ] Bloco 2B: narilam_db_corruption.py (Historian DB)
-- [ ] Bloco 2C: equation_hdd_firmware.py (referência apenas — sem execução)
+- [ ] Bloco 2C: equation_hdd_firmware.py (referência apenas - sem execução)
 - [ ] Bloco 2D: 64 módulos SCADA MSF pendentes do Bloco 2 original
 
 ### Referências
@@ -982,21 +982,21 @@ Copy-Item "d:\Projects\Labs\pcap-analysis\ICS-OT\*" `resources\pcaps\` -Recurse
 ### Novos módulos criados
 
 #### industrialxpl/modules/protocols/modbus/
-- **modbus_scanner.py** — Suite completa de ataques Modbus TCP (porta 502).
+- **modbus_scanner.py** - Suite completa de ataques Modbus TCP (porta 502).
   read_holding_registers, read_coils, write_single_coil (impacto físico: ligar/desligar),
   write_single_register (setpoints), stealth_setpoint_modify (Stuxnet-inspired gradual),
-  scan_device, dos_flood. Sem autenticação — protocolo padrão.
+  scan_device, dos_flood. Sem autenticação - protocolo padrão.
 
 #### industrialxpl/modules/protocols/iec61850/
-- **goose_spoofer.py** — IEC 61850 GOOSE spoofing nativo.
+- **goose_spoofer.py** - IEC 61850 GOOSE spoofing nativo.
   Injeta frames GOOSE falsas via raw Ethernet socket (AF_PACKET). Trip=True causa
   trip não autorizado de disjuntores em subestações elétricas (IMPACTO FÍSICO DIRETO).
   DoS mode: GOOSE flood para saturar processamento de relés de proteção.
 
 #### industrialxpl/modules/protocols/mqtt/
-- **mqtt_attack_suite.py** — Suite de ataques MQTT (porta 1883).
-  wildcard_subscribe (#) — recebe TODOS os tópicos sem auth,
-  inject_command — publica em tópicos de controle sem auth.
+- **mqtt_attack_suite.py** - Suite de ataques MQTT (porta 1883).
+  wildcard_subscribe (#) - recebe TODOS os tópicos sem auth,
+  inject_command - publica em tópicos de controle sem auth.
   Implementação nativa do protocolo MQTT 3.1.1 via sockets.
 
 ### Pendências

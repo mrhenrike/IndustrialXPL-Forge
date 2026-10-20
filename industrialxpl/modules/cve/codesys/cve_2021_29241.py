@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2021-29241 — CODESYS Linux SL OPC UA.
+"""IXF CVE Module - CVE-2021-29241 - CODESYS Linux SL OPC UA.
 
 OPC UA protocol stack DoS
 
@@ -32,8 +32,8 @@ _SEVERITY      = "HIGH"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2021-29241 — CODESYS Linux SL OPC UA (HIGH)",
-        "description":   "CODESYS Linux SL OPC UA — OPC UA protocol stack DoS. "
+        "name":          "CVE-2021-29241 - CODESYS Linux SL OPC UA (HIGH)",
+        "description":   "CODESYS Linux SL OPC UA - OPC UA protocol stack DoS. "
                          "CVSS 7.5 (HIGH). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2021-29241...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — CODESYS Linux SL OPC UA may be present. "
+                f"Port {self.port} open on {self.target} - CODESYS Linux SL OPC UA may be present. "
                 "CVE-2021-29241 (HIGH CVSS 7.5): OPC UA protocol stack DoS. "
                 "Manual version verification required."
             )

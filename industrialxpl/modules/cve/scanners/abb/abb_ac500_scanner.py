@@ -1,4 +1,4 @@
-"""IXF Scanner — ABB AC500/System 800xA Discovery."""
+"""IXF Scanner - ABB AC500/System 800xA Discovery."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptInteger, mute,

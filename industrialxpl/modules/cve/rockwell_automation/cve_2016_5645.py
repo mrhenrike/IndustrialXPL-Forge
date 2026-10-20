@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2016-5645 — Rockwell Automation 1766-L32 EIP.
+"""IXF CVE Module - CVE-2016-5645 - Rockwell Automation 1766-L32 EIP.
 
 Ethernet interface DoS
 
@@ -32,8 +32,8 @@ _SEVERITY      = "MEDIUM"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2016-5645 — Rockwell Automation 1766-L32 EIP (MEDIUM)",
-        "description":   "Rockwell Automation 1766-L32 EIP — Ethernet interface DoS. "
+        "name":          "CVE-2016-5645 - Rockwell Automation 1766-L32 EIP (MEDIUM)",
+        "description":   "Rockwell Automation 1766-L32 EIP - Ethernet interface DoS. "
                          "CVSS 5.0 (MEDIUM). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2016-5645...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Rockwell Automation 1766-L32 EIP may be present. "
+                f"Port {self.port} open on {self.target} - Rockwell Automation 1766-L32 EIP may be present. "
                 "CVE-2016-5645 (MEDIUM CVSS 5.0): Ethernet interface DoS. "
                 "Manual version verification required."
             )

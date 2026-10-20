@@ -1,4 +1,4 @@
-"""ICSForge detection scenarios — ATT&CK ICS lab YAML loader."""
+"""ICSForge detection scenarios - ATT&CK ICS lab YAML loader."""
 
 
 import json

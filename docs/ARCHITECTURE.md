@@ -1,4 +1,4 @@
-# IndustrialXPL-Forge — Architecture
+# IndustrialXPL-Forge - Architecture
 
 Official repository: https://github.com/mrhenrike/IndustrialXPL-Forge
 

@@ -13,7 +13,7 @@ from pathlib import Path
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         prog="ixf",
-        description="IndustrialXPL-Forge — OT/ICS/SCADA Security Assessment Framework",
+        description="IndustrialXPL-Forge - OT/ICS/SCADA Security Assessment Framework",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Resource file format (.rc):

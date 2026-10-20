@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2019-6557 — GE Reason RT430 RTU (CRITICAL CVSS 9.8).
+"""IXF CVE CVE-2019-6557 - GE Reason RT430 RTU (CRITICAL CVSS 9.8).
 
 Exploit type: Command injection unauthenticated
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — GE Reason RT430 RTU may be present. CVE-2019-6557 CRITICAL CVSS 9.8.")
+            print_success(f"Port {self.port} open - GE Reason RT430 RTU may be present. CVE-2019-6557 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

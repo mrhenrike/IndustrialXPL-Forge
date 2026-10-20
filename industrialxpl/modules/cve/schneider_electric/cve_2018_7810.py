@@ -45,4 +45,4 @@ class Exploit(Exploit):
                 description=f"CVE-2018-7810: {self.target}:{self.port}.  Buffer overflow remote code execution. CVSS 9.8.",
                 mitre_techniques=["T0883"],
             ); return
-        print_success(f"CVE-2018-7810 CRITICAL — port {self.port} open.") if self.check() else print_error("Not responding.")
+        print_success(f"CVE-2018-7810 CRITICAL - port {self.port} open.") if self.check() else print_error("Not responding.")

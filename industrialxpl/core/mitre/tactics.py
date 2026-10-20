@@ -1,4 +1,4 @@
-"""MITRE ATT&CK for ICS v19 — tactics constants and aliases."""
+"""MITRE ATT&CK for ICS v19 - tactics constants and aliases."""
 
 TACTICS: dict[str, str] = {
     "TA0108": "Initial Access",

@@ -160,7 +160,7 @@ def study_url(entry: dict) -> dict:
         text = ""
         result["note"] = "binary or unsupported"
 
-    # store excerpt only — no full PDF in repo
+    # store excerpt only - no full PDF in repo
     excerpt = text[:8000] if text else ""
     result["excerpt"] = excerpt
     result.update(_score_text(text, url))

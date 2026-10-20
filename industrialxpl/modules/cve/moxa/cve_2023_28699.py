@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2023-28699 — Moxa MXsecurity series (CRITICAL CVSS 9.8).
+"""IXF CVE CVE-2023-28699 - Moxa MXsecurity series (CRITICAL CVSS 9.8).
 
 Exploit type: Improper certificate validation RCE
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Moxa MXsecurity series may be present. CVE-2023-28699 CRITICAL CVSS 9.8.")
+            print_success(f"Port {self.port} open - Moxa MXsecurity series may be present. CVE-2023-28699 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

@@ -1,4 +1,4 @@
-"""TRITON/TRISIS TriStation Protocol — Native Payload Implementation.
+"""TRITON/TRISIS TriStation Protocol - Native Payload Implementation.
 
 AUTHORIZED USE ONLY. See contrib/native-payloads/USAGE.md for legal requirements.
 

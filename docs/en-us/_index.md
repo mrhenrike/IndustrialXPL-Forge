@@ -1,4 +1,4 @@
-# IndustrialXPL-Forge — Documentation
+# IndustrialXPL-Forge - Documentation
 
 > **The World's Largest OT/ICS/SCADA Security Assessment & Exploitation Framework**
 
@@ -12,7 +12,7 @@
 
 | # | Document | Description | Lines |
 |---|----------|-------------|-------|
-| — | [FAQ](00-faq.md) | Common questions and answers | ~330 |
+| - | [FAQ](00-faq.md) | Common questions and answers | ~330 |
 | 1 | [Installation](01-installation.md) | Requirements, pip, source, all extras, Docker, offline, upgrade | ~1149 |
 | 2 | [Quick Start](02-quick-start.md) | 10 complete annotated terminal sessions | ~1145 |
 | 3 | [Shell Reference](03-shell-reference.md) | All 36 commands with full terminal I/O | ~2868 |
@@ -27,7 +27,7 @@
 | 12 | [Assessment & Compliance](12-assessment-compliance.md) | All 18 assessment modules with complete terminal output | ~1037 |
 | 13 | [Module Catalog](13-module-catalog.md) | Complete searchable catalog of all 1193 modules | ~1585 |
 | 14 | [NSE Scripts](14-nse-scripts.md) | 15 ICS Nmap scripts: install, examples, template, troubleshooting | ~1004 |
-| — | [Troubleshooting](15-troubleshooting.md) | Common issues and solutions | ~408 |
+| - | [Troubleshooting](15-troubleshooting.md) | Common issues and solutions | ~408 |
 
 ---
 

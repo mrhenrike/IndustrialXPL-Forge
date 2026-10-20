@@ -1,4 +1,4 @@
-"""Per-vendor OT discovery probes — stdlib UDP/TCP."""
+"""Per-vendor OT discovery probes - stdlib UDP/TCP."""
 
 
 import socket

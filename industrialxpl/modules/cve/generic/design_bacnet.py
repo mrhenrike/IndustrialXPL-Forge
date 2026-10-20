@@ -1,4 +1,4 @@
-"""IXF CVE Module — DESIGN-BACNET — Generic BACnet/IP (standard).
+"""IXF CVE Module - DESIGN-BACNET - Generic BACnet/IP (standard).
 
 No authentication by ASHRAE 135 design
 
@@ -32,8 +32,8 @@ _SEVERITY      = "HIGH"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "DESIGN-BACNET — Generic BACnet/IP (standard) (HIGH)",
-        "description":   "Generic BACnet/IP (standard) — No authentication by ASHRAE 135 design. "
+        "name":          "DESIGN-BACNET - Generic BACnet/IP (standard) (HIGH)",
+        "description":   "Generic BACnet/IP (standard) - No authentication by ASHRAE 135 design. "
                          "CVSS 7.5 (HIGH). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for DESIGN-BACNET...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Generic BACnet/IP (standard) may be present. "
+                f"Port {self.port} open on {self.target} - Generic BACnet/IP (standard) may be present. "
                 "DESIGN-BACNET (HIGH CVSS 7.5): No authentication by ASHRAE 135 design. "
                 "Manual version verification required."
             )

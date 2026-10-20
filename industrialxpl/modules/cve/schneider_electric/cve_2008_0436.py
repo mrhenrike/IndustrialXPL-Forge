@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2008-0436 — Schneider Electric CitectSCADA ODBC.
+"""IXF CVE Module - CVE-2008-0436 - Schneider Electric CitectSCADA ODBC.
 
 Buffer overflow RCE
 
@@ -32,8 +32,8 @@ _SEVERITY      = "CRITICAL"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2008-0436 — Schneider Electric CitectSCADA ODBC (CRITICAL)",
-        "description":   "Schneider Electric CitectSCADA ODBC — Buffer overflow RCE. "
+        "name":          "CVE-2008-0436 - Schneider Electric CitectSCADA ODBC (CRITICAL)",
+        "description":   "Schneider Electric CitectSCADA ODBC - Buffer overflow RCE. "
                          "CVSS 10.0 (CRITICAL). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2008-0436...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Schneider Electric CitectSCADA ODBC may be present. "
+                f"Port {self.port} open on {self.target} - Schneider Electric CitectSCADA ODBC may be present. "
                 "CVE-2008-0436 (CRITICAL CVSS 10.0): Buffer overflow RCE. "
                 "Manual version verification required."
             )

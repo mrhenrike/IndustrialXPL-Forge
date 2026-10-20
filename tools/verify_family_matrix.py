@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify all 12 malware + 7 ics-tools families — no runtime surprises."""
+"""Verify all 12 malware + 7 ics-tools families - no runtime surprises."""
 from __future__ import annotations
 
 import sys
@@ -83,7 +83,7 @@ def check_ics() -> list[str]:
 
 
 def check_phase_registrations(phase_id: str | None = None) -> list[str]:
-    """Optional hook for incorporation gates — extend per phase."""
+    """Optional hook for incorporation gates - extend per phase."""
     failures: list[str] = []
     if phase_id in (None, "F-AIM0", "F-AIM1"):
         manifest = ROOT / "industrialxpl/resources/research/awesome-ics-malware/manifest.json"

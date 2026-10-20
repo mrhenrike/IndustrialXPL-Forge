@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2020-25240 — Siemens SINEC NMS (HIGH CVSS 7.5).
+"""IXF CVE CVE-2020-25240 - Siemens SINEC NMS (HIGH CVSS 7.5).
 
 Exploit type: Arbitrary file write via upload
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Siemens SINEC NMS may be present. CVE-2020-25240 HIGH CVSS 7.5.")
+            print_success(f"Port {self.port} open - Siemens SINEC NMS may be present. CVE-2020-25240 HIGH CVSS 7.5.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

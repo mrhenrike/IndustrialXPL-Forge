@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2023-46690 — Delta Electronics CNCSoft-G2 motion control (HIGH CVSS 7.8).
+"""IXF CVE CVE-2023-46690 - Delta Electronics CNCSoft-G2 motion control (HIGH CVSS 7.8).
 
 Exploit type: Stack buffer overflow code exec
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Delta Electronics CNCSoft-G2 motion control may be present. CVE-2023-46690 HIGH CVSS 7.8.")
+            print_success(f"Port {self.port} open - Delta Electronics CNCSoft-G2 motion control may be present. CVE-2023-46690 HIGH CVSS 7.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

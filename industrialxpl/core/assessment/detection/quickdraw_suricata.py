@@ -1,4 +1,4 @@
-"""Quickdraw/Suricata rule generator — NSE expansion helper (F20)."""
+"""Quickdraw/Suricata rule generator - NSE expansion helper (F20)."""
 
 
 from typing import Any

@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2022-0228 — ABB Cyber Security Configurator (HIGH CVSS 7.8).
+"""IXF CVE CVE-2022-0228 - ABB Cyber Security Configurator (HIGH CVSS 7.8).
 
 Exploit type: Privilege escalation
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — ABB Cyber Security Configurator may be present. CVE-2022-0228 HIGH CVSS 7.8.")
+            print_success(f"Port {self.port} open - ABB Cyber Security Configurator may be present. CVE-2022-0228 HIGH CVSS 7.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

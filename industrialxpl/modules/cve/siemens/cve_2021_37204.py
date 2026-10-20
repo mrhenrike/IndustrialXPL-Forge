@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2021-37204 — Siemens SIMATIC Drive Controller (HIGH CVSS 7.5).
+"""IXF CVE CVE-2021-37204 - Siemens SIMATIC Drive Controller (HIGH CVSS 7.5).
 
 Exploit type: Denial of service vulnerability
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Siemens SIMATIC Drive Controller may be present. CVE-2021-37204 HIGH CVSS 7.5.")
+            print_success(f"Port {self.port} open - Siemens SIMATIC Drive Controller may be present. CVE-2021-37204 HIGH CVSS 7.5.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

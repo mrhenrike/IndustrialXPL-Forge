@@ -1,4 +1,4 @@
-"""IXF NSE Manager — Nmap Scripting Engine integration.
+"""IXF NSE Manager - Nmap Scripting Engine integration.
 
 Handles detection of Nmap installation, location of the scripts directory,
 and installation of IXF OT/ICS NSE scripts into Nmap's scripts folder.
@@ -208,9 +208,9 @@ class NseManager:
 
         Returns a result dict with keys:
           success   : bool
-          installed : list[str] — scripts successfully installed
-          skipped   : list[str] — scripts already present (not force)
-          errors    : list[str] — installation failures
+          installed : list[str] - scripts successfully installed
+          skipped   : list[str] - scripts already present (not force)
+          errors    : list[str] - installation failures
           scripts_dir: str
         """
         result = {
@@ -251,7 +251,7 @@ class NseManager:
                 result["installed"].append(src.name)
             except PermissionError:
                 result["errors"].append(
-                    f"{src.name}: PermissionError — "
+                    f"{src.name}: PermissionError - "
                     "run as administrator (Windows) or with sudo (Linux/macOS)"
                 )
             except Exception as exc:
@@ -299,7 +299,7 @@ class NseManager:
             print_success(f"Nmap binary : {nmap_bin}")
             print_success(f"Version     : {version}")
         else:
-            print_error("Nmap NOT installed — download from https://nmap.org/download")
+            print_error("Nmap NOT installed - download from https://nmap.org/download")
 
         if scripts_dir:
             print_success(f"Scripts dir : {scripts_dir}")

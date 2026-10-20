@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2024-21903 — Siemens SINEMA Remote Connect Server (HIGH CVSS 8.4).
+"""IXF CVE CVE-2024-21903 - Siemens SINEMA Remote Connect Server (HIGH CVSS 8.4).
 
 Exploit type: Path traversal server-side
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Siemens SINEMA Remote Connect Server may be present. CVE-2024-21903 HIGH CVSS 8.4.")
+            print_success(f"Port {self.port} open - Siemens SINEMA Remote Connect Server may be present. CVE-2024-21903 HIGH CVSS 8.4.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

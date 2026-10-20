@@ -1,1 +1,1 @@
-# IXF native OTscan — reference marker (MIT reimplementation, no upstream vendor tree).
+# IXF native OTscan - reference marker (MIT reimplementation, no upstream vendor tree).

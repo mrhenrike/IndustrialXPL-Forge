@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2019-12257 — Wind River VxWorks 6.x.
+"""IXF CVE Module - CVE-2019-12257 - Wind River VxWorks 6.x.
 
 DHCP buffer overflow
 
@@ -32,8 +32,8 @@ _SEVERITY      = "HIGH"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2019-12257 — Wind River VxWorks 6.x (HIGH)",
-        "description":   "Wind River VxWorks 6.x — DHCP buffer overflow. "
+        "name":          "CVE-2019-12257 - Wind River VxWorks 6.x (HIGH)",
+        "description":   "Wind River VxWorks 6.x - DHCP buffer overflow. "
                          "CVSS 8.8 (HIGH). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2019-12257...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Wind River VxWorks 6.x may be present. "
+                f"Port {self.port} open on {self.target} - Wind River VxWorks 6.x may be present. "
                 "CVE-2019-12257 (HIGH CVSS 8.8): DHCP buffer overflow. "
                 "Manual version verification required."
             )

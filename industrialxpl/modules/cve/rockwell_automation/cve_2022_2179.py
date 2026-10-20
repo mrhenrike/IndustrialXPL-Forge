@@ -45,4 +45,4 @@ class Exploit(Exploit):
                 description=f"CVE-2022-2179: {self.target}:{self.port}.  Remote code execution path traversal. CVSS 7.5.",
                 mitre_techniques=["T0883"],
             ); return
-        print_success(f"CVE-2022-2179 HIGH — port {self.port} open.") if self.check() else print_error("Not responding.")
+        print_success(f"CVE-2022-2179 HIGH - port {self.port} open.") if self.check() else print_error("Not responding.")

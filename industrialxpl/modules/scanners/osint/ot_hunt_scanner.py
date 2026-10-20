@@ -1,16 +1,16 @@
-"""OT Hunt Scanner — OSINT-based OT/ICS Device Detection.
+"""OT Hunt Scanner - OSINT-based OT/ICS Device Detection.
 
 Implements targeted probes for three device categories identified in
 ZeronTek OT Hunt research reports:
 
-  1. Honeywell IQ4E — BACnet/IP probe (UDP 47808) checking for controller
+  1. Honeywell IQ4E - BACnet/IP probe (UDP 47808) checking for controller
      identification in the Who-Is / I-Am exchange.
 
-  2. Schneider SCADAPack — dual probe:
+  2. Schneider SCADAPack - dual probe:
      - VxWorks debug interface (UDP 17185) used in the 2023 CISA advisory
      - Modbus TCP banner (TCP 502) for SCADAPack identification.
 
-  3. Unitronics PCOM — TCP 20256 probe using the PCOM ASCII GET_ID command,
+  3. Unitronics PCOM - TCP 20256 probe using the PCOM ASCII GET_ID command,
      as documented in CISA advisory AA23-335A (2023 IRGC cyberattacks on US water).
 
 All probes are read-only. Simulate mode describes what would be probed
@@ -19,7 +19,7 @@ without sending any packets.
 References:
     CISA ICSA-22-242-08 (Honeywell IQ4E)
     CISA ICSA-10-214-01 (Schneider SCADAPack)
-    CISA AA23-335A (Unitronics PCOM — 2023 water sector attacks)
+    CISA AA23-335A (Unitronics PCOM - 2023 water sector attacks)
     ZeronTek OT Hunt reports
 """
 
@@ -77,13 +77,13 @@ _PCOM_PROBE = b"/001UNLGTELID\r"  # simplified GET_ID (UNLGT = Get PLC type)
 
 class Exploit(Exploit):
     __info__ = {
-        "name":         "OT Hunt Scanner — Honeywell IQ4E / Schneider SCADAPack / Unitronics PCOM",
+        "name":         "OT Hunt Scanner - Honeywell IQ4E / Schneider SCADAPack / Unitronics PCOM",
         "description":  "Read-only OT/ICS device scanner implementing three targeted probes "
                         "from ZeronTek OT Hunt research: (1) Honeywell IQ4E via BACnet Who-Is "
                         "broadcast on UDP 47808, (2) Schneider SCADAPack via VxWorks debug "
                         "probe on UDP 17185 and Modbus banner on TCP 502, "
                         "(3) Unitronics Vision/Samba via PCOM GET_ID on TCP 20256. "
-                        "All probes are read-only — no configuration change or disruption.",
+                        "All probes are read-only - no configuration change or disruption.",
         "authors":      ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":   (
             "https://www.cisa.gov/news-events/ics-advisories/icsa-22-242-08",
@@ -104,14 +104,14 @@ class Exploit(Exploit):
         "severity":     "INFO",
         "mitre_techniques": ["T0846", "T0888"],
         "mitre_tactics":    ["Discovery"],
-        "destructive_description": "Read-only probes — no device disruption expected.",
+        "destructive_description": "Read-only probes - no device disruption expected.",
     }
 
     target      = OptIP("", "Target IP to probe")
     check_type  = OptString("ALL", "Probe type: HONEYWELL | SCADAPACK | UNITRONICS | ALL")
     timeout     = OptInteger(3, "Socket timeout in seconds")
     simulate    = OptBool(True, "Simulate mode (default: True)")
-    destructive = OptBool(False, "Not applicable — probes are read-only")
+    destructive = OptBool(False, "Not applicable - probes are read-only")
 
     @mute
     def check(self) -> bool:
@@ -151,7 +151,7 @@ class Exploit(Exploit):
                         f"  [Honeywell IQ4E] BACnet I-Am from {addr[0]} ({len(data)} bytes): {hex_resp} ..."
                     )
                     print_info(
-                        "  CISA ICSA-22-242-08: Honeywell IQ4E responded — "
+                        "  CISA ICSA-22-242-08: Honeywell IQ4E responded - "
                         "potential unauthenticated BACnet exposure."
                     )
                 else:
@@ -172,7 +172,7 @@ class Exploit(Exploit):
             try:
                 data, addr = sock.recvfrom(512)
                 print_success(
-                    f"  [SCADAPack] VxWorks WDB response from {addr[0]} ({len(data)} bytes) — "
+                    f"  [SCADAPack] VxWorks WDB response from {addr[0]} ({len(data)} bytes) - "
                     "exposed debug agent (ICSA-10-214-01)!"
                 )
             except TimeoutError:
@@ -214,7 +214,7 @@ class Exploit(Exploit):
                         f"  [Unitronics PCOM] Response from {self.target} ({len(data)} bytes): '{decoded[:80]}'"
                     )
                     print_info(
-                        "  CISA AA23-335A: Unitronics PCOM exposed on TCP 20256 — "
+                        "  CISA AA23-335A: Unitronics PCOM exposed on TCP 20256 - "
                         "no authentication required (IRGC 2023 water sector attack vector)."
                     )
             except TimeoutError:
@@ -234,16 +234,16 @@ class Exploit(Exploit):
             DestructiveGate.print_simulation(
                 description=(
                     f"Would run OT Hunt probes against {self.target} (type={check}): "
-                    f"(1) Honeywell IQ4E: BACnet Who-Is to UDP {_BACNET_PORT} — "
+                    f"(1) Honeywell IQ4E: BACnet Who-Is to UDP {_BACNET_PORT} - "
                     "checks for unauthenticated BACnet exposure (ICSA-22-242-08); "
                     f"(2) Schneider SCADAPack: VxWorks WDB to UDP {_VXWORKS_PORT} and "
                     f"Modbus banner to TCP {_MODBUS_PORT} (ICSA-10-214-01); "
-                    f"(3) Unitronics PCOM: GET_ID to TCP {_PCOM_PORT} — "
+                    f"(3) Unitronics PCOM: GET_ID to TCP {_PCOM_PORT} - "
                     "2023 IRGC water utility attack vector (AA23-335A). "
                     "All probes are read-only."
                 ),
                 payload_hex=" ".join(f"{b:02X}" for b in _BACNET_WHO_IS),
-                payload_human="BACnet Who-Is (example probe — read-only)",
+                payload_human="BACnet Who-Is (example probe - read-only)",
                 mitre_techniques=["T0846", "T0888"],
             )
             print_info("\nProbes that would be executed:")

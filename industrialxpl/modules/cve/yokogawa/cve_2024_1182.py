@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2024-1182 — Yokogawa Vnet/IP engineering tool (HIGH CVSS 7.5).
+"""IXF CVE CVE-2024-1182 - Yokogawa Vnet/IP engineering tool (HIGH CVSS 7.5).
 
 Exploit type: Denial of service broadcast
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Yokogawa Vnet/IP engineering tool may be present. CVE-2024-1182 HIGH CVSS 7.5.")
+            print_success(f"Port {self.port} open - Yokogawa Vnet/IP engineering tool may be present. CVE-2024-1182 HIGH CVSS 7.5.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

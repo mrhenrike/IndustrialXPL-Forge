@@ -1,4 +1,4 @@
-"""IXF Scanner — Belden/Hirschmann Industrial Managed Switch. simulate=True."""
+"""IXF Scanner - Belden/Hirschmann Industrial Managed Switch. simulate=True."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptInteger, mute,

@@ -9,16 +9,16 @@ IXF integrates MITRE ATT&CK for ICS v19, mapping 1190+ modules to 74 of 90 techn
 1. [Tactic Overview](#tactic-overview)
 2. [Tactic Aliases](#tactic-aliases)
 3. [Technique Aliases](#technique-aliases)
-4. [mitre — Query a Technique](#mitre--query-a-technique)
-5. [mitre-list — Technique Index](#mitre-list--technique-index)
-6. [mitre-scan — Tactic Sweep](#mitre-scan--tactic-sweep)
-7. [mitre-all — Full Sweep](#mitre-all--full-sweep)
-8. [mitre-coverage — Coverage Report](#mitre-coverage--coverage-report)
-9. [mitre-report — Export](#mitre-report--export)
-10. [ttp — Execute a Technique](#ttp--execute-a-technique)
-11. [ttp-check — Passive Technique Check](#ttp-check--passive-technique-check)
-12. [ttp-simulate — Technique Simulation](#ttp-simulate--technique-simulation)
-13. [ttp-list — TTP Browser](#ttp-list--ttp-browser)
+4. [mitre - Query a Technique](#mitre--query-a-technique)
+5. [mitre-list - Technique Index](#mitre-list--technique-index)
+6. [mitre-scan - Tactic Sweep](#mitre-scan--tactic-sweep)
+7. [mitre-all - Full Sweep](#mitre-all--full-sweep)
+8. [mitre-coverage - Coverage Report](#mitre-coverage--coverage-report)
+9. [mitre-report - Export](#mitre-report--export)
+10. [ttp - Execute a Technique](#ttp--execute-a-technique)
+11. [ttp-check - Passive Technique Check](#ttp-check--passive-technique-check)
+12. [ttp-simulate - Technique Simulation](#ttp-simulate--technique-simulation)
+13. [ttp-list - TTP Browser](#ttp-list--ttp-browser)
 14. [Assessment Modules by Technique](#assessment-modules-by-technique)
 15. [Complete Technique-to-Module Mapping](#complete-technique-to-module-mapping)
 16. [ATT&CK Navigator JSON Format](#attck-navigator-json-format)
@@ -171,7 +171,7 @@ IXF accepts both the canonical MITRE technique ID and common aliases or short na
 
 ---
 
-## `mitre` — Query a Technique
+## `mitre` - Query a Technique
 
 Display detailed information about a specific MITRE ATT&CK for ICS technique, including mapped modules, tactic membership, and remediation notes.
 
@@ -186,7 +186,7 @@ ixf > mitre <technique_id>
 ixf > mitre T0819
 
   ╔══════════════════════════════════════════════════════════════════╗
-  ║  MITRE ATT&CK for ICS — Technique Detail                        ║
+  ║  MITRE ATT&CK for ICS - Technique Detail                        ║
   ╚══════════════════════════════════════════════════════════════════╝
 
   ID:          T0819
@@ -200,7 +200,7 @@ ixf > mitre T0819
     portals, and remote access gateways exposed directly to the internet
     or accessible from IT networks.
 
-  IXF Modules (top 10 shown — use `search T0819` to see all 47):
+  IXF Modules (top 10 shown - use `search T0819` to see all 47):
     cve/siemens/cve_2019_13945_scalance_x_rce
     cve/siemens/cve_2021_31894_s7_1500_rce
     cve/siemens/cve_2022_43767_wincc_path_traversal
@@ -231,7 +231,7 @@ ixf > mitre T0819
 ixf > mitre T0836
 
   ╔══════════════════════════════════════════════════════════════════╗
-  ║  MITRE ATT&CK for ICS — Technique Detail                        ║
+  ║  MITRE ATT&CK for ICS - Technique Detail                        ║
   ╚══════════════════════════════════════════════════════════════════╝
 
   ID:          T0836
@@ -241,7 +241,7 @@ ixf > mitre T0836
 
   Description:
     Adversaries modify operational parameters within the industrial
-    process — setpoints, PID gains, thresholds, limits — to affect the
+    process - setpoints, PID gains, thresholds, limits - to affect the
     physical process without triggering alarms, as long as the change
     stays within operator-visible ranges.
 
@@ -272,7 +272,7 @@ ixf > mitre T0836
 ixf > mitre T0843
 
   ╔══════════════════════════════════════════════════════════════════╗
-  ║  MITRE ATT&CK for ICS — Technique Detail                        ║
+  ║  MITRE ATT&CK for ICS - Technique Detail                        ║
   ╚══════════════════════════════════════════════════════════════════╝
 
   ID:          T0843
@@ -307,7 +307,7 @@ ixf > mitre T0843
 ixf > mitre T0878
 
   ╔══════════════════════════════════════════════════════════════════╗
-  ║  MITRE ATT&CK for ICS — Technique Detail                        ║
+  ║  MITRE ATT&CK for ICS - Technique Detail                        ║
   ╚══════════════════════════════════════════════════════════════════╝
 
   ID:          T0878
@@ -342,7 +342,7 @@ ixf > mitre T0878
 ixf > mitre T0816
 
   ╔══════════════════════════════════════════════════════════════════╗
-  ║  MITRE ATT&CK for ICS — Technique Detail                        ║
+  ║  MITRE ATT&CK for ICS - Technique Detail                        ║
   ╚══════════════════════════════════════════════════════════════════╝
 
   ID:          T0816
@@ -354,7 +354,7 @@ ixf > mitre T0816
     Adversaries restart or shut down devices to disrupt operations,
     clear volatile memory, trigger fail-safe behaviors, or create brief
     control gaps. In ICS, unexpected PLC restarts cause loss of control
-    for reboot duration (5–120 seconds) which may be sufficient to cause
+    for reboot duration (5-120 seconds) which may be sufficient to cause
     physical harm.
 
   IXF Modules:
@@ -371,7 +371,7 @@ ixf > mitre T0816
 
 ---
 
-## `mitre-list` — Technique Index
+## `mitre-list` - Technique Index
 
 Display all 74 covered techniques organized by ID, or filter by tactic.
 
@@ -380,7 +380,7 @@ Display all 74 covered techniques organized by ID, or filter by tactic.
 ```
 ixf > mitre-list
 
-  MITRE ATT&CK for ICS — Technique Index (74 covered / 90 total)
+  MITRE ATT&CK for ICS - Technique Index (74 covered / 90 total)
   ════════════════════════════════════════════════════════════════════════
   ID      Name                                        Modules  Tactic
   ──────────────────────────────────────────────────────────────────────
@@ -467,12 +467,12 @@ ixf > mitre-list
   Total covered: 74 techniques | Total modules: 1190+
 ```
 
-### Filtered by Tactic — Initial Access
+### Filtered by Tactic - Initial Access
 
 ```
 ixf > mitre-list --tactic initial-access
 
-  MITRE ATT&CK for ICS — Initial Access (TA0108)
+  MITRE ATT&CK for ICS - Initial Access (TA0108)
   ════════════════════════════════════════════════════════════════════════
   ID      Name                                        Modules
   ──────────────────────────────────────────────────────────────────────
@@ -489,12 +489,12 @@ ixf > mitre-list --tactic initial-access
   Total: 9/9 techniques covered (100%) | 80 modules
 ```
 
-### Filtered by Tactic — Discovery
+### Filtered by Tactic - Discovery
 
 ```
 ixf > mitre-list --tactic discovery
 
-  MITRE ATT&CK for ICS — Discovery (TA0102)
+  MITRE ATT&CK for ICS - Discovery (TA0102)
   ════════════════════════════════════════════════════════════════════════
   ID      Name                                        Modules
   ──────────────────────────────────────────────────────────────────────
@@ -513,12 +513,12 @@ ixf > mitre-list --tactic discovery
   Total: 11/13 techniques covered (84%) | 47 modules
 ```
 
-### Filtered by Tactic — Inhibit Response Function
+### Filtered by Tactic - Inhibit Response Function
 
 ```
 ixf > mitre-list --tactic inhibit
 
-  MITRE ATT&CK for ICS — Inhibit Response Function (TA0107)
+  MITRE ATT&CK for ICS - Inhibit Response Function (TA0107)
   ════════════════════════════════════════════════════════════════════════
   ID      Name                                        Modules
   ──────────────────────────────────────────────────────────────────────
@@ -541,12 +541,12 @@ ixf > mitre-list --tactic inhibit
   [!] Not covered: T0805, T0829, T0869 (C2 overlap), T0880 (in Impact)
 ```
 
-### Filtered by Tactic — Impair Process Control
+### Filtered by Tactic - Impair Process Control
 
 ```
 ixf > mitre-list --tactic impair
 
-  MITRE ATT&CK for ICS — Impair Process Control (TA0106)
+  MITRE ATT&CK for ICS - Impair Process Control (TA0106)
   ════════════════════════════════════════════════════════════════════════
   ID      Name                                        Modules
   ──────────────────────────────────────────────────────────────────────
@@ -564,12 +564,12 @@ ixf > mitre-list --tactic impair
   [!] Not covered: T0821 (Modify Controller Tasking), T0837 (Module Firmware)
 ```
 
-### Filtered by Tactic — Impact
+### Filtered by Tactic - Impact
 
 ```
 ixf > mitre-list --tactic impact
 
-  MITRE ATT&CK for ICS — Impact (TA0105)
+  MITRE ATT&CK for ICS - Impact (TA0105)
   ════════════════════════════════════════════════════════════════════════
   ID      Name                                        Modules
   ──────────────────────────────────────────────────────────────────────
@@ -589,7 +589,7 @@ ixf > mitre-list --tactic impact
 
 ---
 
-## `mitre-scan` — Tactic Sweep
+## `mitre-scan` - Tactic Sweep
 
 Run all techniques of an entire tactic against a target or subnet. Safe by default (simulate=True).
 
@@ -604,7 +604,7 @@ ixf > mitre-scan <tactic|technique_id> <target> [--live] [--rate-limit <ms>] [--
 ixf > mitre-scan discovery 192.168.1.0/24
 
   ╔══════════════════════════════════════════════════════════════════╗
-  ║  MITRE ATT&CK for ICS — Tactic Sweep                            ║
+  ║  MITRE ATT&CK for ICS - Tactic Sweep                            ║
   ╚══════════════════════════════════════════════════════════════════╝
   Tactic:    Discovery (TA0102)
   Target:    192.168.1.0/24
@@ -777,7 +777,7 @@ ixf > mitre-scan initial-access 10.0.0.100
 ```
 ixf > mitre-scan discovery 192.168.50.0/24 --live
 
-  [!] WARNING: Live mode active — packets WILL be sent to targets
+  [!] WARNING: Live mode active - packets WILL be sent to targets
   [!] Ensure you have written authorization before proceeding
   [?] Confirm live scan against 192.168.50.0/24? [yes/no]: yes
 
@@ -788,10 +788,10 @@ ixf > mitre-scan discovery 192.168.50.0/24 --live
 
   ─── T0840: Network Connection Enumeration ────
   [1/2] scanners/ics/modbus_scanner
-    [+] 192.168.50.10 — Modbus device detected (Unit 1, FC43 MEID supported)
-    [+] 192.168.50.22 — Modbus device detected (Unit 1-3)
+    [+] 192.168.50.10 - Modbus device detected (Unit 1, FC43 MEID supported)
+    [+] 192.168.50.22 - Modbus device detected (Unit 1-3)
   [2/2] scanners/ics/enip_scanner
-    [+] 192.168.50.30 — EtherNet/IP node: 1756-L85E ControlLogix
+    [+] 192.168.50.30 - EtherNet/IP node: 1756-L85E ControlLogix
 
   [+] Discovery scan complete: 3 live devices identified
 ```
@@ -817,7 +817,7 @@ ixf > mitre-scan lateral-movement 192.168.1.100 --rate-limit 1000 --output /opt/
 
 ---
 
-## `mitre-all` — Full Sweep
+## `mitre-all` - Full Sweep
 
 Run all 74 mapped techniques across all 12 tactics in simulate mode. This is the most comprehensive single-target assessment available in IXF.
 
@@ -830,10 +830,10 @@ ixf > mitre-all <target> [--rate-limit <ms>] [--output <file>] [--skip-tactic <t
 ixf > mitre-all 192.168.1.100
 
   ╔══════════════════════════════════════════════════════════════════╗
-  ║  IXF — Full MITRE ATT&CK for ICS Sweep                          ║
+  ║  IXF - Full MITRE ATT&CK for ICS Sweep                          ║
   ╚══════════════════════════════════════════════════════════════════╝
   Target:     192.168.1.100
-  Mode:       SIMULATE (safe — 0 live packets)
+  Mode:       SIMULATE (safe - 0 live packets)
   Tactics:    12
   Techniques: 74
   Modules:    1190+
@@ -977,7 +977,7 @@ ixf > mitre-all 192.168.1.100
 
 ---
 
-## `mitre-coverage` — Coverage Report
+## `mitre-coverage` - Coverage Report
 
 Display the current IXF coverage against the MITRE ATT&CK for ICS framework.
 
@@ -985,7 +985,7 @@ Display the current IXF coverage against the MITRE ATT&CK for ICS framework.
 ixf > mitre-coverage
 
   ╔══════════════════════════════════════════════════════════════════╗
-  ║  IXF — MITRE ATT&CK for ICS Coverage Report                     ║
+  ║  IXF - MITRE ATT&CK for ICS Coverage Report                     ║
   ║  Framework version: v19  |  IXF version: 2.4.0                  ║
   ╚══════════════════════════════════════════════════════════════════╝
 
@@ -1023,11 +1023,11 @@ ixf > mitre-coverage
   TA0103  T0820.001  Evasion via legitimate OT protocols
   TA0102  T0841.001  Wireless network sniffing
   TA0102  T0868     Detect Program State (no modules yet)
-  TA0107  T0805     Block Serial COM (physical layer — hardware required)
+  TA0107  T0805     Block Serial COM (physical layer - hardware required)
   TA0107  T0829     Loss of Safety (maps to T0880 in IXF)
   TA0107  T0892     Change Credential (inhibit variant)
-  TA0107  T0895     Autorun Image (USB autorun — requires endpoint access)
-  TA0107  T0896     Loss of Protection (partial — assessed via T0878)
+  TA0107  T0895     Autorun Image (USB autorun - requires endpoint access)
+  TA0107  T0896     Loss of Protection (partial - assessed via T0878)
   TA0107  T0897     Loss of Communication (planned)
   TA0106  T0821     Modify Controller Tasking (limited vendor support)
   TA0106  T0837     Module Firmware (requires physical proximity)
@@ -1040,7 +1040,7 @@ ixf > mitre-coverage
 
 ---
 
-## `mitre-report` — Export
+## `mitre-report` - Export
 
 Generate reports and exports in multiple formats.
 
@@ -1070,7 +1070,7 @@ The exported layer file follows the [ATT&CK Navigator layer schema v4.5](https:/
 
 ```json
 {
-  "name": "IXF — MITRE ATT&CK for ICS Coverage",
+  "name": "IXF - MITRE ATT&CK for ICS Coverage",
   "versions": {
     "attack": "14",
     "navigator": "4.9",
@@ -1143,7 +1143,7 @@ The exported layer file follows the [ATT&CK Navigator layer schema v4.5](https:/
       "tactic": "inhibit-response-function",
       "score": 0,
       "color": "#ffffff",
-      "comment": "Not covered — Block Serial COM requires physical layer access (RS-485 tap)",
+      "comment": "Not covered - Block Serial COM requires physical layer access (RS-485 tap)",
       "enabled": true
     }
   ],
@@ -1241,7 +1241,7 @@ The CSV includes columns: `technique_id`, `technique_name`, `tactic`, `covered`,
 
 ---
 
-## `ttp` — Execute a Technique
+## `ttp` - Execute a Technique
 
 Run all modules mapped to a specific MITRE technique against a target. By default runs in simulate mode.
 
@@ -1250,13 +1250,13 @@ Run all modules mapped to a specific MITRE technique against a target. By defaul
 ixf > ttp <technique_id> <target> [--stop-on-first] [--rate-limit <ms>] [--output <file>] [--destructive]
 ```
 
-### Full Output — T0843 Program Download
+### Full Output - T0843 Program Download
 
 ```
 ixf > ttp T0843 192.168.1.100
 
   ╔══════════════════════════════════════════════════════════════════╗
-  ║  IXF TTP Runner — T0843: Program Download                       ║
+  ║  IXF TTP Runner - T0843: Program Download                       ║
   ╚══════════════════════════════════════════════════════════════════╝
   Target:    192.168.1.100
   Modules:   12
@@ -1305,7 +1305,7 @@ ixf > ttp T0843 192.168.1.100
 
   [5/12] exploits/protocols/enip/enip_program_download_controllogix
   ──────────────────────────────────────────────────────────────────
-  EtherNet/IP CIP Program Download — ControlLogix 1756
+  EtherNet/IP CIP Program Download - ControlLogix 1756
   Target port: 44818 (EtherNet/IP CIP)
   [SIMULATE] Would use CIP path: Backplane, slot 0 (controller), then send
   CIP service 0x0E (Get Attribute Single) to verify controller state before
@@ -1323,7 +1323,7 @@ ixf > ttp T0843 192.168.1.100
 
   [7/12] assessment/mitre_ics/t0843_program_download
   ──────────────────────────────────────────────────────────────────
-  T0843 Assessment — Verify PLC Allows Unauthenticated Program Download
+  T0843 Assessment - Verify PLC Allows Unauthenticated Program Download
   [SIMULATE] Passive probe: check if target responds to S7comm port 102,
   EtherNet/IP port 44818, and FINS port 9600. Identify vendor/model.
   Report whether authentication is required for program download.
@@ -1390,14 +1390,14 @@ ixf > ttp T0843 192.168.1.100
 ```
 # Stop after first module returns a positive check
 ixf > ttp T0859 192.168.1.100 --stop-on-first
-[*] TTP T0859 (Valid Accounts) — 37 modules — stop-on-first=True
+[*] TTP T0859 (Valid Accounts) - 37 modules - stop-on-first=True
 [*] [1/37] creds/siemens/s7_default_passwords
   [SIMULATE] Would test 12 known Siemens S7 default credentials
 [+] Stopping: first module complete (simulate)
 
 # Rate limit 500ms between modules
 ixf > ttp T0836 10.0.0.100 --rate-limit 500
-[*] TTP T0836 (Modify Parameter) — 18 modules — rate-limit=500ms
+[*] TTP T0836 (Modify Parameter) - 18 modules - rate-limit=500ms
 
 # Save results to JSON file
 ixf > ttp T0866 192.168.1.100 --output /opt/results/t0866.json
@@ -1411,7 +1411,7 @@ ixf > ttp T0839 192.168.1.100 --destructive
 
 ---
 
-## `ttp-check` — Passive Technique Check
+## `ttp-check` - Passive Technique Check
 
 Perform a passive (read-only) check to determine if a target is potentially vulnerable to a technique, without executing any exploit steps.
 
@@ -1424,7 +1424,7 @@ ixf > ttp-check <technique_id> <target>
 ixf > ttp-check T0812 192.168.1.100
 
   ╔══════════════════════════════════════════════════════════════════╗
-  ║  IXF TTP Check — T0812: Default Credentials                     ║
+  ║  IXF TTP Check - T0812: Default Credentials                     ║
   ╚══════════════════════════════════════════════════════════════════╝
   Target:  192.168.1.100
   Mode:    PASSIVE CHECK (no credentials attempted)
@@ -1432,10 +1432,10 @@ ixf > ttp-check T0812 192.168.1.100
   Step 1: Port/service fingerprint
   ─────────────────────────────────
   [*] Probing common ICS service ports...
-  [+] 192.168.1.100:102   — S7comm (Siemens)
-  [+] 192.168.1.100:4840  — OPC UA
-  [+] 192.168.1.100:80    — HTTP (HMI web interface)
-  [+] 192.168.1.100:22    — SSH
+  [+] 192.168.1.100:102   - S7comm (Siemens)
+  [+] 192.168.1.100:4840  - OPC UA
+  [+] 192.168.1.100:80    - HTTP (HMI web interface)
+  [+] 192.168.1.100:22    - SSH
 
   Step 2: Vendor/model identification
   ────────────────────────────────────
@@ -1453,9 +1453,9 @@ ixf > ttp-check T0812 192.168.1.100
 
   Step 4: Vulnerability assessment (passive)
   ──────────────────────────────────────────
-  [!] S7comm port 102 open — factory default = no authentication
-  [!] OPC UA port 4840 open — anonymous access likely enabled
-  [!] Web interface port 80 open — default credentials likely present
+  [!] S7comm port 102 open - factory default = no authentication
+  [!] OPC UA port 4840 open - anonymous access likely enabled
+  [!] Web interface port 80 open - default credentials likely present
 
   Result: HIGH PROBABILITY of T0812 exploitation
   Recommendation: Test with `ttp T0812 192.168.1.100` in simulate mode,
@@ -1464,7 +1464,7 @@ ixf > ttp-check T0812 192.168.1.100
 
 ---
 
-## `ttp-simulate` — Technique Simulation
+## `ttp-simulate` - Technique Simulation
 
 Detailed step-by-step simulation showing exactly what each phase of an attack technique would do, including the packets that would be sent, without transmitting anything.
 
@@ -1477,7 +1477,7 @@ ixf > ttp-simulate <technique_id> [--vendor <vendor>]
 ixf > ttp-simulate T0836
 
   ╔══════════════════════════════════════════════════════════════════╗
-  ║  IXF TTP Simulator — T0836: Modify Parameter                    ║
+  ║  IXF TTP Simulator - T0836: Modify Parameter                    ║
   ╚══════════════════════════════════════════════════════════════════╝
   Mode: INTERACTIVE SIMULATION (no packets sent)
 
@@ -1525,7 +1525,7 @@ ixf > ttp-simulate T0836
   - Process historian shows temperature anomaly
 
   ══ Remediation ══════════════════════════════════════════════════════
-  - Enable Modbus write authentication (not native — use VPN/firewall)
+  - Enable Modbus write authentication (not native - use VPN/firewall)
   - Enable OPC UA SecurityMode: SignAndEncrypt with certificate auth
   - Monitor engineering workstation whitelist for authorized writes
   - Implement independent hardware high-temperature trip (hardwired)
@@ -1533,7 +1533,7 @@ ixf > ttp-simulate T0836
 
 ---
 
-## `ttp-list` — TTP Browser
+## `ttp-list` - TTP Browser
 
 Display all mapped TTPs, optionally filtered by tactic.
 
@@ -1547,7 +1547,7 @@ ixf > ttp-list [--tactic <tactic>] [--vendor <vendor>] [--protocol <protocol>]
 ```
 ixf > ttp-list
 
-  TTP Index — All 74 Mapped Techniques
+  TTP Index - All 74 Mapped Techniques
   ════════════════════════════════════════════════════════════════════════
   ID      Name                                   Modules   Tactic
   ──────────────────────────────────────────────────────────────────────
@@ -1639,7 +1639,7 @@ ixf > ttp-list
 ```
 ixf > ttp-list --tactic evasion
 
-  TTP Index — Evasion (TA0103)
+  TTP Index - Evasion (TA0103)
   ════════════════════════════════════════════════════════════════════════
   ID      Name                                   Modules   Description
   ──────────────────────────────────────────────────────────────────────
@@ -1657,7 +1657,7 @@ ixf > ttp-list --tactic evasion
 ```
 ixf > ttp-list --tactic persistence
 
-  TTP Index — Persistence (TA0110)
+  TTP Index - Persistence (TA0110)
   ════════════════════════════════════════════════════════════════════════
   ID      Name                                   Modules   Description
   ──────────────────────────────────────────────────────────────────────
@@ -1676,7 +1676,7 @@ ixf > ttp-list --tactic persistence
 ```
 ixf > ttp-list --tactic collection
 
-  TTP Index — Collection (TA0100)
+  TTP Index - Collection (TA0100)
   ════════════════════════════════════════════════════════════════════════
   ID      Name                                   Modules   Description
   ──────────────────────────────────────────────────────────────────────
@@ -1698,7 +1698,7 @@ ixf > ttp-list --tactic collection
 
 IXF ships dedicated assessment modules for each mapped technique under `assessment/mitre_ics/`. These modules perform safe, read-only checks to verify whether a target is susceptible.
 
-### Full Run — T0843 Program Upload/Download Assessment
+### Full Run - T0843 Program Upload/Download Assessment
 
 ```
 ixf > use assessment/mitre_ics/t0843_program_upload
@@ -1731,7 +1731,7 @@ ixf [assessment/mitre_ics/t0843_program_upload] > run
   Target: 192.168.1.100
   Mode:   SIMULATE
 
-  [SIMULATE MODE — no packets sent]
+  [SIMULATE MODE - no packets sent]
 
   Phase 1: Protocol Detection
   ──────────────────────────────────────────────────────────────────
@@ -1739,12 +1739,12 @@ ixf [assessment/mitre_ics/t0843_program_upload] > run
   is in use on the target controller.
 
   Would probe:
-  - Port 102 (S7comm / ISO-TSAP) — Siemens
-  - Port 44818 (EtherNet/IP CIP) — Rockwell/Omron/generic
-  - Port 9600 UDP (FINS) — Omron
-  - Port 18245 (GE SRTP) — GE PACSystems
-  - Port 20111 (Vnet/IP) — Yokogawa
-  - Port 4001 (Modbus gateway) — generic
+  - Port 102 (S7comm / ISO-TSAP) - Siemens
+  - Port 44818 (EtherNet/IP CIP) - Rockwell/Omron/generic
+  - Port 9600 UDP (FINS) - Omron
+  - Port 18245 (GE SRTP) - GE PACSystems
+  - Port 20111 (Vnet/IP) - Yokogawa
+  - Port 4001 (Modbus gateway) - generic
 
   Phase 2: Authentication Check
   ──────────────────────────────────────────────────────────────────
@@ -1755,13 +1755,13 @@ ixf [assessment/mitre_ics/t0843_program_upload] > run
     MITRE T0843: Program Download
     Action: Issue S7 STOP command → attempt PDU block download
     Authentication: None required by default on S7-300/400/1200
-    Risk: CRITICAL — any LAN-connected host can download PLC programs
+    Risk: CRITICAL - any LAN-connected host can download PLC programs
 
   EtherNet/IP CIP (port 44818):
     MITRE T0843: Program Download
     Action: Open CIP session → attempt program file write
     Authentication: None required on many ControlLogix configurations
-    Risk: CRITICAL — ControlLogix default config accepts unauthenticated downloads
+    Risk: CRITICAL - ControlLogix default config accepts unauthenticated downloads
 
   Phase 3: Upload Capability
   ──────────────────────────────────────────────────────────────────
@@ -1773,8 +1773,8 @@ ixf [assessment/mitre_ics/t0843_program_upload] > run
 
   Phase 4: Results
   ──────────────────────────────────────────────────────────────────
-  Technique T0843 (Download): HIGH RISK — no auth on S7comm
-  Technique T0844 (Upload):   HIGH RISK — program readable without auth
+  Technique T0843 (Download): HIGH RISK - no auth on S7comm
+  Technique T0844 (Upload):   HIGH RISK - program readable without auth
   Physical Risk: Adversary can download modified program that:
     - Disables safety interlocks
     - Modifies setpoints beyond safe limits
@@ -1973,9 +1973,9 @@ After loading, you can:
 
 - [ATT&CK for ICS Matrix](https://attack.mitre.org/matrices/ics/)
 - [ICS Technique Index](https://attack.mitre.org/techniques/ics/)
-- [ICS Groups](https://attack.mitre.org/groups/) — XENOTIME, Sandworm, ELECTRUM, Dragonfly
-- [ICS Campaigns](https://attack.mitre.org/campaigns/) — C0028 (2022 Ukraine), C0025 (Industroyer2)
-- [ICS Mitigations](https://attack.mitre.org/mitigations/ics/) — cross-reference with IXF module findings
+- [ICS Groups](https://attack.mitre.org/groups/) - XENOTIME, Sandworm, ELECTRUM, Dragonfly
+- [ICS Campaigns](https://attack.mitre.org/campaigns/) - C0028 (2022 Ukraine), C0025 (Industroyer2)
+- [ICS Mitigations](https://attack.mitre.org/mitigations/ics/) - cross-reference with IXF module findings
 
 ### Programmatic Layer Generation
 
@@ -2002,7 +2002,7 @@ with open("site_alpha_layer.json", "w") as f:
 # Get modules for a specific technique
 modules = mapper.get_modules("T0836")
 for module in modules:
-    print(f"  {module.path} — {module.description}")
+    print(f"  {module.path} - {module.description}")
 ```
 
 ---

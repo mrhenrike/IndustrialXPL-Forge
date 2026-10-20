@@ -100,7 +100,7 @@ def test_otscan_smoke() -> list[str]:
 def test_aim_manifest() -> list[str]:
     manifest = ROOT / "industrialxpl/resources/research/awesome-ics-malware/manifest.json"
     if not manifest.is_file():
-        return ["AIM manifest missing — run ingest_awesome_ics_malware.py"]
+        return ["AIM manifest missing - run ingest_awesome_ics_malware.py"]
     data = json.loads(manifest.read_text(encoding="utf-8"))
     if len(data.get("urls", [])) < 80:
         return ["AIM manifest urls < 80"]

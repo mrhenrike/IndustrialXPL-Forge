@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2022-37301 — Schneider Electric EcoStruxure (HIGH CVSS 8.2).
+"""IXF CVE CVE-2022-37301 - Schneider Electric EcoStruxure (HIGH CVSS 8.2).
 
 Exploit type: Cross-site request forgery
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Schneider Electric EcoStruxure may be present. CVE-2022-37301 HIGH CVSS 8.2.")
+            print_success(f"Port {self.port} open - Schneider Electric EcoStruxure may be present. CVE-2022-37301 HIGH CVSS 8.2.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

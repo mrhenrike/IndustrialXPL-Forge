@@ -1,4 +1,4 @@
-"""IXF Default Credentials — CODESYS V3 Runtime."""
+"""IXF Default Credentials - CODESYS V3 Runtime."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptString, mute,

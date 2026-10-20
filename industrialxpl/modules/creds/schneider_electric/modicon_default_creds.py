@@ -1,4 +1,4 @@
-"""IXF Default Credentials — Schneider Electric Modicon M340/M580."""
+"""IXF Default Credentials - Schneider Electric Modicon M340/M580."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptString, mute,

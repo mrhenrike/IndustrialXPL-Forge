@@ -7,8 +7,8 @@ Pipeline faseado para incorporar ferramentas e corpus ICS/malware no IndustrialX
 | Upstream | Decisão |
 |----------|---------|
 | MIT / Apache-2 / BSD | Reimplementar ou adaptar com NOTICE em `industrialxpl/` |
-| GPL (lib60870, ICSSploit, ICSSecurityScripts) | **REFERENCE_ONLY** — spec de comportamento, sem código no wheel |
-| Binários malware originais | **SKIP** — apenas hashes, YARA, análise |
+| GPL (lib60870, ICSSploit, ICSSecurityScripts) | **REFERENCE_ONLY** - spec de comportamento, sem código no wheel |
+| Binários malware originais | **SKIP** - apenas hashes, YARA, análise |
 
 ## O que NÃO commitar
 
@@ -19,10 +19,10 @@ Pipeline faseado para incorporar ferramentas e corpus ICS/malware no IndustrialX
 
 ## Pre-Gate (antes de codar)
 
-1. `LicenseAudit` — SPDX do upstream
-2. `DepsAudit` — novo extra em `pyproject.toml` se necessário
-3. `docs/incorporation/Fx-{slug}.md` — parity spec (1 página)
-4. `tools/env_doctor.py` — Tier 2/3 do extra
+1. `LicenseAudit` - SPDX do upstream
+2. `DepsAudit` - novo extra em `pyproject.toml` se necessário
+3. `docs/incorporation/Fx-{slug}.md` - parity spec (1 página)
+4. `tools/env_doctor.py` - Tier 2/3 do extra
 
 ## Post-Gate (antes de merge)
 

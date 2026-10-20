@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2024-43647 — Siemens SIMATIC CP 1543SP-1 (CRITICAL CVSS 9.8).
+"""IXF CVE CVE-2024-43647 - Siemens SIMATIC CP 1543SP-1 (CRITICAL CVSS 9.8).
 
 Exploit type: Authentication bypass remote
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Siemens SIMATIC CP 1543SP-1 may be present. CVE-2024-43647 CRITICAL CVSS 9.8.")
+            print_success(f"Port {self.port} open - Siemens SIMATIC CP 1543SP-1 may be present. CVE-2024-43647 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

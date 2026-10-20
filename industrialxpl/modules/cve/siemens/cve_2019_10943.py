@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2019-10943 — Siemens SIMATIC S7-300/400 (MEDIUM CVSS 5.3).
+"""IXF CVE CVE-2019-10943 - Siemens SIMATIC S7-300/400 (MEDIUM CVSS 5.3).
 
 Exploit type: Information disclosure S7comm diagnostic buffer
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Siemens SIMATIC S7-300/400 may be present. CVE-2019-10943 MEDIUM CVSS 5.3.")
+            print_success(f"Port {self.port} open - Siemens SIMATIC S7-300/400 may be present. CVE-2019-10943 MEDIUM CVSS 5.3.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

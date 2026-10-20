@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2024-7940 — Advantech EKI-6333AC WiFi AP industrial (CRITICAL CVSS 9.8).
+"""IXF CVE CVE-2024-7940 - Advantech EKI-6333AC WiFi AP industrial (CRITICAL CVSS 9.8).
 
 Exploit type: OS command injection unauthenticated
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Advantech EKI-6333AC WiFi AP industrial may be present. CVE-2024-7940 CRITICAL CVSS 9.8.")
+            print_success(f"Port {self.port} open - Advantech EKI-6333AC WiFi AP industrial may be present. CVE-2024-7940 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

@@ -1,4 +1,4 @@
-"""IXF Scanner — Danfoss VLT/VACON Industrial Drive Discovery."""
+"""IXF Scanner - Danfoss VLT/VACON Industrial Drive Discovery."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptInteger, mute,

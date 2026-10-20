@@ -1,4 +1,4 @@
-"""S7 LLC / rack scan helpers — MIT stdlib (s7scan-inspired)."""
+"""S7 LLC / rack scan helpers - MIT stdlib (s7scan-inspired)."""
 
 
 import socket

@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2020-8476 — ABB AC500 PLC.
+"""IXF CVE Module - CVE-2020-8476 - ABB AC500 PLC.
 
 Hardcoded credentials
 
@@ -32,8 +32,8 @@ _SEVERITY      = "CRITICAL"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2020-8476 — ABB AC500 PLC (CRITICAL)",
-        "description":   "ABB AC500 PLC — Hardcoded credentials. "
+        "name":          "CVE-2020-8476 - ABB AC500 PLC (CRITICAL)",
+        "description":   "ABB AC500 PLC - Hardcoded credentials. "
                          "CVSS 9.8 (CRITICAL). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2020-8476...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — ABB AC500 PLC may be present. "
+                f"Port {self.port} open on {self.target} - ABB AC500 PLC may be present. "
                 "CVE-2020-8476 (CRITICAL CVSS 9.8): Hardcoded credentials. "
                 "Manual version verification required."
             )

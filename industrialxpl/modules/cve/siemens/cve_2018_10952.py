@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2018-10952 — Siemens WinCC flexible.
+"""IXF CVE Module - CVE-2018-10952 - Siemens WinCC flexible.
 
 Authentication bypass
 
@@ -32,8 +32,8 @@ _SEVERITY      = "HIGH"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2018-10952 — Siemens WinCC flexible (HIGH)",
-        "description":   "Siemens WinCC flexible — Authentication bypass. "
+        "name":          "CVE-2018-10952 - Siemens WinCC flexible (HIGH)",
+        "description":   "Siemens WinCC flexible - Authentication bypass. "
                          "CVSS 8.1 (HIGH). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2018-10952...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Siemens WinCC flexible may be present. "
+                f"Port {self.port} open on {self.target} - Siemens WinCC flexible may be present. "
                 "CVE-2018-10952 (HIGH CVSS 8.1): Authentication bypass. "
                 "Manual version verification required."
             )

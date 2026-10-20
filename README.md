@@ -20,7 +20,7 @@
 > **The World's Largest OT/ICS/SCADA Security Assessment & Exploitation Framework**
 > Part of the XPL-Forge suite | Author: André Henrique ([@mrhenrike](https://github.com/mrhenrike)) | [União Geek](https://uniaogeek.com.br/)
 
-**Python-First. Pure Python implementation — install and run with a single `pip install`.**
+**Python-First. Pure Python implementation - install and run with a single `pip install`.**
 
 > **Legal notice:** IXF publicly distributes malware and ICS-tool research corpora for
 > cybersecurity education. **You are solely responsible** for authorized, lawful use.
@@ -37,7 +37,7 @@ ixf
 
 **Terminal output:** use a modern terminal with ANSI support (Linux/macOS, Windows Terminal, PowerShell 7+). On legacy `cmd.exe`, pass `--no-color` to disable escape sequences.
 
-**REST API:** `ixf serve --host 127.0.0.1 --port 8443` — optional OpenAPI via `pip install industrialxpl-forge[api]`.
+**REST API:** `ixf serve --host 127.0.0.1 --port 8443` - optional OpenAPI via `pip install industrialxpl-forge[api]`.
 
 **Architecture:** see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for component diagram and data flow.
 
@@ -69,8 +69,8 @@ OSINT → Discovery → Fingerprint → Vulnerability Check → Exploit → Repo
 ```
 
 **Key features:**
-- **Python-First**: all core functionality works with `pip install industrialxpl-forge` — external runtimes (C, Go, Java) are optional accelerators with Python fallbacks built in
-- **SafeMode opt-in**: `set simulate true` or `setg simulate true` — prints payload without sending; live probes use `simulate=false` (default)
+- **Python-First**: all core functionality works with `pip install industrialxpl-forge` - external runtimes (C, Go, Java) are optional accelerators with Python fallbacks built in
+- **SafeMode opt-in**: `set simulate true` or `setg simulate true` - prints payload without sending; live probes use `simulate=false` (default)
 - **MITRE ATT&CK for ICS v19**: 96/103 techniques (93%), `ttp T0843 192.168.1.100` syntax
 - **CVE coverage**: 3,300+ ICS/OT CVEs from CVSS 0.1 to 10.0
 - **50 vendors**: Siemens, Schneider, Rockwell, ABB, Honeywell, Emerson, WEG, and more
@@ -133,8 +133,8 @@ ixf > search CVE-2015-5374
 ixf > search modbus
 
 # Execute a TTP-ID against a target
-ixf > ttp T0843 192.168.1.100          # Program Download — all modules
-ixf > ttp T0878 10.0.0.0/24            # Alarm Suppression — subnet sweep
+ixf > ttp T0843 192.168.1.100          # Program Download - all modules
+ixf > ttp T0878 10.0.0.0/24            # Alarm Suppression - subnet sweep
 ixf > ttp-list --tactic evasion        # List all Evasion TTP-IDs
 
 # MITRE ATT&CK for ICS sweep
@@ -157,7 +157,7 @@ ixf > mitre-report layer               # ATT&CK Navigator JSON layer
 
 ## SafeMode / DestructiveMode
 
-**Modules default to `simulate=false`** — read probes and protocol checks may hit the wire on `check()` / `run()`. Enable SafeMode explicitly:
+**Modules default to `simulate=false`** - read probes and protocol checks may hit the wire on `check()` / `run()`. Enable SafeMode explicitly:
 
 ```
 ixf (FrostyGoop) > set simulate true
@@ -183,21 +183,21 @@ All destructive operations are logged to `.log/destructive_ops_YYYY-MM-DD.log`.
 
 ## Noise Level in OT Environments
 
-IXF is designed to be the **least aggressive scanner** for OT/ICS assets. Unlike Nmap, which generates SYN packets, OS detection probes, and multiple script PDUs per port, IXF sends a single well-formed protocol PDU — identical to what a legitimate engineering workstation would send.
+IXF is designed to be the **least aggressive scanner** for OT/ICS assets. Unlike Nmap, which generates SYN packets, OS detection probes, and multiple script PDUs per port, IXF sends a single well-formed protocol PDU - identical to what a legitimate engineering workstation would send.
 
 ```
 Tool / Mode              Noise    Risk in OT environments
 ---------------------------------------------------------
-tcpdump (passive)        1/5  ||||                Zero — listen only
-Wireshark (passive)      1/5  ||||                Zero — listen only
+tcpdump (passive)        1/5  ||||                Zero - listen only
+Wireshark (passive)      1/5  ||||                Zero - listen only
 IXF check()              2/5  ||||||||            1 TCP conn, 1 valid PDU
-IXF run() simulate=true  2/5  ||||||||            Identical to check() — no writes
+IXF run() simulate=true  2/5  ||||||||            Identical to check() - no writes
 nmap -sS -T1             3/5  ||||||||||||        SYN scan, half-open TCP
 IXF run() simulate=false 3/5  ||||||||||||        1 conn, 1 read PDU (FC03/FC43)
 nmap -sS -T2 (OT safe)   3/5  ||||||||||||        Acceptable with conservative timing
 nmap -sV -T3             4/5  ||||||||||||||||    Version probes per port
 nmap --script modbus-*   4/5  ||||||||||||||||    Scripts send multiple PDUs
-nmap -A (aggressive)     5/5  ||||||||||||||||||||  OS detect + scripts — AVOID in OT
+nmap -A (aggressive)     5/5  ||||||||||||||||||||  OS detect + scripts - AVOID in OT
 nmap -T4 / -T5           5/5  ||||||||||||||||||||  NEVER in OT. May crash assets.
 ```
 
@@ -242,37 +242,32 @@ setg OUTPUT output.txt
 | **0** | Python stdlib | socket, struct, select | Always |
 | **1** | pip install | pymodbus, scapy, rich, requests | Yes |
 | **2** | pip extras | asyncua, cpppo, python-can | Optional |
-| **3** | External runtimes | ruby, node, java, gcc, go | **Optional — Python fallback always available** |
+| **3** | External runtimes | ruby, node, java, gcc, go | **Optional - Python fallback always available** |
 
-All SCADA framework modules are implemented natively in Python — no additional tools required.
+All SCADA framework modules are implemented natively in Python - no additional tools required.
 
 ---
 
 ## Documentation
 
-Full documentation is available in both English and Brazilian Portuguese:
+Full documentation is available in English:
 
-| Language | Link |
-|----------|------|
-| English (en-US) | [docs/en-us/](docs/en-us/_index.md) |
-| Português (pt-BR) | [docs/pt-br/](docs/pt-br/_index.md) |
-
-**Quick links:**
-
-| Topic | en-US | pt-BR |
-|-------|-------|-------|
-| Installation | [01-installation](docs/en-us/01-installation.md) | [01-instalacao](docs/pt-br/01-instalacao.md) |
-| Quick Start | [02-quick-start](docs/en-us/02-quick-start.md) | [02-inicio-rapido](docs/pt-br/02-inicio-rapido.md) |
-| Shell Reference (35 commands) | [03-shell-reference](docs/en-us/03-shell-reference.md) | [03-referencia-shell](docs/pt-br/03-referencia-shell.md) |
-| Module System & Option Types | [04-module-system](docs/en-us/04-module-system.md) | [04-sistema-modulos](docs/pt-br/04-sistema-modulos.md) |
-| SafeMode / DestructiveMode | [05-safemode](docs/en-us/05-safemode-destructivemode.md) | [05-safemode](docs/pt-br/05-safemode-destructivemode.md) |
-| MITRE ATT&CK for ICS | [06-mitre](docs/en-us/06-mitre-attack-ics.md) | [06-mitre](docs/pt-br/06-mitre-attack-ics.md) |
-| SAST / LLM Analysis | [07-sast](docs/en-us/07-sast-llm.md) | [07-sast](docs/pt-br/07-sast-llm.md) |
-| Protocols & Vendors | [08-protocols](docs/en-us/08-protocols-vendors.md) | [08-protocolos](docs/pt-br/08-protocolos-vendors.md) |
-| Module Development | [09-dev](docs/en-us/09-module-development.md) | [09-desenvolvimento](docs/pt-br/09-desenvolvimento-modulos.md) |
-| CLI Non-Interactive | [10-cli](docs/en-us/10-cli-noninteractive.md) | [10-cli](docs/pt-br/10-cli-nao-interativo.md) |
-| PolyExploit Runner | [11-poly](docs/en-us/11-poly-exploit-runner.md) | [11-poly](docs/pt-br/11-poly-exploit-runner.md) |
-| Assessment & Compliance | [12-assessment](docs/en-us/12-assessment-compliance.md) | [12-assessment](docs/pt-br/12-assessment-conformidade.md) |
+| Topic | Link |
+|-------|------|
+| Installation | [01-installation](docs/en-us/01-installation.md) |
+| Quick Start | [02-quick-start](docs/en-us/02-quick-start.md) |
+| Shell Reference (35 commands) | [03-shell-reference](docs/en-us/03-shell-reference.md) |
+| Module System & Option Types | [04-module-system](docs/en-us/04-module-system.md) |
+| SafeMode / DestructiveMode | [05-safemode](docs/en-us/05-safemode-destructivemode.md) |
+| MITRE ATT&CK for ICS | [06-mitre](docs/en-us/06-mitre-attack-ics.md) |
+| SAST / LLM Analysis | [07-sast](docs/en-us/07-sast-llm.md) |
+| Protocols & Vendors | [08-protocols](docs/en-us/08-protocols-vendors.md) |
+| Module Development | [09-dev](docs/en-us/09-module-development.md) |
+| CLI Non-Interactive | [10-cli](docs/en-us/10-cli-noninteractive.md) |
+| PolyExploit Runner | [11-poly](docs/en-us/11-poly-exploit-runner.md) |
+| Assessment & Compliance | [12-assessment](docs/en-us/12-assessment-compliance.md) |
+| Module Catalog | [13-module-catalog](docs/en-us/13-module-catalog.md) |
+| NSE Scripts | [14-nse-scripts](docs/en-us/14-nse-scripts.md) |
 
 ---
 
@@ -679,4 +674,4 @@ Module sources: EmbedXPL-Forge (suite sibling), ISF/ICSSploit, ModBusSploit, n-d
 **License:** XSRL-1.0 - Copyright (c) 2024-2026 Andre Henrike de Oliveira / Uniao Geek
 **Created by:** André Henrique ([@mrhenrike](https://github.com/mrhenrike)) | [União Geek](https://uniaogeek.com.br/)
 
-[Leia em Português](README.pt-BR.md) - [Command coverage](docs/commands.md) - [Wiki](../../wiki)
+[Command coverage](docs/commands.md) - [Wiki](../../wiki)

@@ -1,4 +1,4 @@
-"""IXF Scanner — Omron NX/NJ/CS Series PLC Discovery."""
+"""IXF Scanner - Omron NX/NJ/CS Series PLC Discovery."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptInteger, mute,

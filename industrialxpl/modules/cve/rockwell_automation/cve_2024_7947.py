@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2024-7947 — Rockwell Automation FactoryTalk View Site Edition (HIGH CVSS 7.7).
+"""IXF CVE CVE-2024-7947 - Rockwell Automation FactoryTalk View Site Edition (HIGH CVSS 7.7).
 
 Exploit type: Path traversal file disclosure
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Rockwell Automation FactoryTalk View Site Edition may be present. CVE-2024-7947 HIGH CVSS 7.7.")
+            print_success(f"Port {self.port} open - Rockwell Automation FactoryTalk View Site Edition may be present. CVE-2024-7947 HIGH CVSS 7.7.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

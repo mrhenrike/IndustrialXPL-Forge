@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2019-18244 — OSIsoft PI Interface for OPC DA (HIGH CVSS 8.8).
+"""IXF CVE CVE-2019-18244 - OSIsoft PI Interface for OPC DA (HIGH CVSS 8.8).
 
 Exploit type: Code injection
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — OSIsoft PI Interface for OPC DA may be present. CVE-2019-18244 HIGH CVSS 8.8.")
+            print_success(f"Port {self.port} open - OSIsoft PI Interface for OPC DA may be present. CVE-2019-18244 HIGH CVSS 8.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

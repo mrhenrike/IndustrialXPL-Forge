@@ -1,4 +1,4 @@
-"""IXF Scanner — PTC ThingWorx/KEPServerEX IIoT Discovery."""
+"""IXF Scanner - PTC ThingWorx/KEPServerEX IIoT Discovery."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptInteger, mute,

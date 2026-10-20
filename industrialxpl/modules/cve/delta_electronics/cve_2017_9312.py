@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2017-9312 — Delta Electronics CNCSoft.
+"""IXF CVE Module - CVE-2017-9312 - Delta Electronics CNCSoft.
 
 Buffer overflow RCE
 
@@ -32,8 +32,8 @@ _SEVERITY      = "HIGH"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2017-9312 — Delta Electronics CNCSoft (HIGH)",
-        "description":   "Delta Electronics CNCSoft — Buffer overflow RCE. "
+        "name":          "CVE-2017-9312 - Delta Electronics CNCSoft (HIGH)",
+        "description":   "Delta Electronics CNCSoft - Buffer overflow RCE. "
                          "CVSS 7.8 (HIGH). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2017-9312...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Delta Electronics CNCSoft may be present. "
+                f"Port {self.port} open on {self.target} - Delta Electronics CNCSoft may be present. "
                 "CVE-2017-9312 (HIGH CVSS 7.8): Buffer overflow RCE. "
                 "Manual version verification required."
             )

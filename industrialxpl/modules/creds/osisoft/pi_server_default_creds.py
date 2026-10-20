@@ -1,4 +1,4 @@
-"""IXF Default Credentials — OSIsoft/AVEVA PI Data Archive/Server."""
+"""IXF Default Credentials - OSIsoft/AVEVA PI Data Archive/Server."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptString, mute,

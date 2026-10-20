@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2022-34662 — Siemens S7 PROFINET stack.
+"""IXF CVE Module - CVE-2022-34662 - Siemens S7 PROFINET stack.
 
 Denial of service
 
@@ -32,8 +32,8 @@ _SEVERITY      = "HIGH"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2022-34662 — Siemens S7 PROFINET stack (HIGH)",
-        "description":   "Siemens S7 PROFINET stack — Denial of service. "
+        "name":          "CVE-2022-34662 - Siemens S7 PROFINET stack (HIGH)",
+        "description":   "Siemens S7 PROFINET stack - Denial of service. "
                          "CVSS 7.5 (HIGH). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2022-34662...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Siemens S7 PROFINET stack may be present. "
+                f"Port {self.port} open on {self.target} - Siemens S7 PROFINET stack may be present. "
                 "CVE-2022-34662 (HIGH CVSS 7.5): Denial of service. "
                 "Manual version verification required."
             )

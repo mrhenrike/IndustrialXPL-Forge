@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2024-5643 — Rockwell Automation DataMosaix Private Cloud (CRITICAL CVSS 9.8).
+"""IXF CVE CVE-2024-5643 - Rockwell Automation DataMosaix Private Cloud (CRITICAL CVSS 9.8).
 
 Exploit type: SQL injection RCE
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Rockwell Automation DataMosaix Private Cloud may be present. CVE-2024-5643 CRITICAL CVSS 9.8.")
+            print_success(f"Port {self.port} open - Rockwell Automation DataMosaix Private Cloud may be present. CVE-2024-5643 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

@@ -175,9 +175,9 @@ print('OK:', obj)
 ```
 
 **Common causes:**
-1. Syntax error in module file — check the file for syntax issues
-2. Missing dependency — the module may require an optional package
-3. Wrong Python version — some modules use f-strings or walrus operator
+1. Syntax error in module file - check the file for syntax issues
+2. Missing dependency - the module may require an optional package
+3. Wrong Python version - some modules use f-strings or walrus operator
 
 ---
 
@@ -203,9 +203,9 @@ except Exception as e:
 
 **Common causes:**
 1. Firewall blocking the port
-2. Wrong port number — use `show options` and verify
-3. Module probe rejected by device — some devices only respond to specific unit IDs
-4. Network routing issue — can you ping the target?
+2. Wrong port number - use `show options` and verify
+3. Module probe rejected by device - some devices only respond to specific unit IDs
+4. Network routing issue - can you ping the target?
 
 ---
 
@@ -386,9 +386,9 @@ ixf stats  # faster than interactive start + stats
 ### Scan is very slow
 
 **Causes:**
-1. Large CIDR range — use `--rate-limit` to control pace
-2. High timeout — reduce with `set timeout 3`
-3. Many modules per technique — use `ttp-check` for faster check-only mode
+1. Large CIDR range - use `--rate-limit` to control pace
+2. High timeout - reduce with `set timeout 3`
+3. Many modules per technique - use `ttp-check` for faster check-only mode
 
 ```
 ixf > ttp T0843 192.168.1.0/24 --rate-limit 100

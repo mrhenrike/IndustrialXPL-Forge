@@ -1,4 +1,4 @@
-"""ISF/icssploit port — MIT protocol handlers (REFERENCE_ONLY upstream GPL)."""
+"""ISF/icssploit port - MIT protocol handlers (REFERENCE_ONLY upstream GPL)."""
 
 
 import socket

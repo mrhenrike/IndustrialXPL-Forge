@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2022-30272 — Motorola Solutions ACE3600.
+"""IXF CVE Module - CVE-2022-30272 - Motorola Solutions ACE3600.
 
 Insecure firmware update
 
@@ -32,8 +32,8 @@ _SEVERITY      = "HIGH"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2022-30272 — Motorola Solutions ACE3600 (HIGH)",
-        "description":   "Motorola Solutions ACE3600 — Insecure firmware update. "
+        "name":          "CVE-2022-30272 - Motorola Solutions ACE3600 (HIGH)",
+        "description":   "Motorola Solutions ACE3600 - Insecure firmware update. "
                          "CVSS 7.4 (HIGH). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2022-30272...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Motorola Solutions ACE3600 may be present. "
+                f"Port {self.port} open on {self.target} - Motorola Solutions ACE3600 may be present. "
                 "CVE-2022-30272 (HIGH CVSS 7.4): Insecure firmware update. "
                 "Manual version verification required."
             )

@@ -1,5 +1,5 @@
 # Author: Andre Henrique (@mrhenrike) | Uniao Geek
-"""Modbus Unit ID Fuzzer — brute-force slave ID discovery.
+"""Modbus Unit ID Fuzzer - brute-force slave ID discovery.
 
 Scans all (or a subset of) Modbus Unit IDs on a target Modbus gateway
 to discover which slave addresses have active devices.
@@ -16,7 +16,7 @@ from industrialxpl.core.modbus.transport import ModbusTCPSocket, modbus_connect
 
 
 class Exploit(ModbusBaseExploit):
-    """Modbus Unit ID Fuzzer — discovers active slave IDs on a Modbus gateway."""
+    """Modbus Unit ID Fuzzer - discovers active slave IDs on a Modbus gateway."""
 
     __info__ = {
         "name": "Modbus Unit ID Fuzzer (Slave Discovery)",
@@ -71,9 +71,9 @@ class Exploit(ModbusBaseExploit):
                 sock = modbus_connect(self.target, port, timing.socket_timeout)
                 if sock:
                     sock.close()
-                    print_success(f"[SIMULATE] {self.target}:{port} — port open")
+                    print_success(f"[SIMULATE] {self.target}:{port} - port open")
                 else:
-                    print_info(f"[SIMULATE] {self.target}:{port} — closed / no response")
+                    print_info(f"[SIMULATE] {self.target}:{port} - closed / no response")
             return
 
         for port in ports:

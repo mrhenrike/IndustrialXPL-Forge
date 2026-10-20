@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2020-24676 — ABB Panel Builder 800 (HIGH CVSS 8.8).
+"""IXF CVE CVE-2020-24676 - ABB Panel Builder 800 (HIGH CVSS 8.8).
 
 Exploit type: Remote code execution
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — ABB Panel Builder 800 may be present. CVE-2020-24676 HIGH CVSS 8.8.")
+            print_success(f"Port {self.port} open - ABB Panel Builder 800 may be present. CVE-2020-24676 HIGH CVSS 8.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

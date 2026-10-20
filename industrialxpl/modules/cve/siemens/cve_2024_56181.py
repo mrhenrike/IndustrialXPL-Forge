@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2024-56181 — Siemens SINEMA Server V14 (CRITICAL CVSS 9.8).
+"""IXF CVE CVE-2024-56181 - Siemens SINEMA Server V14 (CRITICAL CVSS 9.8).
 
 Exploit type: SQL injection RCE
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Siemens SINEMA Server V14 may be present. CVE-2024-56181 CRITICAL CVSS 9.8.")
+            print_success(f"Port {self.port} open - Siemens SINEMA Server V14 may be present. CVE-2024-56181 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

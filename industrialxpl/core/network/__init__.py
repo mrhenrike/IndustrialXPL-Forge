@@ -1,4 +1,4 @@
-"""Shared OT network helpers — transport, port expressions, socket probes."""
+"""Shared OT network helpers - transport, port expressions, socket probes."""
 
 from industrialxpl.core.network.transport import (
     connect_tcp,

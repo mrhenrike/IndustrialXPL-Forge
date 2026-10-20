@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2024-7961 — Rockwell Automation Pavilion8.
+"""IXF CVE Module - CVE-2024-7961 - Rockwell Automation Pavilion8.
 
 Path traversal file upload RCE
 
@@ -32,8 +32,8 @@ _SEVERITY      = "CRITICAL"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2024-7961 — Rockwell Automation Pavilion8 (CRITICAL)",
-        "description":   "Rockwell Automation Pavilion8 — Path traversal file upload RCE. "
+        "name":          "CVE-2024-7961 - Rockwell Automation Pavilion8 (CRITICAL)",
+        "description":   "Rockwell Automation Pavilion8 - Path traversal file upload RCE. "
                          "CVSS 9.8 (CRITICAL). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2024-7961...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Rockwell Automation Pavilion8 may be present. "
+                f"Port {self.port} open on {self.target} - Rockwell Automation Pavilion8 may be present. "
                 "CVE-2024-7961 (CRITICAL CVSS 9.8): Path traversal file upload RCE. "
                 "Manual version verification required."
             )

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""IXF NSE Install — Install IXF OT/ICS Nmap scripts.
+"""IXF NSE Install - Install IXF OT/ICS Nmap scripts.
 
 Standalone installer for IndustrialXPL-Forge NSE scripts.
 Can be run directly without the IXF interactive shell.
@@ -196,7 +196,7 @@ def cmd_install(force: bool = False, scripts_dir_override: str = "") -> None:
             _print(f"  [green]OK[/green]  {name}")
 
     if result["skipped"]:
-        _print(f"[yellow]Skipped ({len(result['skipped'])}) — already installed:[/yellow]")
+        _print(f"[yellow]Skipped ({len(result['skipped'])}) - already installed:[/yellow]")
         for name in result["skipped"]:
             _print(f"  [dim]SKIP[/dim] {name}")
 
@@ -238,7 +238,7 @@ Examples:
   python tools/nse_install.py --install
   python tools/nse_install.py --install --force
   python tools/nse_install.py --install --scripts-dir /usr/share/nmap/scripts
-  sudo python tools/nse_install.py --install     (Linux — may need sudo)
+  sudo python tools/nse_install.py --install     (Linux - may need sudo)
         """,
     )
     parser.add_argument("--install",     action="store_true", help="Install IXF NSE scripts into Nmap")

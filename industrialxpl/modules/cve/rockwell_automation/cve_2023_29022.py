@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2023-29022 — Rockwell Automation Enhanced HIM Terminal (CRITICAL CVSS 9.8).
+"""IXF CVE CVE-2023-29022 - Rockwell Automation Enhanced HIM Terminal (CRITICAL CVSS 9.8).
 
 Exploit type: Authentication bypass arbitrary code
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Rockwell Automation Enhanced HIM Terminal may be present. CVE-2023-29022 CRITICAL CVSS 9.8.")
+            print_success(f"Port {self.port} open - Rockwell Automation Enhanced HIM Terminal may be present. CVE-2023-29022 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

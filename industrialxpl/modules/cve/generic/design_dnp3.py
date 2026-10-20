@@ -1,4 +1,4 @@
-"""IXF CVE Module — DESIGN-DNP3 — Generic DNP3 without Secure Auth.
+"""IXF CVE Module - DESIGN-DNP3 - Generic DNP3 without Secure Auth.
 
 No authentication replay attacks
 
@@ -32,8 +32,8 @@ _SEVERITY      = "CRITICAL"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "DESIGN-DNP3 — Generic DNP3 without Secure Auth (CRITICAL)",
-        "description":   "Generic DNP3 without Secure Auth — No authentication replay attacks. "
+        "name":          "DESIGN-DNP3 - Generic DNP3 without Secure Auth (CRITICAL)",
+        "description":   "Generic DNP3 without Secure Auth - No authentication replay attacks. "
                          "CVSS 9.1 (CRITICAL). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for DESIGN-DNP3...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Generic DNP3 without Secure Auth may be present. "
+                f"Port {self.port} open on {self.target} - Generic DNP3 without Secure Auth may be present. "
                 "DESIGN-DNP3 (CRITICAL CVSS 9.1): No authentication replay attacks. "
                 "Manual version verification required."
             )

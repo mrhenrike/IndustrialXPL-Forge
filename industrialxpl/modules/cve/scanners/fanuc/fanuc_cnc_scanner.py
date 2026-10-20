@@ -1,4 +1,4 @@
-"""IXF Scanner — FANUC CNC/Robot Controller. simulate=True."""
+"""IXF Scanner - FANUC CNC/Robot Controller. simulate=True."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptInteger, mute,

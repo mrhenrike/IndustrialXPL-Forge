@@ -1,4 +1,4 @@
-"""S7 ladder-logic forensics — stdlib-only (no pandas/snap7/loguru)."""
+"""S7 ladder-logic forensics - stdlib-only (no pandas/snap7/loguru)."""
 
 
 import csv

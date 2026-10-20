@@ -1,5 +1,5 @@
 # Author: André Henrique (@mrhenrike) | Uniao Geek
-"""OT Multi-Protocol Probe — lightweight discovery across Modbus, DNP3, BACnet, S7, ENIP.
+"""OT Multi-Protocol Probe - lightweight discovery across Modbus, DNP3, BACnet, S7, ENIP.
 
 Uses minimal protocol handshakes to detect OT services on a target host.
 Respects global setg PORT / TRANSPORT / UNIT_ID when loaded after setg.
@@ -46,7 +46,7 @@ _ENIP_LIST_ID = bytes([
 
 
 class Exploit(BaseExploit):
-    """OT Multi-Protocol Probe — discover Modbus, DNP3, BACnet, S7, ENIP, OPC-UA."""
+    """OT Multi-Protocol Probe - discover Modbus, DNP3, BACnet, S7, ENIP, OPC-UA."""
 
     __info__ = {
         "name": "OT Multi-Protocol Probe",

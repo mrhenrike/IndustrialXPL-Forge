@@ -1,4 +1,4 @@
-"""IXF Scanner — Beckhoff TwinCAT ADS/AMS Discovery. simulate=True."""
+"""IXF Scanner - Beckhoff TwinCAT ADS/AMS Discovery. simulate=True."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptInteger, OptPort, mute,

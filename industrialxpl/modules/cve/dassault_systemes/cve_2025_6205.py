@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2025-6205 — Dassault Systemes DELMIA Apriso.
+"""IXF CVE Module - CVE-2025-6205 - Dassault Systemes DELMIA Apriso.
 
 SOAP unauthenticated account creation
 
@@ -32,8 +32,8 @@ _SEVERITY      = "CRITICAL"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2025-6205 — Dassault Systemes DELMIA Apriso (CRITICAL)",
-        "description":   "Dassault Systemes DELMIA Apriso — SOAP unauthenticated account creation. "
+        "name":          "CVE-2025-6205 - Dassault Systemes DELMIA Apriso (CRITICAL)",
+        "description":   "Dassault Systemes DELMIA Apriso - SOAP unauthenticated account creation. "
                          "CVSS 9.8 (CRITICAL). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2025-6205...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Dassault Systemes DELMIA Apriso may be present. "
+                f"Port {self.port} open on {self.target} - Dassault Systemes DELMIA Apriso may be present. "
                 "CVE-2025-6205 (CRITICAL CVSS 9.8): SOAP unauthenticated account creation. "
                 "Manual version verification required."
             )

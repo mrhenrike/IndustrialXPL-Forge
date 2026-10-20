@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2014-3887 — Yokogawa CENTUM CS3000 BKFSim VHFD (CRITICAL CVSS 9.8).
+"""IXF CVE CVE-2014-3887 - Yokogawa CENTUM CS3000 BKFSim VHFD (CRITICAL CVSS 9.8).
 
 Exploit type: Stack buffer overflow RCE
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Yokogawa CENTUM CS3000 BKFSim VHFD may be present. CVE-2014-3887 CRITICAL CVSS 9.8.")
+            print_success(f"Port {self.port} open - Yokogawa CENTUM CS3000 BKFSim VHFD may be present. CVE-2014-3887 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

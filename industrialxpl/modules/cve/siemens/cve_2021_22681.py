@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2021-22681 — Siemens S7-1200 S7-1500.
+"""IXF CVE Module - CVE-2021-22681 - Siemens S7-1200 S7-1500.
 
 Hardcoded crypto key (ICEFALL)
 
@@ -32,8 +32,8 @@ _SEVERITY      = "HIGH"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2021-22681 — Siemens S7-1200 S7-1500 (HIGH)",
-        "description":   "Siemens S7-1200 S7-1500 — Hardcoded crypto key (ICEFALL). "
+        "name":          "CVE-2021-22681 - Siemens S7-1200 S7-1500 (HIGH)",
+        "description":   "Siemens S7-1200 S7-1500 - Hardcoded crypto key (ICEFALL). "
                          "CVSS 7.5 (HIGH). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2021-22681...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Siemens S7-1200 S7-1500 may be present. "
+                f"Port {self.port} open on {self.target} - Siemens S7-1200 S7-1500 may be present. "
                 "CVE-2021-22681 (HIGH CVSS 7.5): Hardcoded crypto key (ICEFALL). "
                 "Manual version verification required."
             )

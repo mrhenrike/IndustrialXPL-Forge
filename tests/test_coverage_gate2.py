@@ -36,7 +36,7 @@ def test_ixf_exception_message() -> None:
 
 
 # ---------------------------------------------------------------------------
-# industrialxpl.core.exploit.option — Option descriptors
+# industrialxpl.core.exploit.option - Option descriptors
 # ---------------------------------------------------------------------------
 
 def test_option_base_default() -> None:
@@ -179,7 +179,7 @@ def test_optencoder_passthrough() -> None:
 
 
 # ---------------------------------------------------------------------------
-# industrialxpl.core.modbus.address — Modbus address parser
+# industrialxpl.core.modbus.address - Modbus address parser
 # ---------------------------------------------------------------------------
 
 def test_parse_single_decimal() -> None:
@@ -256,7 +256,7 @@ def test_modbus_address_repr() -> None:
 
 
 # ---------------------------------------------------------------------------
-# industrialxpl.core.modbus.timing — Timing profiles
+# industrialxpl.core.modbus.timing - Timing profiles
 # ---------------------------------------------------------------------------
 
 def test_timing_profiles_complete() -> None:
@@ -312,7 +312,7 @@ def test_timing_describe_all() -> None:
 
 
 # ---------------------------------------------------------------------------
-# industrialxpl.core.mitre.tactics — MITRE ATT&CK for ICS
+# industrialxpl.core.mitre.tactics - MITRE ATT&CK for ICS
 # ---------------------------------------------------------------------------
 
 def test_tactics_has_12_entries() -> None:
@@ -341,7 +341,7 @@ def test_tactic_tids_nonempty() -> None:
 
 
 # ---------------------------------------------------------------------------
-# industrialxpl.core.exploit.safety — IMPACT_LEVELS constant
+# industrialxpl.core.exploit.safety - IMPACT_LEVELS constant
 # ---------------------------------------------------------------------------
 
 def test_impact_levels_constant() -> None:
@@ -367,7 +367,7 @@ def test_destructive_gate_simulate(capsys) -> None:
 
 
 # ---------------------------------------------------------------------------
-# industrialxpl.core.exploit.utils — utility functions
+# industrialxpl.core.exploit.utils - utility functions
 # ---------------------------------------------------------------------------
 
 def test_pythonize_path() -> None:
@@ -381,7 +381,7 @@ def test_humanize_path() -> None:
 
 
 # ---------------------------------------------------------------------------
-# industrialxpl.core.api.server — basic importability
+# industrialxpl.core.api.server - basic importability
 # ---------------------------------------------------------------------------
 
 def test_api_server_importable() -> None:

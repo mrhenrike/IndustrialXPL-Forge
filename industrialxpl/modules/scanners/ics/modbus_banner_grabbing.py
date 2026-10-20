@@ -1,5 +1,5 @@
 # Author: Andre Henrique (@mrhenrike) | Uniao Geek
-"""Modbus FC43/MEI Banner Grabbing — vendor and product identification.
+"""Modbus FC43/MEI Banner Grabbing - vendor and product identification.
 
 Sends FC 43 (Read Device Identification) to extract vendor name,
 product code, firmware version, and serial number.
@@ -102,15 +102,15 @@ class Exploit(ModbusBaseExploit):
                 sock = modbus_connect(self.target, port, timing.socket_timeout)
                 if sock:
                     sock.close()
-                    print_success(f"[SIMULATE] {self.target}:{port} — would send FC43/MEI Read Device Identification")
+                    print_success(f"[SIMULATE] {self.target}:{port} - would send FC43/MEI Read Device Identification")
                 else:
-                    print_info(f"[SIMULATE] {self.target}:{port} — cannot connect")
+                    print_info(f"[SIMULATE] {self.target}:{port} - cannot connect")
             return
 
         for port in ports:
             with ModbusTCPSocket(self.target, port, self.unit_id, timing) as sock:
                 if not sock._sock:
-                    print_info(f"{self.target}:{port} — cannot connect")
+                    print_info(f"{self.target}:{port} - cannot connect")
                     continue
 
                 print_status(f"Grabbing FC43/MEI banner from {self.target}:{port}...")
@@ -122,7 +122,7 @@ class Exploit(ModbusBaseExploit):
                 fc_resp = resp[7]
                 if fc_resp & 0x80:
                     exc = resp[8] if len(resp) > 8 else "?"
-                    print_info(f"  FC43 exception {exc} — device present but MEI unsupported")
+                    print_info(f"  FC43 exception {exc} - device present but MEI unsupported")
                     continue
 
                 info = _parse_mei(resp)
@@ -131,7 +131,7 @@ class Exploit(ModbusBaseExploit):
                     print_table(
                         ["Field", "Value"],
                         rows,
-                        title=f"FC43 Banner — {self.target}:{port}",
+                        title=f"FC43 Banner - {self.target}:{port}",
                     )
                 else:
                     print_info("  FC43 responded but no identifiable objects in payload")

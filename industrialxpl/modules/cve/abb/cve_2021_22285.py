@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2021-22285 — ABB CP651 HMI (HIGH CVSS 7.5).
+"""IXF CVE CVE-2021-22285 - ABB CP651 HMI (HIGH CVSS 7.5).
 
 Exploit type: Denial of service
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — ABB CP651 HMI may be present. CVE-2021-22285 HIGH CVSS 7.5.")
+            print_success(f"Port {self.port} open - ABB CP651 HMI may be present. CVE-2021-22285 HIGH CVSS 7.5.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

@@ -1,4 +1,4 @@
-"""IXF REST API server — programmatic access (issue #9).
+"""IXF REST API server - programmatic access (issue #9).
 
 Usage:
   ixf serve --host 127.0.0.1 --port 8443

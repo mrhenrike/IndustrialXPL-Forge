@@ -2,7 +2,7 @@
 """IndustrialXPL-Forge environment health checker.
 
 Verifies Python version, required pip packages (Tier 1-2),
-and optional external runtimes (Tier 3 — all optional, Python fallback available).
+and optional external runtimes (Tier 3 - all optional, Python fallback available).
 
 Usage: python tools/env_doctor.py
 """
@@ -37,7 +37,7 @@ def _check_version(pkg: str, import_name: str = None) -> str:
 
 def main() -> None:
     print("\n" + "=" * 68)
-    print("  IndustrialXPL-Forge (IXF) — Environment Health Check")
+    print("  IndustrialXPL-Forge (IXF) - Environment Health Check")
     print("=" * 68)
 
     rows: list[tuple[str, str, str]] = []
@@ -50,8 +50,8 @@ def main() -> None:
     status = "\033[32mOK\033[0m" if py_ok else "\033[31mFAIL (requires 3.9+)\033[0m"
     print("  Python {:>10}  {}  ({})".format(v_str, status, platform.python_implementation()))
 
-    # ── Tier 1 — required pip packages ──────────────────────────────────
-    print("\n[Tier 1 — Required pip dependencies]")
+    # ── Tier 1 - required pip packages ──────────────────────────────────
+    print("\n[Tier 1 - Required pip dependencies]")
     tier1 = [
         ("requests",  "requests",  "pip install requests"),
         ("paramiko",  "paramiko",  "pip install paramiko"),
@@ -67,8 +67,8 @@ def main() -> None:
         note = "" if ok else install
         print("  {:<15} {}  {}".format(pkg, status, note))
 
-    # ── Tier 2 — optional pip packages ──────────────────────────────────
-    print("\n[Tier 2 — Optional pip extras (needed for specific protocols)]")
+    # ── Tier 2 - optional pip packages ──────────────────────────────────
+    print("\n[Tier 2 - Optional pip extras (needed for specific protocols)]")
     tier2 = [
         ("pymodbus",   "pymodbus",  "pip install pymodbus>=3.5  (Modbus TCP/RTU)"),
         ("asyncua",    "asyncua",   "pip install asyncua          (OPC UA)"),
@@ -83,22 +83,22 @@ def main() -> None:
         note = "" if ok else install
         print("  {:<15} {}  {}".format(pkg, status, note))
 
-    # ── Tier 3 — external runtimes (all optional) ────────────────────────
-    print("\n[Tier 3 — External runtimes (ALL OPTIONAL — Python fallback always available)]")
+    # ── Tier 3 - external runtimes (all optional) ────────────────────────
+    print("\n[Tier 3 - External runtimes (ALL OPTIONAL - Python fallback always available)]")
     tier3 = [
-        ("ruby",       "Ruby runtime — for Ruby-based exploit modules (optional, Python fallback available)"),
-        ("node",       "Node.js — for JavaScript/TypeScript exploits"),
-        ("java",       "Java — for Java deserialization exploits"),
-        ("javac",      "Java compiler — needed to compile .java sources"),
-        ("gcc",        "GCC C compiler — for C-based native exploits"),
-        ("g++",        "G++ C++ compiler — for C++ native exploits"),
-        ("go",         "Go runtime — for FrostyGoop and Go-based tools"),
-        ("perl",       "Perl — for legacy ICS scripts"),
-        ("pwsh",       "PowerShell — for Windows EWS exploitation"),
-        ("docker",     "Docker — Lisa/OpenPLC lab stacks"),
-        ("pdftotext",  "poppler-utils — AIM deep-study PDF text extraction"),
-        ("tesseract",  "tesseract-ocr — optional PDF OCR fallback"),
-        ("nmap",       "Nmap — optional OT discovery / NSE"),
+        ("ruby",       "Ruby runtime - for Ruby-based exploit modules (optional, Python fallback available)"),
+        ("node",       "Node.js - for JavaScript/TypeScript exploits"),
+        ("java",       "Java - for Java deserialization exploits"),
+        ("javac",      "Java compiler - needed to compile .java sources"),
+        ("gcc",        "GCC C compiler - for C-based native exploits"),
+        ("g++",        "G++ C++ compiler - for C++ native exploits"),
+        ("go",         "Go runtime - for FrostyGoop and Go-based tools"),
+        ("perl",       "Perl - for legacy ICS scripts"),
+        ("pwsh",       "PowerShell - for Windows EWS exploitation"),
+        ("docker",     "Docker - Lisa/OpenPLC lab stacks"),
+        ("pdftotext",  "poppler-utils - AIM deep-study PDF text extraction"),
+        ("tesseract",  "tesseract-ocr - optional PDF OCR fallback"),
+        ("nmap",       "Nmap - optional OT discovery / NSE"),
     ]
     for runtime, desc in tier3:
         found = shutil.which(runtime) is not None

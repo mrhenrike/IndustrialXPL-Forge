@@ -1,12 +1,12 @@
 """VxWorks URGENT/11 Vulnerability Scanner (NozomiNetworks / Armis Research).
 
-Detects devices running VxWorks 6.5-6.x that may be vulnerable to URGENT/11 —
+Detects devices running VxWorks 6.5-6.x that may be vulnerable to URGENT/11 -
 11 critical vulnerabilities in the IPnet TCP/IP stack used by VxWorks RTOS.
 Affects PLCs, RTUs, HMIs, safety controllers, network devices.
 
 Source: github.com/NozomiNetworks/urgent-11 (Nmap NSE)
 NSE: resources/nse/vxworks_urgent11.nse
-Author: NozomiNetworks/Armis (original) | Andre Henrique (@mrhenrike) — IXF wrapper
+Author: NozomiNetworks/Armis (original) | Andre Henrique (@mrhenrike) - IXF wrapper
 """
 from __future__ import annotations
 
@@ -39,10 +39,10 @@ _VULNERABLE_VERSIONS = re.compile(r"VxWorks\s+(6\.[5-9][\d.]*)", re.IGNORECASE)
 
 
 class Exploit(BaseExploit):
-    """VxWorks URGENT/11 Scanner — NozomiNetworks urgent-11 NSE.
+    """VxWorks URGENT/11 Scanner - NozomiNetworks urgent-11 NSE.
 
     Scans for devices running vulnerable VxWorks versions via FTP banner
-    fingerprinting. VxWorks versions 6.5–6.x are affected by 11 critical
+    fingerprinting. VxWorks versions 6.5-6.x are affected by 11 critical
     vulnerabilities (6 RCE, 5 DoS/Info) in the IPnet TCP/IP stack.
     Widely deployed in ICS/OT: PLCs, RTUs, HMIs, safety controllers.
     """
@@ -57,7 +57,7 @@ class Exploit(BaseExploit):
         ),
         "authors": (
             "NozomiNetworks / Armis Research (urgent-11 NSE)",
-            "Andre Henrique (@mrhenrike) — IXF integration",
+            "Andre Henrique (@mrhenrike) - IXF integration",
         ),
         "references": (
             "https://github.com/NozomiNetworks/urgent-11",
@@ -86,7 +86,7 @@ class Exploit(BaseExploit):
         if self.simulate:
             return True
         if not shutil.which("nmap"):
-            print_error("nmap not found — install nmap to run NSE scripts")
+            print_error("nmap not found - install nmap to run NSE scripts")
             return False
         if not _NSE_SCRIPT.exists():
             print_error(f"NSE script not found: {_NSE_SCRIPT}")
@@ -97,7 +97,7 @@ class Exploit(BaseExploit):
         if self.simulate:
             print_status(f"[SIMULATE] VxWorks URGENT/11 scan @ {self.target}:{self.port}")
             print_status()
-            print_status("  URGENT/11 — 11 CVEs in VxWorks 6.5 ≤ ver < 7.0 IPnet stack:")
+            print_status("  URGENT/11 - 11 CVEs in VxWorks 6.5 ≤ ver < 7.0 IPnet stack:")
             for cve, desc in _URGENT11_CVES.items():
                 severity = "(RCE)" if "RCE" in desc else "(DoS/Info)"
                 print_status(f"    [{cve}] {severity} {desc}")
@@ -139,7 +139,7 @@ class Exploit(BaseExploit):
                 for cve, desc in _URGENT11_CVES.items():
                     print_status(f"    {cve}: {desc}")
             elif "VxWorks" in output:
-                print_status("  VxWorks detected — check version manually")
+                print_status("  VxWorks detected - check version manually")
             else:
                 print_success("  No VxWorks FTP banner detected")
 

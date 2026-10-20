@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2023-28771 — Zyxel ATP USG VPN series (CRITICAL CVSS 9.8).
+"""IXF CVE CVE-2023-28771 - Zyxel ATP USG VPN series (CRITICAL CVSS 9.8).
 
 Exploit type: Command injection pre-auth IKEv2
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Zyxel ATP USG VPN series may be present. CVE-2023-28771 CRITICAL CVSS 9.8.")
+            print_success(f"Port {self.port} open - Zyxel ATP USG VPN series may be present. CVE-2023-28771 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

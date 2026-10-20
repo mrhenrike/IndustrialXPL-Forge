@@ -8,7 +8,7 @@ haul trucks, excavators, drills, and support equipment.
 Targeted systems:
   - Wenco FMS (Hitachi Construction Machinery)
     Web interface on TCP/8080 (HTTP) and TCP/8443 (HTTPS)
-    API endpoints on /api/v1/ — often unauthenticated in older installs
+    API endpoints on /api/v1/ - often unauthenticated in older installs
   - Caterpillar MineStar (see caterpillar_minestar_api.py)
   - Komatsu Dispatch (KOMTRAX Plus, port 8080)
   - Modular Mining ProVision (port 8080/80)

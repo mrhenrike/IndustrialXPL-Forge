@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2021-22986 — Schneider Electric APC Smart-UPS (CRITICAL CVSS 9.8).
+"""IXF CVE CVE-2021-22986 - Schneider Electric APC Smart-UPS (CRITICAL CVSS 9.8).
 
 Exploit type: RCE unauthenticated TLS bypass
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Schneider Electric APC Smart-UPS may be present. CVE-2021-22986 CRITICAL CVSS 9.8.")
+            print_success(f"Port {self.port} open - Schneider Electric APC Smart-UPS may be present. CVE-2021-22986 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

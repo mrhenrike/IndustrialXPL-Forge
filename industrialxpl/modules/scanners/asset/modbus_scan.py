@@ -91,7 +91,7 @@ class Exploit(ModbusBaseExploit):
                     pass
             elif fc_resp & 0x80:
                 exc = resp[8] if len(resp) > 8 else "?"
-                print_status(f"  FC43 exception {exc} — MEI not supported, device present")
+                print_status(f"  FC43 exception {exc} - MEI not supported, device present")
                 found = True
 
         # FC17 Report Server ID
@@ -123,12 +123,12 @@ class Exploit(ModbusBaseExploit):
                 sock = modbus_connect(self.target, port, timing.socket_timeout)
                 if sock:
                     sock.close()
-                    print_success(f"[SIMULATE] {self.target}:{port} — would probe FC43/FC17")
+                    print_success(f"[SIMULATE] {self.target}:{port} - would probe FC43/FC17")
                     if fc in (1, 2, 3, 4):
                         start, qty = addresses.as_bulk()
                         print_info(f"[SIMULATE]   plus FC{fc:02d} read addr {start} qty {min(qty, 125)}")
                 elif not self.scan_range:
-                    print_info(f"[SIMULATE] {self.target}:{port} — closed / no response")
+                    print_info(f"[SIMULATE] {self.target}:{port} - closed / no response")
             return
 
         for port in ports:

@@ -1,4 +1,4 @@
-"""IXF Default Credentials — GE CIMPLICITY/iFIX SCADA."""
+"""IXF Default Credentials - GE CIMPLICITY/iFIX SCADA."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptString, mute,

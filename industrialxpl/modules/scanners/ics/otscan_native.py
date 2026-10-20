@@ -1,4 +1,4 @@
-"""IXF native OT unified scanner — otscan-inspired (MIT stdlib probes).
+"""IXF native OT unified scanner - otscan-inspired (MIT stdlib probes).
 
 Usage (simulate default):
   ixf > use scanners/ics/otscan_native
@@ -42,7 +42,7 @@ class Exploit(Exploit):
 
     target = OptIP("", "Target IP (required for live scan)")
     protocols = OptString("", "Comma-separated protocols (empty = all 13)")
-    simulate = OptBool(True, "Simulate — probe plan only")
+    simulate = OptBool(True, "Simulate - probe plan only")
     destructive = OptBool(False, "Run live protocol probes (lab only)")
 
     @mute
@@ -62,7 +62,7 @@ class Exploit(Exploit):
         if not live:
             plan = simulate_scan(host, proto_list)
             selected = plan.get("protocols", list(PROTOCOLS))
-            print_warning(f"\n[OTscan] simulate — {len(selected)} protocols on {host}\n")
+            print_warning(f"\n[OTscan] simulate - {len(selected)} protocols on {host}\n")
             rows = [[p, plan["results"][p].get("would_run", "probe")] for p in selected]
             print_table(["protocol", "probe_fn"], rows)
             native = run_native("otscan", simulate=True)

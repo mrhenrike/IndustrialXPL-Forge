@@ -88,7 +88,7 @@ This command and its various sub-commands are used to directly interact with the
 underlying file system of the device. The command field is set to 1a and the data field
 is set as follows
 
-#### 3.3.1 Sub-command – Read file (01)
+#### 3.3.1 Sub-command - Read file (01)
 Returns x characters from the file at the given file path from the given start
 
 #### Table 3: Read File
@@ -103,7 +103,7 @@ ACK:
 Index 22 of the data field onward contain the next x contents of the file. Returns 02
 if the file is not found.
 
-### 3.3.2 Sub-command – write file (02)
+### 3.3.2 Sub-command - write file (02)
 Writes contents to the given file path starting at the given index
 
 #### Table 4: Write File
@@ -117,7 +117,7 @@ Writes contents to the given file path starting at the given index
 ACK:
 00 in the data field if successful
 
-### 3.3.3 Sub-command – find file (00:03)
+### 3.3.3 Sub-command - find file (00:03)
 Returns the file descriptor of the file located at the given path. [File path] variable
 Null terminator (00) 1 byte
 
@@ -132,7 +132,7 @@ ACK:
 The last 5 bytes of the data field contain the file descriptor. Returns 02 if the file is
 not found.
 
-### 3.3.4 Sub-command – create file (03:03)
+### 3.3.4 Sub-command - create file (03:03)
 Returns the file descriptor of a newly created file located at the given file path.
 
 #### Table 6: Create File
@@ -146,7 +146,7 @@ Returns the file descriptor of a newly created file located at the given file pa
 ACK:
 The last 4 bytes of the data field contain the file descriptor
 
-### 3.3.5 Sub-Command – get file size (06)
+### 3.3.5 Sub-Command - get file size (06)
 Returns a 4 byte file size for the given file descriptor
 
 #### Table 7: Get File Size
@@ -159,7 +159,7 @@ ACK:
 The first half of the last 10 bytes of the data field contains the file size. Returns 02
 if the file is not found.
 
-### 3.3.6 Sub-command – Rename/move (09:00)
+### 3.3.6 Sub-command - Rename/move (09:00)
 Moves or renames the file from source to destination
 
 #### Table 8: Move/Rename

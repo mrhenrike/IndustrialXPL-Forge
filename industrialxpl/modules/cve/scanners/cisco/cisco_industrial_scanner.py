@@ -1,4 +1,4 @@
-"""IXF Scanner — Cisco Industrial IR/IE Switch Discovery."""
+"""IXF Scanner - Cisco Industrial IR/IE Switch Discovery."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptInteger, mute,

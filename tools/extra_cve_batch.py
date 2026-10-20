@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Extra CVE batch — Medium/High/Critical only, expanded vendor coverage."""
+"""Extra CVE batch - Medium/High/Critical only, expanded vendor coverage."""
 import re
 import sys
 from pathlib import Path
@@ -53,7 +53,7 @@ def make_stub(cve_id, vendor, product, cvss, severity, exploit_type, cisa, port,
         f'                description="{cve_id}: {{}}:{{}}.  {exploit_type}. CVSS {cvss}.".format(self.target, self.port),\n'
         '                mitre_techniques=["T0883"],\n'
         "            ); return\n"
-        f'        print_success("{cve_id} {severity} — port {{}} open.".format(self.port)) if self.check() else print_error("Not responding.")\n'
+        f'        print_success("{cve_id} {severity} - port {{}} open.".format(self.port)) if self.check() else print_error("Not responding.")\n'
     )
 
 def sl(t):

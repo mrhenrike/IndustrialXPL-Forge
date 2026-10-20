@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2023-46289 — Rockwell Automation FactoryTalk Remote Access (CRITICAL CVSS 9.8).
+"""IXF CVE CVE-2023-46289 - Rockwell Automation FactoryTalk Remote Access (CRITICAL CVSS 9.8).
 
 Exploit type: Improper authentication bypass
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Rockwell Automation FactoryTalk Remote Access may be present. CVE-2023-46289 CRITICAL CVSS 9.8.")
+            print_success(f"Port {self.port} open - Rockwell Automation FactoryTalk Remote Access may be present. CVE-2023-46289 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

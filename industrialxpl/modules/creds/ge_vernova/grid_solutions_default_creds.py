@@ -1,4 +1,4 @@
-"""IXF Default Credentials — GE Vernova Grid Solutions/EnerVista."""
+"""IXF Default Credentials - GE Vernova Grid Solutions/EnerVista."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptString, mute,

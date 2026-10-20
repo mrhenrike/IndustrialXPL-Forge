@@ -17,8 +17,8 @@ This scanner:
 
 References:
   - Unitronics PCOM protocol documentation
-  - OT Hunt #10 ZeronTek — default password "1111"
-  - CISA Alert AA23-335A (CyberAv3ngers — Unitronics PLC targeting, 2023)
+  - OT Hunt #10 ZeronTek - default password "1111"
+  - CISA Alert AA23-335A (CyberAv3ngers - Unitronics PLC targeting, 2023)
   - MITRE ATT&CK ICS: T0846 (Remote System Discovery)
 
 Version: 1.0.0
@@ -181,7 +181,7 @@ class Exploit(Exploit):
 
         resp = _send_pcom(self.target, self.port, _PCOM_IDENTITY_FRAME, self.timeout)
         if not resp:
-            print_error("[PCOM] No response — PCOM not detected or port closed.")
+            print_error("[PCOM] No response - PCOM not detected or port closed.")
             return
 
         if resp[0] != _PCOM_STX:

@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2022-30313 — Honeywell ControlEdge Safety.
+"""IXF CVE Module - CVE-2022-30313 - Honeywell ControlEdge Safety.
 
 Unauthenticated firmware (ICEFALL)
 
@@ -32,8 +32,8 @@ _SEVERITY      = "CRITICAL"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2022-30313 — Honeywell ControlEdge Safety (CRITICAL)",
-        "description":   "Honeywell ControlEdge Safety — Unauthenticated firmware (ICEFALL). "
+        "name":          "CVE-2022-30313 - Honeywell ControlEdge Safety (CRITICAL)",
+        "description":   "Honeywell ControlEdge Safety - Unauthenticated firmware (ICEFALL). "
                          "CVSS 9.1 (CRITICAL). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2022-30313...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Honeywell ControlEdge Safety may be present. "
+                f"Port {self.port} open on {self.target} - Honeywell ControlEdge Safety may be present. "
                 "CVE-2022-30313 (CRITICAL CVSS 9.1): Unauthenticated firmware (ICEFALL). "
                 "Manual version verification required."
             )

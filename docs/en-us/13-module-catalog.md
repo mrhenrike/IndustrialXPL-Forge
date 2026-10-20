@@ -8,24 +8,24 @@ This document provides a comprehensive catalog of all 1190+ modules in Industria
 
 IndustrialXPL-Forge (IXF) modules are Python classes that implement the `BaseExploit` interface. Each module declares:
 - `__info__` dictionary with metadata (name, CVE, CVSS, impact level, MITRE techniques)
-- `run()` method — executes the exploit (simulate or live)
-- `check()` method — read-only vulnerability check (optional but recommended)
+- `run()` method - executes the exploit (simulate or live)
+- `check()` method - read-only vulnerability check (optional but recommended)
 
 Modules are organized in a hierarchical path structure under `industrialxpl/modules/`:
 
 ```
 modules/
-├── cve/          — CVE-specific exploits (150+ vendors, 486 modules)
-├── exploits/     — Protocol exploits and generic exploits (159 modules)
-├── creds/        — Default credential testers (34 modules)
-├── scanners/     — ICS device scanners (31 modules)
-├── assessment/   — Compliance and assessment (18 modules)
-└── generic/      — Generic utility modules (12 modules)
+├── cve/          - CVE-specific exploits (150+ vendors, 486 modules)
+├── exploits/     - Protocol exploits and generic exploits (159 modules)
+├── creds/        - Default credential testers (34 modules)
+├── scanners/     - ICS device scanners (31 modules)
+├── assessment/   - Compliance and assessment (18 modules)
+└── generic/      - Generic utility modules (12 modules)
 ```
 
 ---
 
-## How to Search — 10 Examples
+## How to Search - 10 Examples
 
 ```bash
 # By vendor name
@@ -61,7 +61,7 @@ ixf search 2024
 
 ---
 
-## CVE Modules — All 150+ Vendors
+## CVE Modules - All 150+ Vendors
 
 ### Vendor Summary Table
 
@@ -125,7 +125,7 @@ ixf search 2024
 | Eaton | 5 | CVE-2021-23276, CVE-2022-22805, CVE-2023-43772 | `cve/eaton/` |
 | ELIPSE | 2 | CVE-2023-28378, CVE-2022-40692 | `cve/elipse/` |
 | Endress+Hauser | 2 | CVE-2022-27187, CVE-2021-34854 | `cve/endress_hauser/` |
-| Exploits (generic) | — | Generic protocol exploits | `cve/exploits/` |
+| Exploits (generic) | - | Generic protocol exploits | `cve/exploits/` |
 | FANUC | 2 | CVE-2021-22681, CVE-2022-25158 | `cve/fanuc/` |
 | FATEK | 2 | CVE-2021-32998, CVE-2022-30269 | `cve/fatek/` |
 | Festo | 3 | CVE-2022-30310, CVE-2021-34527, CVE-2023-0432 | `cve/festo/` |
@@ -222,7 +222,7 @@ ixf search 2024
 
 ---
 
-## Protocol Exploit Modules — All 50 Protocols with Module Paths
+## Protocol Exploit Modules - All 50 Protocols with Module Paths
 
 | Protocol | Module Path | Modules | Example Exploit |
 |----------|------------|---------|----------------|
@@ -279,7 +279,7 @@ ixf search 2024
 
 ---
 
-## Scanner Modules — All 31 Scanners
+## Scanner Modules - All 31 Scanners
 
 | Scanner | Module Path | Port | Protocol | Usage |
 |---------|------------|------|----------|-------|
@@ -317,7 +317,7 @@ ixf search 2024
 
 ---
 
-## Credential Modules — All 34 Modules
+## Credential Modules - All 34 Modules
 
 | Vendor | Module Path | Port | Protocol | Default Creds Tested |
 |--------|------------|------|----------|---------------------|
@@ -346,7 +346,7 @@ ixf search 2024
 | Honeywell OT | `creds/honeywell_ot/webinterface_http_auth` | 443 | HTTPS | admin/Aut0maT3 |
 | Iconics | `creds/iconics/genesis64_default_creds` | 80 | HTTP | admin/(blank) |
 | Inductive Auto. | `creds/inductive_automation/ignition_default_creds` | 8088 | HTTP | admin/password |
-| LS Electric | `creds/ls_electric/xgk_default_creds` | 502 | Modbus | (no auth — Modbus) |
+| LS Electric | `creds/ls_electric/xgk_default_creds` | 502 | Modbus | (no auth - Modbus) |
 | Mitsubishi | `creds/mitsubishi/melsec_default_creds` | 5007 | SLMP | (no auth default) |
 | Moxa | `creds/moxa/ssh_default_creds` | 22 | SSH | admin/moxa |
 | Moxa | `creds/moxa/telnet_default_creds` | 23 | Telnet | admin/moxa |
@@ -378,7 +378,7 @@ ixf search 2024
 
 ---
 
-## Assessment Modules — All 18
+## Assessment Modules - All 18
 
 (See [Assessment & Compliance](12-assessment-compliance.md) for full details)
 
@@ -405,7 +405,7 @@ ixf search 2024
 
 ---
 
-## Malware TTP Modules — All 26
+## Malware TTP Modules - All 26
 
 | Malware | Year | Attribution | Impact | MITRE Techniques |
 |---------|------|------------|--------|-----------------|
@@ -428,13 +428,13 @@ ixf search 2024
 | PLC Logic Bomb (Time) | 2024 | IXF synthetic | CRITICAL | T0839, T0836 |
 | PLC Logic Bomb (Counter) | 2024 | IXF synthetic | CRITICAL | T0839, T0836 |
 | PLC Logic Bomb (Physical) | 2024 | IXF synthetic | CRITICAL | T0836, T0838 |
-| Modbus Flood DoS | — | Generic TTP | HIGH | T0813, T0815 |
-| S7 Watchdog Bypass | — | Generic TTP | HIGH | T0816, T0855 |
+| Modbus Flood DoS | - | Generic TTP | HIGH | T0813, T0815 |
+| S7 Watchdog Bypass | - | Generic TTP | HIGH | T0816, T0855 |
 | ICS Ransomware Generic | 2019+ | Multiple | HIGH | T0881, T0810 |
-| DNP3 Rogue Master | — | Generic TTP | HIGH | T0848, T0855 |
-| GOOSE Injection | — | Generic TTP | CATASTROPHIC | T0855, T0836 |
-| IEC 104 Replay Attack | — | Generic TTP | HIGH | T0855, T0813 |
-| BACnet Property Attack | — | Generic TTP | MEDIUM | T0836, T0832 |
+| DNP3 Rogue Master | - | Generic TTP | HIGH | T0848, T0855 |
+| GOOSE Injection | - | Generic TTP | CATASTROPHIC | T0855, T0836 |
+| IEC 104 Replay Attack | - | Generic TTP | HIGH | T0855, T0813 |
+| BACnet Property Attack | - | Generic TTP | MEDIUM | T0836, T0832 |
 
 ---
 
@@ -452,7 +452,7 @@ IXF ships with these native source files compiled by the PolyExploit Runner:
 
 ---
 
-## NSE Scripts — All 8
+## NSE Scripts - All 8
 
 (See [Nmap NSE Scripts](14-nse-scripts.md) for full reference)
 
@@ -511,12 +511,12 @@ Tactics covered:   12/12 (100%)
 | Protocol exploits (exploits/protocols/) | Impair Process Control, Inhibit Response | T0836, T0813, T0855 |
 | Credential modules (creds/) | Initial Access | T0812 (Default Credentials), T0859 |
 | Scanners (scanners/ics/) | Discovery | T0846, T0840, T0861, T0808 |
-| Assessment modules (assessment/) | INFO — detection guidance | All tactics |
+| Assessment modules (assessment/) | INFO - detection guidance | All tactics |
 | Malware TTPs (malware/) | Impact, Inhibit Response | T0810, T0879, T0881, T0837 |
 
 ---
 
-## Extended CVE Coverage by Vendor — Secondary Vendors
+## Extended CVE Coverage by Vendor - Secondary Vendors
 
 ### Phoenix Contact (6 modules)
 
@@ -560,7 +560,7 @@ Tactics covered:   12/12 (100%)
 |-------------|-----|------|-----------------|--------|
 | `cve/ls_electric/cve_2021_26728_xgi_rce` | CVE-2021-26728 | 9.8 | XGI PLC series | Remote code execution |
 
-### Delta Electronics — Detailed Breakdown (11 modules)
+### Delta Electronics - Detailed Breakdown (11 modules)
 
 | Module Path | CVE | CVSS | Affected Product | Impact |
 |-------------|-----|------|-----------------|--------|
@@ -619,7 +619,7 @@ Each malware module simulates the specific attack techniques used by real ICS ma
 | Module | Technique | Target | Simulation |
 |--------|-----------|--------|-----------|
 | `malware/triton/triton_sic_rewrite` | T0857, T0829 | Schneider Triconex SIS | Simulates TRITON firmware implant: rewrite SIS firmware to disable safety trips |
-| `malware/triton/triton_safe_state_bypass` | T0829, T0876 | Safety PLC | Simulate bypass of SIS safe state — allow unsafe condition to persist |
+| `malware/triton/triton_safe_state_bypass` | T0829, T0876 | Safety PLC | Simulate bypass of SIS safe state - allow unsafe condition to persist |
 
 #### INCONTROLLER / PIPEDREAM Modules (5)
 
@@ -882,7 +882,7 @@ python tools/env_doctor.py
 
 ---
 
-## Vendor CVE Module Details — Additional Vendors
+## Vendor CVE Module Details - Additional Vendors
 
 ### Prosoft Technology (2 modules)
 
@@ -903,7 +903,7 @@ python tools/env_doctor.py
 |-------------|-----|------|-----------------|--------|
 | `cve/opto22/cve_2023_26597_groov_epic_auth` | CVE-2023-26597 | 9.8 | groov EPIC PR1 | Authentication bypass |
 
-### Schweitzer Engineering (SEL) — 4 modules
+### Schweitzer Engineering (SEL) - 4 modules
 
 | Module Path | CVE | CVSS | Affected Product | Impact |
 |-------------|-----|------|-----------------|--------|
@@ -943,25 +943,25 @@ python tools/env_doctor.py
 
 ---
 
-## Protocol Exploit Modules — Remaining Catalog
+## Protocol Exploit Modules - Remaining Catalog
 
 ### Additional Modbus Variants
 
 | Module Path | Variant | Purpose |
 |-------------|---------|---------|
-| `exploits/protocols/modbus/modbus_read_all_coils` | Modbus TCP | Read all coils (FC1) — full discrete output state |
-| `exploits/protocols/modbus/modbus_write_multiple_regs` | Modbus TCP | FC16 Write Multiple Registers — bulk analog output |
-| `exploits/protocols/modbus/modbus_mask_write_register` | Modbus TCP | FC22 Mask Write Register — bitmask manipulation |
-| `exploits/protocols/modbus/modbus_read_file_record` | Modbus TCP | FC20 File Record read — firmware/config file access |
+| `exploits/protocols/modbus/modbus_read_all_coils` | Modbus TCP | Read all coils (FC1) - full discrete output state |
+| `exploits/protocols/modbus/modbus_write_multiple_regs` | Modbus TCP | FC16 Write Multiple Registers - bulk analog output |
+| `exploits/protocols/modbus/modbus_mask_write_register` | Modbus TCP | FC22 Mask Write Register - bitmask manipulation |
+| `exploits/protocols/modbus/modbus_read_file_record` | Modbus TCP | FC20 File Record read - firmware/config file access |
 | `exploits/protocols/modbus/modbus_encapsulated_transport` | Modbus TCP | FC43 Encapsulated Interface Transport |
 
 ### Additional DNP3 Variants
 
 | Module Path | Purpose | Impact |
 |-------------|---------|--------|
-| `exploits/protocols/dnp3/dnp3_warm_restart` | DNP3 Warm Restart (FC 14) | RTU warm reboot — process disruption |
+| `exploits/protocols/dnp3/dnp3_warm_restart` | DNP3 Warm Restart (FC 14) | RTU warm reboot - process disruption |
 | `exploits/protocols/dnp3/dnp3_enable_spontaneous` | Enable unsolicited responses | Flood RTU with event data |
-| `exploits/protocols/dnp3/dnp3_write_time` | Write time synchronization | Clock skew — event timestamp falsification |
+| `exploits/protocols/dnp3/dnp3_write_time` | Write time synchronization | Clock skew - event timestamp falsification |
 | `exploits/protocols/dnp3/dnp3_assign_class` | Reassign data class assignments | Suppress critical events from polling |
 
 ### Additional OPC UA Variants
@@ -982,9 +982,9 @@ python tools/env_doctor.py
 
 ---
 
-## Credential Module Details — Full Credential Lists
+## Credential Module Details - Full Credential Lists
 
-### `creds/generic/http_default` — Credentials Tested
+### `creds/generic/http_default` - Credentials Tested
 
 | Username | Password | Type |
 |----------|---------|------|
@@ -1004,12 +1004,12 @@ python tools/env_doctor.py
 | service | service | Field service |
 | system | system | System account |
 
-### `creds/generic/snmp_community` — Community Strings Tested
+### `creds/generic/snmp_community` - Community Strings Tested
 
 | Community String | Type | Risk |
 |----------------|------|------|
-| public | Default read | HIGH — information disclosure |
-| private | Default write | CRITICAL — configuration write |
+| public | Default read | HIGH - information disclosure |
+| private | Default write | CRITICAL - configuration write |
 | admin | Common | HIGH |
 | 0 | Common legacy | HIGH |
 | community | Common | HIGH |
@@ -1067,7 +1067,7 @@ ixf report navigator                    # MITRE Navigator layer for visualizatio
 
 ---
 
-## Frequently Asked Questions — Module Catalog
+## Frequently Asked Questions - Module Catalog
 
 ### How many modules target Modbus-based systems?
 
@@ -1112,7 +1112,7 @@ Open an issue: https://github.com/mrhenrike/IndustrialXPL-Forge/issues with the 
 | Protocols covered | 50+ |
 | CVE IDs mapped | 3,300+ |
 | MITRE techniques covered | 96/103 (93%) |
-| Malware TTPs simulated | 26 (2010–2024) |
+| Malware TTPs simulated | 26 (2010-2024) |
 | ICS languages (SAST) | 7 |
 | NSE scripts | 8 |
 | Highest CVSS in catalog | 9.8 (multiple) |
@@ -1159,19 +1159,19 @@ print(f'Modules in installed version: {len(m)}')
 
 All modules in the IXF catalog comply with the following policies:
 
-1. **No real credentials** — modules never contain actual passwords, API keys, or authentication tokens. Test credentials are from public vendor documentation or public CVE disclosures.
+1. **No real credentials** - modules never contain actual passwords, API keys, or authentication tokens. Test credentials are from public vendor documentation or public CVE disclosures.
 
-2. **Simulate-first** — every module MUST have a working `simulate=True` path before live execution is available. A module that only executes live will not be accepted.
+2. **Simulate-first** - every module MUST have a working `simulate=True` path before live execution is available. A module that only executes live will not be accepted.
 
-3. **Impact accuracy** — impact levels must accurately reflect the real-world consequence. Understating impact (e.g., marking CATASTROPHIC as HIGH) is never acceptable.
+3. **Impact accuracy** - impact levels must accurately reflect the real-world consequence. Understating impact (e.g., marking CATASTROPHIC as HIGH) is never acceptable.
 
-4. **Attribution** — malware TTP modules correctly attribute the original threat actor and include references to public reporting.
+4. **Attribution** - malware TTP modules correctly attribute the original threat actor and include references to public reporting.
 
-5. **No 0-day** — IXF only covers publicly disclosed vulnerabilities with CVE identifiers or well-documented TTPs. No unpublished research or live 0-day exploitation.
+5. **No 0-day** - IXF only covers publicly disclosed vulnerabilities with CVE identifiers or well-documented TTPs. No unpublished research or live 0-day exploitation.
 
-6. **Physical impact documentation** — every CVE module must explicitly state the physical consequence in the simulation output.
+6. **Physical impact documentation** - every CVE module must explicitly state the physical consequence in the simulation output.
 
-7. **MITRE accuracy** — MITRE ATT&CK for ICS technique mappings must match official ICS ATT&CK matrix definitions (https://attack.mitre.org/matrices/ics/).
+7. **MITRE accuracy** - MITRE ATT&CK for ICS technique mappings must match official ICS ATT&CK matrix definitions (https://attack.mitre.org/matrices/ics/).
 
 ---
 
@@ -1190,7 +1190,7 @@ Track major module additions by version:
 | v1.0.7 | +30 | INCONTROLLER/PIPEDREAM full suite (5 modules) |
 | v1.0.6 | +22 | 150 vendor milestone, WEG/ALTUS/NOVUS Brazil suite |
 | v1.0.5 | +35 | Malware TTP suite (KillDisk, NotPetya, TRITON) |
-| v1.0.0 | 800 | Initial public release — 800 base modules |
+| v1.0.0 | 800 | Initial public release - 800 base modules |
 
 ---
 
@@ -1221,7 +1221,7 @@ All scanner modules share a common base set of options. Here is the full options
 ixf > use scanners/ics/modbus_scanner
 ixf (Modbus TCP Scanner) > show options
 
-  Options — Modbus TCP Scanner (CIDR Range)
+  Options - Modbus TCP Scanner (CIDR Range)
   ═══════════════════════════════════════════════════════════════════════════
   +──────────────────+──────────+──────────+────────────────────────────────────────────────+
   | Option           | Value    | Required | Description                                    |
@@ -1244,11 +1244,11 @@ ixf (Modbus TCP Scanner) > set threads 20
 
 ixf (Modbus TCP Scanner) > run
 
-  [SIMULATE MODE — no packets sent]
-  Module:  Modbus TCP Scanner — CIDR Range
+  [SIMULATE MODE - no packets sent]
+  Module:  Modbus TCP Scanner - CIDR Range
   Target:  192.168.1.0/24  Threads: 20
 
-  Step 1: Resolve 192.168.1.0/24 to 254 host addresses (192.168.1.1–192.168.1.254)
+  Step 1: Resolve 192.168.1.0/24 to 254 host addresses (192.168.1.1-192.168.1.254)
   Step 2: Spawn 20 threads; each tests up to 13 hosts
   Step 3: Per host: TCP SYN to port 502, timeout 3s
   Step 4: For responsive hosts: send Modbus FC4 (Read Input Registers) probe
@@ -1267,13 +1267,13 @@ ixf (Modbus TCP Scanner) > run
 ### Scanner Output Formats
 
 ```bash
-# Table (default) — human readable
+# Table (default) - human readable
 ixf use scanners/ics/modbus_scanner set target 192.168.1.0/24 run
 
-# JSON — for parsing and integration
+# JSON - for parsing and integration
 ixf use scanners/ics/modbus_scanner set target 192.168.1.0/24 set output_format json run > scan.json
 
-# CSV — for spreadsheet import
+# CSV - for spreadsheet import
 ixf use scanners/ics/modbus_scanner set target 192.168.1.0/24 set output_format csv run > scan.csv
 ```
 
@@ -1298,7 +1298,7 @@ ixf use scanners/ics/modbus_scanner set target 192.168.1.0/24 set output_format 
 
 ---
 
-## Credential Module — Detailed Coverage
+## Credential Module - Detailed Coverage
 
 ### Vendor-Specific Credential Database
 
@@ -1312,7 +1312,7 @@ ixf > set target 192.168.1.50
 ixf > set port 80
 ixf > run
 
-  [SIMULATE MODE — no packets sent]
+  [SIMULATE MODE - no packets sent]
   Module: Siemens SIMATIC HMI Web Server Default Credentials
   Target: http://192.168.1.50:80
 
@@ -1341,7 +1341,7 @@ ixf > use creds/rockwell/factorytalk_default
 ixf > set target 192.168.1.110
 ixf > run
 
-  [SIMULATE MODE — no packets sent]
+  [SIMULATE MODE - no packets sent]
   Module: Rockwell FactoryTalk View Default Credentials
   Target: https://192.168.1.110:443
 
@@ -1365,7 +1365,7 @@ ixf > set target 192.168.1.30
 ixf > set port 8088
 ixf > run
 
-  [SIMULATE MODE — no packets sent]
+  [SIMULATE MODE - no packets sent]
   Module: Inductive Automation Ignition Gateway Default Credentials
   Target: http://192.168.1.30:8088
 
@@ -1422,7 +1422,7 @@ ixf > search nuclear
 
 ---
 
-## Module Categories — Detailed Breakdown
+## Module Categories - Detailed Breakdown
 
 ### CVE Module Sub-categories
 
@@ -1436,7 +1436,7 @@ CVE modules are organized by the vulnerability type they exploit:
 | SQL injection | 67 | Database injection leading to data access or RCE |
 | Path traversal | 45 | File system access outside allowed paths |
 | Information disclosure | 38 | Sensitive data leakage (firmware, config, creds) |
-| Buffer overflow | 15 | Memory corruption — crash or RCE |
+| Buffer overflow | 15 | Memory corruption - crash or RCE |
 | XSS / CSRF | 22 | Web-based attacks on HMI/SCADA web interfaces |
 
 ### Protocol Exploit Sub-categories
@@ -1547,7 +1547,7 @@ ixf use exploits/protocols/modbus/modbus_unauthorized_coil_set
 ixf set target 192.168.1.100     # test PLC only
 ixf set simulate false
 ixf set destructive true
-ixf run    # triggers real Modbus write — NDR should alert
+ixf run    # triggers real Modbus write - NDR should alert
 ```
 
 ### Using IXF in CI/CD for OT Security Regression Testing

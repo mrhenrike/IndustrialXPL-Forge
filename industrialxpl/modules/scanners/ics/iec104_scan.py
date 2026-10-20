@@ -1,4 +1,4 @@
-"""IXF Scanner — Generic IEC 60870-5-104 RTU/SCADA Discovery. simulate=True."""
+"""IXF Scanner - Generic IEC 60870-5-104 RTU/SCADA Discovery. simulate=True."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptInteger, OptPort, mute,

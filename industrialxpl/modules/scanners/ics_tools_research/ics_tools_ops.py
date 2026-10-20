@@ -1,4 +1,4 @@
-"""Unified ICS-tools ops — analyze, run, compile vendor tools from IXF."""
+"""Unified ICS-tools ops - analyze, run, compile vendor tools from IXF."""
 
 from industrialxpl.core.exploit import (
     Exploit,
@@ -41,7 +41,7 @@ class Exploit(Exploit):
     extra_args = OptString("", "Extra CLI args for vendor entry (space-separated)")
     target = OptIP("", "Lab target IP (for NSE / sixnet)")
     port = OptPort(47808, "Target port (BACnet default 47808)")
-    simulate = OptBool(True, "Simulate — do not invoke vendor binaries")
+    simulate = OptBool(True, "Simulate - do not invoke vendor binaries")
     destructive = OptBool(False, "Live vendor execution against target")
 
     @mute
@@ -80,7 +80,7 @@ class Exploit(Exploit):
             if info.get("error"):
                 print_error(info["error"])
                 return
-            print_success("{} — {}".format(info["label"], info["interpreter"]))
+            print_success("{} - {}".format(info["label"], info["interpreter"]))
             print_info("Vendor: {}".format(info["vendor_path"]))
             print_info("Entry: {}".format(info["entry"]))
             if info.get("nse_scripts"):

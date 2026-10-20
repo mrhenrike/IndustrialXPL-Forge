@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2011-0340 — GE Proficy HMI/SCADA.
+"""IXF CVE Module - CVE-2011-0340 - GE Proficy HMI/SCADA.
 
 BOF RCE
 
@@ -32,8 +32,8 @@ _SEVERITY      = "CRITICAL"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2011-0340 — GE Proficy HMI/SCADA (CRITICAL)",
-        "description":   "GE Proficy HMI/SCADA — BOF RCE. "
+        "name":          "CVE-2011-0340 - GE Proficy HMI/SCADA (CRITICAL)",
+        "description":   "GE Proficy HMI/SCADA - BOF RCE. "
                          "CVSS 9.3 (CRITICAL). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2011-0340...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — GE Proficy HMI/SCADA may be present. "
+                f"Port {self.port} open on {self.target} - GE Proficy HMI/SCADA may be present. "
                 "CVE-2011-0340 (CRITICAL CVSS 9.3): BOF RCE. "
                 "Manual version verification required."
             )

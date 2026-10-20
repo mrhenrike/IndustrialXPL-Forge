@@ -1,4 +1,4 @@
-"""IXF platform requirements — Linux-only runtime."""
+"""IXF platform requirements - Linux-only runtime."""
 
 
 import platform

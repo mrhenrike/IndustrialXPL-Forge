@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2024-40619 — Rockwell Automation ControlLogix 5580 5480 (HIGH CVSS 8.8).
+"""IXF CVE CVE-2024-40619 - Rockwell Automation ControlLogix 5580 5480 (HIGH CVSS 8.8).
 
 Exploit type: Improper input validation
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Rockwell Automation ControlLogix 5580 5480 may be present. CVE-2024-40619 HIGH CVSS 8.8.")
+            print_success(f"Port {self.port} open - Rockwell Automation ControlLogix 5580 5480 may be present. CVE-2024-40619 HIGH CVSS 8.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

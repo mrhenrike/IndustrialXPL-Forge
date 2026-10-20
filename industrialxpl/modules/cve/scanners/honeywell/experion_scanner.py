@@ -1,4 +1,4 @@
-"""IXF Scanner — Honeywell Experion PKS/LX Discovery."""
+"""IXF Scanner - Honeywell Experion PKS/LX Discovery."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptInteger, mute,

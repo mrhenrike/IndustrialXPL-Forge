@@ -1,4 +1,4 @@
-"""IXF Default Credentials — WEG Motor Scan / CFW-11. simulate=True."""
+"""IXF Default Credentials - WEG Motor Scan / CFW-11. simulate=True."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptString, mute,

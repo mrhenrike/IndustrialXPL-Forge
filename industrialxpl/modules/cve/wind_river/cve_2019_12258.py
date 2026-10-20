@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2019-12258 — Wind River VxWorks.
+"""IXF CVE Module - CVE-2019-12258 - Wind River VxWorks.
 
 TCP RST DoS
 
@@ -32,8 +32,8 @@ _SEVERITY      = "HIGH"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2019-12258 — Wind River VxWorks (HIGH)",
-        "description":   "Wind River VxWorks — TCP RST DoS. "
+        "name":          "CVE-2019-12258 - Wind River VxWorks (HIGH)",
+        "description":   "Wind River VxWorks - TCP RST DoS. "
                          "CVSS 7.5 (HIGH). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2019-12258...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Wind River VxWorks may be present. "
+                f"Port {self.port} open on {self.target} - Wind River VxWorks may be present. "
                 "CVE-2019-12258 (HIGH CVSS 7.5): TCP RST DoS. "
                 "Manual version verification required."
             )

@@ -1,6 +1,6 @@
 """
-IndustrialXPL-Forge — Siemens S7comm Client (ISO-on-TCP)
-Author: André Henrique (@mrhenrike) | União Geek — https://github.com/mrhenrike
+IndustrialXPL-Forge - Siemens S7comm Client (ISO-on-TCP)
+Author: André Henrique (@mrhenrike) | União Geek - https://github.com/mrhenrike
 
 Python 3 raw-socket implementation of S7comm over ISO-on-TCP (port 102).
 Ported and modernised from ISF S7Client (original: WenZhe Zhu / ICSsploit).
@@ -186,7 +186,7 @@ class S7Client:
         """Apply Siemens S7-300/400 password XOR-chain hash.
 
         Args:
-            password: PLC plaintext password (1–8 characters).
+            password: PLC plaintext password (1-8 characters).
 
         Returns:
             8-byte hashed password bytes.
@@ -227,7 +227,7 @@ class S7Client:
         return False
 
     # ------------------------------------------------------------------ #
-    # SZL (System Status List) read — identity / hardware info
+    # SZL (System Status List) read - identity / hardware info
     # ------------------------------------------------------------------ #
 
     def read_szl(self, szl_id: int, szl_index: int = 0) -> bytes | None:

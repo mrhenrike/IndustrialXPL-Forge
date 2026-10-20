@@ -1,6 +1,6 @@
 ﻿# Installation
 
-IndustrialXPL-Forge (IXF) is a pure Python framework published on PyPI. The recommended installation method is `pip`. All core functionality is available immediately after install — no compilers, containers, or external tools are required for the base install.
+IndustrialXPL-Forge (IXF) is a pure Python framework published on PyPI. The recommended installation method is `pip`. All core functionality is available immediately after install - no compilers, containers, or external tools are required for the base install.
 
 ---
 
@@ -177,9 +177,9 @@ $ ixf
   | || | | | (_| | |_| \__ \ |_| |  | |  /  \| |   | |___  |  _| (_) | | | (_| |  __/
  |___|_| |_|\__,_|\__,_|___/\__|_|  |_| /_/\_\_|   |_____| |_|  \___/|_|  \__, |\___|
                                                                               |___/
-  IndustrialXPL-Forge v1.0.31 — OT/ICS/SCADA Security Assessment Framework
+  IndustrialXPL-Forge v1.0.31 - OT/ICS/SCADA Security Assessment Framework
   Author: André Henrique (@mrhenrike) | União Geek | https://uniaogeek.com.br/
-  Python-First. Pure Python — install with 
+  Python-First. Pure Python - install with 
         .
   Type 'help' for commands.  simulate=True by default (safe mode).
 
@@ -337,7 +337,7 @@ IndustrialXPL-Forge/
 IXF follows a **tiered dependency model**. The base `
         ` covers Tier 0 and Tier 1. Tiers 2 and 3 unlock additional protocol libraries, AI-powered SAST, and native multi-language execution.
 
-### Tier 0 — Python Standard Library (Always Available)
+### Tier 0 - Python Standard Library (Always Available)
 
 No installation required. These modules ship with every Python 3.9+ interpreter.
 
@@ -366,7 +366,7 @@ No installation required. These modules ship with every Python 3.9+ interpreter.
 | `base64` | Payload encoding in simulate output |
 | `ipaddress` | CIDR range validation for target options |
 
-### Tier 1 — Core pip Dependencies (Installed Automatically)
+### Tier 1 - Core pip Dependencies (Installed Automatically)
 
 These packages are declared in `install_requires` and installed automatically by pip.
 
@@ -380,13 +380,13 @@ These packages are declared in `install_requires` and installed automatically by
 | `rich` | >=13.0 | Terminal UI | Tables, progress bars, colored banners, panels |
 | `psutil` | >=5.9 | Process/system information | Detect running engineering software, runtime availability checks |
 | `cryptography` | >=41.0 | TLS, crypto primitives | S7comm+ TLS key extraction, JWT handling, credential hashing |
-| `pyreadline3` | >=3.4 | **Windows only** — readline | Command history (Up/Down arrows), Tab completion on Windows |
+| `pyreadline3` | >=3.4 | **Windows only** - readline | Command history (Up/Down arrows), Tab completion on Windows |
 
-### Tier 2 — Optional pip Extras
+### Tier 2 - Optional pip Extras
 
 Install these extras to unlock specific protocol libraries and AI-powered SAST analysis.
 
-#### `[ot]` — OT/ICS Protocol Libraries
+#### `[ot]` - OT/ICS Protocol Libraries
 
 ```bash
 
@@ -396,13 +396,13 @@ Install these extras to unlock specific protocol libraries and AI-powered SAST a
 
 | Package | What It Enables |
 |---------|----------------|
-| `pymodbus` | Full Modbus TCP/RTU client: function codes 1–24, write coil flood, register manipulation, firmware interrogation via FC43 (Read Device Identification). Without this package, IXF falls back to raw socket Modbus using Tier 0 `socket` + `struct`. |
+| `pymodbus` | Full Modbus TCP/RTU client: function codes 1-24, write coil flood, register manipulation, firmware interrogation via FC43 (Read Device Identification). Without this package, IXF falls back to raw socket Modbus using Tier 0 `socket` + `struct`. |
 | `asyncua` | Native OPC UA client: endpoint enumeration, namespace browsing, unauthenticated write testing, SecurityMode=None detection, certificate validation bypass testing. Replaces the raw TCP fallback. |
 | `cpppo` | EtherNet/IP / CIP client: tag enumeration on ControlLogix/CompactLogix PLCs, PCCC forward open, identity object read. Required for the `exploits/protocols/enip/` family of modules. |
 
 Without `[ot]`, the Modbus, OPC UA, and EtherNet/IP modules still run using raw socket implementations from Tier 0. The raw fallback covers the most common attack surfaces but does not support advanced function codes or session management.
 
-#### `[fieldbus]` — Industrial Fieldbus
+#### `[fieldbus]` - Industrial Fieldbus
 
 ```bash
 
@@ -414,7 +414,7 @@ Without `[ot]`, the Modbus, OPC UA, and EtherNet/IP modules still run using raw 
 |---------|----------------|
 | `python-can` | CAN bus interface for CANopen protocol modules. Required for modules under `exploits/protocols/canopen/` and any module interacting with CAN-attached safety controllers. Requires a physical or virtual CAN adapter (SocketCAN on Linux, PCAN on Windows). |
 
-#### `[sast]` — SAST / LLM Analysis
+#### `[sast]` - SAST / LLM Analysis
 
 ```bash
 
@@ -429,7 +429,7 @@ Without `[ot]`, the Modbus, OPC UA, and EtherNet/IP modules still run using raw 
 
 Both providers require an API key set via `set llm-key <key>` inside IXF. Keys are never written to disk or log files. The SAST module sanitizes all code before sending: removes hostnames, IP addresses, engineering-specific identifiers, and any string matching credential patterns.
 
-#### `[full]` — Everything
+#### `[full]` - Everything
 
 ```bash
 
@@ -438,7 +438,7 @@ Both providers require an API key set via `set llm-key <key>` inside IXF. Keys a
 Equivalent to `
         `. Installs all optional extras at once.
 
-### Tier 3 — External Runtimes (Fully Optional)
+### Tier 3 - External Runtimes (Fully Optional)
 
 Tier 3 runtimes are external programs that must be installed separately via the OS package manager or official installers. IXF always has a **Python fallback** for all affected modules when Tier 3 runtimes are absent. The fallback uses subprocess-safe in-process Python emulation.
 
@@ -477,19 +477,19 @@ python tools/env_doctor.py
 
 This error occurs with pyreadline3 versions older than 3.4 or when the history file path is unwritable.
 
-**Solution 1** — Upgrade IXF (includes the fix):
+**Solution 1** - Upgrade IXF (includes the fix):
 
 ```bash
 pip install --upgrade industrialxpl-forge
 ```
 
-**Solution 2** — Upgrade pyreadline3 directly:
+**Solution 2** - Upgrade pyreadline3 directly:
 
 ```bash
 pip install --upgrade pyreadline3
 ```
 
-**Solution 3** — If the history directory is not writable, set a custom path:
+**Solution 3** - If the history directory is not writable, set a custom path:
 
 ```powershell
 # In PowerShell, before launching ixf:
@@ -534,7 +534,7 @@ For a full raw socket experience on Windows without Administrator rights, use WS
 
 `readline` is part of the Python standard library on Linux and macOS. No additional packages are needed for shell history and completion.
 
-**Linux — Scapy raw sockets:**
+**Linux - Scapy raw sockets:**
 
 ```bash
 # Option 1: Run as root (not recommended for general use)
@@ -547,7 +547,7 @@ sudo setcap cap_net_raw,cap_net_admin=eip $(which python3)
 sudo setcap cap_net_raw,cap_net_admin=eip ~/.venvs/ixf/bin/python
 ```
 
-**macOS — Homebrew Python:**
+**macOS - Homebrew Python:**
 
 ```bash
 # Install Homebrew Python (avoids system Python conflicts)
@@ -821,7 +821,7 @@ ixf
 
 Expected: Banner with version `v1.0.12` and `1193 modules indexed.`
 
-### Method 2: env_doctor.py — full dependency check
+### Method 2: env_doctor.py - full dependency check
 
 ```bash
 python tools/env_doctor.py
@@ -831,7 +831,7 @@ Complete expected output:
 
 ```
 ============================================================
-  IndustrialXPL-Forge — Environment Doctor
+  IndustrialXPL-Forge - Environment Doctor
   Checking all dependency tiers
 ============================================================
 
@@ -839,7 +839,7 @@ Complete expected output:
   Python 3.11.9  ........................................  OK
   pip 24.2  .............................................  OK
 
-[Tier 0 — Python Standard Library]
+[Tier 0 - Python Standard Library]
   socket  ...............................................  OK
   struct  ...............................................  OK
   select  ...............................................  OK
@@ -856,7 +856,7 @@ Complete expected output:
   readline  .............................................  OK (Linux/macOS)
   cmd  ..................................................  OK
 
-[Tier 1 — Required pip packages]
+[Tier 1 - Required pip packages]
   requests  2.32.4  .....................................  OK
   urllib3  2.3.0  .......................................  OK
   paramiko  3.5.1  ......................................  OK
@@ -866,10 +866,10 @@ Complete expected output:
   psutil  6.1.1  ........................................  OK
   cryptography  44.0.3  .................................  OK
 
-[Tier 1 — Windows only]
+[Tier 1 - Windows only]
   pyreadline3  NOT REQUIRED  ............................  OK (Linux/macOS platform)
 
-[Tier 2 — Optional pip extras]
+[Tier 2 - Optional pip extras]
   pymodbus  3.7.4  ......................................  OK  [ot]
   asyncua  1.1.5  .......................................  OK  [ot]
   cpppo  4.3.11  ........................................  OK  [ot]
@@ -877,7 +877,7 @@ Complete expected output:
   openai  1.58.1  .......................................  OK  [sast]
   anthropic  0.40.0  ....................................  OK  [sast]
 
-[Tier 3 — External runtimes]
+[Tier 3 - External runtimes]
   gcc  13.2.0  ..........................................  OK  (C/C++ native exploits)
   g++  13.2.0  ..........................................  OK  (C++ native exploits)
   go  1.22.4  ...........................................  OK  (Go malware modules)
@@ -924,14 +924,14 @@ Complete expected output:
 **Partial output (Tier 2 and 3 not installed):**
 
 ```
-[Tier 2 — Optional pip extras]
+[Tier 2 - Optional pip extras]
   pymodbus  MISSING  .......................................  OPTIONAL  
         asyncua  MISSING  ........................................  OPTIONAL  
         cpppo  MISSING  .........................................  OPTIONAL  
         python-can  MISSING  .....................................  OPTIONAL  
         openai  MISSING  .........................................  OPTIONAL  
         anthropic  MISSING  ......................................  OPTIONAL  
-        [Tier 3 — External runtimes]
+        [Tier 3 - External runtimes]
   gcc  NOT FOUND  ..........................................  OPTIONAL  apt install gcc / brew install gcc
   g++  NOT FOUND  ..........................................  OPTIONAL  apt install g++ / brew install g++
   go  NOT FOUND  ...........................................  OPTIONAL  https://go.dev/dl/
@@ -1063,7 +1063,7 @@ rm -rf ~/.venvs/ixf
 
 ---
 
-## Kali Linux / Parrot OS — PEP 668 and Externally Managed Environments
+## Kali Linux / Parrot OS - PEP 668 and Externally Managed Environments
 
 Kali Linux 2024+ (and Parrot OS 6+) enforce **PEP 668**: the system `pip` is locked to prevent conflicts with `apt`-managed packages. Running `pip install industrialxpl-forge` directly will fail:
 
@@ -1076,7 +1076,7 @@ There are three correct approaches. Choose the one that fits your workflow:
 
 ---
 
-### Option 1 — pipx (Recommended for daily CLI use)
+### Option 1 - pipx (Recommended for daily CLI use)
 
 `pipx` creates an isolated virtualenv automatically and exposes `ixf` in your PATH without any manual activation.
 
@@ -1112,7 +1112,7 @@ ixf > update
 
 ---
 
-### Option 2 — Manual virtualenv (Recommended for development and labs)
+### Option 2 - Manual virtualenv (Recommended for development and labs)
 
 Creates an isolated environment. You need to activate it each session.
 
@@ -1130,7 +1130,7 @@ pip install industrialxpl-forge
 ixf --version
 ```
 
-**Tip — add a permanent alias so you never need to activate manually:**
+**Tip - add a permanent alias so you never need to activate manually:**
 
 ```bash
 echo 'alias ixf="source ~/venvs/ixf/bin/activate && ixf"' >> ~/.bashrc
@@ -1150,7 +1150,7 @@ pip install --upgrade industrialxpl-forge
 
 ---
 
-### Option 3 — Clone the repository with integrated venv (bleeding-edge modules)
+### Option 3 - Clone the repository with integrated venv (bleeding-edge modules)
 
 Use this to get the very latest modules before they are published to PyPI.
 

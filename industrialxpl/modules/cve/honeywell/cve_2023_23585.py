@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2023-23585 — Honeywell Alerton BACtalk (HIGH CVSS 8.2).
+"""IXF CVE CVE-2023-23585 - Honeywell Alerton BACtalk (HIGH CVSS 8.2).
 
 Exploit type: Stored cross-site scripting
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Honeywell Alerton BACtalk may be present. CVE-2023-23585 HIGH CVSS 8.2.")
+            print_success(f"Port {self.port} open - Honeywell Alerton BACtalk may be present. CVE-2023-23585 HIGH CVSS 8.2.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

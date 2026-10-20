@@ -1,4 +1,4 @@
-"""IXF CVE CVE-2022-3156 — Rockwell Automation Studio 5000 Logix Designer (HIGH CVSS 8.8).
+"""IXF CVE CVE-2022-3156 - Rockwell Automation Studio 5000 Logix Designer (HIGH CVSS 8.8).
 
 Exploit type: Arbitrary code execution
 CISA Advisory: N/A
@@ -58,7 +58,7 @@ class Exploit(Exploit):
             )
             return
         if self.check():
-            print_success(f"Port {self.port} open — Rockwell Automation Studio 5000 Logix Designer may be present. CVE-2022-3156 HIGH CVSS 8.8.")
+            print_success(f"Port {self.port} open - Rockwell Automation Studio 5000 Logix Designer may be present. CVE-2022-3156 HIGH CVSS 8.8.")
             print_warning("CISA: N/A")
         else:
             print_info(f"{self.target}:{self.port} not responding.")

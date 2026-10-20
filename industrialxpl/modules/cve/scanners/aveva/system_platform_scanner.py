@@ -1,4 +1,4 @@
-"""IXF Scanner — AVEVA System Platform/InTouch Discovery."""
+"""IXF Scanner - AVEVA System Platform/InTouch Discovery."""
 import socket
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptIP, OptPort, OptInteger, mute,

@@ -1,12 +1,12 @@
-# Terms of Use — IndustrialXPL-Forge
+# Terms of Use - IndustrialXPL-Forge
 
 **Effective date:** 2026-06-30  
 **Maintainer:** André Henrique ([@mrhenrike](https://github.com/mrhenrike)) / [União Geek](https://uniaogeek.com.br)
 
 ## 1. Acceptance
 
-By accessing, cloning, installing, or using IndustrialXPL-Forge (IXF) — including the
-public **malware** and **ics-tools** vendor corpora in `industrialxpl/resources/vendor/` —
+By accessing, cloning, installing, or using IndustrialXPL-Forge (IXF) - including the
+public **malware** and **ics-tools** vendor corpora in `industrialxpl/resources/vendor/` -
 you agree to these Terms of Use and to the [DISCLAIMER.md](DISCLAIMER.md).
 
 If you do not agree, do not use this software or its incorporated sources.

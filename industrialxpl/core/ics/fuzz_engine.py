@@ -1,4 +1,4 @@
-"""IXF native ICS protocol fuzzing — 8 mutation strategies (MIT, stdlib)."""
+"""IXF native ICS protocol fuzzing - 8 mutation strategies (MIT, stdlib)."""
 
 
 import random

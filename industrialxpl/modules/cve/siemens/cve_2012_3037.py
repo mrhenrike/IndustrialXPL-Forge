@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2012-3037 — Siemens S7-1200.
+"""IXF CVE Module - CVE-2012-3037 - Siemens S7-1200.
 
 Diagnostic buffer info disclosure
 
@@ -32,8 +32,8 @@ _SEVERITY      = "MEDIUM"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2012-3037 — Siemens S7-1200 (MEDIUM)",
-        "description":   "Siemens S7-1200 — Diagnostic buffer info disclosure. "
+        "name":          "CVE-2012-3037 - Siemens S7-1200 (MEDIUM)",
+        "description":   "Siemens S7-1200 - Diagnostic buffer info disclosure. "
                          "CVSS 5.0 (MEDIUM). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2012-3037...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Siemens S7-1200 may be present. "
+                f"Port {self.port} open on {self.target} - Siemens S7-1200 may be present. "
                 "CVE-2012-3037 (MEDIUM CVSS 5.0): Diagnostic buffer info disclosure. "
                 "Manual version verification required."
             )

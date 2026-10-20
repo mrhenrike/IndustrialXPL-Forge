@@ -1,8 +1,8 @@
-"""Native Payload Loader — runtime discovery and in-memory compilation.
+"""Native Payload Loader - runtime discovery and in-memory compilation.
 
 Architecture:
-  - PyPI package: TTP-only simulators (simulate/check) — safe for distribution
-  - GitHub clone: contrib/native-payloads/ — native implementations
+  - PyPI package: TTP-only simulators (simulate/check) - safe for distribution
+  - GitHub clone: contrib/native-payloads/ - native implementations
     accessible ONLY when the user explicitly clones the repository
 
 Detection:
@@ -187,7 +187,7 @@ class NativePayloadLoader:
             print_error(f"Native payload source not found for '{slug}'.")
             return False
 
-        # Authorization gate — always required for native payloads
+        # Authorization gate - always required for native payloads
         print_info("")
         print_warning("=" * 68)
         print_warning("  NATIVE PAYLOAD EXECUTION REQUEST")

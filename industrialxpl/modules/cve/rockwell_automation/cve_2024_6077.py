@@ -1,4 +1,4 @@
-"""ICS CVE Module — CVE-2024-6077 — Rockwell Automation ControlLogix/CompactLogix 5380/5580 (HIGH).
+"""ICS CVE Module - CVE-2024-6077 - Rockwell Automation ControlLogix/CompactLogix 5380/5580 (HIGH).
 
 
 
@@ -17,7 +17,7 @@ from industrialxpl.core.exploit import (
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2024-6077 — Rockwell Automation ControlLogix/CompactLogix 5380/5580 (HIGH)",
+        "name":          "CVE-2024-6077 - Rockwell Automation ControlLogix/CompactLogix 5380/5580 (HIGH)",
         "description":   "",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -54,7 +54,7 @@ class Exploit(Exploit):
             sock.settimeout(self.timeout)
             sock.connect((self.target, self.port))
             sock.close()
-            # Port is open — device may be present
+            # Port is open - device may be present
             # Full version check requires protocol-specific fingerprinting
             return True  # POSSIBLY_VULNERABLE until version confirmed
         except Exception:
@@ -76,7 +76,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2024-6077...")
         if self.check():
             print_success(
-                f"Port {self.port} open — Rockwell Automation ControlLogix/CompactLogix 5380/5580 MAY be present. "
+                f"Port {self.port} open - Rockwell Automation ControlLogix/CompactLogix 5380/5580 MAY be present. "
                 "Verify version manually: affected=< v33.017"
             )
         else:

@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2021-22277 — ABB AC800M MMS.
+"""IXF CVE Module - CVE-2021-22277 - ABB AC800M MMS.
 
 DoS resource exhaustion
 
@@ -32,8 +32,8 @@ _SEVERITY      = "HIGH"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2021-22277 — ABB AC800M MMS (HIGH)",
-        "description":   "ABB AC800M MMS — DoS resource exhaustion. "
+        "name":          "CVE-2021-22277 - ABB AC800M MMS (HIGH)",
+        "description":   "ABB AC800M MMS - DoS resource exhaustion. "
                          "CVSS 7.5 (HIGH). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2021-22277...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — ABB AC800M MMS may be present. "
+                f"Port {self.port} open on {self.target} - ABB AC800M MMS may be present. "
                 "CVE-2021-22277 (HIGH CVSS 7.5): DoS resource exhaustion. "
                 "Manual version verification required."
             )

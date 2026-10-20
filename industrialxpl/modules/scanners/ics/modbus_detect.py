@@ -74,18 +74,18 @@ class Exploit(ModbusBaseExploit):
                 sock = modbus_connect(self.target, port, timing.socket_timeout)
                 if sock:
                     sock.close()
-                    print_success(f"[SIMULATE] {self.target}:{port} — port open, would probe FC{fc:02d} addr {start} qty {min(qty, 125)}")
+                    print_success(f"[SIMULATE] {self.target}:{port} - port open, would probe FC{fc:02d} addr {start} qty {min(qty, 125)}")
                 else:
-                    print_info(f"[SIMULATE] {self.target}:{port} — closed / no response")
+                    print_info(f"[SIMULATE] {self.target}:{port} - closed / no response")
             return
 
         for port in ports:
             with ModbusTCPSocket(self.target, port, self.unit_id, timing) as sock:
                 if not sock._sock:
-                    print_info(f"{self.target}:{port} — closed / no response")
+                    print_info(f"{self.target}:{port} - closed / no response")
                     continue
                 resp = sock.send_fc(fc, start, min(qty, 125))
                 if resp and len(resp) >= 4:
-                    print_success(f"{self.target}:{port} — Modbus/TCP DETECTED (unit_id={self.unit_id}, FC{fc:02d})")
+                    print_success(f"{self.target}:{port} - Modbus/TCP DETECTED (unit_id={self.unit_id}, FC{fc:02d})")
                 else:
-                    print_info(f"{self.target}:{port} — no Modbus response")
+                    print_info(f"{self.target}:{port} - no Modbus response")

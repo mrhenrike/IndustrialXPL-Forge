@@ -1,4 +1,4 @@
-"""IXF CVE Module — CVE-2019-12259 — Wind River VxWorks.
+"""IXF CVE Module - CVE-2019-12259 - Wind River VxWorks.
 
 DNS client DoS
 
@@ -32,8 +32,8 @@ _SEVERITY      = "HIGH"
 
 class Exploit(Exploit):
     __info__ = {
-        "name":          "CVE-2019-12259 — Wind River VxWorks (HIGH)",
-        "description":   "Wind River VxWorks — DNS client DoS. "
+        "name":          "CVE-2019-12259 - Wind River VxWorks (HIGH)",
+        "description":   "Wind River VxWorks - DNS client DoS. "
                          "CVSS 7.5 (HIGH). Level B: version-based check.",
         "authors":       ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":    (
@@ -89,7 +89,7 @@ class Exploit(Exploit):
         print_status(f"Checking {self.target}:{self.port} for CVE-2019-12259...")
         if self.check():
             print_success(
-                f"Port {self.port} open on {self.target} — Wind River VxWorks may be present. "
+                f"Port {self.port} open on {self.target} - Wind River VxWorks may be present. "
                 "CVE-2019-12259 (HIGH CVSS 7.5): DNS client DoS. "
                 "Manual version verification required."
             )
