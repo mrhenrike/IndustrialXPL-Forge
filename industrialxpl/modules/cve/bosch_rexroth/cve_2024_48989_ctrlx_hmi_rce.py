@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2024-48989 Bosch Rexroth ctrlX HMI Web Panel\nCVSS 9.8\nPOST to ctrlX HMI port 443, inject commands, RCE on modern industrial HMI",
                 mitre_techniques=['T0866', 'T0843'])
             return
-        print_status("[CVE-2024-48989] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2024-48989] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

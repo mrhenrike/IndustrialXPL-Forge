@@ -59,5 +59,5 @@ class Exploit(Exploit):
             print_info("Affected: S7-1500 CPU V3.0 and earlier (non-V version)")
             print_info("PoC: https://cert-portal.siemens.com/productcert/html/ssa-417547.html")
             return
-        print_status("[CVE-2023-44317] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-44317] Exploiting {self.target}:{self.port}...")
         print_info('Live payload: implement protocol-specific exploit')

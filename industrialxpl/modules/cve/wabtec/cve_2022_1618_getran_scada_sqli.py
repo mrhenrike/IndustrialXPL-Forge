@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-1618 Wabtec GE Transportation (LTMS) SCADA\nCVSS 9.8\nPOST SQLi to Wabtec LTMS port 443, bypass auth, access train management and dispatching data",
                 mitre_techniques=['T0819', 'T0803'])
             return
-        print_status("[CVE-2022-1618] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-1618] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

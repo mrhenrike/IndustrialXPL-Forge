@@ -53,12 +53,12 @@ class Exploit(Exploit):
             return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2024-7695: Fingerprint Moxa PT-G503 industrial switch at {}:{}. Authentication bypass. CVSS 9.8.".format(self.target, self.port),
+                description=f"CVE-2024-7695: Fingerprint Moxa PT-G503 industrial switch at {self.target}:{self.port}. Authentication bypass. CVSS 9.8.",
                 mitre_techniques=['T1694.002', 'T0859'],
             )
             return
         if self.check():
-            print_success("Port {} open — Moxa PT-G503 industrial switch may be present. CVE-2024-7695 CRITICAL CVSS 9.8.".format(self.port))
+            print_success(f"Port {self.port} open — Moxa PT-G503 industrial switch may be present. CVE-2024-7695 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

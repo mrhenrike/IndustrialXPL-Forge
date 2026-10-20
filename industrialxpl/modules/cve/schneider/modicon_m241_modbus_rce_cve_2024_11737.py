@@ -113,7 +113,7 @@ class Exploit(Exploit):
                 except ConnectionResetError:
                     print_success(f"[CVE-2024-11737] Packet {i}: Connection reset — Modbus stack crashed!")
                     return
-                except socket.timeout:
+                except TimeoutError:
                     print_success(f"[CVE-2024-11737] Packet {i}: Timeout — device unresponsive!")
                     return
             except Exception as e:

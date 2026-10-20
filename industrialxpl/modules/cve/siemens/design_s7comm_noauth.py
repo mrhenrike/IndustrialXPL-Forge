@@ -80,22 +80,20 @@ class Exploit(Exploit):
                 description=(
                     "DESIGN-S7COMM-NOAUTH (CRITICAL CVSS 9.1): No authentication by protocol design — unauthenticated PLC control. "
                     "Affects: Siemens S7comm pre-S7comm+ protocol. "
-                    "Would fingerprint {}:{} and confirm if device version "
-                    "is in the affected range.".format(self.target, self.port)
+                    f"Would fingerprint {self.target}:{self.port} and confirm if device version "
+                    "is in the affected range."
                 ),
                 mitre_techniques=['T1694.002', 'T0859', 'T0843', 'T0821'],
             )
             return
 
-        print_status("Checking {}:{} for DESIGN-S7COMM-NOAUTH...".format(self.target, self.port))
+        print_status(f"Checking {self.target}:{self.port} for DESIGN-S7COMM-NOAUTH...")
         if self.check():
             print_success(
-                "Service port {} open on {} — Siemens S7comm pre-S7comm+ protocol may be present. "
+                f"Service port {self.port} open on {self.target} — Siemens S7comm pre-S7comm+ protocol may be present. "
                 "DESIGN-S7COMM-NOAUTH CRITICAL CVSS 9.1: No authentication by protocol design — unauthenticated PLC control. "
-                "Manual version verification required to confirm vulnerability.".format(
-                    self.port, self.target)
+                "Manual version verification required to confirm vulnerability."
             )
             print_warning("CISA Advisory: N/A")
         else:
-            print_info("{}:{} not responding on port {}.".format(
-                self.target, self.port, self.port))
+            print_info(f"{self.target}:{self.port} not responding on port {self.port}.")

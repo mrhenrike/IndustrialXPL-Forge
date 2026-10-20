@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-21798 KEYENCE KV Studio PLC Programming\nCVSS 9.8\nSend crafted request to KV Studio port 8500, stack overflow, RCE on engineering workstation",
                 mitre_techniques=['T0866'])
             return
-        print_status("[CVE-2022-21798] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-21798] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

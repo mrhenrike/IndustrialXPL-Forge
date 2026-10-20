@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2021-20030 Weatherford CygNet SCADA\nCVSS 9.8\nSend crafted request to CygNet port 20001, deserialization, RCE on oil & gas SCADA server",
                 mitre_techniques=['T0866', 'T0843'])
             return
-        print_status("[CVE-2021-20030] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2021-20030] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

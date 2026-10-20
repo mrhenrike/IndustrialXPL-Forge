@@ -64,10 +64,9 @@ class Exploit(_Exploit):
         creds = getattr(self, "_default_creds", _DEFAULT_CREDS)
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="Would test {} Telnet credentials against {}:{}".format(
-                    len(creds), self.target, self.port),
+                description=f"Would test {len(creds)} Telnet credentials against {self.target}:{self.port}",
                 mitre_techniques=["T1694.001"],
             )
             return
-        print_status("Testing Telnet credentials on {}:{}…".format(self.target, self.port))
+        print_status(f"Testing Telnet credentials on {self.target}:{self.port}…")
         print_info("Telnet bruteforce requires manual interaction — use check() for port scan.")

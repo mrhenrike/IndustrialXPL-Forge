@@ -79,19 +79,19 @@ class Exploit(Exploit):
             DestructiveGate.print_simulation(
                 description=(
                     "CVE-2026-25939: Would fingerprint frangoteam FUXA SCADA at "
-                    "{}:{} and confirm if version is in affected range. "
+                    f"{self.target}:{self.port} and confirm if version is in affected range. "
                     "Exploit type: Scheduler command injection RCE. "
-                    "CVSS 9.8 (CRITICAL).".format(self.target, self.port)
+                    "CVSS 9.8 (CRITICAL)."
                 ),
                 mitre_techniques=['T0819', 'T0866'],
             )
             return
-        print_status("Checking {}:{} for CVE-2026-25939...".format(self.target, self.port))
+        print_status(f"Checking {self.target}:{self.port} for CVE-2026-25939...")
         if self.check():
             print_success(
-                "Port {} open on {} — frangoteam FUXA SCADA may be present. "
+                f"Port {self.port} open on {self.target} — frangoteam FUXA SCADA may be present. "
                 "CVE-2026-25939 (CRITICAL CVSS 9.8): Scheduler command injection RCE. "
-                "Manual version verification required.".format(self.port, self.target)
+                "Manual version verification required."
             )
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

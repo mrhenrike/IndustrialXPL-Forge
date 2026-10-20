@@ -53,12 +53,12 @@ class Exploit(Exploit):
             return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2024-39605: Fingerprint Delta Electronics CNCSoft-B V2 CNC at {}:{}. Stack-based buffer overflow. CVSS 7.8.".format(self.target, self.port),
+                description=f"CVE-2024-39605: Fingerprint Delta Electronics CNCSoft-B V2 CNC at {self.target}:{self.port}. Stack-based buffer overflow. CVSS 7.8.",
                 mitre_techniques=['T0883'],
             )
             return
         if self.check():
-            print_success("Port {} open — Delta Electronics CNCSoft-B V2 CNC may be present. CVE-2024-39605 HIGH CVSS 7.8.".format(self.port))
+            print_success(f"Port {self.port} open — Delta Electronics CNCSoft-B V2 CNC may be present. CVE-2024-39605 HIGH CVSS 7.8.")
             print_warning("CISA: N/A")
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-29511 Hiwin Motion Controller MC Series\nCVSS 9.8\nSend crafted HTTP to Hiwin MC controller port 80, stack overflow, RCE on motion controller",
                 mitre_techniques=['T0866', 'T0836'])
             return
-        print_status("[CVE-2022-29511] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-29511] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

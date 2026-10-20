@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2024-29515 Honeywell Enraf BPM/CIU Marine Tank Gauging\nCVSS 9.8\nConnect Enraf BPM port 502, bypass auth, manipulate marine cargo tank level readings",
                 mitre_techniques=['T0859', 'T0832'])
             return
-        print_status("[CVE-2024-29515] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2024-29515] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

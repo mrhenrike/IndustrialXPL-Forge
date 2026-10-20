@@ -33,5 +33,5 @@ class Exploit(Exploit):
                 description="CVE-2025-32282 AVEVA InTouch HMI 2023\nCVSS 9.1\nPOST malicious XML project to InTouch port 443, XXE reads local files including credentials",
                 mitre_techniques=['T0866'])
             return
-        print_status("[CVE-2025-32282] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2025-32282] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol exploit")

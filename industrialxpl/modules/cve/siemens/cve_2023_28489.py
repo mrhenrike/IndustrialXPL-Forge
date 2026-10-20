@@ -53,12 +53,12 @@ class Exploit(Exploit):
             return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2023-28489: Fingerprint Siemens SICAM A8000 RTU at {}:{}. OS command injection web interface. CVSS 9.8.".format(self.target, self.port),
+                description=f"CVE-2023-28489: Fingerprint Siemens SICAM A8000 RTU at {self.target}:{self.port}. OS command injection web interface. CVSS 9.8.",
                 mitre_techniques=['T0819', 'T0866'],
             )
             return
         if self.check():
-            print_success("Port {} open — Siemens SICAM A8000 RTU may be present. CVE-2023-28489 CRITICAL CVSS 9.8.".format(self.port))
+            print_success(f"Port {self.port} open — Siemens SICAM A8000 RTU may be present. CVE-2023-28489 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2024-5557 Emerson Ovation DCS\nCVSS 9.8\nConnect Ovation DCOM port 135, call Ovation OPC server, RCE on DCS workstation",
                 mitre_techniques=['T0866', 'T0822'])
             return
-        print_status("[CVE-2024-5557] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2024-5557] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

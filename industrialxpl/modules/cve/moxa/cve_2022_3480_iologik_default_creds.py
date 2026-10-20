@@ -70,5 +70,5 @@ class Exploit(Exploit):
             print_info("PoC reference: https://www.cisa.gov/uscert/ics/advisories/icsa-22-270-06")
             return
 
-        print_status("[CVE-2022-3480] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-3480] Exploiting {self.target}:{self.port}...")
         print_info('Live payload: implement protocol-specific exploit')

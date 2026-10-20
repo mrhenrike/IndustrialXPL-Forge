@@ -1,6 +1,5 @@
 """BACnet offensive helpers — MIT stdlib (BACteria-inspired)."""
 
-from __future__ import annotations
 
 import socket
 import struct

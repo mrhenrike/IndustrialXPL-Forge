@@ -53,12 +53,12 @@ class Exploit(Exploit):
             return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2024-40619: Fingerprint Rockwell Automation ControlLogix 5580 5480 at {}:{}. Improper input validation. CVSS 8.8.".format(self.target, self.port),
+                description=f"CVE-2024-40619: Fingerprint Rockwell Automation ControlLogix 5580 5480 at {self.target}:{self.port}. Improper input validation. CVSS 8.8.",
                 mitre_techniques=['T0883'],
             )
             return
         if self.check():
-            print_success("Port {} open — Rockwell Automation ControlLogix 5580 5480 may be present. CVE-2024-40619 HIGH CVSS 8.8.".format(self.port))
+            print_success(f"Port {self.port} open — Rockwell Automation ControlLogix 5580 5480 may be present. CVE-2024-40619 HIGH CVSS 8.8.")
             print_warning("CISA: N/A")
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

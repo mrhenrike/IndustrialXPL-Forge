@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-40634 Distech Controls ECLYPSE BACnet Controller\nCVSS 9.8\nAccess Distech ECLYPSE web/BACnet port 47808 with default creds, control all building systems",
                 mitre_techniques=['T0859', 'T0836'])
             return
-        print_status("[CVE-2022-40634] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-40634] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

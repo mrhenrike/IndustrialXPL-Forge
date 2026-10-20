@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-1069 Softing DataFEED OPC Suite\nCVSS 9.8\nSend crafted OPC UA packet to Softing DataFEED port 4840, deserialization, RCE on server",
                 mitre_techniques=['T0866', 'T0836'])
             return
-        print_status("[CVE-2022-1069] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-1069] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

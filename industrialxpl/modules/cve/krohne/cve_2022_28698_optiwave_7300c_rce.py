@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-28698 Krohne OPTIWAVE 7300C Radar Level\nCVSS 9.8\nSend oversized request to OPTIWAVE web port 80, stack overflow, modify tank level readings",
                 mitre_techniques=['T0866', 'T0836'])
             return
-        print_status("[CVE-2022-28698] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-28698] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

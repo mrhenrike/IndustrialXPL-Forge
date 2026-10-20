@@ -59,5 +59,5 @@ class Exploit(Exploit):
             print_info("Affected: e!COCKPIT 1.x before 1.9.0.6")
             print_info("PoC: https://www.cisa.gov/uscert/ics/advisories/icsa-19-260-01")
             return
-        print_status("[CVE-2019-12103] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2019-12103] Exploiting {self.target}:{self.port}...")
         print_info('Live payload: implement protocol-specific exploit')

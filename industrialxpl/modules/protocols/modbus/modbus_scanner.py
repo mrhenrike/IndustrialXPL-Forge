@@ -28,7 +28,8 @@ import socket
 import struct
 import time
 from dataclasses import dataclass, field
-from typing import Optional, Generator
+from typing import Optional
+from collections.abc import Generator
 
 log = logging.getLogger(__name__)
 
@@ -85,14 +86,14 @@ class ModbusScanner:
                     _, _, length, _ = struct.unpack_from(">HHHB", resp)
                     if len(resp) >= length + 6:
                         break
-            except socket.timeout:
+            except TimeoutError:
                 break
         return _parse_modbus_response(resp)
 
     # ────────────────────────────────────── read functions
 
     def read_holding_registers(self, host: str, start_addr: int = 0,
-                                count: int = 10, unit_id: int = 1) -> Optional[list[int]]:
+                                count: int = 10, unit_id: int = 1) -> list[int] | None:
         """FC 0x03 — Read holding registers (setpoints, process values)."""
         data = struct.pack(">HH", start_addr, count)
         req = _build_modbus_tcp(unit_id, 0x03, data)
@@ -116,7 +117,7 @@ class ModbusScanner:
             return None
 
     def read_coils(self, host: str, start_addr: int = 0,
-                   count: int = 8, unit_id: int = 1) -> Optional[list[bool]]:
+                   count: int = 8, unit_id: int = 1) -> list[bool] | None:
         """FC 0x01 — Read coils (digital outputs state)."""
         data = struct.pack(">HH", start_addr, count)
         req = _build_modbus_tcp(unit_id, 0x01, data)

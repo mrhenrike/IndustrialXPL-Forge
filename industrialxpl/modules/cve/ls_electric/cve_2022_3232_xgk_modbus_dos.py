@@ -59,5 +59,5 @@ class Exploit(Exploit):
             print_info("Affected: XGK-CPUU all firmware versions")
             print_info("PoC: https://www.cisa.gov/uscert/ics/advisories/icsa-22-270-01")
             return
-        print_status("[CVE-2022-3232] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-3232] Exploiting {self.target}:{self.port}...")
         print_info('Live payload: implement protocol-specific exploit')

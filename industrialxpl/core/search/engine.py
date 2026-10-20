@@ -14,11 +14,9 @@ Features:
   - Sector filters: search sector=mineracao, sector=energia, etc.
 """
 
-from __future__ import annotations
 
 import unicodedata
 import re
-from typing import List, Dict, Optional, Tuple, Set
 
 
 def normalize_term(term: str) -> str:
@@ -53,7 +51,7 @@ def normalize_term(term: str) -> str:
 # Term can be in PT-BR, ES, synonyms, abbreviations, or common misspellings.
 # English terms are included so they work without normalization too.
 
-MULTILINGUAL_ALIASES: Dict[str, List[str]] = {
+MULTILINGUAL_ALIASES: dict[str, list[str]] = {
     # ── Mining / Mineração / Minería ─────────────────────────────────────────
     "minerio":       ["mining", "fms", "minestar", "wenco", "caterpillar", "lorawan", "gnss"],
     "mineracao":     ["mining", "fms", "minestar", "wenco", "caterpillar", "lorawan", "gnss"],
@@ -314,7 +312,7 @@ MULTILINGUAL_ALIASES: Dict[str, List[str]] = {
 }
 
 # ─── Sector aliases (for search sector=X) ────────────────────────────────────
-SECTOR_ALIASES: Dict[str, List[str]] = {
+SECTOR_ALIASES: dict[str, list[str]] = {
     # English
     "mining":        ["mining", "fms", "minestar", "wenco", "caterpillar", "lorawan", "gnss", "ahs", "komatsu", "pitram"],
     "oilgas":        ["oilgas", "oil_gas", "night_dragon", "vsat", "cobham", "dnp3", "modbus"],
@@ -380,7 +378,7 @@ SECTOR_ALIASES: Dict[str, List[str]] = {
 }
 
 # ─── Module type aliases ──────────────────────────────────────────────────────
-TYPE_ALIASES: Dict[str, str] = {
+TYPE_ALIASES: dict[str, str] = {
     "scanner":        "scanners/",
     "scanners":       "scanners/",
     "varredura":      "scanners/",
@@ -407,16 +405,16 @@ TYPE_ALIASES: Dict[str, str] = {
 class SearchEngine:
     """Multilingual module search engine."""
 
-    def __init__(self, modules: List[str]) -> None:
+    def __init__(self, modules: list[str]) -> None:
         self.modules = modules
-        self._norm_cache: Dict[str, str] = {}
+        self._norm_cache: dict[str, str] = {}
 
     def _norm(self, term: str) -> str:
         if term not in self._norm_cache:
             self._norm_cache[term] = normalize_term(term)
         return self._norm_cache[term]
 
-    def _resolve_sector(self, raw_sector: str) -> Tuple[str, List[str]]:
+    def _resolve_sector(self, raw_sector: str) -> tuple[str, list[str]]:
         """Resolve sector name (possibly PT-BR/ES) to (display_name, keywords)."""
         n = self._norm(raw_sector)
         # Direct English sector
@@ -428,20 +426,20 @@ class SearchEngine:
             keywords = SECTOR_ALIASES.get(en_key, [en_key])
             if isinstance(keywords, str):
                 keywords = [keywords]
-            return "{} ({})".format(raw_sector, en_key), keywords
+            return f"{raw_sector} ({en_key})", keywords
         # Check MULTILINGUAL_ALIASES for sector-like terms
         if n in MULTILINGUAL_ALIASES:
             return raw_sector, MULTILINGUAL_ALIASES[n]
         return raw_sector, [n]
 
-    def _resolve_type(self, raw_type: str) -> Optional[str]:
+    def _resolve_type(self, raw_type: str) -> str | None:
         """Resolve type filter to module path prefix."""
         n = self._norm(raw_type)
         return TYPE_ALIASES.get(n, TYPE_ALIASES.get(raw_type.lower()))
 
-    def _expand_keywords(self, normalized_term: str) -> Set[str]:
+    def _expand_keywords(self, normalized_term: str) -> set[str]:
         """Expand a single normalized term to all related keywords."""
-        keywords: Set[str] = {normalized_term}
+        keywords: set[str] = {normalized_term}
         # Check multilingual aliases
         if normalized_term in MULTILINGUAL_ALIASES:
             keywords.update(MULTILINGUAL_ALIASES[normalized_term])
@@ -466,7 +464,7 @@ class SearchEngine:
         if sector_match:
             sector_raw = sector_match.group(1).strip()
             display, keywords = self._resolve_sector(sector_raw)
-            found: Set[str] = set()
+            found: set[str] = set()
             for kw in keywords:
                 for m in self.modules:
                     if kw.lower() in m.lower():
@@ -476,12 +474,12 @@ class SearchEngine:
                 return SearchResult(
                     query=raw_term,
                     modules=[],
-                    error="No modules for sector '{}'.".format(sector_raw),
+                    error=f"No modules for sector '{sector_raw}'.",
                     suggestions=self._suggest_sectors(sector_raw, known[:10]),
                     hint="Known sectors (EN): " + ", ".join(known[:15]),
                 )
             return SearchResult(query=raw_term, modules=sorted(found),
-                                display_name="sector '{}'".format(display))
+                                display_name=f"sector '{display}'")
 
         # ── type=X filter ─────────────────────────────────────────────────────
         type_match = re.match(r"^type=(.+)$", lower)
@@ -493,19 +491,19 @@ class SearchEngine:
                 return SearchResult(
                     query=raw_term,
                     modules=[],
-                    error="Unknown type '{}'.".format(type_raw),
+                    error=f"Unknown type '{type_raw}'.",
                     hint="Known types: " + ", ".join(known_types),
                 )
             found = [m for m in self.modules if prefix.rstrip("/") in m.lower()]
             return SearchResult(query=raw_term, modules=sorted(found),
-                                display_name="type '{}'".format(type_raw))
+                                display_name=f"type '{type_raw}'")
 
         # ── Direct keyword search (English module path) ───────────────────────
         direct_matches = [m for m in self.modules if norm in m.lower() or lower in m.lower()]
 
         # ── Multilingual expansion ─────────────────────────────────────────────
         expanded_keywords = self._expand_keywords(norm)
-        expanded_matches: Set[str] = set(direct_matches)
+        expanded_matches: set[str] = set(direct_matches)
         for kw in expanded_keywords:
             for m in self.modules:
                 if kw.lower() in m.lower():
@@ -527,14 +525,14 @@ class SearchEngine:
         return SearchResult(
             query=raw_term,
             modules=[],
-            error="No modules found for '{}'.".format(raw_term),
+            error=f"No modules found for '{raw_term}'.",
             suggestions=suggestions,
             multilingual_hint=known_langs,
         )
 
-    def _suggest_terms(self, norm: str, raw: str) -> List[str]:
+    def _suggest_terms(self, norm: str, raw: str) -> list[str]:
         """Generate 'did you mean?' suggestions via edit distance."""
-        candidates: List[Tuple[int, str]] = []
+        candidates: list[tuple[int, str]] = []
         # Check alias keys
         for key in list(MULTILINGUAL_ALIASES.keys()) + list(SECTOR_ALIASES.keys()):
             if isinstance(SECTOR_ALIASES.get(key), str):
@@ -543,7 +541,7 @@ class SearchEngine:
             if dist <= 2:
                 candidates.append((dist, key))
         # Check module path fragments
-        all_parts: Set[str] = set()
+        all_parts: set[str] = set()
         for m in self.modules:
             parts = m.replace("industrialxpl.modules.", "").split(".")
             all_parts.update(parts)
@@ -554,7 +552,7 @@ class SearchEngine:
         candidates.sort()
         return [c[1] for c in candidates[:5]]
 
-    def _suggest_sectors(self, raw: str, known: List[str]) -> List[str]:
+    def _suggest_sectors(self, raw: str, known: list[str]) -> list[str]:
         """Suggest similar sector names."""
         norm = self._norm(raw)
         candidates = [(d, k) for k in known
@@ -562,7 +560,7 @@ class SearchEngine:
         candidates.sort()
         return [c[1] for c in candidates[:5]]
 
-    def _find_in_aliases(self, norm: str) -> Optional[str]:
+    def _find_in_aliases(self, norm: str) -> str | None:
         """Return hint if the term appears in any alias value."""
         matches = [k for k, vals in MULTILINGUAL_ALIASES.items()
                    if isinstance(vals, list) and any(norm in v for v in vals)]
@@ -577,13 +575,13 @@ class SearchResult:
     def __init__(
         self,
         query: str,
-        modules: List[str],
+        modules: list[str],
         display_name: str = "",
         error: str = "",
-        suggestions: Optional[List[str]] = None,
+        suggestions: list[str] | None = None,
         hint: str = "",
-        multilingual_hint: Optional[str] = None,
-        expansion_note: Optional[str] = None,
+        multilingual_hint: str | None = None,
+        expansion_note: str | None = None,
     ) -> None:
         self.query = query
         self.modules = modules

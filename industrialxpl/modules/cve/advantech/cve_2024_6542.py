@@ -53,12 +53,12 @@ class Exploit(Exploit):
             return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2024-6542: Fingerprint Advantech ADAM-5630 industrial gateway at {}:{}. Authentication bypass. CVSS 9.8.".format(self.target, self.port),
+                description=f"CVE-2024-6542: Fingerprint Advantech ADAM-5630 industrial gateway at {self.target}:{self.port}. Authentication bypass. CVSS 9.8.",
                 mitre_techniques=['T1694.002', 'T0859'],
             )
             return
         if self.check():
-            print_success("Port {} open — Advantech ADAM-5630 industrial gateway may be present. CVE-2024-6542 CRITICAL CVSS 9.8.".format(self.port))
+            print_success(f"Port {self.port} open — Advantech ADAM-5630 industrial gateway may be present. CVE-2024-6542 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

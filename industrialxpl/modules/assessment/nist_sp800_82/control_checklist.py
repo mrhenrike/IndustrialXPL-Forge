@@ -270,7 +270,7 @@ class Exploit(Exploit):
             print_info("\nNIST SP 800-82r3 OT Control Checklist — PREVIEW (simulate=True)\n")
             print_info("Families to assess: {}".format(", ".join(cf["id"] for cf in families)))
             total_controls = sum(len(cf["controls"]) for cf in families)
-            print_info("Total controls: {}".format(total_controls))
+            print_info(f"Total controls: {total_controls}")
             print_info("\nFamily summary:")
             for cf in families:
                 print_info("  [{:2s}] {:40s} ({} controls)".format(
@@ -281,7 +281,7 @@ class Exploit(Exploit):
 
         print_info("\n" + "=" * 68)
         print_info("NIST SP 800-82r3 OT SECURITY CONTROL CHECKLIST")
-        print_info("Site: {}".format(site))
+        print_info(f"Site: {site}")
         print_info("=" * 68)
         print_info("Status options: I=Implemented, P=Partial, N=Not Implemented, S=Skip/NA\n")
 
@@ -296,7 +296,7 @@ class Exploit(Exploit):
             family_gaps    = []
 
             for ctrl_id, ctrl_desc in cf["controls"]:
-                print_info("\n  Control: {} — {}".format(ctrl_id, ctrl_desc))
+                print_info(f"\n  Control: {ctrl_id} — {ctrl_desc}")
                 while True:
                     try:
                         raw = input("  Status [I/P/N/S]: ").strip().upper()
@@ -313,9 +313,9 @@ class Exploit(Exploit):
                 if score is not None:
                     family_scores.append(score)
                 if status == "PARTIAL":
-                    family_gaps.append("{} — PARTIAL: {}".format(ctrl_id, ctrl_desc[:60]))
+                    family_gaps.append(f"{ctrl_id} — PARTIAL: {ctrl_desc[:60]}")
                 elif status == "NOT_IMPLEMENTED":
-                    family_gaps.append("{} — NOT IMPLEMENTED: {}".format(ctrl_id, ctrl_desc[:60]))
+                    family_gaps.append(f"{ctrl_id} — NOT IMPLEMENTED: {ctrl_desc[:60]}")
 
             if family_scores:
                 pct = (sum(family_scores) / len(family_scores)) * 100
@@ -338,9 +338,9 @@ class Exploit(Exploit):
         overall_pct = (sum(all_scores) / len(all_scores)) if all_scores else 0
 
         print_info("\n" + "=" * 68)
-        print_success("NIST SP 800-82r3 ASSESSMENT SUMMARY — {}".format(site))
+        print_success(f"NIST SP 800-82r3 ASSESSMENT SUMMARY — {site}")
         print_info("=" * 68)
-        print_success("Overall compliance: {:.0f}%".format(overall_pct))
+        print_success(f"Overall compliance: {overall_pct:.0f}%")
         print_info("\nPer-family results:")
         for r in family_results:
             pct_str = "{:.0f}%".format(r["pct"]) if r["pct"] is not None else "N/A"
@@ -354,9 +354,9 @@ class Exploit(Exploit):
             all_gaps.extend(r["gaps"])
 
         if all_gaps:
-            print_warning("\nGaps identified ({} items):".format(len(all_gaps)))
+            print_warning(f"\nGaps identified ({len(all_gaps)} items):")
             for gap in all_gaps:
-                print_warning("  [-] {}".format(gap))
+                print_warning(f"  [-] {gap}")
         else:
             print_success("\nNo gaps identified.")
 

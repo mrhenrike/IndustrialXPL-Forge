@@ -5,7 +5,6 @@ Usage (simulate default):
   ixf (fuzz) > set protocol modbus
   ixf (fuzz) > run
 """
-from __future__ import annotations
 
 from industrialxpl.core.exploit import (
     DestructiveGate,
@@ -75,7 +74,7 @@ class Exploit(Exploit):
         )
 
         if self.simulate or not self.destructive:
-            print_warning("\n[IXF Fuzzer] simulate — {} / 8 strategies\n".format(proto))
+            print_warning(f"\n[IXF Fuzzer] simulate — {proto} / 8 strategies\n")
             rows = [[c["strategy"], c["name"], c["len"], c["hex"][:48]] for c in camp["cases"]]
             if int(self.strategy) >= 0:
                 s = int(self.strategy) % 8

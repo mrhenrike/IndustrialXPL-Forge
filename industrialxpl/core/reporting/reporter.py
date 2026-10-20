@@ -25,6 +25,6 @@ class IXFReporter:
             "findings": self.findings,
         }
         date_str = datetime.date.today().isoformat()
-        out = PROJECT_TMP / "ixf_report_{}.{}".format(date_str, fmt)
+        out = PROJECT_TMP / f"ixf_report_{date_str}.{fmt}"
         out.write_text(json.dumps(data, indent=2), encoding="utf-8")
         return str(out)

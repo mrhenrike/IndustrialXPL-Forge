@@ -53,12 +53,12 @@ class Exploit(Exploit):
             return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2023-1326: Fingerprint Delta Electronics InfraSuite Device Master at {}:{}. Path traversal arbitrary code execution. CVSS 9.8.".format(self.target, self.port),
+                description=f"CVE-2023-1326: Fingerprint Delta Electronics InfraSuite Device Master at {self.target}:{self.port}. Path traversal arbitrary code execution. CVSS 9.8.",
                 mitre_techniques=['T0819', 'T0866'],
             )
             return
         if self.check():
-            print_success("Port {} open — Delta Electronics InfraSuite Device Master may be present. CVE-2023-1326 CRITICAL CVSS 9.8.".format(self.port))
+            print_success(f"Port {self.port} open — Delta Electronics InfraSuite Device Master may be present. CVE-2023-1326 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

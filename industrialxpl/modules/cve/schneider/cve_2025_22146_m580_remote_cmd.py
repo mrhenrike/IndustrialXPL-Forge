@@ -33,5 +33,5 @@ class Exploit(Exploit):
                 description="CVE-2025-22146 Schneider Electric Modicon M580 BMENOC\nCVSS 9.8\nPOST to BMENOC API port 443, inject OS command, RCE on PLC network module",
                 mitre_techniques=['T0866', 'T0836'])
             return
-        print_status("[CVE-2025-22146] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2025-22146] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol exploit")

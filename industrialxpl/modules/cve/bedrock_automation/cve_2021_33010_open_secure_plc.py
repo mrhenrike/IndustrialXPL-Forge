@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2021-33010 Bedrock Automation Open Secure Automation Platform\nCVSS 9.8\nConnect Bedrock Automation OPC UA port 4840, anonymous session, read/write all PLC tags",
                 mitre_techniques=['T0859', 'T0836'])
             return
-        print_status("[CVE-2021-33010] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2021-33010] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

@@ -1,6 +1,5 @@
 """S7 LLC / rack scan helpers — MIT stdlib (s7scan-inspired)."""
 
-from __future__ import annotations
 
 import socket
 import struct

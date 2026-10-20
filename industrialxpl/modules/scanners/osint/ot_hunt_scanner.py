@@ -138,9 +138,7 @@ class Exploit(Exploit):
 
     def _probe_honeywell(self) -> None:
         """Probe Honeywell IQ4E via BACnet Who-Is on UDP 47808."""
-        print_status("  [Honeywell IQ4E] BACnet Who-Is -> {}:{}/UDP ...".format(
-            self.target, _BACNET_PORT
-        ))
+        print_status(f"  [Honeywell IQ4E] BACnet Who-Is -> {self.target}:{_BACNET_PORT}/UDP ...")
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             sock.settimeout(self.timeout)
@@ -150,29 +148,23 @@ class Exploit(Exploit):
                 hex_resp = data[:16].hex()
                 if len(data) > 4 and data[0] == 0x81:
                     print_success(
-                        "  [Honeywell IQ4E] BACnet I-Am from {} ({} bytes): {} ...".format(
-                            addr[0], len(data), hex_resp
-                        )
+                        f"  [Honeywell IQ4E] BACnet I-Am from {addr[0]} ({len(data)} bytes): {hex_resp} ..."
                     )
                     print_info(
                         "  CISA ICSA-22-242-08: Honeywell IQ4E responded — "
                         "potential unauthenticated BACnet exposure."
                     )
                 else:
-                    print_info("  [Honeywell IQ4E] Response from {} (non-BACnet): {} bytes".format(
-                        addr[0], len(data)
-                    ))
-            except socket.timeout:
+                    print_info(f"  [Honeywell IQ4E] Response from {addr[0]} (non-BACnet): {len(data)} bytes")
+            except TimeoutError:
                 print_info("  [Honeywell IQ4E] No BACnet response (timeout).")
             sock.close()
         except Exception as exc:
-            print_error("  [Honeywell IQ4E] Error: {}".format(exc))
+            print_error(f"  [Honeywell IQ4E] Error: {exc}")
 
     def _probe_scadapack(self) -> None:
         """Probe Schneider SCADAPack via VxWorks debug (UDP 17185) and Modbus (TCP 502)."""
-        print_status("  [SCADAPack] VxWorks WDB probe -> {}:{}/UDP ...".format(
-            self.target, _VXWORKS_PORT
-        ))
+        print_status(f"  [SCADAPack] VxWorks WDB probe -> {self.target}:{_VXWORKS_PORT}/UDP ...")
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             sock.settimeout(self.timeout)
@@ -180,18 +172,16 @@ class Exploit(Exploit):
             try:
                 data, addr = sock.recvfrom(512)
                 print_success(
-                    "  [SCADAPack] VxWorks WDB response from {} ({} bytes) — "
-                    "exposed debug agent (ICSA-10-214-01)!".format(addr[0], len(data))
+                    f"  [SCADAPack] VxWorks WDB response from {addr[0]} ({len(data)} bytes) — "
+                    "exposed debug agent (ICSA-10-214-01)!"
                 )
-            except socket.timeout:
+            except TimeoutError:
                 print_info("  [SCADAPack] No VxWorks WDB response.")
             sock.close()
         except Exception as exc:
-            print_error("  [SCADAPack] VxWorks probe error: {}".format(exc))
+            print_error(f"  [SCADAPack] VxWorks probe error: {exc}")
 
-        print_status("  [SCADAPack] Modbus banner -> {}:{}/TCP ...".format(
-            self.target, _MODBUS_PORT
-        ))
+        print_status(f"  [SCADAPack] Modbus banner -> {self.target}:{_MODBUS_PORT}/TCP ...")
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.settimeout(self.timeout)
@@ -200,21 +190,17 @@ class Exploit(Exploit):
             try:
                 data = sock.recv(256)
                 print_success(
-                    "  [SCADAPack] Modbus response ({} bytes): {}".format(
-                        len(data), data[:16].hex()
-                    )
+                    f"  [SCADAPack] Modbus response ({len(data)} bytes): {data[:16].hex()}"
                 )
-            except socket.timeout:
+            except TimeoutError:
                 print_info("  [SCADAPack] No Modbus response.")
             sock.close()
         except Exception as exc:
-            print_error("  [SCADAPack] Modbus probe error: {}".format(exc))
+            print_error(f"  [SCADAPack] Modbus probe error: {exc}")
 
     def _probe_unitronics(self) -> None:
         """Probe Unitronics PLC via PCOM GET_ID on TCP 20256."""
-        print_status("  [Unitronics PCOM] GET_ID probe -> {}:{}/TCP ...".format(
-            self.target, _PCOM_PORT
-        ))
+        print_status(f"  [Unitronics PCOM] GET_ID probe -> {self.target}:{_PCOM_PORT}/TCP ...")
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.settimeout(self.timeout)
@@ -225,19 +211,17 @@ class Exploit(Exploit):
                 if data:
                     decoded = data.decode("ascii", errors="replace").strip()
                     print_success(
-                        "  [Unitronics PCOM] Response from {} ({} bytes): '{}'".format(
-                            self.target, len(data), decoded[:80]
-                        )
+                        f"  [Unitronics PCOM] Response from {self.target} ({len(data)} bytes): '{decoded[:80]}'"
                     )
                     print_info(
                         "  CISA AA23-335A: Unitronics PCOM exposed on TCP 20256 — "
                         "no authentication required (IRGC 2023 water sector attack vector)."
                     )
-            except socket.timeout:
+            except TimeoutError:
                 print_info("  [Unitronics PCOM] No PCOM response.")
             sock.close()
         except Exception as exc:
-            print_error("  [Unitronics PCOM] Error: {}".format(exc))
+            print_error(f"  [Unitronics PCOM] Error: {exc}")
 
     def run(self) -> None:
         if not self.target:
@@ -249,34 +233,27 @@ class Exploit(Exploit):
         if self.simulate:
             DestructiveGate.print_simulation(
                 description=(
-                    "Would run OT Hunt probes against {target} (type={check}): "
-                    "(1) Honeywell IQ4E: BACnet Who-Is to UDP {b_port} — "
+                    f"Would run OT Hunt probes against {self.target} (type={check}): "
+                    f"(1) Honeywell IQ4E: BACnet Who-Is to UDP {_BACNET_PORT} — "
                     "checks for unauthenticated BACnet exposure (ICSA-22-242-08); "
-                    "(2) Schneider SCADAPack: VxWorks WDB to UDP {v_port} and "
-                    "Modbus banner to TCP {m_port} (ICSA-10-214-01); "
-                    "(3) Unitronics PCOM: GET_ID to TCP {p_port} — "
+                    f"(2) Schneider SCADAPack: VxWorks WDB to UDP {_VXWORKS_PORT} and "
+                    f"Modbus banner to TCP {_MODBUS_PORT} (ICSA-10-214-01); "
+                    f"(3) Unitronics PCOM: GET_ID to TCP {_PCOM_PORT} — "
                     "2023 IRGC water utility attack vector (AA23-335A). "
-                    "All probes are read-only.".format(
-                        target=self.target,
-                        check=check,
-                        b_port=_BACNET_PORT,
-                        v_port=_VXWORKS_PORT,
-                        m_port=_MODBUS_PORT,
-                        p_port=_PCOM_PORT,
-                    )
+                    "All probes are read-only."
                 ),
-                payload_hex=" ".join("{:02X}".format(b) for b in _BACNET_WHO_IS),
+                payload_hex=" ".join(f"{b:02X}" for b in _BACNET_WHO_IS),
                 payload_human="BACnet Who-Is (example probe — read-only)",
                 mitre_techniques=["T0846", "T0888"],
             )
             print_info("\nProbes that would be executed:")
-            print_info("  Honeywell IQ4E : BACnet Who-Is -> UDP {} (ICSA-22-242-08)".format(_BACNET_PORT))
-            print_info("  SCADAPack      : VxWorks WDB   -> UDP {} (ICSA-10-214-01)".format(_VXWORKS_PORT))
-            print_info("  SCADAPack      : Modbus banner -> TCP {}".format(_MODBUS_PORT))
-            print_info("  Unitronics     : PCOM GET_ID   -> TCP {} (AA23-335A)".format(_PCOM_PORT))
+            print_info(f"  Honeywell IQ4E : BACnet Who-Is -> UDP {_BACNET_PORT} (ICSA-22-242-08)")
+            print_info(f"  SCADAPack      : VxWorks WDB   -> UDP {_VXWORKS_PORT} (ICSA-10-214-01)")
+            print_info(f"  SCADAPack      : Modbus banner -> TCP {_MODBUS_PORT}")
+            print_info(f"  Unitronics     : PCOM GET_ID   -> TCP {_PCOM_PORT} (AA23-335A)")
             return
 
-        print_status("OT Hunt scanner targeting {} (type={}) ...".format(self.target, check))
+        print_status(f"OT Hunt scanner targeting {self.target} (type={check}) ...")
 
         if check in ("HONEYWELL", "ALL"):
             self._probe_honeywell()

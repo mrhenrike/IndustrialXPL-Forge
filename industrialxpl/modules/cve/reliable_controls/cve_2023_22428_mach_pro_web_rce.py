@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2023-22428 Reliable Controls MACH-ProWeb BAS Controller\nCVSS 9.8\nSend crafted request to MACH-ProWeb port 80, stack overflow, RCE on building controller",
                 mitre_techniques=['T0866', 'T0836'])
             return
-        print_status("[CVE-2023-22428] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-22428] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

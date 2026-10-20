@@ -45,7 +45,6 @@ References:
 
 import socket
 import re
-from typing import Optional, Dict, List
 
 from industrialxpl.core.exploit import (
     Exploit, OptIP, OptPort, OptBool, OptInteger,
@@ -92,7 +91,7 @@ _SIMULATE_PAYLOAD = (
 )
 
 
-def _http_get(host: str, port: int, path: str, use_tls: bool, timeout: float) -> Optional[Dict]:
+def _http_get(host: str, port: int, path: str, use_tls: bool, timeout: float) -> dict | None:
     """Send HTTP GET and return response."""
     try:
         sock = socket.create_connection((host, port), timeout=timeout)
@@ -102,9 +101,7 @@ def _http_get(host: str, port: int, path: str, use_tls: bool, timeout: float) ->
             ctx.check_hostname = False
             ctx.verify_mode = ssl.CERT_NONE
             sock = ctx.wrap_socket(sock, server_hostname=host)
-        req = "GET {} HTTP/1.0\r\nHost: {}:{}\r\nUser-Agent: SAP-Monitor/1.0\r\nConnection: close\r\n\r\n".format(
-            path, host, port
-        )
+        req = f"GET {path} HTTP/1.0\r\nHost: {host}:{port}\r\nUser-Agent: SAP-Monitor/1.0\r\nConnection: close\r\n\r\n"
         sock.sendall(req.encode())
         raw = b""
         while True:
@@ -207,7 +204,7 @@ class Exploit(Exploit):
 
         use_tls = self.port in (443, 8443, 4443)
         proto = "https" if use_tls else "http"
-        base_url = "{}://{}:{}".format(proto, self.target, self.port)
+        base_url = f"{proto}://{self.target}:{self.port}"
 
         if self.simulate:
             # Simulate mode: describe what the exploit would do
@@ -220,17 +217,17 @@ class Exploit(Exploit):
             print_info("  Endpoint     : POST /developmentserver/metadatauploader")
             print_info("")
             print_info("  Attack sequence (SIMULATE -- no packets sent):")
-            print_info("    Step 1: GET {}/irj/portal".format(base_url))
+            print_info(f"    Step 1: GET {base_url}/irj/portal")
             print_info("           Confirm SAP NetWeaver and check for Visual Composer presence")
-            print_info("    Step 2: POST {}/developmentserver/metadatauploader".format(base_url))
+            print_info(f"    Step 2: POST {base_url}/developmentserver/metadatauploader")
             print_info("           Upload cmd.jsp webshell via multipart/form-data (no auth required)")
-            print_info("    Step 3: GET {}/irj/portal/anonymous/...webshell/cmd.jsp?c=id".format(base_url))
+            print_info(f"    Step 3: GET {base_url}/irj/portal/anonymous/...webshell/cmd.jsp?c=id")
             print_info("           Execute commands via uploaded webshell")
             print_info("    Step 4: Deploy SNOWLIGHT downloader -> VShell RAT (UNC5174 TTP)")
             print_info("")
             print_info("  OT/ICS pivot risk (mining context):")
             for integration in _ITSM_INTEGRATIONS:
-                print_info("    - {}".format(integration))
+                print_info(f"    - {integration}")
             print_info("")
             print_warning("  Exploited by UNC5174 (Chinese APT / MSS) in April 2025.")
             print_warning("  Patch: SAP Security Note 3594142 (April 2025 patch day)")
@@ -238,12 +235,12 @@ class Exploit(Exploit):
             return
 
         # check() fingerprint
-        print_status("Fingerprinting SAP NetWeaver on {}...".format(base_url))
+        print_status(f"Fingerprinting SAP NetWeaver on {base_url}...")
         sap_detected = False
         for path in _VERSION_PROBES + _VULNERABLE_ENDPOINTS:
             resp = _http_get(self.target, self.port, path, use_tls, self.timeout)
             if resp is None:
-                print_info("  {} -> no response".format(path))
+                print_info(f"  {path} -> no response")
                 continue
             code_m = re.search(r"HTTP/[\d.]+ (\d+)", resp.get("status", ""))
             code = int(code_m.group(1)) if code_m else 0
@@ -254,15 +251,13 @@ class Exploit(Exploit):
             ])
             if is_sap:
                 sap_detected = True
-                print_success("  {} -> HTTP {} (SAP NetWeaver confirmed, server={})".format(
-                    path, code, server
-                ))
+                print_success(f"  {path} -> HTTP {code} (SAP NetWeaver confirmed, server={server})")
             else:
-                print_info("  {} -> HTTP {} (server={})".format(path, code, server))
+                print_info(f"  {path} -> HTTP {code} (server={server})")
 
             if path == _VULNERABLE_ENDPOINTS[0] and code != 404:
-                print_warning("  VULNERABLE ENDPOINT REACHABLE: {}{}".format(base_url, path))
-                print_warning("  HTTP {} -- endpoint exists, exploitation may be possible".format(code))
+                print_warning(f"  VULNERABLE ENDPOINT REACHABLE: {base_url}{path}")
+                print_warning(f"  HTTP {code} -- endpoint exists, exploitation may be possible")
 
         if sap_detected:
             print_info("")
@@ -273,4 +268,4 @@ class Exploit(Exploit):
             print_warning("     Check via SM51 -> Kernel version > 7.53/7.77/7.85/7.93")
             print_warning("  3. Is /developmentserver/* accessible without authentication?")
         else:
-            print_info("SAP NetWeaver not confirmed on {}. Try other ports (50000, 8080).".format(self.target))
+            print_info(f"SAP NetWeaver not confirmed on {self.target}. Try other ports (50000, 8080).")

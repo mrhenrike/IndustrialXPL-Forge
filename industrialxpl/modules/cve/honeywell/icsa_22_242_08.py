@@ -79,19 +79,19 @@ class Exploit(Exploit):
             DestructiveGate.print_simulation(
                 description=(
                     "ICSA-22-242-08: Would fingerprint Honeywell Trend Controls IQ4E at "
-                    "{}:{} and confirm if version is in affected range. "
+                    f"{self.target}:{self.port} and confirm if version is in affected range. "
                     "Exploit type: BACnet PIN plaintext (OT:ICEFALL). "
-                    "CVSS 8.6 (HIGH).".format(self.target, self.port)
+                    "CVSS 8.6 (HIGH)."
                 ),
                 mitre_techniques=['T0883', 'T0888'],
             )
             return
-        print_status("Checking {}:{} for ICSA-22-242-08...".format(self.target, self.port))
+        print_status(f"Checking {self.target}:{self.port} for ICSA-22-242-08...")
         if self.check():
             print_success(
-                "Port {} open on {} — Honeywell Trend Controls IQ4E may be present. "
+                f"Port {self.port} open on {self.target} — Honeywell Trend Controls IQ4E may be present. "
                 "ICSA-22-242-08 (HIGH CVSS 8.6): BACnet PIN plaintext (OT:ICEFALL). "
-                "Manual version verification required.".format(self.port, self.target)
+                "Manual version verification required."
             )
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

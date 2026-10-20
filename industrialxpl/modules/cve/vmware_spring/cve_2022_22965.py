@@ -79,19 +79,19 @@ class Exploit(Exploit):
             DestructiveGate.print_simulation(
                 description=(
                     "CVE-2022-22965: Would fingerprint VMware Spring Spring Framework (affects Spring MES) at "
-                    "{}:{} and confirm if version is in affected range. "
+                    f"{self.target}:{self.port} and confirm if version is in affected range. "
                     "Exploit type: Spring4Shell RCE (affects Spring-based MES). "
-                    "CVSS 9.8 (CRITICAL).".format(self.target, self.port)
+                    "CVSS 9.8 (CRITICAL)."
                 ),
                 mitre_techniques=['T0819', 'T0866'],
             )
             return
-        print_status("Checking {}:{} for CVE-2022-22965...".format(self.target, self.port))
+        print_status(f"Checking {self.target}:{self.port} for CVE-2022-22965...")
         if self.check():
             print_success(
-                "Port {} open on {} — VMware Spring Spring Framework (affects Spring MES) may be present. "
+                f"Port {self.port} open on {self.target} — VMware Spring Spring Framework (affects Spring MES) may be present. "
                 "CVE-2022-22965 (CRITICAL CVSS 9.8): Spring4Shell RCE (affects Spring-based MES). "
-                "Manual version verification required.".format(self.port, self.target)
+                "Manual version verification required."
             )
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

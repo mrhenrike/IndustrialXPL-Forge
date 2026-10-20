@@ -70,5 +70,5 @@ class Exploit(Exploit):
             print_info("PoC reference: https://www.cisa.gov/news-events/cybersecurity-advisories/aa25-141a")
             return
 
-        print_status("[CVE-2025-31324] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2025-31324] Exploiting {self.target}:{self.port}...")
         print_info('Live payload: implement protocol-specific exploit')

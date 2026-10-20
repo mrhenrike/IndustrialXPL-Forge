@@ -1,6 +1,5 @@
 """Docker stack manager for incorporated lab malware (Lisa botnet)."""
 
-from __future__ import annotations
 
 import shutil
 import subprocess

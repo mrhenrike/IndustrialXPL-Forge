@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2021-43947 VEGA VEGAPULS/VEGAFLEX Level Sensors\nCVSS 9.8\nAccess VEGA sensor web port 80, bypass auth, modify level setpoints and alarm thresholds",
                 mitre_techniques=['T0859', 'T0836'])
             return
-        print_status("[CVE-2021-43947] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2021-43947] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

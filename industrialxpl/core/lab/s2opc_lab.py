@@ -1,6 +1,5 @@
 """S2OPC lab wrapper — optional native build (Apache-2.0)."""
 
-from __future__ import annotations
 
 import shutil
 from typing import Any

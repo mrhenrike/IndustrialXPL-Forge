@@ -33,5 +33,5 @@ class Exploit(Exploit):
                 description="CVE-2025-28096 Honeywell Experion PKS Windows SCADA\nCVSS 7.8\nGain limited access to Experion SCADA Windows server, exploit LPE, gain SYSTEM on DCS",
                 mitre_techniques=['T0890', 'T0822'])
             return
-        print_status("[CVE-2025-28096] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2025-28096] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol exploit")

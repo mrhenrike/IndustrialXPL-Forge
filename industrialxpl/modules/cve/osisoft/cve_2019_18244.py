@@ -53,12 +53,12 @@ class Exploit(Exploit):
             return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2019-18244: Fingerprint OSIsoft PI Interface for OPC DA at {}:{}. Code injection. CVSS 8.8.".format(self.target, self.port),
+                description=f"CVE-2019-18244: Fingerprint OSIsoft PI Interface for OPC DA at {self.target}:{self.port}. Code injection. CVSS 8.8.",
                 mitre_techniques=['T0819', 'T0866'],
             )
             return
         if self.check():
-            print_success("Port {} open — OSIsoft PI Interface for OPC DA may be present. CVE-2019-18244 HIGH CVSS 8.8.".format(self.port))
+            print_success(f"Port {self.port} open — OSIsoft PI Interface for OPC DA may be present. CVE-2019-18244 HIGH CVSS 8.8.")
             print_warning("CISA: N/A")
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

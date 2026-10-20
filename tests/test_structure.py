@@ -1,6 +1,5 @@
 """Structural integrity checks for IndustrialXPL-Forge."""
 
-from __future__ import annotations
 
 import ast
 from pathlib import Path

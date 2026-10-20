@@ -60,5 +60,5 @@ class Exploit(Exploit):
             print_info("Affected: FAST/TOOLS R9.01 to R10.04")
             print_info("PoC: https://www.cisa.gov/uscert/ics/advisories/icsa-22-237-01")
             return
-        print_status("[CVE-2022-30993] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-30993] Exploiting {self.target}:{self.port}...")
         print_info('Live payload: implement protocol-specific exploit')

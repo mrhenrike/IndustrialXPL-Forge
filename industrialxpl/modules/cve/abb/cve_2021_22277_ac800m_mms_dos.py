@@ -70,5 +70,5 @@ class Exploit(Exploit):
             print_info("PoC reference: https://github.com/Mewtwoz/InduGuard_vul_poc")
             return
 
-        print_status("[CVE-2021-22277] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2021-22277] Exploiting {self.target}:{self.port}...")
         print_info('Live payload: implement protocol-specific exploit')

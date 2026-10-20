@@ -25,7 +25,6 @@ except ModuleNotFoundError:
         readline = None  # type: ignore[assignment]
         _HAS_READLINE = False
 import subprocess
-from typing import Optional
 
 from industrialxpl.cli import (
     ICSCommandsMixin,
@@ -56,21 +55,21 @@ from industrialxpl.core.exploit.utils import (
 
 VERSION = "1.5.0"
 
-_BANNER = r"""
+_BANNER = rf"""
  ___           _           _        _       ___  ______  _          _____
 |_ _|_ __   __| |_   _ ___| |_ _ __(_) __ _| \ \/ /  _ \| |        |  ___|__  _ __ __ _  ___
  | || '_ \ / _` | | | / __| __| '__| |/ _` | |\  /| |_) | |   _____| |_ / _ \| '__/ _` |/ _ \
  | || | | | (_| | |_| \__ \ |_| |  | | (_| | |/  \|  __/| |__|_____|  _| (_) | | | (_| |  __/
 |___|_| |_|\__,_|\__,_|___/\__|_|  |_|\__,_|_/_/\_\_|   |_____|    |_|  \___/|_|  \__, |\___|
                                                                                      |___/
-  IndustrialXPL-Forge v{version} -- OT/ICS/SCADA Security Assessment Framework
+  IndustrialXPL-Forge v{VERSION} -- OT/ICS/SCADA Security Assessment Framework
   Author: Andre Henrique (@mrhenrike) | Uniao Geek | https://uniaogeek.com.br/
   Python-First. Pure Python -- pip install industrialxpl-forge
   Type 'help' for commands.  simulate=false by default — set SIMULATE true for dry-run.
-""".format(version=VERSION)
+"""
 
-_GLOBAL_HELP = """
-IndustrialXPL-Forge (IXF) v{version}
+_GLOBAL_HELP = f"""
+IndustrialXPL-Forge (IXF) v{VERSION}
 
 NAVIGATION:
   help                          This menu
@@ -193,7 +192,7 @@ EXAMPLES:
   ixf > run
   ixf > help timing
   ixf > help modbus
-""".format(version=VERSION)
+"""
 
 _MODULE_HELP = """
 MODULE COMMANDS:
@@ -215,7 +214,7 @@ class BaseInterpreter:
     module_prompt_template: str = "\033[1;36m{host}\033[0m (\033[1;33m{module}\033[0m) > "
 
     def __init__(self) -> None:
-        self.current_module: Optional[object] = None
+        self.current_module: object | None = None
         self._global_opts: dict = {}
         self._setup_readline()
 
@@ -260,9 +259,9 @@ class BaseInterpreter:
         return command.lower().replace("-", "_"), args.strip(), {}
 
     def get_command_handler(self, command: str):
-        handler = getattr(self, "command_{}".format(command), None)
+        handler = getattr(self, f"command_{command}", None)
         if handler is None:
-            raise IXFException("Unknown command: '{}'".format(command))
+            raise IXFException(f"Unknown command: '{command}'")
         return handler
 
     def _dispatch(self, raw: str) -> bool:
@@ -281,7 +280,7 @@ class BaseInterpreter:
         except IXFException as exc:
             print_error(str(exc))
         except Exception as exc:
-            print_error("Unexpected error: {}".format(exc))
+            print_error(f"Unexpected error: {exc}")
         return True
 
     def run_resource_lines(self, lines: list, echo: bool = True) -> None:
@@ -299,7 +298,7 @@ class BaseInterpreter:
             if echo:
                 # Show what is being executed, similar to msfconsole resource echo
                 prompt = self.prompt
-                print("{}{}\033[0m".format(prompt, line))
+                print(f"{prompt}{line}\033[0m")
             keep_going = self._dispatch(line)
             if not keep_going:
                 break
@@ -311,7 +310,7 @@ class BaseInterpreter:
         try:
             req = urllib.request.Request(
                 "https://pypi.org/pypi/industrialxpl-forge/json",
-                headers={"User-Agent": "IXF/{}/startup-check".format(VERSION)},
+                headers={"User-Agent": f"IXF/{VERSION}/startup-check"},
             )
             with urllib.request.urlopen(req, timeout=4) as resp:
                 data = _json.loads(resp.read().decode())
@@ -325,14 +324,12 @@ class BaseInterpreter:
 
             if _v(latest) > _v(VERSION):
                 print_warning(
-                    "New version available: v{} -> v{}  (run 'update' to upgrade)".format(
-                        VERSION, latest
-                    )
+                    f"New version available: v{VERSION} -> v{latest}  (run 'update' to upgrade)"
                 )
                 notes_url = data["info"]["project_urls"].get(
                     "Changelog", "https://github.com/mrhenrike/IndustrialXPL-Forge/releases"
                 )
-                print_info("  Release notes: {}".format(notes_url))
+                print_info(f"  Release notes: {notes_url}")
                 print_info("  'update' -- check details and upgrade interactively")
                 print_info("  'update --silent' -- upgrade without confirmation")
                 print_info("")
@@ -418,7 +415,7 @@ class IXFInterpreter(
             pass
         print_status("Indexing modules…")
         self.modules: list = index_modules()
-        print_success("{} modules indexed.".format(len(self.modules)))
+        print_success(f"{len(self.modules)} modules indexed.")
         self._bind_completer()
         self._resume_persistent_c2()
 
@@ -489,7 +486,7 @@ class IXFInterpreter(
                 return
             # Try to load the module and print its options
             module_path = pythonize_path(term)
-            full_path = "industrialxpl.modules.{}".format(module_path)
+            full_path = f"industrialxpl.modules.{module_path}"
             try:
                 cls = import_exploit(full_path)
                 tmp = cls()
@@ -511,14 +508,14 @@ class IXFInterpreter(
             # Search for modules matching the term and show a mini help
             results = [m for m in self.modules if term in m.lower()]
             if results:
-                print_success("{} module(s) match '{}':".format(len(results), term))
+                print_success(f"{len(results)} module(s) match '{term}':")
                 for m in results[:20]:
-                    print_info("  use {}".format(humanize_path(m)))
+                    print_info(f"  use {humanize_path(m)}")
                 if len(results) > 20:
-                    print_info("  … and {} more. Use: search {}".format(len(results) - 20, term))
+                    print_info(f"  … and {len(results) - 20} more. Use: search {term}")
                 print_info("\nTip: 'help <full/module/path>' shows that module's options.")
                 return
-            print_info("No help topic or module found for '{}'. Known topics:".format(term))
+            print_info(f"No help topic or module found for '{term}'. Known topics:")
             print_info("  " + "  ".join(sorted(self._HELP_TOPICS)))
             return
 
@@ -558,7 +555,7 @@ class IXFInterpreter(
         rows = []
         for cat, prefix in sorted(_CAT_MAP.items()):
             count = len([m for m in self.modules if prefix in m.lower()])
-            rows.append((cat, str(count), "search type={}".format(cat)))
+            rows.append((cat, str(count), f"search type={cat}"))
         print_table(["Type", "Modules", "Usage"], rows, title="Module Types")
         print_info("\nUsage:  search type=scanner")
         print_info("        search type=exploit")
@@ -660,12 +657,12 @@ class IXFInterpreter(
 
     def _help_safemode(self) -> None:
         safemode_current = self._get_global("safemode")
-        print_info("""
+        print_info(f"""
 Option: SAFEMODE  (global only -- setg)
 ----------------------------------------
 Type    : bool (true/false)
 Default : false
-Current : {}
+Current : {safemode_current}
 
 SAFEMODE is a legacy global flag. It no longer overrides per-module
 SIMULATE or DESTRUCTIVE options. Execution follows what you set on
@@ -678,7 +675,7 @@ each module:
 Use simulate=true when you want dry-run behavior on a specific module.
 Use destructive=true when the module supports writes and you intend
 to execute them.
-""".format(safemode_current))
+""")
 
     def _help_simulate(self) -> None:
         print_info("""
@@ -1328,7 +1325,7 @@ Example:
             # Treat as 'setg' shorthand: global loglevel debug
             parts = sub.split(None, 1)
             if len(parts) == 2:
-                self.command_setg("{} {}".format(parts[0], parts[1]))
+                self.command_setg(f"{parts[0]} {parts[1]}")
             else:
                 self._help_global()
 
@@ -1339,14 +1336,14 @@ Example:
 
         current = VERSION
         print_status("Checking for updates…")
-        print_info("  Installed version : {}".format(current))
+        print_info(f"  Installed version : {current}")
 
         # Fetch latest version from PyPI
         try:
             url = "https://pypi.org/pypi/industrialxpl/json"
             req = urllib.request.Request(
                 url,
-                headers={"User-Agent": "IXF/{} update-check".format(current)},
+                headers={"User-Agent": f"IXF/{current} update-check"},
             )
             with urllib.request.urlopen(req, timeout=8) as resp:
                 data = _json.loads(resp.read().decode())
@@ -1355,11 +1352,11 @@ Example:
                 "Changelog", "https://github.com/mrhenrike/IndustrialXPL-Forge/releases"
             )
         except Exception as exc:
-            print_error("Could not reach PyPI: {}".format(exc))
+            print_error(f"Could not reach PyPI: {exc}")
             print_info("  Manual check: https://pypi.org/project/industrialxpl/")
             return
 
-        print_info("  Latest version    : {}".format(latest))
+        print_info(f"  Latest version    : {latest}")
 
         # Compare versions using tuple comparison
         def _v(s: str):
@@ -1372,12 +1369,12 @@ Example:
         latest_t  = _v(latest)
 
         if current_t >= latest_t:
-            print_success("IXF is up to date (v{}).".format(current))
+            print_success(f"IXF is up to date (v{current}).")
             return
 
         # Update available
-        print_warning("New version available: v{} -> v{}".format(current, latest))
-        print_info("  Release notes: {}".format(release_url))
+        print_warning(f"New version available: v{current} -> v{latest}")
+        print_info(f"  Release notes: {release_url}")
 
         # Module count diff is not easily queryable from PyPI, skip for now
         print_info("")
@@ -1405,11 +1402,11 @@ Example:
                     text=True,
                 )
                 if result.returncode == 0:
-                    print_success("Upgrade complete. Restart IXF to use v{}.".format(latest))
+                    print_success(f"Upgrade complete. Restart IXF to use v{latest}.")
                 else:
-                    print_error("pip exited with code {}. Check the output above.".format(result.returncode))
+                    print_error(f"pip exited with code {result.returncode}. Check the output above.")
             except Exception as exc:
-                print_error("Upgrade failed: {}".format(exc))
+                print_error(f"Upgrade failed: {exc}")
         else:
             print_info("Upgrade skipped. Run 'update' again when ready.")
 
@@ -1423,7 +1420,7 @@ Example:
 
     def command_use(self, module_path: str, **kwargs) -> None:
         module_path = pythonize_path(module_path.strip())
-        full_path = "industrialxpl.modules.{}".format(module_path)
+        full_path = f"industrialxpl.modules.{module_path}"
         try:
             cls = import_exploit(full_path)
             self.current_module = cls()
@@ -1461,7 +1458,7 @@ Example:
                 runner = PolyExploitRunner()
                 if not runner.check_runtime(poly_lang):
                     print_warning(
-                        "[opt] Runtime '{}' not found -- Python fallback will be used.".format(poly_lang)
+                        f"[opt] Runtime '{poly_lang}' not found -- Python fallback will be used."
                     )
             # Inject global scan opts into Modbus modules
             _SCAN_KEYS = {"host_timeout", "max_retries", "min_retries",
@@ -1507,20 +1504,20 @@ Example:
             if key in omap:
                 omap[key]()
             else:
-                print_info("No dedicated help for '{}'. Type 'help {}' to search.".format(key, key))
+                print_info(f"No dedicated help for '{key}'. Type 'help {key}' to search.")
             return
         if key not in self.current_module.options:
-            print_error("Unknown option: '{}' -- type 'show options' to list valid options".format(key_raw))
+            print_error(f"Unknown option: '{key_raw}' -- type 'show options' to list valid options")
             return
         try:
             setattr(self.current_module, key, value)
             self.current_module.exploit_attributes[key][0] = value
-            print_success("{} => {}".format(key, value))
+            print_success(f"{key} => {value}")
         except Exception as exc:
-            print_error("Cannot set '{}': {}".format(key, exc))
+            print_error(f"Cannot set '{key}': {exc}")
             omap = self._get_option_help_map()
             if key in omap:
-                print_info("  Type 'set {} ?' for accepted values.".format(key))
+                print_info(f"  Type 'set {key} ?' for accepted values.")
 
     def command_setg(self, args: str, **kwargs) -> None:
         parts = args.split(None, 1)
@@ -1534,12 +1531,12 @@ Example:
         # Apply well-known global options immediately
         if key in ("loglevel", "log_level"):
             set_log_level(value)
-            print_success("[global] loglevel => {}".format(value))
+            print_success(f"[global] loglevel => {value}")
             return
         if key == "verbose":
             set_log_level("debug" if value.lower() in ("true", "1", "on", "yes") else "info")
             self._global_opts["loglevel"] = get_log_level()
-            print_success("[global] verbose => {}  (loglevel={})".format(value, get_log_level()))
+            print_success(f"[global] verbose => {value}  (loglevel={get_log_level()})")
             return
         if key == "threads":
             try:
@@ -1547,10 +1544,10 @@ Example:
                 if t < 1:
                     raise ValueError
                 self._global_opts["threads"] = str(t)
-                print_success("[global] threads => {}".format(t))
+                print_success(f"[global] threads => {t}")
                 return
             except ValueError:
-                print_error("threads must be a positive integer, got: {}".format(value))
+                print_error(f"threads must be a positive integer, got: {value}")
                 return
 
         if key in ("host_timeout", "max_retries", "min_retries", "scan_delay", "max_rate"):
@@ -1559,10 +1556,10 @@ Example:
                 if v < 0:
                     raise ValueError
                 self._global_opts[key] = str(v)
-                print_success("[global] {} => {}".format(key, v))
+                print_success(f"[global] {key} => {v}")
                 return
             except ValueError:
-                print_error("{} must be a non-negative integer, got: {}".format(key, value))
+                print_error(f"{key} must be a non-negative integer, got: {value}")
                 return
 
         if key == "probe_level":
@@ -1571,10 +1568,10 @@ Example:
                 if not 1 <= v <= 5:
                     raise ValueError
                 self._global_opts[key] = str(v)
-                print_success("[global] probe_level => {} (service detection depth)".format(v))
+                print_success(f"[global] probe_level => {v} (service detection depth)")
                 return
             except ValueError:
-                print_error("probe_level must be 1-5, got: {}".format(value))
+                print_error(f"probe_level must be 1-5, got: {value}")
                 return
 
         if key == "safemode":
@@ -1588,7 +1585,7 @@ Example:
                 self._global_opts["safemode"] = "false"
                 print_info("[global] SAFEMODE => false  (legacy flag; module options control execution)")
             else:
-                print_error("SAFEMODE must be true or false, got: {}".format(value))
+                print_error(f"SAFEMODE must be true or false, got: {value}")
             return
 
         if key in ("ping_first", "skip_ping"):
@@ -1600,9 +1597,9 @@ Example:
             elif lv in _FALSE:
                 self._global_opts[key] = "false"
             else:
-                print_error("{} must be true/false, got: {}".format(key, value))
+                print_error(f"{key} must be true/false, got: {value}")
                 return
-            print_success("[global] {} => {}".format(key, self._global_opts[key]))
+            print_success(f"[global] {key} => {self._global_opts[key]}")
             return
 
         if key == "port":
@@ -1616,7 +1613,7 @@ Example:
                 else:
                     parse_port_expression(expr)
                 self._global_opts["port"] = expr
-                print_success("[global] PORT => {}".format(expr))
+                print_success(f"[global] PORT => {expr}")
                 if self.current_module and "port" in self.current_module.options:
                     try:
                         self.current_module.port = expr
@@ -1624,7 +1621,7 @@ Example:
                         pass
                 return
             except (ValueError, Exception) as exc:
-                print_error("Invalid port expression: {} ({})".format(value, exc))
+                print_error(f"Invalid port expression: {value} ({exc})")
                 self._help_option_port()
                 return
 
@@ -1632,11 +1629,11 @@ Example:
             allowed = {"tcp", "udp", "both"}
             lv = value.lower().strip()
             if lv not in allowed:
-                print_error("TRANSPORT must be tcp, udp, or both, got: {}".format(value))
+                print_error(f"TRANSPORT must be tcp, udp, or both, got: {value}")
                 self._help_option_transport()
                 return
             self._global_opts["transport"] = lv
-            print_success("[global] TRANSPORT => {}".format(lv))
+            print_success(f"[global] TRANSPORT => {lv}")
             if self.current_module and "transport" in self.current_module.options:
                 try:
                     self.current_module.transport = lv
@@ -1650,7 +1647,7 @@ Example:
                 if not 0 <= uid <= 255:
                     raise ValueError
                 self._global_opts["unit_id"] = str(uid)
-                print_success("[global] UNIT_ID => {}".format(uid))
+                print_success(f"[global] UNIT_ID => {uid}")
                 if self.current_module and "unit_id" in self.current_module.options:
                     try:
                         self.current_module.unit_id = uid
@@ -1658,7 +1655,7 @@ Example:
                         pass
                 return
             except ValueError:
-                print_error("UNIT_ID must be 0-255, got: {}".format(value))
+                print_error(f"UNIT_ID must be 0-255, got: {value}")
                 return
 
         if key in ("timing", "scan_timing"):
@@ -1666,7 +1663,7 @@ Example:
                 from industrialxpl.core.modbus.timing import ModbusTiming
                 profile = ModbusTiming.resolve(value)
                 self._global_opts["timing"] = str(value)
-                print_success("[global] timing => {} ({})".format(value, profile.name))
+                print_success(f"[global] timing => {value} ({profile.name})")
                 if self.current_module and "timing" in self.current_module.options:
                     try:
                         self.current_module.timing = value
@@ -1683,15 +1680,15 @@ Example:
                 setattr(self.current_module, key, value)
             except Exception:
                 pass
-        print_success("[global] {} => {}".format(key, value))
+        print_success(f"[global] {key} => {value}")
 
     def command_unsetg(self, args: str, **kwargs) -> None:
         key = args.strip()
         if key in self._global_opts:
             del self._global_opts[key]
-            print_success("[global] {} cleared.".format(key))
+            print_success(f"[global] {key} cleared.")
         else:
-            print_warning("'{}' was not set globally.".format(key))
+            print_warning(f"'{key}' was not set globally.")
 
     def command_show(self, args: str = "", **kwargs) -> None:
         sub = args.strip().lower() or "options"
@@ -1723,7 +1720,7 @@ Example:
 
         if not self.current_module:
             if sub in ("modules", "all", "options", ""):
-                print_status("{} modules indexed. Use 'search <keyword>' to find modules.".format(len(self.modules)))
+                print_status(f"{len(self.modules)} modules indexed. Use 'search <keyword>' to find modules.")
                 print_info("  search modbus       -- keyword search")
                 print_info("  search sector=energy -- sector filter")
                 print_info("  search type=scanner -- type filter")
@@ -1772,12 +1769,12 @@ Example:
         mod._safemode = False
 
         if sim:
-            print_status("{} [SIMULATE] -- dry-run per module option".format(name))
+            print_status(f"{name} [SIMULATE] -- dry-run per module option")
         elif destr:
-            print_status("{} [DESTRUCTIVE] -- reads and writes per module option".format(name))
+            print_status(f"{name} [DESTRUCTIVE] -- reads and writes per module option")
             print_warning("  Destructive mode enabled. Device state may change.")
         else:
-            print_status("{} [LIVE] -- real execution per module options".format(name))
+            print_status(f"{name} [LIVE] -- real execution per module options")
 
         try:
             mod.run()
@@ -1867,26 +1864,24 @@ Example:
 
         if result.found:
             label = result.display_name or term
-            print_success("{} module(s) for '{}':".format(len(result), label))
+            print_success(f"{len(result)} module(s) for '{label}':")
             for m in result.modules[:50]:
-                print_info("  use {}".format(humanize_path(m)))
+                print_info(f"  use {humanize_path(m)}")
             if len(result.modules) > 50:
-                print_info("  ... and {} more. Refine your search.".format(
-                    len(result.modules) - 50
-                ))
+                print_info(f"  ... and {len(result.modules) - 50} more. Refine your search.")
             if result.expansion_note:
-                print_info("  [i] {}".format(result.expansion_note))
+                print_info(f"  [i] {result.expansion_note}")
             return
 
         # No results found
-        print_info("No modules found for '{}'.".format(term))
+        print_info(f"No modules found for '{term}'.")
         if result.suggestions:
             print_info("  Did you mean: {}".format(", ".join(result.suggestions)))
-            print_info("  Try: search {}".format(result.suggestions[0]))
+            print_info(f"  Try: search {result.suggestions[0]}")
         if result.multilingual_hint:
-            print_info("  {}".format(result.multilingual_hint))
+            print_info(f"  {result.multilingual_hint}")
         if result.hint:
-            print_info("  {}".format(result.hint))
+            print_info(f"  {result.hint}")
         print_info("  Tip: search sector=<name>  |  search type=<category>  |  help search")
 
     def command_modules(self, args: str = "", **kwargs) -> None:
@@ -1912,9 +1907,7 @@ Example:
                 tree[parts[0]][""].append(parts[0])
 
         if not sub:
-            print_success("Top-level categories ({} total, {} modules):".format(
-                len(tree), len(self.modules)
-            ))
+            print_success(f"Top-level categories ({len(tree)} total, {len(self.modules)} modules):")
             for cat in sorted(tree.keys()):
                 subcats = sorted(s for s in tree[cat].keys() if s)
                 total = sum(len(v) for v in tree[cat].values())
@@ -1927,27 +1920,27 @@ Example:
 
         if sub not in tree:
             similar = [c for c in tree if sub in c or c in sub]
-            print_error("Category '{}' not found.".format(sub))
+            print_error(f"Category '{sub}' not found.")
             if similar:
                 print_info("  Did you mean: {}".format(", ".join(similar)))
             else:
                 cats = ", ".join(sorted(tree.keys()))
-                print_info("  Available: {}".format(cats))
+                print_info(f"  Available: {cats}")
             return
 
-        print_success("Category '{}' -- {} subcategory/subcategories:".format(sub, len(tree[sub])))
+        print_success(f"Category '{sub}' -- {len(tree[sub])} subcategory/subcategories:")
         for subcat in sorted(tree[sub].keys()):
             mods = tree[sub][subcat]
-            label = "{}/{}".format(sub, subcat) if subcat else sub
-            print_info("  [{:3d}]  {}".format(len(mods), label))
+            label = f"{sub}/{subcat}" if subcat else sub
+            print_info(f"  [{len(mods):3d}]  {label}")
             for modname in sorted(mods)[:6]:
                 if subcat:
-                    path = humanize_path("{}.{}.{}".format(sub, subcat, modname))
+                    path = humanize_path(f"{sub}.{subcat}.{modname}")
                 else:
-                    path = humanize_path("{}.{}".format(sub, modname))
-                print_info("           use {}".format(path))
+                    path = humanize_path(f"{sub}.{modname}")
+                print_info(f"           use {path}")
             if len(mods) > 6:
-                print_info("           ... and {} more -- use: search {}".format(len(mods) - 6, subcat or sub))
+                print_info(f"           ... and {len(mods) - 6} more -- use: search {subcat or sub}")
 
     def command_exec(self, args: str, **kwargs) -> None:
         if not args.strip():
@@ -1969,11 +1962,11 @@ Example:
         if not cidr:
             print_error("Usage: discover <CIDR>  (e.g. discover 192.168.1.0/24)")
             return
-        print_status("Discovering OT/ICS assets on {}…".format(cidr))
+        print_status(f"Discovering OT/ICS assets on {cidr}…")
         self.command_use("scanners/ics/modbus_detect")
         if self.current_module:
-            print_warning("Set target to each host in {} and run check().".format(cidr))
-            print_info("For automated CIDR sweep: ixf > ttp T0846.001 {}".format(cidr))
+            print_warning(f"Set target to each host in {cidr} and run check().")
+            print_info(f"For automated CIDR sweep: ixf > ttp T0846.001 {cidr}")
 
     def parse_line(self, line: str) -> tuple:
         """Normalise hyphens in commands (mitre-list -> mitre_list)."""

@@ -79,19 +79,19 @@ class Exploit(Exploit):
             DestructiveGate.print_simulation(
                 description=(
                     "CVE-2015-0987: Would fingerprint Omron CP2E FINS at "
-                    "{}:{} and confirm if version is in affected range. "
+                    f"{self.target}:{self.port} and confirm if version is in affected range. "
                     "Exploit type: CPU cycle time error DoS. "
-                    "CVSS 7.8 (HIGH).".format(self.target, self.port)
+                    "CVSS 7.8 (HIGH)."
                 ),
                 mitre_techniques=['T0814'],
             )
             return
-        print_status("Checking {}:{} for CVE-2015-0987...".format(self.target, self.port))
+        print_status(f"Checking {self.target}:{self.port} for CVE-2015-0987...")
         if self.check():
             print_success(
-                "Port {} open on {} — Omron CP2E FINS may be present. "
+                f"Port {self.port} open on {self.target} — Omron CP2E FINS may be present. "
                 "CVE-2015-0987 (HIGH CVSS 7.8): CPU cycle time error DoS. "
-                "Manual version verification required.".format(self.port, self.target)
+                "Manual version verification required."
             )
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

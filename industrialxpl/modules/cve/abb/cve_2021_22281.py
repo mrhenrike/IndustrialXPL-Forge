@@ -80,22 +80,20 @@ class Exploit(Exploit):
                 description=(
                     "CVE-2021-22281 (HIGH CVSS 8.8): Deserialization of untrusted data. "
                     "Affects: ABB Symphony Plus S+ Operations. "
-                    "Would fingerprint {}:{} and confirm if device version "
-                    "is in the affected range.".format(self.target, self.port)
+                    f"Would fingerprint {self.target}:{self.port} and confirm if device version "
+                    "is in the affected range."
                 ),
                 mitre_techniques=['T0883'],
             )
             return
 
-        print_status("Checking {}:{} for CVE-2021-22281...".format(self.target, self.port))
+        print_status(f"Checking {self.target}:{self.port} for CVE-2021-22281...")
         if self.check():
             print_success(
-                "Service port {} open on {} — ABB Symphony Plus S+ Operations may be present. "
+                f"Service port {self.port} open on {self.target} — ABB Symphony Plus S+ Operations may be present. "
                 "CVE-2021-22281 HIGH CVSS 8.8: Deserialization of untrusted data. "
-                "Manual version verification required to confirm vulnerability.".format(
-                    self.port, self.target)
+                "Manual version verification required to confirm vulnerability."
             )
             print_warning("CISA Advisory: N/A")
         else:
-            print_info("{}:{} not responding on port {}.".format(
-                self.target, self.port, self.port))
+            print_info(f"{self.target}:{self.port} not responding on port {self.port}.")

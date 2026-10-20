@@ -68,18 +68,16 @@ class Exploit(Exploit):
             DestructiveGate.print_simulation(
                 description=(
                     "CVE-2024-5989: Would fingerprint Rockwell Automation ThinManager ThinServer at "
-                    "{}:{} and check if version is in affected range (11.1.0-13.2.1).".format(
-                        self.target, self.port
-                    )
+                    f"{self.target}:{self.port} and check if version is in affected range (11.1.0-13.2.1)."
                 ),
                 mitre_techniques=["T0888"],
             )
             return
-        print_status("Checking {}:{} for CVE-2024-5989...".format(self.target, self.port))
+        print_status(f"Checking {self.target}:{self.port} for CVE-2024-5989...")
         if self.check():
             print_success(
-                "Port {} open — Rockwell Automation ThinManager ThinServer MAY be present. "
-                "Verify version manually: affected=11.1.0-13.2.1".format(self.port)
+                f"Port {self.port} open — Rockwell Automation ThinManager ThinServer MAY be present. "
+                "Verify version manually: affected=11.1.0-13.2.1"
             )
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

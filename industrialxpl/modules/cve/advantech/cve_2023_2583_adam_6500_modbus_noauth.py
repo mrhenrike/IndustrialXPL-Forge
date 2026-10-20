@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2023-2583 Advantech ADAM-6500 Remote I/O Module\nCVSS 9.8\nConnect ADAM-6500 Modbus TCP port 502, read/write all digital/analog I/O without auth",
                 mitre_techniques=['T1692.001', 'T0836'])
             return
-        print_status("[CVE-2023-2583] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-2583] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

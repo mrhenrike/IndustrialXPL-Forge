@@ -1,6 +1,5 @@
 """IXF-native handlers for incorporated ics-tools (no broken vendor deps)."""
 
-from __future__ import annotations
 
 import csv
 import json
@@ -8,7 +7,8 @@ import re
 import socket
 import struct
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
+from collections.abc import Callable
 
 from industrialxpl.core.ics_tools.catalog import IcsToolsCatalog
 
@@ -51,7 +51,7 @@ def _modbus_probe(host: str, port: int = 502) -> dict[str, Any]:
         resp = s.recv(256)
         s.close()
         if len(resp) >= 8:
-            return {"success": True, "detail": "Modbus/TCP response ({} bytes)".format(len(resp))}
+            return {"success": True, "detail": f"Modbus/TCP response ({len(resp)} bytes)"}
     except OSError as exc:
         return {"success": False, "error": str(exc)}
     return {"success": False, "error": "no Modbus response"}
@@ -88,7 +88,7 @@ def _inventory_files(root: Path, pattern: str, limit: int = 30) -> list[str]:
 def handle_scadapass(vendor: Path, extra: list[str] | None, simulate: bool) -> dict[str, Any]:
     csv_path = vendor / "scadapass.csv"
     if simulate:
-        return {"simulate": True, "would_run": "native scadapass load {}".format(csv_path)}
+        return {"simulate": True, "would_run": f"native scadapass load {csv_path}"}
     if not csv_path.is_file():
         return {"success": False, "error": "scadapass.csv missing"}
     rows = []
@@ -122,17 +122,17 @@ def handle_redpoint(vendor: Path, extra: list[str] | None, simulate: bool) -> di
             "success": True,
             "mode": "native-inventory",
             "nse_scripts": nse,
-            "stdout": "Redpoint NSE corpus ({} scripts). Set target: ics_tools run redpoint <ip>".format(len(nse)),
+            "stdout": f"Redpoint NSE corpus ({len(nse)} scripts). Set target: ics_tools run redpoint <ip>",
         }
     resp = _probe_udp(host, port, _bacnet_whois())
     if resp:
         return {
             "success": True,
             "mode": "native-bacnet",
-            "stdout": "BACnet/IP Who-Is response from {}:{} ({} bytes)".format(host, port, len(resp)),
+            "stdout": f"BACnet/IP Who-Is response from {host}:{port} ({len(resp)} bytes)",
             "returncode": 0,
         }
-    return {"success": False, "error": "No BACnet response on {}:{}".format(host, port)}
+    return {"success": False, "error": f"No BACnet response on {host}:{port}"}
 
 
 def handle_sixnet(vendor: Path, extra: list[str] | None, simulate: bool) -> dict[str, Any]:
@@ -150,7 +150,7 @@ def handle_sixnet(vendor: Path, extra: list[str] | None, simulate: bool) -> dict
             "mode": "native-help",
             "stdout": (
                 "IXF native SIXNET tools. Usage: -s <host> or pass IP as arg.\n"
-                "Probes TCP ports: {}".format(ports)
+                f"Probes TCP ports: {ports}"
             ),
             "returncode": 0,
         }
@@ -175,7 +175,7 @@ def handle_isf_dark_lbp(vendor: Path, extra: list[str] | None, simulate: bool) -
     if simulate:
         return {
             "simulate": True,
-            "would_run": "native ISF inventory {} exploits".format(len(exploits)),
+            "would_run": f"native ISF inventory {len(exploits)} exploits",
         }
     # List IXF modules that reference ISF / ICSSploit
     ixf_routes = []
@@ -220,7 +220,7 @@ def handle_isf_w3h(vendor: Path, extra: list[str] | None, simulate: bool) -> dic
         return {
             "success": True,
             "mode": "native-inventory",
-            "stdout": "ISF-W3H touches: {}\nPass target IP for Modbus probe.".format(len(touches)),
+            "stdout": f"ISF-W3H touches: {len(touches)}\nPass target IP for Modbus probe.",
             "touches": touches,
             "returncode": 0,
         }
@@ -349,7 +349,7 @@ def handle_otscan(vendor: Path, extra: list[str] | None, simulate: bool) -> dict
     for proto, detail in result.get("results", {}).items():
         flag = "yes" if detail.get("detected") else "no"
         extra_d = detail.get("detail") or detail.get("error") or ""
-        lines.append("{}: {} {}".format(proto, flag, extra_d).strip())
+        lines.append(f"{proto}: {flag} {extra_d}".strip())
     return {
         "success": True,
         "mode": "native-otscan",
@@ -416,5 +416,5 @@ def run_native(
     if not handler:
         return None
     fam = IcsToolsCatalog().get(slug)
-    vendor = fam.vendor_path if fam else _VENDOR / "submodules__ics-tools__{}".format(slug)
+    vendor = fam.vendor_path if fam else _VENDOR / f"submodules__ics-tools__{slug}"
     return handler(vendor, extra_args, simulate)

@@ -38,7 +38,6 @@ import struct
 import threading
 import time
 from pathlib import Path
-from typing import List, Optional, Tuple
 
 from industrialxpl.core.exploit import (
     Exploit as _Exploit,
@@ -146,7 +145,7 @@ def _try_snmp_community(host: str, port: int, community: str, version: int, time
         # A rejected community would result in no response or a "genError"
         # Check for "noError" (0x00) at error-status or just presence of response
         return True
-    except socket.timeout:
+    except TimeoutError:
         return False
     except Exception:
         return False
@@ -196,7 +195,7 @@ class Exploit(_Exploit):
     simulate = OptBool(False, "Simulate mode (default: True)")
     destructive = OptBool(False, "Enable bruteforce")
 
-    def _load_communities(self) -> List[str]:
+    def _load_communities(self) -> list[str]:
         """Load community strings from wordlist file or use built-in defaults."""
         wl = self.wordlist.strip()
         if not wl:
@@ -214,7 +213,7 @@ class Exploit(_Exploit):
                     if line.strip() and not line.startswith("#")
                 ]
         except OSError as exc:
-            print_warning("[SNMP BF] Cannot open wordlist {}: {}".format(wl_path, exc))
+            print_warning(f"[SNMP BF] Cannot open wordlist {wl_path}: {exc}")
             return list(_DEFAULT_SNMP_COMMUNITIES)
 
     def run(self) -> None:
@@ -228,21 +227,16 @@ class Exploit(_Exploit):
         if self.simulate:
             DestructiveGate.print_simulation(
                 description=(
-                    "Would test {} SNMP community strings against {}:{}/UDP "
-                    "using {} threads with SNMPv{} GetRequest for sysDescr.".format(
-                        len(communities), self.target, self.port,
-                        self.threads, self.version + 1,
-                    )
+                    f"Would test {len(communities)} SNMP community strings against {self.target}:{self.port}/UDP "
+                    f"using {self.threads} threads with SNMPv{self.version + 1} GetRequest for sysDescr."
                 ),
                 mitre_techniques=["T0842", "T0888"],
             )
             return
 
-        print_status("[SNMP BF] Starting bruteforce against {}:{} ({} strings, {} threads)".format(
-            self.target, self.port, len(communities), self.threads
-        ))
+        print_status(f"[SNMP BF] Starting bruteforce against {self.target}:{self.port} ({len(communities)} strings, {self.threads} threads)")
 
-        found: List[Tuple[str, int, str]] = []
+        found: list[tuple[str, int, str]] = []
         work_queue: queue.Queue = queue.Queue()
         stop_event = threading.Event()
 
@@ -260,7 +254,7 @@ class Exploit(_Exploit):
                     self.version, float(self.timeout)
                 ):
                     found.append((self.target, self.port, community))
-                    print_success("[SNMP BF] Valid community found: '{}'".format(community))
+                    print_success(f"[SNMP BF] Valid community found: '{community}'")
                     if self.stop_on_success:
                         stop_event.set()
                 work_queue.task_done()
@@ -275,7 +269,7 @@ class Exploit(_Exploit):
             t.join()
 
         if found:
-            print_success("[SNMP BF] Bruteforce complete - {} valid community string(s) found.".format(len(found)))
+            print_success(f"[SNMP BF] Bruteforce complete - {len(found)} valid community string(s) found.")
             print_table(("Target", "Port", "Community String"), *found)
         else:
             print_error("[SNMP BF] No valid community strings found.")

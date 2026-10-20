@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-2955 Delixi CDN PLC Series\nCVSS 9.8\nConnect Delixi CDN PLC Modbus TCP port 502, read/write all I/O without authentication",
                 mitre_techniques=['T1692.001', 'T0836'])
             return
-        print_status("[CVE-2022-2955] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-2955] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

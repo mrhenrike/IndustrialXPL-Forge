@@ -33,5 +33,5 @@ class Exploit(Exploit):
                 description="CVE-2022-26518 NOVUS N20K/RHT/DigiRail Controllers\nCVSS 9.8\nConnect Modbus TCP port 502, write SP_HIGH register, override temperature setpoints",
                 mitre_techniques=['T0859', 'T0836'])
             return
-        print_status("[CVE-2022-26518] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-26518] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol exploit")

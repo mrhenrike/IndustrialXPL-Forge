@@ -6,7 +6,6 @@ use against the IXF resources CVE data.  No external API calls at runtime.
 Author: André Henrique (@mrhenrike) | União Geek
 """
 
-from __future__ import annotations
 
 import json
 import logging
@@ -233,7 +232,7 @@ class IcsCveCorrelator:
     ``cvss_score``, ``severity``.
     """
 
-    def __init__(self, extra_catalog_path: Optional[str | Path] = None) -> None:
+    def __init__(self, extra_catalog_path: str | Path | None = None) -> None:
         self._catalog: list[dict[str, Any]] = list(_BUNDLED_CVE_DATABASE)
         if extra_catalog_path:
             self._load_catalog(Path(extra_catalog_path))
@@ -256,7 +255,7 @@ class IcsCveCorrelator:
     def correlate(
         self,
         host_profile: dict[str, Any],
-        cve_catalog_path: Optional[str | Path] = None,
+        cve_catalog_path: str | Path | None = None,
     ) -> list[Match]:
         """Match a host profile against the CVE catalog.
 
@@ -332,7 +331,7 @@ class IcsCveCorrelator:
     def correlate_findings(
         self,
         findings: list[Any],
-        cve_catalog_path: Optional[str | Path] = None,
+        cve_catalog_path: str | Path | None = None,
     ) -> list[Match]:
         """Correlate a list of :class:`IcsFinding` (or dicts) objects.
 
@@ -381,7 +380,7 @@ class IcsCveCorrelator:
         product: str,
         service: str,
         explicit_cves: list[str],
-    ) -> Optional[str]:
+    ) -> str | None:
         """Return a human-readable match reason or None if no match."""
         cve_id = str(cve.get("cve_id", "")).upper()
         cve_vendor = str(cve.get("vendor", "")).lower()
@@ -393,11 +392,11 @@ class IcsCveCorrelator:
 
         # Vendor fuzzy match.
         if vendor and (vendor in cve_vendor or cve_vendor in vendor):
-            return "vendor match: {!r} ~ {!r}".format(vendor, cve_vendor)
+            return f"vendor match: {vendor!r} ~ {cve_vendor!r}"
 
         # Product fuzzy match.
         if product and (product in cve_product or cve_product in product):
-            return "product match: {!r} ~ {!r}".format(product, cve_product)
+            return f"product match: {product!r} ~ {cve_product!r}"
 
         # Service-to-vendor hint match.
         if service:
@@ -405,8 +404,6 @@ class IcsCveCorrelator:
             for hint in vendor_hints:
                 hint_lower = hint.lower()
                 if hint_lower in cve_vendor or cve_vendor in hint_lower:
-                    return "service-to-vendor hint: service={!r} -> vendor={!r}".format(
-                        service, hint
-                    )
+                    return f"service-to-vendor hint: service={service!r} -> vendor={hint!r}"
 
         return None

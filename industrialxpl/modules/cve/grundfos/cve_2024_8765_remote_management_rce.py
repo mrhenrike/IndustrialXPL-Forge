@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2024-8765 Grundfos Grundfos Remote Management (GRM)\nCVSS 9.8\nPOST to Grundfos GRM cloud port 443, unauthenticated, RCE affecting all managed pump systems",
                 mitre_techniques=['T0866', 'T0836'])
             return
-        print_status("[CVE-2024-8765] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2024-8765] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2021-27461 Burkert Type 8621/8622 Valve Controller\nCVSS 9.8\nLogin Burkert controller web port 80 with default creds, open/close control valves",
                 mitre_techniques=['T0859', 'T0836'])
             return
-        print_status("[CVE-2021-27461] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2021-27461] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

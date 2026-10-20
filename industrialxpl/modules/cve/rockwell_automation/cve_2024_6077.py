@@ -68,18 +68,16 @@ class Exploit(Exploit):
             DestructiveGate.print_simulation(
                 description=(
                     "CVE-2024-6077: Would fingerprint Rockwell Automation ControlLogix/CompactLogix 5380/5580 at "
-                    "{}:{} and check if version is in affected range (< v33.017).".format(
-                        self.target, self.port
-                    )
+                    f"{self.target}:{self.port} and check if version is in affected range (< v33.017)."
                 ),
                 mitre_techniques=["T0888"],
             )
             return
-        print_status("Checking {}:{} for CVE-2024-6077...".format(self.target, self.port))
+        print_status(f"Checking {self.target}:{self.port} for CVE-2024-6077...")
         if self.check():
             print_success(
-                "Port {} open — Rockwell Automation ControlLogix/CompactLogix 5380/5580 MAY be present. "
-                "Verify version manually: affected=< v33.017".format(self.port)
+                f"Port {self.port} open — Rockwell Automation ControlLogix/CompactLogix 5380/5580 MAY be present. "
+                "Verify version manually: affected=< v33.017"
             )
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

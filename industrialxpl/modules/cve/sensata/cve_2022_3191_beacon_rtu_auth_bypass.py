@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-3191 Sensata Beacon RTU Controller\nCVSS 9.8\nConnect Sensata Beacon RTU Modbus port 502, read/write all sensor registers without auth",
                 mitre_techniques=['T1692.001', 'T0836'])
             return
-        print_status("[CVE-2022-3191] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-3191] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

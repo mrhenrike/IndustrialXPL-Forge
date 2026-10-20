@@ -59,5 +59,5 @@ class Exploit(Exploit):
             print_info("Affected: SIMATIC HMI Comfort Panels all V17 and earlier")
             print_info("PoC: https://cert-portal.siemens.com/productcert/html/ssa-480230.html")
             return
-        print_status("[CVE-2023-38380] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-38380] Exploiting {self.target}:{self.port}...")
         print_info('Live payload: implement protocol-specific exploit')

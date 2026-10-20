@@ -112,7 +112,7 @@ class Exploit(Exploit):
             return
 
         scheme = "https" if self.use_https else "http"
-        base_url = "{}://{}:{}".format(scheme, self.target, self.port)
+        base_url = f"{scheme}://{self.target}:{self.port}"
 
         # Filter paths by vendor
         paths_to_probe = {}
@@ -127,20 +127,16 @@ class Exploit(Exploit):
             total_paths = sum(len(p) for p in paths_to_probe.values())
             DestructiveGate.print_simulation(
                 description=(
-                    "ELITEWOLF: Would probe {} paths across {} vendor(s) on {} via HTTP GET. "
-                    "Looking for exposed diagnostic endpoints.".format(
-                        total_paths, len(paths_to_probe), base_url
-                    )
+                    f"ELITEWOLF: Would probe {total_paths} paths across {len(paths_to_probe)} vendor(s) on {base_url} via HTTP GET. "
+                    "Looking for exposed diagnostic endpoints."
                 ),
-                payload_human="GET {} HTTP/1.1\nHost: {}:{}".format(
-                    next(iter(next(iter(paths_to_probe.values())))), self.target, self.port
-                ),
+                payload_human=f"GET {next(iter(next(iter(paths_to_probe.values()))))} HTTP/1.1\nHost: {self.target}:{self.port}",
                 mitre_techniques=["T0883"],
             )
             for vendor, paths in paths_to_probe.items():
-                print_info("[ELITEWOLF] {} paths to probe for {}:".format(len(paths), vendor))
+                print_info(f"[ELITEWOLF] {len(paths)} paths to probe for {vendor}:")
                 for p in paths[:3]:
-                    print_info("  GET {}{}".format(base_url, p))
+                    print_info(f"  GET {base_url}{p}")
             return
 
         # Real probing
@@ -149,11 +145,11 @@ class Exploit(Exploit):
         ctx.verify_mode = ssl.CERT_NONE
 
         found = []
-        print_status("[ELITEWOLF] Probing {} ({} vendors)…".format(base_url, len(paths_to_probe)))
+        print_status(f"[ELITEWOLF] Probing {base_url} ({len(paths_to_probe)} vendors)…")
 
         for vendor, paths in paths_to_probe.items():
             for path in paths:
-                url = "{}{}".format(base_url, path)
+                url = f"{base_url}{path}"
                 try:
                     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
                     with urllib.request.urlopen(req, timeout=self.timeout,
@@ -162,18 +158,18 @@ class Exploit(Exploit):
                         if status in (200, 301, 302, 401, 403):
                             found.append((vendor[:20], path[:40], str(status)))
                             if status == 200:
-                                print_success("[ELITEWOLF] {} — HTTP {} {}".format(vendor, status, url))
+                                print_success(f"[ELITEWOLF] {vendor} — HTTP {status} {url}")
                             else:
-                                print_info("[ELITEWOLF] {} — HTTP {} {}".format(vendor, status, url))
+                                print_info(f"[ELITEWOLF] {vendor} — HTTP {status} {url}")
                 except urllib.error.HTTPError as e:
                     if e.code in (401, 403):
                         found.append((vendor[:20], path[:40], str(e.code)))
-                        print_info("[ELITEWOLF] {} — HTTP {} {}".format(vendor, e.code, url))
+                        print_info(f"[ELITEWOLF] {vendor} — HTTP {e.code} {url}")
                 except Exception:
                     pass
 
         if found:
             print_table(["Vendor", "Path", "HTTP Status"], found,
-                        title="ELITEWOLF Endpoints Found — {}".format(self.target))
+                        title=f"ELITEWOLF Endpoints Found — {self.target}")
         else:
-            print_info("[ELITEWOLF] No diagnostic endpoints found on {}.".format(self.target))
+            print_info(f"[ELITEWOLF] No diagnostic endpoints found on {self.target}.")

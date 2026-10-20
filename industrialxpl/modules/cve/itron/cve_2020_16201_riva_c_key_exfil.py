@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2020-16201 Itron Riva C Smart Meter\nCVSS 8.8\nAccess Itron Riva C RF interface, extract symmetric key material, decrypt metering data",
                 mitre_techniques=['T0855', 'T0832'])
             return
-        print_status("[CVE-2020-16201] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2020-16201] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

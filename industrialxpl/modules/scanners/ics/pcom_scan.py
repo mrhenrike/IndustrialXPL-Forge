@@ -80,7 +80,7 @@ def _build_pcom_frame(unit_id: int, command: int, data: bytes = b"") -> bytes:
 _PCOM_IDENTITY_FRAME = _build_pcom_frame(unit_id=0x00, command=_CMD_GET_ID)
 
 
-def _send_pcom(target: str, port: int, frame: bytes, timeout: int) -> Optional[bytes]:
+def _send_pcom(target: str, port: int, frame: bytes, timeout: int) -> bytes | None:
     """Send PCOM frame via TCP and return response."""
     try:
         sock = socket.create_connection((target, port), timeout=timeout)
@@ -93,7 +93,7 @@ def _send_pcom(target: str, port: int, frame: bytes, timeout: int) -> Optional[b
         return None
 
 
-def _parse_pcom_identity(resp: bytes) -> Optional[dict]:
+def _parse_pcom_identity(resp: bytes) -> dict | None:
     """Parse PCOM Identity response into device information dict."""
     if not resp or len(resp) < 6:
         return None
@@ -109,7 +109,7 @@ def _parse_pcom_identity(resp: bytes) -> Optional[dict]:
 
         payload = resp[data_start:data_end]
         if len(payload) >= 1:
-            result["HardwareType"] = "0x{:02X}".format(payload[0])
+            result["HardwareType"] = f"0x{payload[0]:02X}"
         if len(payload) >= 2:
             result["OSVersion"] = payload[1]
         if len(payload) >= 3:
@@ -177,9 +177,7 @@ class Exploit(Exploit):
             print_error("Set 'target' option first.")
             return
 
-        print_status("[PCOM] Probing {}:{}/TCP for Unitronics PCOM...".format(
-            self.target, self.port
-        ))
+        print_status(f"[PCOM] Probing {self.target}:{self.port}/TCP for Unitronics PCOM...")
 
         resp = _send_pcom(self.target, self.port, _PCOM_IDENTITY_FRAME, self.timeout)
         if not resp:
@@ -188,10 +186,10 @@ class Exploit(Exploit):
 
         if resp[0] != _PCOM_STX:
             print_info("[PCOM] TCP port responded but PCOM STX not found.")
-            print_info("[PCOM] Raw response: {}".format(resp[:32].hex()))
+            print_info(f"[PCOM] Raw response: {resp[:32].hex()}")
             return
 
-        print_success("[PCOM] PCOM response detected from {}!".format(self.target))
+        print_success(f"[PCOM] PCOM response detected from {self.target}!")
         info = _parse_pcom_identity(resp)
 
         if info:
@@ -203,7 +201,7 @@ class Exploit(Exploit):
             )
         else:
             print_info("[PCOM] Response received but identity parsing yielded no fields.")
-            print_info("[PCOM] Raw ({} B): {}".format(len(resp), resp.hex()))
+            print_info(f"[PCOM] Raw ({len(resp)} B): {resp.hex()}")
 
         print_warning(
             "[PCOM] Default password is '1111'. No authentication on default config. "

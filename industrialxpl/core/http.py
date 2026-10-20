@@ -20,15 +20,15 @@ class HTTPClient:
         host: str,
         port: int,
         path: str,
-        headers: Optional[dict] = None,
-        data: Optional[bytes] = None,
+        headers: dict | None = None,
+        data: bytes | None = None,
         timeout: int = 10,
         use_ssl: bool = False,
         verify_ssl: bool = False,
     ):
         """Make an HTTP request. Returns urllib response or None on error."""
         scheme = "https" if use_ssl else "http"
-        url = "{}://{}:{}{}".format(scheme, host, port, path)
+        url = f"{scheme}://{host}:{port}{path}"
 
         ctx = None
         if use_ssl and not verify_ssl:

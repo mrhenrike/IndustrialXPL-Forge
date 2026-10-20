@@ -53,12 +53,12 @@ class Exploit(Exploit):
             return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2023-34982: Fingerprint AVEVA PI Web API at {}:{}. CSRF remote code execution. CVSS 9.0.".format(self.target, self.port),
+                description=f"CVE-2023-34982: Fingerprint AVEVA PI Web API at {self.target}:{self.port}. CSRF remote code execution. CVSS 9.0.",
                 mitre_techniques=['T0819', 'T0866'],
             )
             return
         if self.check():
-            print_success("Port {} open — AVEVA PI Web API may be present. CVE-2023-34982 CRITICAL CVSS 9.0.".format(self.port))
+            print_success(f"Port {self.port} open — AVEVA PI Web API may be present. CVE-2023-34982 CRITICAL CVSS 9.0.")
             print_warning("CISA: N/A")
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

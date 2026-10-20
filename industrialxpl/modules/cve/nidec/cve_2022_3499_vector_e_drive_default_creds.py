@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-3499 Nidec Vector E Industrial Drive\nCVSS 9.8\nConnect Nidec Vector E Modbus TCP port 502, default creds, modify drive motor parameters",
                 mitre_techniques=['T0859', 'T0836'])
             return
-        print_status("[CVE-2022-3499] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-3499] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

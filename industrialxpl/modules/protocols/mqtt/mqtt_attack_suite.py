@@ -6,7 +6,6 @@ MQTT port 1883 (cleartext), 8883 (TLS). Common in IoT, IIoT (Sparkplug B).
 # Use only on systems you own or have explicit written permission to test.
 # Authorized use only. See embedxpl.core.exploit.DISCLAIMER for full text.
 
-from __future__ import annotations
 import logging
 import socket
 import struct
@@ -73,7 +72,7 @@ class MQTTAttack:
                         msg = data[2+topic_len:].decode(errors="replace")
                         result.topics.append(topic)
                         result.messages.append({"topic": topic, "payload": msg[:100]})
-                except socket.timeout: continue
+                except TimeoutError: continue
                 except Exception: break
             s.close()
         except Exception as exc: result.error = str(exc)

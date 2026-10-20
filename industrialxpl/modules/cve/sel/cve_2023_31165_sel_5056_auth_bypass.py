@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2023-31165 Schweitzer Engineering SEL-5056 Software Defined Network\nCVSS 9.1\nAccess SEL-5056 port 443 without auth, modify SDN switching rules, disrupt substation comms",
                 mitre_techniques=['T0859', 'T0827'])
             return
-        print_status("[CVE-2023-31165] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-31165] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

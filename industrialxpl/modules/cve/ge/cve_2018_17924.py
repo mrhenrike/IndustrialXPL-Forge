@@ -53,12 +53,12 @@ class Exploit(Exploit):
             return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2018-17924: Fingerprint GE Communicator EXT data server at {}:{}. Denial of service arbitrary write. CVSS 7.5.".format(self.target, self.port),
+                description=f"CVE-2018-17924: Fingerprint GE Communicator EXT data server at {self.target}:{self.port}. Denial of service arbitrary write. CVSS 7.5.",
                 mitre_techniques=['T0814'],
             )
             return
         if self.check():
-            print_success("Port {} open — GE Communicator EXT data server may be present. CVE-2018-17924 HIGH CVSS 7.5.".format(self.port))
+            print_success(f"Port {self.port} open — GE Communicator EXT data server may be present. CVE-2018-17924 HIGH CVSS 7.5.")
             print_warning("CISA: N/A")
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

@@ -53,12 +53,12 @@ class Exploit(Exploit):
             return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2021-33002: Fingerprint Advantech WebAccess Node runtime at {}:{}. Path traversal arbitrary file creation. CVSS 9.8.".format(self.target, self.port),
+                description=f"CVE-2021-33002: Fingerprint Advantech WebAccess Node runtime at {self.target}:{self.port}. Path traversal arbitrary file creation. CVSS 9.8.",
                 mitre_techniques=['T0819'],
             )
             return
         if self.check():
-            print_success("Port {} open — Advantech WebAccess Node runtime may be present. CVE-2021-33002 CRITICAL CVSS 9.8.".format(self.port))
+            print_success(f"Port {self.port} open — Advantech WebAccess Node runtime may be present. CVE-2021-33002 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

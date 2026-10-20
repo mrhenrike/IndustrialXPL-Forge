@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2023-32343 Teltonika RMS Remote Management System\nCVSS 9.8\nPOST to RMS platform port 443, inject OS commands, RCE affecting all Teltonika routers",
                 mitre_techniques=['T0866', 'T0822'])
             return
-        print_status("[CVE-2023-32343] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-32343] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

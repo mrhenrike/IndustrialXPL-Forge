@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-22966 Danfoss VLT/VACON Industrial Drive\nCVSS 9.8\nConnect Danfoss VLT drive Modbus TCP port 502, default creds, modify motor parameters",
                 mitre_techniques=['T0859', 'T0836'])
             return
-        print_status("[CVE-2022-22966] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-22966] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

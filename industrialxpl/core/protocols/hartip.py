@@ -5,12 +5,11 @@ instrument communication. Supports commands 0-3 (universal) and
 device-specific commands.
 """
 
-from __future__ import annotations
 
 import logging
 import struct
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -82,7 +81,7 @@ class HartIpClient:
     def read_loop_current(self) -> float:
         raise NotImplementedError("Command 2 not implemented")
 
-    def read_dynamic_variables(self) -> List[ProcessVariable]:
+    def read_dynamic_variables(self) -> list[ProcessVariable]:
         raise NotImplementedError("Command 3 not implemented")
 
     def read_device_variable(self, slot: int) -> ProcessVariable:

@@ -53,6 +53,6 @@ class Exploit(Exploit):
         }
         for tid in GAP_TECHNIQUES:
             rows.append([tid, mapping.get(tid, "covered"), "yes"])
-        print_status("MITRE gap technique registry ({} techniques)".format(len(GAP_TECHNIQUES)))
+        print_status(f"MITRE gap technique registry ({len(GAP_TECHNIQUES)} techniques)")
         print_table(["TID", "Assessment", "Covered"], rows)
         print_info("Run mitre-coverage for full matrix; import Navigator layer from coverage_report")

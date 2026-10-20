@@ -79,19 +79,19 @@ class Exploit(Exploit):
             DestructiveGate.print_simulation(
                 description=(
                     "CVE-2023-39476: Would fingerprint Inductive Automation Ignition at "
-                    "{}:{} and confirm if version is in affected range. "
+                    f"{self.target}:{self.port} and confirm if version is in affected range. "
                     "Exploit type: Java deserial pre-auth RCE. "
-                    "CVSS 9.8 (CRITICAL).".format(self.target, self.port)
+                    "CVSS 9.8 (CRITICAL)."
                 ),
                 mitre_techniques=['T0819', 'T0866', 'T1694.002', 'T0859'],
             )
             return
-        print_status("Checking {}:{} for CVE-2023-39476...".format(self.target, self.port))
+        print_status(f"Checking {self.target}:{self.port} for CVE-2023-39476...")
         if self.check():
             print_success(
-                "Port {} open on {} — Inductive Automation Ignition may be present. "
+                f"Port {self.port} open on {self.target} — Inductive Automation Ignition may be present. "
                 "CVE-2023-39476 (CRITICAL CVSS 9.8): Java deserial pre-auth RCE. "
-                "Manual version verification required.".format(self.port, self.target)
+                "Manual version verification required."
             )
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

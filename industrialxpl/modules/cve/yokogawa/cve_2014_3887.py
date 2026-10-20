@@ -53,12 +53,12 @@ class Exploit(Exploit):
             return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2014-3887: Fingerprint Yokogawa CENTUM CS3000 BKFSim VHFD at {}:{}. Stack buffer overflow RCE. CVSS 9.8.".format(self.target, self.port),
+                description=f"CVE-2014-3887: Fingerprint Yokogawa CENTUM CS3000 BKFSim VHFD at {self.target}:{self.port}. Stack buffer overflow RCE. CVSS 9.8.",
                 mitre_techniques=['T0819', 'T0866'],
             )
             return
         if self.check():
-            print_success("Port {} open — Yokogawa CENTUM CS3000 BKFSim VHFD may be present. CVE-2014-3887 CRITICAL CVSS 9.8.".format(self.port))
+            print_success(f"Port {self.port} open — Yokogawa CENTUM CS3000 BKFSim VHFD may be present. CVE-2014-3887 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

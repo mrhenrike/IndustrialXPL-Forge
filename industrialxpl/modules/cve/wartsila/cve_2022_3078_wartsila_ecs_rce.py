@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-3078 Wartsila Engine Control System (ECS)\nCVSS 9.8\nConnect Wartsila ECS Modbus TCP port 502, write engine speed setpoints, control ship engines",
                 mitre_techniques=['T1692.001', 'T0836'])
             return
-        print_status("[CVE-2022-3078] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-3078] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

@@ -59,5 +59,5 @@ class Exploit(Exploit):
             print_info("Affected: DeltaV v11.3.1 to v14.FP4")
             print_info("PoC: https://www.cisa.gov/uscert/ics/advisories/icsa-20-205-01")
             return
-        print_status("[CVE-2020-10636] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2020-10636] Exploiting {self.target}:{self.port}...")
         print_info('Live payload: implement protocol-specific exploit')

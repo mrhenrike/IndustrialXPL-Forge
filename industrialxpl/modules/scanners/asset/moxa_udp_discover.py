@@ -65,16 +65,15 @@ class Exploit(Exploit):
     def run(self) -> None:
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="Would send Moxa ADDP probe (8 bytes) to {}:{}/UDP "
-                            "and collect responses from Moxa devices.".format(
-                                self.target, self.port),
+                description=f"Would send Moxa ADDP probe (8 bytes) to {self.target}:{self.port}/UDP "
+                            "and collect responses from Moxa devices.",
                 payload_hex="01 00 00 08 00 00 00 00",
                 payload_human="Moxa ADDP Identify (function 0x01) broadcast",
                 mitre_techniques=["T0846.002"],
             )
             return
 
-        print_status("Broadcasting Moxa ADDP probe to {}:{}…".format(self.target, self.port))
+        print_status(f"Broadcasting Moxa ADDP probe to {self.target}:{self.port}…")
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         sock.settimeout(self.timeout)
@@ -90,9 +89,9 @@ class Exploit(Exploit):
                     if (len(resp) == 24 and resp[0] == 0x81 and
                             resp[14:17] == b"\x00\x90\xe8"):
                         ip = ".".join(str(b) for b in resp[4:8])
-                        mac = ":".join("{:02x}".format(b) for b in resp[14:20])
+                        mac = ":".join(f"{b:02x}" for b in resp[14:20])
                         devices.append((addr[0], ip, mac))
-                except socket.timeout:
+                except TimeoutError:
                     break
         finally:
             sock.close()
@@ -104,6 +103,6 @@ class Exploit(Exploit):
                 title="Moxa Devices Found",
             )
             for addr, ip, mac in devices:
-                print_success("Moxa device at {}: ip={}, mac={}".format(addr, ip, mac))
+                print_success(f"Moxa device at {addr}: ip={ip}, mac={mac}")
         else:
             print_info("No Moxa devices responded.")

@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2022-40981 Westermo Lynx L206 Industrial Switch\nCVSS 9.8\nLogin Westermo switch port 443 with default admin/westermo, control industrial switch",
                 mitre_techniques=['T0859', 'T0822'])
             return
-        print_status("[CVE-2022-40981] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-40981] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement exploit")

@@ -53,12 +53,12 @@ class Exploit(Exploit):
             return
         if self.simulate:
             DestructiveGate.print_simulation(
-                description="CVE-2021-31851: Fingerprint Moxa UC-8200 Series IPC at {}:{}. Firmware signing bypass RCE. CVSS 9.8.".format(self.target, self.port),
+                description=f"CVE-2021-31851: Fingerprint Moxa UC-8200 Series IPC at {self.target}:{self.port}. Firmware signing bypass RCE. CVSS 9.8.",
                 mitre_techniques=['T0819', 'T0866', 'T1694.002', 'T0859'],
             )
             return
         if self.check():
-            print_success("Port {} open — Moxa UC-8200 Series IPC may be present. CVE-2021-31851 CRITICAL CVSS 9.8.".format(self.port))
+            print_success(f"Port {self.port} open — Moxa UC-8200 Series IPC may be present. CVE-2021-31851 CRITICAL CVSS 9.8.")
             print_warning("CISA: N/A")
         else:
-            print_info("{}:{} not responding.".format(self.target, self.port))
+            print_info(f"{self.target}:{self.port} not responding.")

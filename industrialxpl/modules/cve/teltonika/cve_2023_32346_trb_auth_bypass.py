@@ -37,5 +37,5 @@ class Exploit(Exploit):
                 description="CVE-2023-32346 Teltonika TRB/RUT Industrial Router\nCVSS 9.8\nAccess Teltonika TRB router web port 80, bypass auth, modify routing, access OT segments",
                 mitre_techniques=['T0859', 'T0822'])
             return
-        print_status("[CVE-2023-32346] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-32346] Exploiting {self.target}:{self.port}...")
         print_info("Live: implement protocol-specific exploit")

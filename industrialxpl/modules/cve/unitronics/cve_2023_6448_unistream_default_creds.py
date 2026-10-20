@@ -60,5 +60,5 @@ class Exploit(Exploit):
             print_info("Affected: Unistream PLC all firmware")
             print_info("PoC: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-335a")
             return
-        print_status("[CVE-2023-6448] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2023-6448] Exploiting {self.target}:{self.port}...")
         print_info('Live payload: implement protocol-specific exploit')

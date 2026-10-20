@@ -22,12 +22,11 @@ Protocol references:
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import socket
 import struct
 import time
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict
 
 from industrialxpl.core.exploit import *
 from industrialxpl.core.exploit.exploit import BaseExploit
@@ -69,7 +68,7 @@ def _recv_tpkt(sock: socket.socket, timeout: float = 3.0) -> bytes:
     return header + data
 
 
-def _connect_s7(host: str, port: int, timeout: float) -> Optional[socket.socket]:
+def _connect_s7(host: str, port: int, timeout: float) -> socket.socket | None:
     """Establish COTP/S7comm session to a Siemens PLC.
 
     Returns:
@@ -106,9 +105,9 @@ def _connect_s7(host: str, port: int, timeout: float) -> Optional[socket.socket]
         return None
 
 
-def _parse_szl_response(data: bytes) -> Dict[str, str]:
+def _parse_szl_response(data: bytes) -> dict[str, str]:
     """Parse S7 SZL diagnostic response into key-value fields."""
-    result: Dict[str, str] = {}
+    result: dict[str, str] = {}
     if len(data) < 28:
         return result
 
@@ -164,7 +163,7 @@ def enumerate_s7(
     host: str,
     port: int = 102,
     timeout: float = 5.0,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Connect to a Siemens PLC and enumerate available information.
 
     Args:
@@ -175,7 +174,7 @@ def enumerate_s7(
     Returns:
         Dict with findings, risk assessment, and raw response sizes.
     """
-    result: Dict[str, Any] = {
+    result: dict[str, Any] = {
         "host": host,
         "port": port,
         "connected": False,

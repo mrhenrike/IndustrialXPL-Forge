@@ -123,15 +123,13 @@ class Exploit(Exploit):
         if self.simulate:
             DestructiveGate.print_simulation(
                 description=(
-                    "Would connect to {}:{}/TCP (ThinServer) and send a crafted request "
+                    f"Would connect to {self.target}:{self.port}/TCP (ThinServer) and send a crafted request "
                     "containing a SQL injection payload in a user-controlled field. "
                     "CVE-2024-5989 (CVSS 9.8): ThinServer does not sanitize input before "
                     "SQL query construction. SQLi leads to: (1) credential/config extraction "
                     "from the ThinManager database, (2) xp_cmdshell or equivalent RCE on "
                     "the Windows ThinServer host, (3) lateral movement to all connected "
-                    "thin clients across the OT network. No authentication required.".format(
-                        self.target, self.port
-                    )
+                    "thin clients across the OT network. No authentication required."
                 ),
                 payload_hex=(
                     "Binary ThinServer request with SQL payload: "
@@ -145,26 +143,20 @@ class Exploit(Exploit):
             )
             return
 
-        print_status("[CVE-2024-5989] Probing ThinServer on {}:{}...".format(
-            self.target, self.port
-        ))
+        print_status(f"[CVE-2024-5989] Probing ThinServer on {self.target}:{self.port}...")
         connected, banner = _probe_thinserver(self.target, self.port, self.timeout)
         if not connected:
             print_error(
-                "[CVE-2024-5989] TCP/{} is not responding. "
-                "ThinManager may not be installed or port is filtered.".format(self.port)
+                f"[CVE-2024-5989] TCP/{self.port} is not responding. "
+                "ThinManager may not be installed or port is filtered."
             )
             return
 
         print_success(
-            "[CVE-2024-5989] ThinServer is listening on {}:{}.".format(
-                self.target, self.port
-            )
+            f"[CVE-2024-5989] ThinServer is listening on {self.target}:{self.port}."
         )
         if banner:
-            print_info("[CVE-2024-5989] Banner ({} B): {}".format(
-                len(banner), banner[:32].hex()
-            ))
+            print_info(f"[CVE-2024-5989] Banner ({len(banner)} B): {banner[:32].hex()}")
         print_warning(
             "[CVE-2024-5989] If ThinManager version is unpatched, SQL injection "
             "in ThinServer protocol is exploitable for RCE (CVE-2024-5989, CVSS 9.8). "

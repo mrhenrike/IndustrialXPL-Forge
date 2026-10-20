@@ -1,6 +1,5 @@
 """Run incorporated ics-tools — IXF native handlers first, vendor fallback."""
 
-from __future__ import annotations
 
 import csv
 import os
@@ -19,7 +18,7 @@ class IcsToolsRunner:
     def analyze(self, slug: str) -> dict[str, Any]:
         fam = self.catalog.get(slug)
         if not fam:
-            return {"error": "Unknown ics-tool: {}".format(slug), "available": self.catalog.list_slugs()}
+            return {"error": f"Unknown ics-tool: {slug}", "available": self.catalog.list_slugs()}
         scripts = sorted(str(p.relative_to(fam.vendor_path)) for p in fam.vendor_path.rglob("*.py"))[:40]
         nse = sorted(p.name for p in fam.vendor_path.glob("*.nse"))
         return {
@@ -44,7 +43,7 @@ class IcsToolsRunner:
     ) -> dict[str, Any]:
         fam = self.catalog.get(slug)
         if not fam:
-            return {"error": "Unknown ics-tool: {}".format(slug)}
+            return {"error": f"Unknown ics-tool: {slug}"}
 
         if prefer_native:
             native = run_native(slug, extra_args, simulate=simulate)
@@ -53,7 +52,7 @@ class IcsToolsRunner:
                 return native
 
         if not fam.entry_script:
-            return {"error": "No entry script for {}".format(slug)}
+            return {"error": f"No entry script for {slug}"}
 
         entry = fam.vendor_path / fam.entry_script
         if simulate:

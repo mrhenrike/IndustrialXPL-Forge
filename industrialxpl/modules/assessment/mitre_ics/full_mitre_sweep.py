@@ -61,9 +61,8 @@ class Exploit(Exploit):
         from industrialxpl.core.mitre.sweeper import MitreTacticSweeper
         from industrialxpl.core.mitre.reporter import MitreSweepReporter
 
-        print_status("Starting full MITRE ATT&CK for ICS sweep against {}…".format(self.target))
-        print_info("Simulate: {} | Rate limit: {}ms | Output: {}".format(
-            self.simulate, self.rate_limit, self.output_fmt))
+        print_status(f"Starting full MITRE ATT&CK for ICS sweep against {self.target}…")
+        print_info(f"Simulate: {self.simulate} | Rate limit: {self.rate_limit}ms | Output: {self.output_fmt}")
 
         sweeper = MitreTacticSweeper(
             target=self.target,
@@ -77,8 +76,8 @@ class Exploit(Exploit):
             reporter = MitreSweepReporter(results)
             if self.output_fmt == "layer":
                 path = reporter.generate_layer("layer")
-                print_success("Navigator layer: {}".format(path))
+                print_success(f"Navigator layer: {path}")
                 print_info("Import at: https://mitre-attack.github.io/attack-navigator/")
             else:
                 path = reporter.save(".tmp/ixf_mitre_sweep_full.json")
-                print_success("JSON saved: {}".format(path))
+                print_success(f"JSON saved: {path}")

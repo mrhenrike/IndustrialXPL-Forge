@@ -134,7 +134,7 @@ def main() -> None:
     args = parser.parse_args()
 
     if args.show_version:
-        print("IndustrialXPL-Forge v{}".format(VERSION))
+        print(f"IndustrialXPL-Forge v{VERSION}")
         return
 
     interp = IXFInterpreter()
@@ -159,11 +159,11 @@ def main() -> None:
         rc_path = Path(rc_path_str)
         if not rc_path.exists():
             from industrialxpl.core.exploit.printer import print_error
-            print_error("Resource file not found: {}".format(rc_path))
+            print_error(f"Resource file not found: {rc_path}")
             sys.exit(1)
         if not rc_path.is_file():
             from industrialxpl.core.exploit.printer import print_error
-            print_error("Not a file: {}".format(rc_path))
+            print_error(f"Not a file: {rc_path}")
             sys.exit(1)
         try:
             lines = rc_path.read_text(encoding="utf-8").splitlines()
@@ -171,7 +171,7 @@ def main() -> None:
             all_rc_lines.append("")  # separator between files
         except OSError as exc:
             from industrialxpl.core.exploit.printer import print_error
-            print_error("Cannot read '{}': {}".format(rc_path, exc))
+            print_error(f"Cannot read '{rc_path}': {exc}")
             sys.exit(1)
 
     # Inline commands via -e (expand semicolons)

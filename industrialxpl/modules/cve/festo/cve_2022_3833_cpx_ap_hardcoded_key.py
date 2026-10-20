@@ -59,5 +59,5 @@ class Exploit(Exploit):
             print_info("Affected: CPX-AP-I all firmware, CMMT-AS all firmware")
             print_info("PoC: https://www.cisa.gov/uscert/ics/advisories/icsa-22-298-05")
             return
-        print_status("[CVE-2022-3833] Exploiting {}:{}...".format(self.target, self.port))
+        print_status(f"[CVE-2022-3833] Exploiting {self.target}:{self.port}...")
         print_info('Live payload: implement protocol-specific exploit')

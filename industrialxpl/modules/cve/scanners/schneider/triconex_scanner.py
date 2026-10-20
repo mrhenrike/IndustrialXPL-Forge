@@ -29,7 +29,7 @@ class Exploit(Exploit):
         except: return False
     def run(self):
         if not self.target: print_error("Set target"); return
-        print_status("[Schneider/Triconex] Scanning {}:{}...".format(self.target, self.port))
+        print_status(f"[Schneider/Triconex] Scanning {self.target}:{self.port}...")
         results = []
         try:
             s = socket.socket(); s.settimeout(self.timeout)
@@ -37,9 +37,9 @@ class Exploit(Exploit):
             s.send(b"1f0200")
             banner = s.recv(256)
             s.close()
-            results.append(("Schneider/Triconex", "{}:{}".format(self.target, self.port), "Detected", banner[:24].hex()))
+            results.append(("Schneider/Triconex", f"{self.target}:{self.port}", "Detected", banner[:24].hex()))
         except Exception as e:
-            results.append(("Schneider/Triconex", "{}:{}".format(self.target, self.port), "Unreachable", str(e)[:25]))
+            results.append(("Schneider/Triconex", f"{self.target}:{self.port}", "Unreachable", str(e)[:25]))
         if results:
             print_table(["Vendor","Address","Status","Banner"], results)
         print_info("CVEs: CVE-2023-5402, CVE-2019-6829")
