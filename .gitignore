@@ -13,6 +13,9 @@ build/
 venv/
 env/
 
+# Legacy ixf/ package root (migrated to industrialxpl/ in W16.3)
+ixf/
+
 # IXF runtime artifacts
 .tmp/
 .ixf/
