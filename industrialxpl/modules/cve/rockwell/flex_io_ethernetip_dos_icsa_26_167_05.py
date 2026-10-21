@@ -154,7 +154,7 @@ class Exploit(Exploit):
             return f"Port {self.port} closed at {self.target}"
         except TimeoutError:
             return f"Timeout at {self.target}:{self.port}"
-        except (ConnectionError, TimeoutError, ValueError, OSError) as exc:
+        except (ConnectionError, ValueError, OSError) as exc:
             return f"Check error: {exc}"
 
     def run(self) -> None:
@@ -240,6 +240,6 @@ class Exploit(Exploit):
             logger.info("[+] CONFIRMED: Port closed - FLEX I/O adapter in fault state (power cycle required)")
         except TimeoutError:
             logger.info("[+] Timeout - adapter likely unresponsive")
-        except (ConnectionError, TimeoutError, ValueError, OSError) as exc:
+        except (ConnectionError, ValueError, OSError) as exc:
             logger.warning("[*] Verify error: %s", exc)
 

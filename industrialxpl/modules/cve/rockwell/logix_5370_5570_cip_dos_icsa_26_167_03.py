@@ -197,7 +197,7 @@ class Exploit(Exploit):
             return f"Port {self.port} closed at {self.target}"
         except TimeoutError:
             return f"Timeout at {self.target}:{self.port}"
-        except (ConnectionError, TimeoutError, ValueError, OSError) as exc:
+        except (ConnectionError, ValueError, OSError) as exc:
             return f"Check error: {exc}"
 
     def run(self) -> None:

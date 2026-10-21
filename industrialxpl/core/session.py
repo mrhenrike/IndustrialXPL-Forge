@@ -30,7 +30,7 @@ import os
 import time
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Any, Tuple
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -394,7 +394,7 @@ class SessionManager:
         """Load existing session or create new one.
 
         Returns:
-            Tuple of (session, is_existing).
+            tuple of (session, is_existing).
         """
         existing = self.load(ip, mac)
         if existing:

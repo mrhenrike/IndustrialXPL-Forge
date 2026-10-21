@@ -11,7 +11,7 @@ Default port: 44818 (TCP).  UDP discovery: 2222.
 import socket
 import struct
 import logging
-from typing import Optional, Dict
+from typing import Optional
 
 
 # EtherNet/IP command codes
@@ -178,7 +178,7 @@ class CIPClient:
             timeout: UDP receive timeout.
 
         Returns:
-            Dict with device identity fields or None on no response.
+            dict with device identity fields or None on no response.
         """
         pkt = struct.pack("<HHIIQII", ENIP_LIST_IDENTITY, 0, 0, 0, 0, 0, 0)
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -196,7 +196,7 @@ class CIPClient:
         """Send ListIdentity over existing TCP session.
 
         Returns:
-            Dict with device identity fields or None.
+            dict with device identity fields or None.
         """
         payload = self._send_recv_enip(ENIP_LIST_IDENTITY, b"")
         if payload:
@@ -208,7 +208,7 @@ class CIPClient:
         """Parse ListIdentity response payload.
 
         Returns:
-            Dict with vendor, device_type, product_name, serial, revision.
+            dict with vendor, device_type, product_name, serial, revision.
         """
         result: dict = {}
         try:

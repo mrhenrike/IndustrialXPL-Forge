@@ -24,7 +24,6 @@ Author: Andre Henrique (@mrhenrike) | Uniao Geek
 import socket
 import struct
 from dataclasses import dataclass, field
-from typing import List
 
 from industrialxpl.core.exploit import (
     Exploit,
@@ -50,7 +49,7 @@ class ConpotFingerprint:
         is_conpot: Whether device shows Conpot signatures.
         confidence: Confidence score 0-100.
         services: Detected services.
-        indicators: List of Conpot-specific indicators found.
+        indicators: list of Conpot-specific indicators found.
         real_vendor: Best guess of real device type if not Conpot.
     """
 

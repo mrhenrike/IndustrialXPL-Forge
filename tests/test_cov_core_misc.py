@@ -185,7 +185,7 @@ class TestSmartPool:
         from industrialxpl.core.pool import PoolStrategy, SmartPool
         on_result_calls = []
         pool = SmartPool(max_workers=2, strategy=PoolStrategy.THREADS)
-        results = pool.map_unordered(
+        pool.map_unordered(
             lambda x: x * 2, [1],
             on_result=lambda item, result: on_result_calls.append((item, result)),
         )
@@ -242,7 +242,6 @@ class TestSmartPool:
         pool = SmartPool()
         stop = threading.Event()
         stop.set()
-        call_count = 0
         def worker(stop_event):
             pass
         # Patch Thread.start to raise RuntimeError on second call
@@ -743,7 +742,7 @@ class TestModbusAddress:
 
     def test_parse_range_reversed(self):
         from industrialxpl.core.modbus.address import parse_modbus_addresses
-        with pytest.raises(ValueError, match="start.*end"):
+        with pytest.raises(ValueError, match=r"start.*end"):
             parse_modbus_addresses("20-10")
 
     def test_parse_range_cross_type(self):
@@ -908,48 +907,48 @@ class TestModbusTransport:
     def test_read_coils(self):
         from industrialxpl.core.modbus.transport import ModbusTCPSocket
         ms = ModbusTCPSocket("127.0.0.1", 502)
-        with patch.object(ms, "send_pdu", return_value=b"\x01\x02") as mock_send:
+        with patch.object(ms, "send_pdu", return_value=b"\x01\x02"):
             result = ms.read_coils(0, 8)
             assert result == b"\x01\x02"
 
     def test_read_discrete_inputs(self):
         from industrialxpl.core.modbus.transport import ModbusTCPSocket
         ms = ModbusTCPSocket("127.0.0.1", 502)
-        with patch.object(ms, "send_pdu", return_value=b"\x02") as mock_send:
+        with patch.object(ms, "send_pdu", return_value=b"\x02"):
             result = ms.read_discrete_inputs(0, 8)
             assert result is not None
 
     def test_read_holding_registers(self):
         from industrialxpl.core.modbus.transport import ModbusTCPSocket
         ms = ModbusTCPSocket("127.0.0.1", 502)
-        with patch.object(ms, "send_pdu", return_value=b"\x03\x02\x00\x01") as mock_send:
+        with patch.object(ms, "send_pdu", return_value=b"\x03\x02\x00\x01"):
             result = ms.read_holding_registers(0, 1)
             assert result is not None
 
     def test_read_input_registers(self):
         from industrialxpl.core.modbus.transport import ModbusTCPSocket
         ms = ModbusTCPSocket("127.0.0.1", 502)
-        with patch.object(ms, "send_pdu", return_value=b"\x04") as mock_send:
+        with patch.object(ms, "send_pdu", return_value=b"\x04"):
             result = ms.read_input_registers(0, 1)
             assert result is not None
 
     def test_write_single_coil(self):
         from industrialxpl.core.modbus.transport import ModbusTCPSocket
         ms = ModbusTCPSocket("127.0.0.1", 502)
-        with patch.object(ms, "send_pdu", return_value=b"ok") as mock_send:
+        with patch.object(ms, "send_pdu", return_value=b"ok"):
             ms.write_single_coil(0, True)
             ms.write_single_coil(0, False)
 
     def test_write_single_register(self):
         from industrialxpl.core.modbus.transport import ModbusTCPSocket
         ms = ModbusTCPSocket("127.0.0.1", 502)
-        with patch.object(ms, "send_pdu", return_value=b"ok") as mock_send:
+        with patch.object(ms, "send_pdu", return_value=b"ok"):
             ms.write_single_register(0, 42)
 
     def test_write_multiple_coils(self):
         from industrialxpl.core.modbus.transport import ModbusTCPSocket
         ms = ModbusTCPSocket("127.0.0.1", 502)
-        with patch.object(ms, "send_pdu", return_value=b"ok") as mock_send:
+        with patch.object(ms, "send_pdu", return_value=b"ok"):
             ms.write_multiple_coils(0, [True, False, True, True, False, False, True, False, True])
 
     def test_write_multiple_registers(self):
@@ -1039,10 +1038,10 @@ class TestModbusBase:
         assert opt.validate("normal") == "normal"
 
     def test_opt_timing_validate_invalid(self):
+        from industrialxpl.core.exploit.exceptions import OptionValidationError
         from industrialxpl.core.modbus.base import _OptTiming
         opt = _OptTiming("T3", "timing")
-        # OptionValidationError is imported inside validate
-        with pytest.raises(Exception):
+        with pytest.raises(OptionValidationError):
             opt.validate("badvalue")
 
     def test_opt_port_expr_validate(self):
@@ -1051,9 +1050,10 @@ class TestModbusBase:
         assert opt.validate("502") == "502"
 
     def test_opt_port_expr_validate_invalid(self):
+        from industrialxpl.core.exploit.exceptions import OptionValidationError
         from industrialxpl.core.modbus.base import _OptPortExpr
         opt = _OptPortExpr("502", "port")
-        with pytest.raises(Exception):
+        with pytest.raises(OptionValidationError):
             opt.validate("abc")
 
     def test_opt_register_expr_validate(self):
@@ -1064,9 +1064,10 @@ class TestModbusBase:
         assert opt.validate("  ") == ""
 
     def test_opt_register_expr_validate_invalid(self):
+        from industrialxpl.core.exploit.exceptions import OptionValidationError
         from industrialxpl.core.modbus.base import _OptRegisterExpr
         opt = _OptRegisterExpr("", "regs")
-        with pytest.raises(Exception):
+        with pytest.raises(OptionValidationError):
             opt.validate("xyz")
 
 
@@ -2052,13 +2053,13 @@ class TestSearchEngine:
     def test_search_sector(self):
         from industrialxpl.core.search.engine import SearchEngine
         se = SearchEngine(modules=["industrialxpl.modules.scanners.modbus.banner"])
-        result = se.search("sector=energy")
+        se.search("sector=energy")
         # May or may not find based on keywords
 
     def test_search_sector_ptbr(self):
         from industrialxpl.core.search.engine import SearchEngine
         se = SearchEngine(modules=["industrialxpl.modules.scanners.modbus.banner"])
-        result = se.search("sector=mineracao")
+        se.search("sector=mineracao")
 
     def test_search_sector_no_match(self):
         from industrialxpl.core.search.engine import SearchEngine
@@ -2370,7 +2371,7 @@ class TestIcsToolsCatalog:
         from industrialxpl.core.ics_tools.catalog import IcsToolsCatalog
         with patch("industrialxpl.core.ics_tools.catalog.VENDOR_ROOT", tmp_path):
             cat = IcsToolsCatalog()
-            families = cat.discover()
+            cat.discover()
             # Should discover native ones if they exist
             # But with patched VENDOR_ROOT, vendor dirs won't exist
 
@@ -3620,7 +3621,7 @@ class TestModbusBaseExploitHelpers:
     def test_get_timing_global_opts_bad_values(self):
         obj = self._make_instance()
         obj._global_scan_opts = {"max_retries": "bad", "scan_delay": "bad"}
-        profile = obj._get_timing()
+        obj._get_timing()
 
     def test_apply_global_scan_opts(self):
         obj = self._make_instance()
@@ -4531,14 +4532,14 @@ class TestFinalMediumGaps:
         fam.interpreter = "nmap"
         fam.entry_script = "scan.xml"
         fam.vendor_path = Path("/fake/vendor")
-        entry = Path("/fake/vendor/scan.xml")  # no .nse suffix
+        Path("/fake/vendor/scan.xml")  # no .nse suffix
         runner.catalog = MagicMock()
         runner.catalog.get.return_value = fam
 
         with patch("industrialxpl.core.ics_tools.runner.run_native", return_value=None), \
              patch("subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(returncode=0, stdout="ok", stderr="")
-            result = runner.run_entry("test-slug", simulate=False, prefer_native=True)
+            runner.run_entry("test-slug", simulate=False, prefer_native=True)
 
         # If native returns None, falls to vendor; check it tried nmap
         # Actually we need to ensure fam.entry_script doesn't end with .nse
@@ -4548,7 +4549,7 @@ class TestFinalMediumGaps:
         with patch("industrialxpl.core.ics_tools.runner.run_native", return_value=None), \
              patch("subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(returncode=0, stdout="ok", stderr="")
-            result = runner.run_entry("test-slug", simulate=False, prefer_native=True)
+            runner.run_entry("test-slug", simulate=False, prefer_native=True)
             if mock_run.called:
                 cmd = mock_run.call_args[0][0]
                 # nmap without -p flag when not .nse

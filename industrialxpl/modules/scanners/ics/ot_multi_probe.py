@@ -9,7 +9,6 @@ Version: 1.0.0
 
 
 import struct
-from typing import List
 from collections.abc import Callable
 
 from industrialxpl.core.exploit import (

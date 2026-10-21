@@ -3185,7 +3185,7 @@ class TestSmallGaps_core:
         with patch("industrialxpl.core.ics_tools.catalog.VENDOR_ROOT") as mock_vr:
             mock_vr.glob.return_value = []
             # NATIVE_ICS entries have paths that don't exist -> continue at L97
-            fams = cat.discover()
+            cat.discover()
         # If native paths don't exist, those slugs won't be in families
         # The important thing is that L97 (continue) was hit without error
 
