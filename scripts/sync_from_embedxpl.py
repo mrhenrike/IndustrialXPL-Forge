@@ -60,9 +60,9 @@ def main() -> None:
         src = EXF_ROOT / src_rel
         dst = IXF_ROOT / dst_rel
         n = copy_tree(src, dst)
-        print("  {} -> {} ({} files)".format(src_rel, dst_rel, n))
+        print(f"  {src_rel} -> {dst_rel} ({n} files)")
         total += n
-    print("Synced {} Python files from EmbedXPL.".format(total))
+    print(f"Synced {total} Python files from EmbedXPL.")
 
 
 if __name__ == "__main__":

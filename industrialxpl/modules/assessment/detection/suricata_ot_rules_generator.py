@@ -22,7 +22,6 @@ Author: Andre Henrique (@mrhenrike) | Uniao Geek
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import List
 
 from industrialxpl.core.exploit import (
     Exploit,
@@ -104,7 +103,7 @@ def _generate_modbus_rules(
         start_sid: Starting SID for rules.
 
     Returns:
-        List of SuricataRule for Modbus.
+        list of SuricataRule for Modbus.
     """
     rules = []
     sid = start_sid
@@ -188,7 +187,7 @@ def _generate_s7comm_rules(
         start_sid: Starting SID.
 
     Returns:
-        List of SuricataRule for S7comm.
+        list of SuricataRule for S7comm.
     """
     rules = []
     sid = start_sid
@@ -229,7 +228,7 @@ def _generate_mqtt_rules(start_sid: int = 9003000) -> list[SuricataRule]:
         start_sid: Starting SID.
 
     Returns:
-        List of SuricataRule for MQTT.
+        list of SuricataRule for MQTT.
     """
     rules = []
     sid = start_sid

@@ -74,9 +74,7 @@ def main() -> int:
         "manifest_urls": manifest.get("url_count", 0),
     }
     BACKLOG.write_text(json.dumps(backlog, indent=2), encoding="utf-8")
-    print("backlog: {} gaps, {} partial, {} high-value links -> {}".format(
-        len(gaps), len(partial), len(high_value), BACKLOG
-    ))
+    print(f"backlog: {len(gaps)} gaps, {len(partial)} partial, {len(high_value)} high-value links -> {BACKLOG}")
     return 0
 
 

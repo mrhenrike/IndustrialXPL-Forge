@@ -19,7 +19,7 @@ from concurrent.futures import (
     as_completed,
 )
 from enum import Enum
-from typing import Any, List, Optional
+from typing import Any, Optional
 from collections.abc import Callable, Iterable
 
 logger = logging.getLogger(__name__)
@@ -150,7 +150,7 @@ class SmartPool:
             on_error: Optional callback(item, exception) on failure.
 
         Returns:
-            List of (item, result) tuples for successful executions.
+            list of (item, result) tuples for successful executions.
         """
         self._create_executor()
         items_list = list(items)

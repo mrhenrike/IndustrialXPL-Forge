@@ -20,11 +20,8 @@ import io
 import json
 import sys
 import types
-from http.server import BaseHTTPRequestHandler
 from pathlib import Path
-from typing import Any
-from unittest import mock
-from unittest.mock import MagicMock, PropertyMock, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -605,7 +602,7 @@ class TestBaseInterpreter:
 
     def test_setup_readline_no_history(self):
         """_setup_readline handles missing history file gracefully."""
-        interp = _make_interp()
+        _make_interp()
         # Already called during init; just verify no crash
         assert True
 
@@ -1942,7 +1939,7 @@ class TestSASTCommands:
             interp.command_llm_status()
 
     def test_command_llm_status_error(self):
-        interp = _make_interp()
+        _make_interp()
         with patch("industrialxpl.modules.assessment.sast.plc_source_analyzer._llm_manager",
                     side_effect=Exception("no module")), \
              patch("industrialxpl.cli.commands_sast.print_error"):
@@ -2308,7 +2305,6 @@ class TestICSCommands:
              patch("industrialxpl.cli.commands_ics.print_error"), \
              patch("industrialxpl.cli.commands_ics.print_warning"):
             # Use platform module mock to simulate win32
-            import industrialxpl.cli.commands_ics as _mod_ics
             interp.command_nse("install")
 
     def test_command_nse_unknown(self):
@@ -2488,7 +2484,7 @@ class TestMalwareCommands:
              patch("industrialxpl.core.malware.MalwareCompiler"), \
              patch("industrialxpl.core.malware.BuildProfile"), \
              patch("industrialxpl.core.malware.lab_ops.execute_artifact",
-                   return_value={"success": True, "stdout": "ok"}) as ea, \
+                   return_value={"success": True, "stdout": "ok"}), \
              patch("industrialxpl.core.malware.lab_ops.deploy_to_target"), \
              patch("industrialxpl.core.malware.lab_ops.firmware_replace_plan"), \
              patch("industrialxpl.core.malware.lab_ops.interactive_shell_session"), \
@@ -2519,7 +2515,7 @@ class TestMalwareCommands:
              patch("industrialxpl.core.malware.MalwareCompiler"), \
              patch("industrialxpl.core.malware.BuildProfile"), \
              patch("industrialxpl.core.malware.lab_ops.deploy_to_target",
-                   return_value={"success": True}) as dt, \
+                   return_value={"success": True}), \
              patch("industrialxpl.core.malware.lab_ops.execute_artifact"), \
              patch("industrialxpl.core.malware.lab_ops.firmware_replace_plan"), \
              patch("industrialxpl.core.malware.lab_ops.interactive_shell_session"), \
@@ -2552,7 +2548,7 @@ class TestMalwareCommands:
              patch("industrialxpl.core.malware.lab_ops.execute_artifact"), \
              patch("industrialxpl.core.malware.lab_ops.firmware_replace_plan"), \
              patch("industrialxpl.core.malware.lab_ops.interactive_shell_session",
-                   return_value={"stdout": "root"}) as iss, \
+                   return_value={"stdout": "root"}), \
              patch("industrialxpl.cli.commands_malware.print_info"):
             interp.command_malware("shell 10.0.0.1 23")
 
@@ -2567,7 +2563,7 @@ class TestMalwareCommands:
              patch("industrialxpl.core.malware.lab_ops.execute_artifact"), \
              patch("industrialxpl.core.malware.lab_ops.firmware_replace_plan"), \
              patch("industrialxpl.core.malware.lab_ops.interactive_shell_session",
-                   return_value={"banner": "login:"}) as iss, \
+                   return_value={"banner": "login:"}), \
              patch("industrialxpl.cli.commands_malware.print_info"):
             interp.command_malware("shell 10.0.0.1")
 
@@ -2581,7 +2577,7 @@ class TestMalwareCommands:
              patch("industrialxpl.core.malware.lab_ops.deploy_to_target"), \
              patch("industrialxpl.core.malware.lab_ops.execute_artifact"), \
              patch("industrialxpl.core.malware.lab_ops.firmware_replace_plan",
-                   return_value={"steps": ["erase", "write", "verify"]}) as frp, \
+                   return_value={"steps": ["erase", "write", "verify"]}), \
              patch("industrialxpl.core.malware.lab_ops.interactive_shell_session"), \
              patch("industrialxpl.cli.commands_malware.DestructiveGate.require_confirmation", return_value=True), \
              patch("industrialxpl.cli.commands_malware.print_info"):
@@ -2838,7 +2834,7 @@ class TestMalwareCommands:
     def test_malware_crosscompile_install(self):
         interp = _make_interp()
         interp.global_variables = {}
-        script_path = Path("/tmp/fake_install.sh")
+        Path("/tmp/fake_install.sh")
         with patch("industrialxpl.core.malware.crosscompile.MiraiCrossCompiler"), \
              patch("industrialxpl.core.malware.crosscompile.ensure_cross_path_in_env"), \
              patch("industrialxpl.core.malware.BuildProfile"), \
@@ -3098,7 +3094,7 @@ class TestAPIServer:
         with patch.dict(sys.modules, {"fastapi": None}):
             # Mock ImportError on import
             with patch("builtins.__import__", side_effect=ImportError):
-                result = try_fastapi_app()
+                try_fastapi_app()
         # Result should be None when fastapi is not installed
         # (the function catches ImportError internally)
 
@@ -3109,7 +3105,7 @@ class TestAPIServer:
         fake_fastapi.FastAPI = MagicMock(return_value=fake_app)
         fake_app.get = MagicMock(side_effect=lambda path: lambda fn: fn)
         with patch.dict(sys.modules, {"fastapi": fake_fastapi}):
-            result = try_fastapi_app()
+            try_fastapi_app()
         # Should return an app object
 
 
@@ -4220,6 +4216,7 @@ class TestInterpreterFinalGaps:
     def test_readline_fallback_pyreadline3(self):
         """When readline is absent but pyreadline3 is available (lines 21-24)."""
         import importlib
+
         from industrialxpl import interpreter as interp_mod
 
         # Save originals
@@ -4254,6 +4251,7 @@ class TestInterpreterFinalGaps:
     def test_readline_completely_absent(self):
         """When both readline and pyreadline3 are absent (lines 25-27)."""
         import importlib
+
         from industrialxpl import interpreter as interp_mod
 
         orig_has = interp_mod._HAS_READLINE
@@ -4573,7 +4571,6 @@ class TestInterpreterFinalGaps:
         """Create a module mock that raises on setattr for a specific attribute."""
         mod = FakeModule()
         # After init, install a __setattr__ that raises only for attr_name
-        original_setattr = object.__setattr__
 
         class _Guard:
             """Descriptor that raises on set for attr_name."""

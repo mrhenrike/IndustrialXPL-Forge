@@ -10,7 +10,7 @@ import os
 import subprocess
 import sys
 from pathlib import Path
-from unittest.mock import MagicMock, patch, PropertyMock
+from unittest.mock import MagicMock, PropertyMock, patch
 
 import pytest
 
@@ -19,11 +19,11 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from industrialxpl.core.native.loader import (
-    NativePayload,
-    NativePayloadLoader,
     _CONTRIB_RELATIVE,
     _PACKAGE_CONTRIB,
     _PROJECT_TMP,
+    NativePayload,
+    NativePayloadLoader,
 )
 
 

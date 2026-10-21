@@ -57,16 +57,16 @@ def check_issue_5() -> list[str]:
     missing = []
     import importlib
     for v in vendors:
-        p = ROOT / "industrialxpl/modules/creds/{}/default_creds.py".format(v)
+        p = ROOT / f"industrialxpl/modules/creds/{v}/default_creds.py"
         if not p.is_file():
             missing.append(v)
             continue
         try:
-            mod = importlib.import_module("industrialxpl.modules.creds.{}.default_creds".format(v))
+            mod = importlib.import_module(f"industrialxpl.modules.creds.{v}.default_creds")
             if not mod.Exploit().get_info().get("name"):
-                missing.append("{} (bad __info__)".format(v))
+                missing.append(f"{v} (bad __info__)")
         except Exception as exc:
-            missing.append("{} ({})".format(v, exc))
+            missing.append(f"{v} ({exc})")
     return ["#5 creds issue: {}".format(", ".join(missing))] if missing else []
 
 

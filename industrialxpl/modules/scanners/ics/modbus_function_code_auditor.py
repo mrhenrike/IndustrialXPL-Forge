@@ -33,7 +33,7 @@ Version: 1.0.0
 import socket
 import struct
 import time
-from typing import Any, List
+from typing import Any
 
 from industrialxpl.core.exploit import (
     BaseExploit,
@@ -125,7 +125,7 @@ def _probe_fc(
         return "refused", b""
     except TimeoutError:
         return "timeout", b""
-    except (ConnectionError, TimeoutError, OSError):
+    except (ConnectionError, OSError):
         return "error", b""
 
 
@@ -153,7 +153,7 @@ def audit_modbus(
         write_test: Include write FC probes (disabled by default for safety).
 
     Returns:
-        List of result dicts per function code.
+        list of result dicts per function code.
     """
     results = []
     for fc, name, risk, description, probe_data in _FC_CATALOG:

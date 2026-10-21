@@ -2,7 +2,6 @@
 # Author: André Henrique (@mrhenrike) | União Geek - https://uniaogeek.com.br/
 
 import logging.handlers
-import platform
 import sys
 from pathlib import Path
 
@@ -10,13 +9,6 @@ _ROOT = Path(__file__).resolve().parent
 if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
-if sys.version_info < (3, 9):
-    print(
-        "IndustrialXPL-Forge requires Python 3.9+ (detected: {}).".format(
-            platform.python_version()
-        )
-    )
-    sys.exit(1)
 
 _log_handler = logging.handlers.RotatingFileHandler(
     filename="industrialxpl.log", maxBytes=500_000, backupCount=3
@@ -32,7 +24,7 @@ def _launcher(argv):
     try:
         from industrialxpl.interpreter import IXFInterpreter
     except ModuleNotFoundError as err:
-        print("IndustrialXPL bootstrap error: missing Python dependency: {}".format(err))
+        print(f"IndustrialXPL bootstrap error: missing Python dependency: {err}")
         print("Run: pip install -r requirements.txt")
         print("Check: ixf --doctor")
         raise SystemExit(1)

@@ -27,7 +27,7 @@ import logging
 import socket
 import struct
 import time
-from typing import Any, Dict
+from typing import Any
 
 from industrialxpl.core.exploit import (
     BaseExploit,
@@ -180,7 +180,7 @@ def enumerate_s7(
         timeout: Connection timeout in seconds.
 
     Returns:
-        Dict with findings, risk assessment, and raw response sizes.
+        dict with findings, risk assessment, and raw response sizes.
     """
     result: dict[str, Any] = {
         "host": host,

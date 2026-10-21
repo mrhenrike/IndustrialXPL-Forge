@@ -9,7 +9,6 @@ Version: 1.0.0
 import socket
 import struct
 import threading
-from typing import List
 
 from industrialxpl.core.exploit import (
     BaseExploit,

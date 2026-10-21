@@ -1,7 +1,7 @@
 """Tests for W16.9 protocol gap modules: J1939, WirelessHART, PROFIBUS DP."""
 
 import importlib
-import struct
+
 import pytest
 
 
@@ -215,9 +215,9 @@ class TestPROFIBUSDPAttack:
 
     def test_build_sd2_frame(self):
         from industrialxpl.modules.exploits.protocols.profibus.profibus_dp_attack import (
-            _build_sd2_frame,
-            SD2,
             ED,
+            SD2,
+            _build_sd2_frame,
         )
         frame = _build_sd2_frame(da=3, sa=0, fc=0x4C, dsap=60, ssap=60)
         assert frame[0] == SD2
@@ -225,9 +225,9 @@ class TestPROFIBUSDPAttack:
 
     def test_build_sd1_frame(self):
         from industrialxpl.modules.exploits.protocols.profibus.profibus_dp_attack import (
-            _build_sd1_frame,
-            SD1,
             ED,
+            SD1,
+            _build_sd1_frame,
         )
         frame = _build_sd1_frame(da=3, sa=0, fc=0x49)
         assert frame[0] == SD1

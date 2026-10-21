@@ -109,7 +109,7 @@ class Exploit(Exploit):
             return f"Port {self.port} closed - RSLinx Classic not running or firewalled"
         except TimeoutError:
             return f"Timeout on {self.target}:{self.port}"
-        except (ConnectionError, TimeoutError, ValueError, OSError) as exc:
+        except (ConnectionError, ValueError, OSError) as exc:
             return f"Check error: {exc}"
 
     def run(self) -> None:

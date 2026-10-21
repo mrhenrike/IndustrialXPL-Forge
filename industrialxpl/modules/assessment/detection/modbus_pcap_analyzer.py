@@ -36,7 +36,7 @@ import struct
 from collections import defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, List, Tuple
+from typing import Any
 
 from industrialxpl.core.exploit import (
     Exploit,
@@ -128,7 +128,7 @@ def _parse_mbap(data: bytes) -> tuple[int, int, int, int, int] | None:
         data: Raw TCP payload bytes.
 
     Returns:
-        Tuple of (transaction_id, protocol_id, length, unit_id, function_code)
+        tuple of (transaction_id, protocol_id, length, unit_id, function_code)
         or None if parsing fails.
     """
     if len(data) < 8:
@@ -152,7 +152,7 @@ def _parse_register_address(fc: int, pdu: bytes) -> tuple[int, int]:
         pdu: PDU bytes (after function code byte).
 
     Returns:
-        Tuple of (start_address, count).
+        tuple of (start_address, count).
     """
     if len(pdu) < 4:
         return 0, 0
@@ -171,7 +171,7 @@ def _analyze_with_scapy(pcap_file: str) -> list[ModbusTransaction]:
         pcap_file: Path to .pcap or .pcapng file.
 
     Returns:
-        List of ModbusTransaction extracted from file.
+        list of ModbusTransaction extracted from file.
     """
     try:
         from scapy.all import rdpcap, TCP, IP, Raw
@@ -233,7 +233,7 @@ def _analyze_statistics(transactions: list[ModbusTransaction]) -> dict[str, Any]
     """Calculate statistics from transaction list.
 
     Args:
-        transactions: List of parsed Modbus transactions.
+        transactions: list of parsed Modbus transactions.
 
     Returns:
         Statistics dict.

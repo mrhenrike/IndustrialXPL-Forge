@@ -24,7 +24,6 @@ import subprocess
 import shutil
 import re
 from dataclasses import dataclass, field
-from typing import List
 
 from industrialxpl.core.exploit import (
     Exploit,
@@ -173,7 +172,7 @@ class Exploit(Exploit):
         """Build Nmap argument list based on scan_mode.
 
         Returns:
-            List of nmap arguments.
+            list of nmap arguments.
         """
         target = str(self.target)
         mode = str(self.scan_mode)

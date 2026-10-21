@@ -27,7 +27,7 @@ import csv
 import io
 import logging
 from dataclasses import dataclass
-from enum import Enum
+from enum import Enum, StrEnum
 from pathlib import Path
 
 from industrialxpl.core.exploit import (
@@ -41,7 +41,7 @@ _WORDLISTS_DIR = Path(__file__).resolve().parents[2] / "resources" / "wordlists"
 _CSV_FILE = _WORDLISTS_DIR / "scadapass_full_export.csv"
 
 
-class CredCategory(str, Enum):
+class CredCategory(StrEnum):
     PLC = "plc"
     RTU = "rtu"
     DCS = "dcs"

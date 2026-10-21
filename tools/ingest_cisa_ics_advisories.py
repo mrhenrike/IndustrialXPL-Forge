@@ -30,7 +30,7 @@ def main() -> int:
     OUT.parent.mkdir(parents=True, exist_ok=True)
     payload = {"fetched_from": ADVISORY_URL, "count": len(rows), "cves": rows}
     OUT.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-    print("Wrote {} ({} entries)".format(OUT, len(rows)))
+    print(f"Wrote {OUT} ({len(rows)} entries)")
     return 0
 
 

@@ -140,9 +140,7 @@ def _try_telnet_login(
         if len(res) > 500:
             return True
         return False
-    except (EOFError, ConnectionRefusedError, OSError, BrokenPipeError):
-        return False
-    except (ValueError, OSError):
+    except (EOFError, ConnectionRefusedError, OSError, BrokenPipeError, ValueError):
         return False
 
 

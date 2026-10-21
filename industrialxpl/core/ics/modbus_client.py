@@ -11,7 +11,6 @@ Supports Function Codes: FC1 FC2 FC3 FC4 FC5 FC6 FC15 FC16 FC20 FC21 FC22 FC23
 import socket
 import struct
 import logging
-from typing import List
 
 
 class ModbusClient:
@@ -132,7 +131,7 @@ class ModbusClient:
             count: Number of coils to read.
 
         Returns:
-            List of coil values (0 or 1) or None on error.
+            list of coil values (0 or 1) or None on error.
         """
         pdu = struct.pack(">BHH", 0x01, address, count)
         rsp = self._send_recv(pdu)
@@ -153,7 +152,7 @@ class ModbusClient:
             count: Number of discrete inputs to read.
 
         Returns:
-            List of input values (0 or 1) or None on error.
+            list of input values (0 or 1) or None on error.
         """
         pdu = struct.pack(">BHH", 0x02, address, count)
         rsp = self._send_recv(pdu)
@@ -174,7 +173,7 @@ class ModbusClient:
             count: Number of registers to read.
 
         Returns:
-            List of register values or None on error.
+            list of register values or None on error.
         """
         pdu = struct.pack(">BHH", 0x03, address, count)
         rsp = self._send_recv(pdu)
@@ -194,7 +193,7 @@ class ModbusClient:
             count: Number of input registers to read.
 
         Returns:
-            List of register values or None on error.
+            list of register values or None on error.
         """
         pdu = struct.pack(">BHH", 0x04, address, count)
         rsp = self._send_recv(pdu)
@@ -242,7 +241,7 @@ class ModbusClient:
 
         Args:
             address: Starting coil address.
-            values: List of coil values (0 or 1).
+            values: list of coil values (0 or 1).
 
         Returns:
             True if coils were written, False otherwise.
@@ -261,7 +260,7 @@ class ModbusClient:
 
         Args:
             address: Starting register address.
-            values: List of 16-bit register values.
+            values: list of 16-bit register values.
 
         Returns:
             True if registers were written, False otherwise.
