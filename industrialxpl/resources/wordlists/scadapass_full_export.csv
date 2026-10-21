@@ -421,3 +421,31 @@ Turck,TBEN-S Module,HTTP,80,admin,admin,admin,Compact I/O module,,iiot
 (Mirai),admin:meinsm,Telnet,23,admin,meinsm,admin,Mirai; Mobotix cameras,,botnet
 (Mirai),tech:tech,Telnet,23,tech,tech,admin,Mirai; Sagem routers,,botnet
 (Mirai),mother:fucker,Telnet,23,mother,fucker,admin,Mirai; ZTE routers (variant),,botnet
+Beckhoff,CX7000 Embedded PC,HTTP,80,Administrator,1,admin,Factory default; infosys.beckhoff.com,,plc
+Beckhoff,CX5000/CX9020,HTTP,80,Administrator,1,admin,Windows IoT default,,plc
+Unitronics,Vision/Samba PLC,TCP,20256,,1111,admin,Default password; CISA AA23-335A,CVE-2023-6448,plc
+Red Lion,CR1000 Crimson HMI,HTTP,80,Admin,password,admin,HMS Networks support (Crimson 3.2),,hmi
+Moxa,NPort 5000 Series,HTTP,80,account,moxa,admin,NPort Manual v5.3; alternate admin account,,serial_device
+Moxa,EDS-510A Managed Switch,HTTP,80,admin,moxa,admin,Managed switch; Moxa Manual v9.6,,switch
+Moxa,EDS-510A Managed Switch,SNMP,161,moxa,,read,SNMP community; MPSA-257315,,switch
+Hirschmann,HiOS Managed Switches,HTTP,80,admin,private,admin,Pre-2020 firmware default; doc.hirschmann.com,,switch
+Advantech,R-SeeNet 2.4.22,HTTP,80,,,admin,Hidden root account (hardcoded),CVE-2023-2611,iiot
+Advantech,EKI-6333AC,HTTP,80,,,admin,Static backup encryption key,CVE-2024-50377,iiot
+Honeywell,ControlEdge,SSH,22,root,,admin,Hardcoded root SSH credential,CVE-2022-30318,dcs
+Emerson,DeltaV Controllers,FTP,21,,,admin,Hardcoded FTP credentials (disabled by default),CVE-2022-29962,dcs
+Emerson,DeltaV Controllers,Telnet,23,,,admin,Hardcoded Telnet credentials,CVE-2022-29963,dcs
+Emerson,DeltaV Controllers,SSH,22,,,admin,Hardcoded SSH credentials,CVE-2022-29964,dcs
+Schneider,Unity/OS Loader,FTP,21,,,admin,Hardcoded FTP credentials,CVE-2020-7498,plc
+Schneider,EcoStruxure Control Expert,TCP,0,,,admin,Hardcoded project encryption key,CVE-2023-6409,ews
+Schneider,Modicon TM221CE16R,TCP,0,,,admin,Project file default key,,plc
+Mitsubishi,GX Works3 Safety CPU,TCP,0,,,admin,Hardcoded project auth key,CVE-2022-29831,ews
+Mitsubishi,iQ-R EtherNet/IP FTP,FTP,21,,,admin,Hardcoded FTP password,CVE-2023-2061,plc
+WAGO,PFC100/PFC200,HTTP,80,root,wago,admin,CODESYS-based; WAGO forum,,plc
+WAGO,PFC100/PFC200,TCP,0,,,admin,Factory reset via iocheckd exploit,CVE-2019-5080,plc
+CODESYS,Control Runtime <4.21,TCP,0,,,read,Exposed password hashes,CVE-2025-41658,plc
+CODESYS,Control Runtime <4.21,TCP,0,,,admin,Crypto material exposure,CVE-2025-41659,plc
+Siemens,SCALANCE M-800/S615,HTTP,443,,,read,Hardcoded backup encryption key,CVE-2023-44318,router
+Rockwell,ControlLogix,EtherNet/IP,44818,,,admin,Trusted Slot key bypass,CVE-2024-6242,plc
+(Protocol),EtherNet/IP CIP,EtherNet/IP,44818,,,full,No auth by default; CIP implicit messaging,,protocol
+(Protocol),Fox (Tridium Niagara),TCP,1911,,,full,No auth by default; building automation,,protocol
+(Protocol),WDBRPC VxWorks Debug,UDP,17185,,,full,VxWorks debug port; full system access,,protocol
