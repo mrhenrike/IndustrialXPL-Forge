@@ -1,7 +1,7 @@
-"""VirtualPlants-For-OT core package.
+"""VirtualPlants-For-OT: virtual ICS/OT plants for security testing.
 
-Author: Andre Henrique (LinkedIn/X: @mrhenrike)
+Includes Modbus/OPC UA process simulators, attack scripts, and
+detection/safety monitoring for lab environments.
+
+Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
-
-APP_VERSION = "1.1.0"
-APP_NAME = "VirtualPlants-For-OT"
