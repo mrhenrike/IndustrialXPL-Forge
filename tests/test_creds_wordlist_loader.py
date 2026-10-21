@@ -1,5 +1,7 @@
 """Tests for credential wordlist loader and refactored modules."""
 
+import sys
+
 import pytest
 
 from industrialxpl.modules.creds._wordlist_loader import (
@@ -196,10 +198,18 @@ class TestGenericModulesLoadFromWordlists:
         from industrialxpl.modules.creds.generic.ics_snmp_bruteforce import _DEFAULT_SNMP_COMMUNITIES
         assert len(_DEFAULT_SNMP_COMMUNITIES) >= 16
 
+    @pytest.mark.skipif(
+        sys.version_info >= (3, 13),
+        reason="telnetlib removed in Python 3.13+",
+    )
     def test_telnet_brute_usernames(self) -> None:
         from industrialxpl.modules.creds.generic.ics_telnet_bruteforce import _DEFAULT_USERNAMES
         assert len(_DEFAULT_USERNAMES) >= 10
 
+    @pytest.mark.skipif(
+        sys.version_info >= (3, 13),
+        reason="telnetlib removed in Python 3.13+",
+    )
     def test_telnet_brute_passwords(self) -> None:
         from industrialxpl.modules.creds.generic.ics_telnet_bruteforce import _DEFAULT_PASSWORDS
         assert len(_DEFAULT_PASSWORDS) >= 20
