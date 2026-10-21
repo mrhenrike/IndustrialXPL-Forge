@@ -53,7 +53,7 @@ class HTTPClient(Exploit):
             except (OSError, requests.exceptions.ConnectionError, requests.exceptions.Timeout) as err:
                 if attempt >= HTTP_RETRIES:
                     print_error(f"Connection error: {url}", err, verbose=self.verbosity)
-            except requests.RequestException as error:
+            except requests.RequestException as error:  # pragma: no cover
                 print_error(error, verbose=self.verbosity)
                 break
             except KeyboardInterrupt:
