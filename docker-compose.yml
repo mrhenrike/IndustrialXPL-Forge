@@ -1,9 +1,0 @@
-services:
-  industrialxpl:
-    build: .
-    container_name: industrialxpl
-    network_mode: host
-    volumes:
-      - ./output:/opt/industrialxpl/output
-    environment:
-      - TERM=xterm-256color

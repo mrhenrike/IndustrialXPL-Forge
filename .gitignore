@@ -1,110 +1,98 @@
 # IndustrialXPL-Forge .gitignore
 
-# Python
+# === Python bytecode ===
 __pycache__/
 *.py[cod]
 *.pyo
+*.so
+
+# === Build e distribuicao ===
 *.egg
 *.egg-info/
 dist/
 build/
 .eggs/
+sdist/
+
+# === Ambientes virtuais ===
 .venv/
 venv/
 env/
 
-# Legacy ixf/ package root (migrated to industrialxpl/ in W16.3)
+# === Legacy ixf/ package root (migrated to industrialxpl/ in W16.3) ===
 ixf/
 
-# IXF runtime artifacts
+# === Testes e qualidade (artefatos) ===
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+.tox/
+.cache
+.coveragerc
+
+# === Linters e type checking ===
+.mypy_cache/
+.ruff_cache/
+
+# === Dev tooling (removido do repo) ===
+tools/
+.githooks/
+Makefile
+Makefile.native
+setup.py
+setup.cfg
+tox.ini
+
+# === Docker (removido do repo) ===
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# === Documentos internos ===
+HANDOFF.md
+HANDOFF-AUDIT.md
+pypi-manifests/
+
+# === Temporarios e logs ===
 .tmp/
 .ixf/
+.log/
+*.log
 temp/
 temps/
 tmp/
-examples/
-labs/
-samples/
-!industrialxpl/resources/sql/samples/
-!industrialxpl/resources/sql/samples/**
-HANDOFF-AUDIT.md
-*.log
-industrialxpl.log
 
-# Compiled native exploits (C/C++/Go binaries)
+# === Compiled native exploits ===
 industrialxpl/modules/cve/_native/*.exe
 industrialxpl/modules/cve/_native/*.bin
 industrialxpl/modules/cve/_native/*.out
 industrialxpl/modules/cve/_native/*.o
 
-# Reports / outputs
+# === Reports / outputs ===
 *.json.report
 *.html.report
 
-# Secrets / credentials
-.env
-*.pem
-*.key
-*.p12
-*.pfx
-
-# IDE
+# === IDE e sessoes ===
+.claude/
 .cursor/
 .vscode/
 .idea/
 *.swp
+out/
+gen/
 
-# Environment files — never commit real secrets
+# === Segredos e credenciais ===
 .env
 .env.*
 *.env
-.env.server
-# Allow the example template (no real values)
 !.env.example
-
-
-# Vendor: OT mirrors local-only; malware + ics-tools research corpus is public in Git.
-industrialxpl/resources/vendor/*
-!industrialxpl/resources/vendor/README.md
-!industrialxpl/resources/vendor/submodules__malwares__*/
-!industrialxpl/resources/vendor/submodules__malwares__/**
-!industrialxpl/resources/vendor/submodules__ics-tools__*/
-!industrialxpl/resources/vendor/submodules__ics-tools__/**
-# Lisa Docker MariaDB runtime (compose recreates on first up)
-industrialxpl/resources/vendor/submodules__malwares__lisa/data/db/*
-!industrialxpl/resources/vendor/submodules__malwares__lisa/data/db/README.md
-industrialxpl/resources/vendor/submodules__malwares__lisa/requirements.ixf.txt
-.github/dependabot.yml
-.github/CODEOWNERS
-CODEOWNERS
-.github/FUNDING.yml
-FUNDING.yml
-.github/ISSUE_TEMPLATE*
-.github/PULL_REQUEST_TEMPLATE*
-CONTRIBUTING*
-CONTRIBUTORS*
-.travis.yml
-.gitlab-ci.yml
-azure-pipelines.yml
-Jenkinsfile
-.circleci/
-appveyor.yml
-# pyproject.toml is versioned; example stays local-only for PyPI publish tweaks
-setup.py
-setup.cfg
-MANIFEST.in
-tox.ini
 .pypirc
-scripts/publish*
-scripts/release*
-packages/**/build.sh
-packages/**/build.ps1
-*.example
-*.sample
-.coverage
-
-# === Secrets & credentials — NEVER commit ===
 .netrc
+*.pem
+*.key
+*.p12
+*.pfx
 *.crt
 *.cer
 id_rsa
@@ -112,3 +100,23 @@ id_rsa.*
 *.credentials
 credentials.json
 secrets.json
+
+# === Vendor local-only ===
+industrialxpl/resources/vendor/*
+!industrialxpl/resources/vendor/README.md
+!industrialxpl/resources/vendor/submodules__malwares__*/
+!industrialxpl/resources/vendor/submodules__malwares__/**
+!industrialxpl/resources/vendor/submodules__ics-tools__*/
+!industrialxpl/resources/vendor/submodules__ics-tools__/**
+industrialxpl/resources/vendor/submodules__malwares__lisa/data/db/*
+!industrialxpl/resources/vendor/submodules__malwares__lisa/data/db/README.md
+industrialxpl/resources/vendor/submodules__malwares__lisa/requirements.ixf.txt
+
+# === OS ===
+.DS_Store
+
+# === Outros ===
+Pipfile
+Pipfile.lock
+pip-log.txt
+target/
