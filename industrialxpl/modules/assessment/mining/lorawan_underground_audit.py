@@ -83,11 +83,11 @@ def _tcp_probe(host: str, port: int, timeout: float) -> str | None:
         sock = socket.create_connection((host, port), timeout=timeout)
         try:
             banner = sock.recv(256).decode("utf-8", errors="replace").strip()
-        except Exception:
+        except OSError:
             banner = ""
         sock.close()
         return banner
-    except Exception:
+    except (ConnectionError, TimeoutError, OSError):
         return None
 
 
@@ -110,7 +110,7 @@ def _http_probe(host: str, port: int, path: str, timeout: float) -> dict | None:
         status = text.split("\r\n")[0] if text else ""
         body = text.split("\r\n\r\n", 1)[1] if "\r\n\r\n" in text else ""
         return {"status": status, "body": body[:2048]}
-    except Exception:
+    except (ConnectionError, TimeoutError, OSError):
         return None
 
 

@@ -59,7 +59,7 @@ class Exploit(Exploit):
             resp = ss.recv(512)
             ss.close()
             return b"SINEMA" in resp or b"Siemens" in resp or b"HTTP" in resp
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError):
             return False
 
     def run(self):
@@ -119,7 +119,7 @@ class Exploit(Exploit):
                     if not chunk:
                         break
                     resp += chunk
-            except Exception:
+            except OSError:
                 pass
             ss.close()
 
@@ -134,5 +134,5 @@ class Exploit(Exploit):
                 print_info(f"[CVE-2025-27452] Response: {resp_str[:200]}...")
         except ConnectionRefusedError:
             print_warning(f"[CVE-2025-27452] Connection refused on port {self.port}")
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, ImportError, OSError) as exc:
             print_error(f"[CVE-2025-27452] Error: {exc}")

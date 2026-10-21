@@ -132,7 +132,7 @@ class Exploit(Exploit):
                     s.recvfrom(256)
                 s.close()
                 return True
-            except Exception:
+            except OSError:
                 pass
         return False
 
@@ -159,7 +159,7 @@ class Exploit(Exploit):
             except TimeoutError:
                 print_info("  [Honeywell IQ4E] No BACnet response (timeout).")
             sock.close()
-        except Exception as exc:
+        except OSError as exc:
             print_error(f"  [Honeywell IQ4E] Error: {exc}")
 
     def _probe_scadapack(self) -> None:
@@ -178,7 +178,7 @@ class Exploit(Exploit):
             except TimeoutError:
                 print_info("  [SCADAPack] No VxWorks WDB response.")
             sock.close()
-        except Exception as exc:
+        except OSError as exc:
             print_error(f"  [SCADAPack] VxWorks probe error: {exc}")
 
         print_status(f"  [SCADAPack] Modbus banner -> {self.target}:{_MODBUS_PORT}/TCP ...")
@@ -195,7 +195,7 @@ class Exploit(Exploit):
             except TimeoutError:
                 print_info("  [SCADAPack] No Modbus response.")
             sock.close()
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, OSError) as exc:
             print_error(f"  [SCADAPack] Modbus probe error: {exc}")
 
     def _probe_unitronics(self) -> None:
@@ -220,7 +220,7 @@ class Exploit(Exploit):
             except TimeoutError:
                 print_info("  [Unitronics PCOM] No PCOM response.")
             sock.close()
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, OSError) as exc:
             print_error(f"  [Unitronics PCOM] Error: {exc}")
 
     def run(self) -> None:

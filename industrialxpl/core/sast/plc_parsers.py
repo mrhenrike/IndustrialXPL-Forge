@@ -366,7 +366,7 @@ def detect_language(file_path: str) -> str:
             return "Ladder Diagram (LD)"
         if re.search(r'<FBD|FunctionBlockDiagram', head, re.I):
             return "Function Block Diagram (FBD)"
-    except Exception:
+    except (ValueError, OSError):
         pass
     return "Unknown"
 
@@ -379,7 +379,7 @@ def parse_file(file_path: str) -> ParsedPLCFile:
 
     try:
         raw = path.read_text(encoding="utf-8", errors="ignore")
-    except Exception:
+    except OSError:
         raw = ""
 
     sanitized, redactions = sanitize_for_llm(raw)

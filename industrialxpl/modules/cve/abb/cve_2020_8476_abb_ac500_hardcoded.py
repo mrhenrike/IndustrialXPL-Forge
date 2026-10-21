@@ -71,7 +71,7 @@ def _modbus_read(target: str, port: int, timeout: int) -> bool:
         resp = sock.recv(32)
         sock.close()
         return len(resp) >= 7 and resp[7] == 0x03
-    except Exception:
+    except (ConnectionError, TimeoutError, OSError):
         return False
 
 
@@ -97,7 +97,7 @@ def _http_basic_auth(target: str, port: int, username: str, password: str, timeo
             parts = first_line.split()
             if len(parts) >= 2:
                 return int(parts[1])
-    except Exception:
+    except (ConnectionError, TimeoutError, ValueError, OSError):
         pass
     return -1
 
@@ -159,7 +159,7 @@ class Exploit(Exploit):
             sock = socket.create_connection((self.target, self.port), timeout=2)
             sock.close()
             return True
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError):
             return False
 
     def run(self) -> None:

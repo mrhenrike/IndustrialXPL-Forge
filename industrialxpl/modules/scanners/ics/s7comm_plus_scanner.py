@@ -85,7 +85,7 @@ def _recv_tpkt(sock: socket.socket, timeout: int = 5) -> bytes | None:
             payload += chunk
             remaining -= len(chunk)
         return hdr + payload
-    except Exception:
+    except (OSError, struct.error):
         return None
 
 
@@ -144,7 +144,7 @@ def _s7plus_scan(host: str, port: int, timeout: int) -> dict | None:
             result["raw_strings"] = strings[:5]  # first 5 printable fields
 
         return result
-    except Exception:
+    except (ConnectionError, TimeoutError, KeyError, OSError):
         return None
 
 

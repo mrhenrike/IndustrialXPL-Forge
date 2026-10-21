@@ -52,7 +52,7 @@ class ModbusTCPSocket:
         if self._sock:
             try:
                 self._sock.close()
-            except Exception:
+            except OSError:
                 pass
             self._sock = None
 

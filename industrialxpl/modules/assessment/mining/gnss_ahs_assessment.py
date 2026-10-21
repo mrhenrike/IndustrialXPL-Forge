@@ -160,7 +160,7 @@ class Exploit(Exploit):
                         findings.append(f"RTK NTRIP correction server accessible on {self.target}:{port}")
                     else:
                         print_info(f"  Port {self.target}:{port} OPEN")
-                except Exception:
+                except (ConnectionError, TimeoutError, OSError):
                     pass
 
             # GPS-over-IP (gpsd)
@@ -174,7 +174,7 @@ class Exploit(Exploit):
                         findings.append(f"GPS-over-IP (gpsd) exposed on port {port}")
                     else:
                         print_info(f"  Port {self.target}:{port} open -- not gpsd")
-                except Exception:
+                except (ConnectionError, TimeoutError, OSError):
                     pass
 
         # Checklist

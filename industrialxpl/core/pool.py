@@ -36,7 +36,7 @@ def cpu_count() -> int:
     """Return available CPU count with a sane minimum."""
     try:
         count = os.cpu_count() or 1
-    except Exception:
+    except OSError:
         count = 1
     return max(1, count)
 
@@ -171,7 +171,7 @@ class SmartPool:
                 results.append((item, result))
                 if on_result:
                     on_result(item, result)
-            except Exception as exc:
+            except (OSError, RuntimeError, ValueError) as exc:
                 if on_error:
                     on_error(item, exc)
                 else:
@@ -219,7 +219,7 @@ class SmartPool:
             threads.append(thread)
             try:
                 thread.start()
-            except Exception:
+            except RuntimeError:
                 stop_event.clear()
                 raise
 

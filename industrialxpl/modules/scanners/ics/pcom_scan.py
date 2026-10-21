@@ -89,7 +89,7 @@ def _send_pcom(target: str, port: int, frame: bytes, timeout: int) -> bytes | No
         resp = sock.recv(256)
         sock.close()
         return resp
-    except Exception:
+    except (ConnectionError, TimeoutError, OSError):
         return None
 
 
@@ -116,7 +116,7 @@ def _parse_pcom_identity(resp: bytes) -> dict | None:
             result["OSRelease"] = payload[2]
         if len(payload) >= 8:
             result["PLCName"] = payload[3:8].rstrip(b"\x00").decode("ascii", errors="replace")
-    except Exception:
+    except KeyError:
         pass
 
     return result

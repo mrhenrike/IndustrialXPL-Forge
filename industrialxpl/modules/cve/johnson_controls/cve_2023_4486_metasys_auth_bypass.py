@@ -54,5 +54,5 @@ class Exploit(Exploit):
         try:
             r = requests.get(url, verify=False, timeout=8)
             print_info(f"HTTP {r.status_code} - {len(r.content)} bytes")
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, OSError, ValueError) as exc:
             print_error(str(exc))

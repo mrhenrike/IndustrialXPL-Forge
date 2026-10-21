@@ -120,7 +120,7 @@ class NativePayloadLoader:
                         mitre=meta.get("mitre", []),
                     )
                     cls._registry[subdir.name] = payload
-            except Exception as exc:
+            except (AttributeError, TypeError) as exc:
                 print_warning(f"  [native] Failed to load manifest for {subdir.name}: {exc}")
 
     @classmethod
@@ -249,7 +249,7 @@ class NativePayloadLoader:
             else:
                 print_warning("Native payload completed with partial/no result.")
             return True
-        except Exception as exc:
+        except (AttributeError, TypeError) as exc:
             print_error(f"Native Python execution error: {exc}")
             return False
 
@@ -293,7 +293,7 @@ class NativePayloadLoader:
             ret = fn(target.encode("utf-8"), ctypes.c_int(options.get("port", 0)))
             print_success(f"Native C payload returned: {ret}")
             return True
-        except Exception as exc:
+        except (ImportError, AttributeError, TypeError, OSError, subprocess.SubprocessError) as exc:
             print_error(f"Native C execution error: {exc}")
             return False
         finally:
@@ -333,7 +333,7 @@ class NativePayloadLoader:
                 [str(out_bin), target], capture_output=False, text=True, timeout=120
             )
             return result2.returncode == 0
-        except Exception as exc:
+        except (OSError, subprocess.SubprocessError) as exc:
             print_error(f"Native Rust error: {exc}")
             return False
         finally:
@@ -369,7 +369,7 @@ class NativePayloadLoader:
                 return False
             result2 = subprocess.run([str(out_bin), target], timeout=120)
             return result2.returncode == 0
-        except Exception as exc:
+        except (OSError, subprocess.SubprocessError) as exc:
             print_error(f"Native Go error: {exc}")
             return False
         finally:

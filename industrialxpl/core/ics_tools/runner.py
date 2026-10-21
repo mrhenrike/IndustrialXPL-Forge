@@ -135,7 +135,7 @@ class IcsToolsRunner:
                     cwd=str(sln[0].parent),
                 )
                 return {"success": r.returncode == 0, "stdout": (r.stdout or "")[:500]}
-            except Exception as exc:
+            except (KeyError, OSError, subprocess.SubprocessError) as exc:
                 return {"success": False, "error": str(exc)}
         return {
             "success": True,

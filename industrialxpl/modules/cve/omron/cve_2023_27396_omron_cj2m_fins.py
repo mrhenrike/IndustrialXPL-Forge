@@ -79,7 +79,7 @@ def _send_fins(target: str, port: int, frame: bytes, timeout: int) -> bytes | No
         sock.sendto(frame, (target, port))
         data, _ = sock.recvfrom(512)
         return data
-    except Exception:
+    except OSError:
         return None
     finally:
         sock.close()
@@ -101,7 +101,7 @@ def _parse_fins_identity(resp: bytes) -> dict:
         try:
             result["Model"] = resp[14:24].rstrip(b"\x00\x20").decode("ascii", errors="replace")
             result["Version"] = resp[24:30].rstrip(b"\x00\x20").decode("ascii", errors="replace")
-        except Exception:
+        except KeyError:
             pass
 
     return result

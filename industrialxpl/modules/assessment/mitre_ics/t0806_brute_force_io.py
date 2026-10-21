@@ -73,7 +73,7 @@ class Exploit(Exploit):
             resp = sock.recv(32)
             sock.close()
             return len(resp) >= 8
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError, struct.error):
             return False
 
     def run(self) -> None:
@@ -115,7 +115,7 @@ class Exploit(Exploit):
                     i+1, self.iterations, self.address, "ON" if state else "OFF"))
                 state = not state
                 time.sleep(self.interval / 1000.0)
-            except Exception as exc:
+            except (ConnectionError, TimeoutError, OSError, struct.error) as exc:
                 print_error(f"[T0806] Error at iteration {i+1}: {exc}")
                 break
 

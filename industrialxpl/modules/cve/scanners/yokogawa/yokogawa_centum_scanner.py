@@ -62,7 +62,7 @@ class Exploit(Exploit):
             vendor_detected = b"Yokogawa" in banner
             results.append(("Yokogawa CENTUM VP / CS 3000 DCS", f"{self.target}:{self.port}",
                            "Detected" if vendor_detected else "Unknown", banner[:64].hex()))
-        except Exception as e:
+        except OSError as e:
             results.append(("Yokogawa CENTUM VP / CS 3000 DCS", f"{self.target}:{self.port}",
                            "Unreachable", str(e)))
         if results:

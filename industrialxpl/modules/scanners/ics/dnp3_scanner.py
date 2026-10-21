@@ -82,7 +82,7 @@ def _dnp3_probe(host: str, port: int, request: bytes, udp: bool, timeout: int) -
             data = sock.recv(256)
         sock.close()
         return data
-    except Exception:
+    except (ConnectionError, TimeoutError, OSError):
         return None
 
 

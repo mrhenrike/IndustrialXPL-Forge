@@ -67,7 +67,7 @@ class Exploit(Exploit):
             sock.connect((self.target, self.port))
             sock.close()
             return True
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError):
             return False
 
     def run(self) -> None:

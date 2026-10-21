@@ -99,7 +99,7 @@ def _run_nmap(args: list[str], timeout: int = 60) -> tuple[int, str, str]:
         return result.returncode, result.stdout, result.stderr
     except subprocess.TimeoutExpired:
         return -2, "", "nmap timeout"
-    except Exception as exc:
+    except (OSError, subprocess.SubprocessError) as exc:
         return -3, "", str(exc)
 
 

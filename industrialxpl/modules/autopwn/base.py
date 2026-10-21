@@ -25,7 +25,7 @@ class SegmentAutoPwn:
         try:
             from industrialxpl.tools.search import search_category
             return search_category(self.segment)
-        except Exception: return []
+        except (ImportError, OSError): return []
     def run(self):
         t0 = time.time(); mods = self._get_modules()
         report = AutoPwnReport(segment=self.segment, targets=self.targets)
@@ -47,7 +47,7 @@ class SegmentAutoPwn:
                     report.modules_run += 1
                     if status == "vulnerable": report.modules_vulnerable += 1
                     if self.verbose: print(f"  {'[+]' if status=='vulnerable' else '[-]'} {rec.path.split('.')[-1]:<50} {status}")
-                except Exception as e:
+                except (ConnectionError, TimeoutError, OSError, RuntimeError) as e:
                     report.results.append((rec.path, target, "error")); report.modules_run += 1
         report.elapsed_s = time.time() - t0
         if self.verbose: print(report.summary())

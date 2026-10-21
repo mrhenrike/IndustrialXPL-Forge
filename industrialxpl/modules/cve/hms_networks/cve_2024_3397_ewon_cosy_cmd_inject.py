@@ -61,7 +61,7 @@ class Exploit(Exploit):
             resp = ss.recv(512)
             ss.close()
             return b"eWON" in resp or b"HMS" in resp or b"Cosy" in resp or b"HTTP" in resp
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError):
             return False
 
     def run(self):
@@ -116,7 +116,7 @@ class Exploit(Exploit):
                     c = ss.recv(1024)
                     if not c: break
                     resp += c
-            except Exception:
+            except OSError:
                 pass
             ss.close()
             return resp
@@ -146,5 +146,5 @@ class Exploit(Exploit):
 
         except ConnectionRefusedError:
             print_warning(f"[CVE-2024-3397] Connection refused on port {self.port}")
-        except Exception as exc:
+        except (UnicodeDecodeError, ValueError) as exc:
             print_error(f"[CVE-2024-3397] Error: {exc}")

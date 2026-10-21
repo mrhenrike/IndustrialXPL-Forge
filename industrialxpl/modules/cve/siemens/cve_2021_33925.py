@@ -36,7 +36,7 @@ class Exploit(Exploit):
         try:
             s = socket.socket(); s.settimeout(self.timeout)
             s.connect((self.target, self.port)); s.close(); return True
-        except Exception: return False
+        except OSError: return False
 
     def run(self):
         if not self.target: print_error("Set target."); return

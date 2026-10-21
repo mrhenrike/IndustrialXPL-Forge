@@ -118,7 +118,7 @@ def _http_probe(host: str, port: int, path: str, use_tls: bool, timeout: float) 
                 headers[k.lower()] = v
         body = text.split("\r\n\r\n", 1)[1] if "\r\n\r\n" in text else ""
         return {"status": status, "headers": headers, "body": body[:2048]}
-    except Exception:
+    except (ConnectionError, TimeoutError, ImportError, OSError):
         return None
 
 
@@ -185,7 +185,7 @@ class Exploit(Exploit):
                     sock = socket.create_connection((self.target, port), timeout=2)
                     sock.close()
                     return True
-                except Exception:
+                except (ConnectionError, TimeoutError, OSError):
                     pass
         return False
 

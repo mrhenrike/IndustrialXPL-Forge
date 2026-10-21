@@ -72,7 +72,7 @@ def _http_get(target: str, port: int, path: str, timeout: int) -> tuple:
                 break
             resp += chunk
         sock.close()
-    except Exception:
+    except (ConnectionError, TimeoutError, OSError):
         return (-1, b"")
 
     if b"\r\n\r\n" in resp:

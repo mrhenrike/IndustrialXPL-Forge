@@ -142,7 +142,7 @@ class Exploit(Exploit):
             data, _ = sock.recvfrom(512)
             sock.close()
             return len(data) > 2 and data[0:2] == bytes([0x10, 0x00])
-        except Exception:
+        except OSError:
             return False
 
     def run(self) -> None:
@@ -236,5 +236,5 @@ class Exploit(Exploit):
             except TimeoutError:
                 sock.close()
                 print_status("No TriStation response (timeout) - device may be absent or filtered.")
-        except Exception as exc:
+        except OSError as exc:
             print_error(f"Error: {exc}")

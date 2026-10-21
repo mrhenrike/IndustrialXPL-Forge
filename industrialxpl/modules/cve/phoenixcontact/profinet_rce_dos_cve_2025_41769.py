@@ -82,7 +82,7 @@ class Exploit(Exploit):
             r, _ = s.recvfrom(64)
             s.close()
             return len(r) > 0
-        except Exception:
+        except OSError:
             return False
 
     def run(self):
@@ -138,5 +138,5 @@ class Exploit(Exploit):
             print_error("[CVE-2025-41769] Raw socket requires root privileges (sudo) or CAP_NET_RAW")
         except FileNotFoundError:
             print_error(f"[CVE-2025-41769] Interface '{self.interface}' not found - set interface option")
-        except Exception as e:
+        except (ImportError, ValueError, OSError, struct.error) as e:
             print_error(f"[CVE-2025-41769] {e}")

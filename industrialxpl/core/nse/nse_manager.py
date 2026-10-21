@@ -79,7 +79,7 @@ class NseManager:
             for line in result.stdout.splitlines():
                 if line.strip().startswith("Nmap version"):
                     return line.strip()
-        except Exception:
+        except (OSError, subprocess.SubprocessError):
             pass
         return None
 
@@ -254,7 +254,7 @@ class NseManager:
                     f"{src.name}: PermissionError - "
                     "run as administrator (Windows) or with sudo (Linux/macOS)"
                 )
-            except Exception as exc:
+            except KeyError as exc:
                 result["errors"].append(f"{src.name}: {exc}")
 
         if result["installed"]:
@@ -275,7 +275,7 @@ class NseManager:
                 [nmap_bin, "--script-updatedb"],
                 capture_output=True, timeout=30,
             )
-        except Exception:
+        except (OSError, subprocess.SubprocessError):
             pass
 
     # ── Rich output helpers ─────────────────────────────────────────────────

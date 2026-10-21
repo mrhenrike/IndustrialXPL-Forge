@@ -112,7 +112,7 @@ class ModbusScanner:
                     if i + 1 < len(raw):
                         values.append(struct.unpack_from(">H", raw, i)[0])
                 return values
-        except Exception as exc:
+        except KeyError as exc:
             log.debug("read_holding_registers %s: %s", host, exc)
             return None
 
@@ -135,7 +135,7 @@ class ModbusScanner:
                     for bit in range(8):
                         bits.append(bool((byte_val >> bit) & 1))
                 return bits[:count]
-        except Exception as exc:
+        except KeyError as exc:
             log.debug("read_coils %s: %s", host, exc)
             return None
 
@@ -157,7 +157,7 @@ class ModbusScanner:
             with self._connect(host) as s:
                 resp = self._send_recv(s, req)
                 return not bool(resp.get("error"))
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, OSError) as exc:
             log.debug("write_single_coil %s: %s", host, exc)
             return False
 
@@ -173,7 +173,7 @@ class ModbusScanner:
             with self._connect(host) as s:
                 resp = self._send_recv(s, req)
                 return not bool(resp.get("error"))
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, OSError) as exc:
             log.debug("write_single_register %s: %s", host, exc)
             return False
 
@@ -189,7 +189,7 @@ class ModbusScanner:
             with self._connect(host) as s:
                 resp = self._send_recv(s, req)
                 return not bool(resp.get("error"))
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, OSError) as exc:
             log.debug("write_multiple_registers %s: %s", host, exc)
             return False
 
@@ -249,10 +249,10 @@ class ModbusScanner:
                     s.sendall(req)
                     s.recv(256)
                     count += 1
-                except Exception:
+                except OSError:
                     break
             s.close()
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError):
             pass
         return count
 

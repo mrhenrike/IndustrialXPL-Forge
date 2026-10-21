@@ -82,7 +82,7 @@ class Exploit(Exploit):
             resp = s.recv(16)
             s.close()
             return len(resp) >= 6 and resp[7:8] == b"\x01"  # FC01 response
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError, struct.error):
             return False
 
     def run(self):
@@ -130,5 +130,5 @@ class Exploit(Exploit):
                     print_info(f"[CVE-2025-48466] Response: {resp.hex()}")
             else:
                 print_warning(f"[CVE-2025-48466] Short response: {resp.hex()}")
-        except Exception as e:
+        except (ConnectionError, TimeoutError, OSError) as e:
             print_error(f"[CVE-2025-48466] {e}")

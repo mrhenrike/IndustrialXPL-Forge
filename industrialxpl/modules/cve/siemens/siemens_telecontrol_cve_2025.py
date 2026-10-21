@@ -92,7 +92,7 @@ def _http_get(host: str, port: int, path: str, timeout: int = 8) -> tuple[int, s
         body_start = text.find("\r\n\r\n")
         body = text[body_start + 4:body_start + 1024] if body_start >= 0 else ""
         return status, body
-    except Exception:
+    except (ConnectionError, TimeoutError, ValueError, OSError):
         return None
 
 
@@ -188,7 +188,7 @@ class Exploit(Exploit):
             conn = socket.create_connection((self.target, int(self.port)), timeout=5)
             conn.close()
             return True
-        except Exception:
+        except (ConnectionError, TimeoutError, ValueError, OSError):
             return False
 
     def run(self) -> dict:

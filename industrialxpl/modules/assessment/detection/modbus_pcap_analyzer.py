@@ -181,7 +181,7 @@ def _analyze_with_scapy(pcap_file: str) -> list[ModbusTransaction]:
     transactions = []
     try:
         packets = rdpcap(pcap_file)
-    except Exception:
+    except (OSError, ValueError):
         return []
 
     for pkt in packets:

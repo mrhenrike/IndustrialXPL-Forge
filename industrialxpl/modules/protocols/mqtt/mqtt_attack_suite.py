@@ -73,9 +73,9 @@ class MQTTAttack:
                         result.topics.append(topic)
                         result.messages.append({"topic": topic, "payload": msg[:100]})
                 except TimeoutError: continue
-                except Exception: break
+                except OSError: break
             s.close()
-        except Exception as exc: result.error = str(exc)
+        except (ConnectionError, TimeoutError, OSError) as exc: result.error = str(exc)
         return result
 
     def inject_command(self, topic: str, payload: str) -> bool:
@@ -85,7 +85,7 @@ class MQTTAttack:
             if not ok: return False
             s.sendall(_mqtt_publish(topic, payload.encode()))
             s.close(); return True
-        except Exception: return False
+        except OSError: return False
 
 if __name__ == "__main__":
     import sys

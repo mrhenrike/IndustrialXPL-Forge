@@ -108,7 +108,7 @@ def _connect_s7(host: str, port: int, timeout: float) -> socket.socket | None:
 
         return sock
 
-    except Exception:
+    except (ConnectionError, TimeoutError, OSError):
         return None
 
 
@@ -138,7 +138,7 @@ def _parse_szl_response(data: bytes) -> dict[str, str]:
                 if name:
                     result["module_name"] = name
 
-    except Exception:
+    except KeyError:
         pass
     return result
 
@@ -148,7 +148,7 @@ def _read_szl(sock: socket.socket, szl_request: bytes, timeout: float) -> bytes:
     try:
         sock.sendall(szl_request)
         return _recv_tpkt(sock, timeout)
-    except Exception:
+    except OSError:
         return b""
 
 
@@ -236,7 +236,7 @@ def enumerate_s7(
 
         sock.close()
 
-    except Exception as exc:
+    except KeyError as exc:
         result["error"] = str(exc)
 
     return result
@@ -287,7 +287,7 @@ class Exploit(BaseExploit):
             sock.connect((host, int(self.rport)))
             sock.close()
             return True
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, ValueError, OSError) as exc:
             print(f"[-] Cannot reach {host}:{self.rport} - {exc}")
             return False
 

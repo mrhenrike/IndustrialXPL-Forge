@@ -61,7 +61,7 @@ class Exploit(Exploit):
             resp = s.recv(32)
             s.close()
             return resp[:3] == b"ACK"
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError):
             return False
 
     def run(self):
@@ -111,5 +111,5 @@ class Exploit(Exploit):
                 print_info(f"[CVE-2025-3140] Response: {resp[:32].hex()} - may be patched")
         except ConnectionResetError:
             print_success("[CVE-2025-3140] Connection reset by server - crash/RCE likely triggered!")
-        except Exception as e:
+        except (ConnectionError, TimeoutError, OSError, struct.error) as e:
             print_error(f"[CVE-2025-3140] {e}")

@@ -62,7 +62,7 @@ class Exploit(Exploit):
             resp = s.recv(32)
             s.close()
             return len(resp) > 0
-        except Exception:
+        except OSError:
             return False
 
     def run(self):
@@ -121,10 +121,10 @@ class Exploit(Exploit):
                 print_success("[CVE-2025-0977] Timeout after payload - SysDrv3S.sys overflow likely triggered")
         except ConnectionRefusedError:
             print_warning(f"[CVE-2025-0977] Connection refused - CODESYS runtime not on port {self.port}")
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, ImportError, OSError, struct.error) as exc:
             print_error(f"[CVE-2025-0977] Error: {exc}")
         finally:
             try:
                 sock.close()
-            except Exception:
+            except OSError:
                 pass

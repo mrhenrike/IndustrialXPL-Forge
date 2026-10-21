@@ -38,7 +38,7 @@ class Exploit(Exploit):
             banner = s.recv(256)
             s.close()
             results.append(("Generic OT/ICS Multi-Protocol Port Sweep", f"{self.target}:{self.port}", "Detected", banner[:32].hex()))
-        except Exception as e:
+        except OSError as e:
             results.append(("Generic OT/ICS Multi-Protocol Port Sweep", f"{self.target}:{self.port}", "Unreachable", str(e)[:30]))
         if results:
             print_table(["Device","Address","Status","Banner"], results, title="Generic Scan")

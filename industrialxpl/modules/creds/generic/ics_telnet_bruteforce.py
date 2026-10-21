@@ -142,7 +142,7 @@ def _try_telnet_login(
         return False
     except (EOFError, ConnectionRefusedError, OSError, BrokenPipeError):
         return False
-    except Exception:
+    except (ValueError, OSError):
         return False
 
 
@@ -215,7 +215,7 @@ class Exploit(_Exploit):
         try:
             tn = telnetlib.Telnet(self.target, self.port, timeout=float(self.timeout))
             tn.close()
-        except Exception as exc:
+        except OSError as exc:
             print_error(f"[Telnet BF] Cannot connect to {self.target}:{self.port}: {exc}")
             return
 
@@ -268,5 +268,5 @@ class Exploit(_Exploit):
             tn = telnetlib.Telnet(self.target, self.port, timeout=3)
             tn.close()
             return True
-        except Exception:
+        except OSError:
             return False

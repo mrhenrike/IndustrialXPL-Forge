@@ -285,7 +285,7 @@ class BoofuzzICS(Exploit):
             session.fuzz()
         except KeyboardInterrupt:
             print_warning("Fuzzing interrupted by user")
-        except Exception as e:
+        except (ConnectionError, TimeoutError, OSError, RuntimeError) as e:
             print_error(f"Fuzzing error: {e}")
             return {"error": str(e)}
 

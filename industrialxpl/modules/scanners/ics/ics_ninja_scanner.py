@@ -853,7 +853,7 @@ class ICSNinjaScanner(Exploit):
                         print_success(f"  {proto.upper()}: Device found, {len(issues)} info items")
                 else:
                     print_info(f"  {proto.upper()}: No device detected")
-            except Exception as exc:
+            except KeyError as exc:
                 log.debug("Scanner %s error: %s", proto, exc)
                 print_error(f"  {proto.upper()}: Error during scan: {exc}")
 

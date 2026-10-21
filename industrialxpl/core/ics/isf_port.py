@@ -43,7 +43,7 @@ def probe_enip(host: str, timeout: float = 3.0) -> dict[str, Any]:
         c.connect()
         c.disconnect()
         return {"protocol": "enip", "detected": True, "port": 44818}
-    except Exception as exc:
+    except (ConnectionError, TimeoutError, OSError) as exc:
         return {"protocol": "enip", "detected": False, "error": str(exc)[:80]}
 
 
@@ -78,7 +78,7 @@ def probe_vxworks(host: str, timeout: float = 3.0) -> dict[str, Any]:
             w.disconnect()
             return {"protocol": "vxworks", "detected": True, "detail": info}
         return {"protocol": "vxworks", "detected": False, "error": "connect failed"}
-    except Exception as exc:
+    except (ConnectionError, TimeoutError, OSError) as exc:
         return {"protocol": "vxworks", "detected": False, "error": str(exc)[:80]}
 
 

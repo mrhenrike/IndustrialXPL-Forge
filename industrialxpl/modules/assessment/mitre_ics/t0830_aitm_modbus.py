@@ -144,5 +144,5 @@ class Exploit(Exploit):
             stop_event.set()
             print_success(f"[T0830] AiTM complete. {len(captured)} Modbus packets captured.")
 
-        except Exception as exc:
+        except (ImportError, OSError) as exc:
             print_error(f"[T0830] Error: {exc}")

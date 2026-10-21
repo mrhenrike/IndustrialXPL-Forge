@@ -1650,7 +1650,7 @@ Example:
                 if self.current_module and "unit_id" in self.current_module.options:  # type: ignore[attr-defined]
                     try:
                         self.current_module.unit_id = uid  # type: ignore[attr-defined]
-                    except Exception:
+                    except (AttributeError, TypeError, ValueError):
                         pass
                 return
             except ValueError:
@@ -1666,7 +1666,7 @@ Example:
                 if self.current_module and "timing" in self.current_module.options:  # type: ignore[attr-defined]
                     try:
                         self.current_module.timing = value  # type: ignore[attr-defined]
-                    except Exception:
+                    except (AttributeError, TypeError, ValueError):
                         pass
                 return
             except ValueError as exc:
@@ -1677,7 +1677,7 @@ Example:
         if self.current_module and key in self.current_module.options:  # type: ignore[attr-defined]
             try:
                 setattr(self.current_module, key, value)
-            except Exception:
+            except (AttributeError, TypeError, ValueError):
                 pass
         print_success(f"[global] {key} => {value}")
 

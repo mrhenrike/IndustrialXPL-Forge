@@ -43,5 +43,5 @@ def read_holding(host: str, addr: int = 0, count: int = 1, *, simulate: bool = T
         data = c.read_holding_registers(addr, count)
         c.disconnect()
         return {"success": True, "values": data}
-    except Exception as exc:
+    except (ConnectionError, TimeoutError, OSError) as exc:
         return {"success": False, "error": str(exc)}

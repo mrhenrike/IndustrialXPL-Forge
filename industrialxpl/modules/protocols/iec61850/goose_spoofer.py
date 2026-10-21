@@ -76,7 +76,7 @@ class IEC61850GOOSEAttack:
             s.close()
         except PermissionError:
             result.error = "Root/CAP_NET_RAW required for raw socket"
-        except Exception as exc:
+        except OSError as exc:
             result.error = str(exc)
         return result
 
@@ -92,7 +92,7 @@ class IEC61850GOOSEAttack:
                 s.send(self._build_goose_frame(stnum, sqnum))
                 sqnum += 1; result.sent_count += 1
             s.close()
-        except Exception as exc:
+        except OSError as exc:
             result.error = str(exc)
         return result
 

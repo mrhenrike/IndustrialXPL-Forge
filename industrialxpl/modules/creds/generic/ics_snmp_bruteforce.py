@@ -145,7 +145,7 @@ def _try_snmp_community(host: str, port: int, community: str, version: int, time
         return True
     except TimeoutError:
         return False
-    except Exception:
+    except OSError:
         return False
 
 
@@ -285,5 +285,5 @@ class Exploit(_Exploit):
             sock.recvfrom(512)
             sock.close()
             return True
-        except Exception:
+        except OSError:
             return False

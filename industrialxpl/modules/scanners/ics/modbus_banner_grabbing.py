@@ -42,7 +42,7 @@ def _parse_mei(data: bytes) -> dict[str, str]:
             oval = data[off + 2: off + 2 + olen].decode("ascii", errors="replace")
             result[_OBJ_LABELS.get(oid, f"Obj_0x{oid:02X}")] = oval
             off += 2 + olen
-    except Exception:
+    except (UnicodeDecodeError, ValueError):
         pass
     return result
 

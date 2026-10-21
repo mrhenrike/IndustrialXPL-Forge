@@ -264,13 +264,13 @@ class S7Client:
         if rsp and len(rsp) > 30:
             try:
                 result["order_code"] = rsp[14:34].decode("ascii", errors="replace").rstrip("\x00 ")
-            except Exception:
+            except KeyError:
                 pass
         rsp2 = self.read_szl(0x001c)
         if rsp2 and len(rsp2) > 30:
             try:
                 result["module_name"] = rsp2[2:24].decode("ascii", errors="replace").rstrip("\x00 ")
-            except Exception:
+            except KeyError:
                 pass
         return result
 

@@ -88,7 +88,7 @@ class Exploit(Exploit):
             s.close()
             # OpenPLC responds with RegisterSession reply (0x0065)
             return len(resp) >= 4 and resp[0:2] == b"\x65\x00"
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError):
             return False
 
     def run(self):
@@ -149,5 +149,5 @@ class Exploit(Exploit):
             except TimeoutError:
                 print_success("[CVE-2024-34026] Timeout - service unresponsive after overflow.")
 
-        except Exception as e:
+        except (ConnectionError, TimeoutError, OSError) as e:
             print_error(f"[CVE-2024-34026] {e}")

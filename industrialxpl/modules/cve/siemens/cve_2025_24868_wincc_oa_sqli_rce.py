@@ -52,7 +52,7 @@ class Exploit(Exploit):
             s.connect((self.target, self.port))
             s.close()
             return True
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError):
             return False
 
     def run(self):
@@ -118,10 +118,10 @@ class Exploit(Exploit):
                 print_warning("[CVE-2025-24868] Timeout - WinCC OA may require different protocol framing")
         except ConnectionRefusedError:
             print_warning(f"[CVE-2025-24868] Port {self.port} refused - check WinCC OA API port")
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, ImportError, OSError, struct.error) as exc:
             print_error(f"[CVE-2025-24868] Error: {exc}")
         finally:
             try:
                 sock.close()
-            except Exception:
+            except OSError:
                 pass

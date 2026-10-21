@@ -164,7 +164,7 @@ class Exploit(Exploit):
             resp = sock.recv(6)
             sock.close()
             return len(resp) == 6 and resp[0] == 0x68 and resp[2] == 0x0B
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError):
             return False
 
     def run(self) -> None:
@@ -254,5 +254,5 @@ class Exploit(Exploit):
                 print_status("No response (timeout) - command may have been executed.")
 
             sock.close()
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, OSError, struct.error) as exc:
             print_error(f"Error: {exc}")

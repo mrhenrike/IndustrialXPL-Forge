@@ -70,7 +70,7 @@ class Exploit(Exploit):
             resp = s.recv(32)
             s.close()
             return len(resp) >= 8 and resp[:3] == b"ACK"
-        except Exception:
+        except (OSError, struct.error):
             return False
 
     def run(self):
@@ -154,10 +154,10 @@ class Exploit(Exploit):
                 print_success("[CVE-2023-27321] Timeout after overflow - heap corruption likely triggered")
         except ConnectionRefusedError:
             print_warning(f"[CVE-2023-27321] Port {self.port} refused - OPC-UA server not running")
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, ImportError, OSError, struct.error) as exc:
             print_error(f"[CVE-2023-27321] Error: {exc}")
         finally:
             try:
                 sock.close()
-            except Exception:
+            except OSError:
                 pass

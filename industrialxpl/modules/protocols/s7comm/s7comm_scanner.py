@@ -121,7 +121,7 @@ class S7CommScanner(Base):
             resp = self._recv_tpkt(sock)
             # Look for COTP Connection Confirm (0xd0)
             return len(resp) >= 5 and resp[4] == 0xd0
-        except Exception:
+        except OSError:
             return False
         finally:
             sock.close()
@@ -160,7 +160,7 @@ class S7CommScanner(Base):
             else:
                 print("[+] SZL request sent - no detailed response")
 
-        except Exception as exc:
+        except OSError as exc:
             print(f"[-] Error: {exc}")
         finally:
             sock.close()
@@ -177,5 +177,5 @@ class S7CommScanner(Base):
             if len(szl_data) >= 30:
                 serial = szl_data[20:30].decode("ascii", errors="replace").strip("\x00 ")
                 print(f"[+] Serial: {serial or 'N/A'}")
-        except Exception:
+        except (UnicodeDecodeError, ValueError):
             print(f"[+] PLC responded to SZL query (raw: {data[28:48].hex()})")

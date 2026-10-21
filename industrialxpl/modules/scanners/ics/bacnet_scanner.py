@@ -115,7 +115,7 @@ def _parse_i_am(data: bytes) -> dict | None:
             result["VendorID"] = vendor_id
             result["VendorName"] = _VENDOR_NAMES.get(vendor_id, f"Unknown(ID={vendor_id})")
             offset += 2
-    except Exception:
+    except (KeyError, struct.error):
         pass
     return result
 
@@ -191,7 +191,7 @@ class Exploit(BaseExploit):
             sock.sendto(_WHO_IS, (self.target, self.port))
             data, _ = sock.recvfrom(256)
             return bool(data)
-        except Exception:
+        except OSError:
             return False
         finally:
             sock.close()

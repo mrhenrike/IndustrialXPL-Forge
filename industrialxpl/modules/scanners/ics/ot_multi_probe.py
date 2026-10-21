@@ -254,7 +254,7 @@ class Exploit(BaseExploit):
             print_status(f"[{name.upper()}] probing port {default_port}...")
             try:
                 detail = probes[name]()
-            except Exception as exc:
+            except (ConnectionError, TimeoutError, OSError) as exc:
                 print_error(f"[{name.upper()}] probe error: {exc}")
                 continue
             if detail:

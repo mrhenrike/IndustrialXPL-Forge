@@ -323,7 +323,7 @@ class Exploit(Exploit):
         try:
             Path(str(self.output_path)).parent.mkdir(parents=True, exist_ok=True)
             return True
-        except Exception:
+        except (ValueError, OSError):
             return False
 
     def run(self) -> None:

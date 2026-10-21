@@ -300,7 +300,7 @@ class SessionManager:
                     data = json.load(fh)
                 if isinstance(data, dict):
                     return data
-            except Exception as exc:
+            except (ValueError, KeyError, OSError) as exc:
                 logger.debug("Session index load failed: %s", exc)
         return {}
 
@@ -309,7 +309,7 @@ class SessionManager:
         try:
             with open(self._index_file, "w", encoding="utf-8") as fh:
                 json.dump(self._index, fh, indent=2, ensure_ascii=False)
-        except Exception as exc:
+        except (ValueError, KeyError, OSError) as exc:
             logger.debug("Session index save failed: %s", exc)
 
     def _session_path(self, hid: str) -> Path:
@@ -349,7 +349,7 @@ class SessionManager:
             with open(path, encoding="utf-8") as fh:
                 data = json.load(fh)
             return HostSession.from_dict(data)
-        except Exception as exc:
+        except (ValueError, KeyError, OSError) as exc:
             logger.warning("Failed to load session %s: %s", hid, exc)
             return None
 
@@ -359,7 +359,7 @@ class SessionManager:
         try:
             with open(path, "w", encoding="utf-8") as fh:
                 json.dump(session.to_dict(), fh, indent=2, ensure_ascii=False)
-        except Exception as exc:
+        except (ValueError, KeyError, OSError) as exc:
             logger.warning("Failed to save session %s: %s", session.host_id, exc)
             return
 
