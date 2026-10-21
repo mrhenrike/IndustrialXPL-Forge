@@ -27,11 +27,14 @@ class Exploit(Exploit):
     def check(self):
         if not self.target: return False
         try:
-            s = socket.socket(); s.settimeout(5)
+            s = socket.socket()
+            s.settimeout(5)
             s.connect((self.target, self.port)); s.close(); return True
         except: return False
     def run(self):
-        if not self.target: print_error("Set target"); return
+        if not self.target:
+            print_error("Set target")
+            return
         if self.simulate:
             DestructiveGate.print_simulation(
                 description="CVE-2022-27584 SICK AG S3000/V3000 Safety Laser Scanner\nCVSS 9.8\nPOST malicious firmware to SICK S3000 web port 80, modify safety zone configuration",

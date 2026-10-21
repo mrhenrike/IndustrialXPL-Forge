@@ -21,9 +21,12 @@ class Exploit(Exploit):
     simulate = OptBool(False, "Simulate (default: True)")
     destructive = OptBool(False, "Active checks")
     @mute
-    def check(self): return bool(self.target)
+    def check(self):
+        return bool(self.target)
     def run(self):
-        if not self.target: print_error("Set target"); return
+        if not self.target:
+            print_error("Set target")
+            return
         print_status(f"[Assessment] IEC 61850 Substation Security Assessment on {self.target}:{self.port}")
         checks = {'GOOSE authentication': 'Check if GOOSE messages use HMAC (IEC 62351-6)', 'MMS access control': 'Verify MMS requires authentication before control operations', 'SAMPLED VALUES auth': 'Check SV streams for integrity protection', 'Substation network segmentation': 'Verify station/bay/process bus segmentation', 'R-GOOSE encryption': 'Check for IEC 62351-8 routed GOOSE security'}
         results = []

@@ -27,11 +27,14 @@ class Exploit(Exploit):
     def check(self):
         if not self.target: return False
         try:
-            s = socket.socket(); s.settimeout(5)
+            s = socket.socket()
+            s.settimeout(5)
             s.connect((self.target, self.port)); s.close(); return True
         except: return False
     def run(self):
-        if not self.target: print_error("Set target"); return
+        if not self.target:
+            print_error("Set target")
+            return
         if self.simulate:
             DestructiveGate.print_simulation(
                 description="CVE-2022-28698 Krohne OPTIWAVE 7300C Radar Level\nCVSS 9.8\nSend oversized request to OPTIWAVE web port 80, stack overflow, modify tank level readings",

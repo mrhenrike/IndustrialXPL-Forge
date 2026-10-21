@@ -124,12 +124,12 @@ class RedpointResult:
     device_info: dict = field(default_factory=dict)
 
 
-def find_nmap() -> Optional[str]:
+def find_nmap() -> str | None:
     """Locate nmap binary."""
     return shutil.which("nmap")
 
 
-def find_nse_scripts(script_dir: Optional[str] = None) -> dict[str, str]:
+def find_nse_scripts(script_dir: str | None = None) -> dict[str, str]:
     """Find available Redpoint NSE scripts on disk."""
     found = {}
     search_paths = []

@@ -27,11 +27,14 @@ class Exploit(Exploit):
     def check(self):
         if not self.target: return False
         try:
-            s = socket.socket(); s.settimeout(5)
+            s = socket.socket()
+            s.settimeout(5)
             s.connect((self.target, self.port)); s.close(); return True
         except: return False
     def run(self):
-        if not self.target: print_error("Set target"); return
+        if not self.target:
+            print_error("Set target")
+            return
         if self.simulate:
             DestructiveGate.print_simulation(
                 description="CVE-2022-44620 GE Multilin 850F Protection Relay\nCVSS 9.8\nAccess Multilin 850F IEC 61850 MMS port 102, bypass auth, issue trip commands to relay",

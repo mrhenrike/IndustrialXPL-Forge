@@ -27,11 +27,14 @@ class Exploit(Exploit):
     def check(self):
         if not self.target: return False
         try:
-            s = socket.socket(); s.settimeout(5)
+            s = socket.socket()
+            s.settimeout(5)
             s.connect((self.target, self.port)); s.close(); return True
         except: return False
     def run(self):
-        if not self.target: print_error("Set target"); return
+        if not self.target:
+            print_error("Set target")
+            return
         if self.simulate:
             DestructiveGate.print_simulation(
                 description="CVE-2022-34762 Comtrol DeviceMaster UP Gateway\nCVSS 9.8\nPOST to DeviceMaster UP port 80, inject OS commands, RCE on serial OT gateway",

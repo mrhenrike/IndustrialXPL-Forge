@@ -151,7 +151,7 @@ class FuzzSessionConfig:
     destructive: bool = False
 
 
-def create_modbus_session(config: FuzzSessionConfig) -> Optional["Session"]:
+def create_modbus_session(config: FuzzSessionConfig) -> Session | None:
     """Create a boofuzz session for Modbus TCP fuzzing."""
     if not HAS_BOOFUZZ:
         return None
@@ -179,7 +179,7 @@ def create_modbus_session(config: FuzzSessionConfig) -> Optional["Session"]:
     return session
 
 
-def create_dnp3_session(config: FuzzSessionConfig) -> Optional["Session"]:
+def create_dnp3_session(config: FuzzSessionConfig) -> Session | None:
     """Create a boofuzz session for DNP3 fuzzing."""
     if not HAS_BOOFUZZ:
         return None
@@ -200,7 +200,7 @@ def create_dnp3_session(config: FuzzSessionConfig) -> Optional["Session"]:
     return session
 
 
-def create_enip_session(config: FuzzSessionConfig) -> Optional["Session"]:
+def create_enip_session(config: FuzzSessionConfig) -> Session | None:
     """Create a boofuzz session for EtherNet/IP fuzzing."""
     if not HAS_BOOFUZZ:
         return None

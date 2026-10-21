@@ -27,11 +27,14 @@ class Exploit(Exploit):
     def check(self):
         if not self.target: return False
         try:
-            s = socket.socket(); s.settimeout(5)
+            s = socket.socket()
+            s.settimeout(5)
             s.connect((self.target, self.port)); s.close(); return True
         except: return False
     def run(self):
-        if not self.target: print_error("Set target"); return
+        if not self.target:
+            print_error("Set target")
+            return
         if self.simulate:
             DestructiveGate.print_simulation(
                 description="CVE-2023-1975 Grundfos CUE Pump Drive\nCVSS 9.8\nConnect Grundfos CUE Modbus TCP port 502, default creds, control pump speed and pressure",

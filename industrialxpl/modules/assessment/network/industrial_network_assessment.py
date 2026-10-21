@@ -21,9 +21,12 @@ class Exploit(Exploit):
     simulate = OptBool(False, "Simulate (default: True)")
     destructive = OptBool(False, "Active checks")
     @mute
-    def check(self): return bool(self.target)
+    def check(self):
+        return bool(self.target)
     def run(self):
-        if not self.target: print_error("Set target"); return
+        if not self.target:
+            print_error("Set target")
+            return
         print_status(f"[Assessment] Industrial Network Infrastructure Assessment on {self.target}:{self.port}")
         checks = {'SNMP community strings': 'Check for default/weak SNMP community strings (public/private)', 'Unmanaged switches': 'Identify unmanaged switches in OT network', 'Flat network topology': 'Detect flat network allowing lateral movement', 'Telnet/HTTP on switches': 'Check for insecure management protocols', 'OSPF/BGP authentication': 'Verify routing protocol authentication'}
         results = []

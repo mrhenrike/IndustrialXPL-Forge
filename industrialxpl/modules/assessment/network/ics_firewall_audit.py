@@ -21,9 +21,12 @@ class Exploit(Exploit):
     simulate = OptBool(False, "Simulate (default: True)")
     destructive = OptBool(False, "Active checks")
     @mute
-    def check(self): return bool(self.target)
+    def check(self):
+        return bool(self.target)
     def run(self):
-        if not self.target: print_error("Set target"); return
+        if not self.target:
+            print_error("Set target")
+            return
         print_status(f"[Assessment] ICS/OT Firewall and Network Segmentation Audit on {self.target}:{self.port}")
         checks = {'IT/OT segmentation': 'Verify Level 3 (SCADA) to Level 2 (Control) firewall rules', 'Protocol whitelisting': 'Check only industrial protocols allowed in OT zone', 'Remote access VPN': 'Verify VPN MFA required for OT remote access', 'Internet exposure': 'Check for direct internet connectivity to OT systems', 'Historian DMZ': 'Verify historian is in DMZ, not directly in OT network'}
         results = []

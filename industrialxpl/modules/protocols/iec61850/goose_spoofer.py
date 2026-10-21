@@ -18,7 +18,9 @@ GOOSE_MULTICAST = bytes.fromhex("01 0C CD 01 00 00".replace(" ",""))
 
 @dataclass
 class GOOSEResult:
-    interface: str = ""; sent_count: int = 0; error: str = ""
+    interface: str = ""
+    sent_count: int = 0
+    error: str = ""
 
 class IEC61850GOOSEAttack:
     """

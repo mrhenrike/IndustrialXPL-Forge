@@ -34,12 +34,15 @@ class Exploit(Exploit):
     def check(self):
         if not self.target: return False
         try:
-            s = socket.socket(); s.settimeout(self.timeout)
+            s = socket.socket()
+            s.settimeout(self.timeout)
             s.connect((self.target, self.port)); s.close(); return True
         except OSError: return False
 
     def run(self):
-        if not self.target: print_error("Set target."); return
+        if not self.target:
+            print_error("Set target.")
+            return
         if self.simulate:
             DestructiveGate.print_simulation(
                 description=f"CVE-2018-7810: {self.target}:{self.port}.  Buffer overflow remote code execution. CVSS 9.8.",

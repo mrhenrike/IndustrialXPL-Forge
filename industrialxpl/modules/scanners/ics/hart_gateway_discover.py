@@ -22,17 +22,25 @@ class Exploit(Exploit):
     destructive = OptBool(False, "Live")
     @mute
     def check(self):
-        if not self.target: return False
+        if not self.target:
+            return False
         try:
-            s = socket.socket(); s.settimeout(3)
-            s.connect((self.target, self.port)); s.close(); return True
-        except: return False
+            s = socket.socket()
+            s.settimeout(3)
+            s.connect((self.target, self.port))
+            s.close()
+            return True
+        except (TimeoutError, OSError):
+            return False
     def run(self):
-        if not self.target: print_error("Set target"); return
+        if not self.target:
+            print_error("Set target")
+            return
         print_status(f"[Generic] Scanning {self.target}:{self.port}...")
         results = []
         try:
-            s = socket.socket(); s.settimeout(self.timeout)
+            s = socket.socket()
+            s.settimeout(self.timeout)
             s.connect((self.target, self.port))
             s.send(b"00000100")
             banner = s.recv(256)

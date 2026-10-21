@@ -21,9 +21,12 @@ class Exploit(Exploit):
     simulate = OptBool(False, "Simulate (default: True)")
     destructive = OptBool(False, "Active checks")
     @mute
-    def check(self): return bool(self.target)
+    def check(self):
+        return bool(self.target)
     def run(self):
-        if not self.target: print_error("Set target"); return
+        if not self.target:
+            print_error("Set target")
+            return
         print_status(f"[Assessment] OPC UA Server Security Assessment on {self.target}:{self.port}")
         checks = {'SecurityMode=None': 'Check if server accepts anonymous connections (None security mode)', 'Certificate validation': 'Check if server validates client certificates', 'Anonymous browse': 'Check if anonymous clients can browse all namespaces', 'Write without auth': 'Check if writable nodes accept writes without authentication', 'Discovery endpoint': 'Check if discovery endpoint leaks server information'}
         results = []
