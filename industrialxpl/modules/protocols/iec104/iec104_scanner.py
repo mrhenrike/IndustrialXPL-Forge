@@ -54,7 +54,7 @@ class IEC104Scanner(Base):
     timeout = OptInt(5, "Connection timeout (seconds)")
     ca = OptInt(1, "Common Address (station address)")
 
-    def _connect(self) -> Optional[socket.socket]:
+    def _connect(self) -> socket.socket | None:
         """Connect to IEC104 TCP port."""
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

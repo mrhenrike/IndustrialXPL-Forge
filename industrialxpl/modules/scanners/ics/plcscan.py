@@ -73,7 +73,7 @@ class ModbusPacket:
                 + self.data)
 
     @classmethod
-    def unpack(cls, raw: bytes) -> "ModbusPacket":
+    def unpack(cls, raw: bytes) -> ModbusPacket:
         if len(raw) < 8:
             raise ModbusProtocolError("Response too short")
         tid, _proto, length, uid, fc = struct.unpack(">HHHBB", raw[:8])
@@ -125,7 +125,7 @@ class ModbusClient:
 
 
 def scan_modbus_unit(ip: str, port: int, uid: int, timeout: float,
-                     function: Optional[int] = None,
+                     function: int | None = None,
                      data: bytes = b"") -> list[str]:
     """Scan a single Modbus unit ID and return info lines."""
     client = ModbusClient(ip, port, uid, timeout)
@@ -188,7 +188,7 @@ class S7Client:
         self.src_tsap = src_tsap
         self.dst_tsap = dst_tsap
         self.timeout = timeout
-        self._sock: Optional[socket.socket] = None
+        self._sock: socket.socket | None = None
         self._req_id = 0
 
     def connect(self) -> None:
@@ -297,7 +297,7 @@ class S7Client:
 def brute_tsap(ip: str, port: int, timeout: float,
                src_tsaps: tuple[int, ...] = (0x0100, 0x0200),
                dst_tsaps: tuple[int, ...] = (0x0102, 0x0200, 0x0201)
-               ) -> Optional[tuple[int, int]]:
+               ) -> tuple[int, int] | None:
     for src in src_tsaps:
         for dst in dst_tsaps:
             try:
@@ -305,7 +305,7 @@ def brute_tsap(ip: str, port: int, timeout: float,
                 client.connect()
                 client.close()
                 return (src, dst)
-            except (S7ProtocolError, S7Error, socket.error, OSError):
+            except (S7ProtocolError, S7Error, OSError):
                 continue
     return None
 
@@ -408,7 +408,7 @@ class PLCScanner(Exploit):
                     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
                         sock.settimeout(timeout)
                         sock.connect((host, port))
-                except (socket.error, OSError):
+                except OSError:
                     continue
 
                 if port == 102:
@@ -421,7 +421,7 @@ class PLCScanner(Exploit):
                             try:
                                 identity = get_s7_identity(host, port, tsap[0], tsap[1], timeout)
                                 break
-                            except (S7ProtocolError, S7Error, socket.error):
+                            except (OSError, S7ProtocolError, S7Error):
                                 continue
                         for line in identity:
                             print_info(f"  {line}")

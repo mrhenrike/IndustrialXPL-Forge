@@ -93,7 +93,7 @@ class ModbusTCPFrame:
         return mbap + pdu
 
     @classmethod
-    def unpack(cls, raw: bytes) -> "ModbusTCPFrame":
+    def unpack(cls, raw: bytes) -> ModbusTCPFrame:
         if len(raw) < 8:
             raise ValueError("Frame too short")
         tid, pid, length, uid = struct.unpack_from(">HHHB", raw, 0)
@@ -168,13 +168,13 @@ class FuzzResult:
     """Result of a single fuzz probe."""
     strategy: str
     frame_sent: ModbusTCPFrame
-    response: Optional[ModbusTCPFrame] = None
+    response: ModbusTCPFrame | None = None
     error: str = ""
     crash_detected: bool = False
 
 
 def _send_and_recv(host: str, port: int, frame: ModbusTCPFrame,
-                   timeout: float = 3.0) -> Optional[ModbusTCPFrame]:
+                   timeout: float = 3.0) -> ModbusTCPFrame | None:
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             sock.settimeout(timeout)
@@ -183,9 +183,9 @@ def _send_and_recv(host: str, port: int, frame: ModbusTCPFrame,
             reply = sock.recv(1024)
             if reply and len(reply) >= 8:
                 return ModbusTCPFrame.unpack(reply)
-    except socket.timeout:
+    except TimeoutError:
         return None
-    except (socket.error, OSError):
+    except OSError:
         return None
     return None
 
@@ -240,7 +240,7 @@ def fuzz_malformed_mbap(host: str, port: int, unit_id: int,
                 try:
                     reply = sock.recv(1024)
                     resp = ModbusTCPFrame.unpack(reply) if reply and len(reply) >= 8 else None
-                except (socket.timeout, ValueError):
+                except (TimeoutError, ValueError):
                     resp = None
             frame = ModbusTCPFrame(data=raw)
             r = FuzzResult(strategy=f"malformed_mbap/{name}", frame_sent=frame, response=resp)
@@ -248,7 +248,7 @@ def fuzz_malformed_mbap(host: str, port: int, unit_id: int,
                 r.crash_detected = True
                 r.error = "No response to malformed MBAP"
             results.append(r)
-        except (socket.error, OSError) as e:
+        except OSError as e:
             frame = ModbusTCPFrame(data=raw)
             results.append(FuzzResult(
                 strategy=f"malformed_mbap/{name}",
@@ -314,7 +314,7 @@ def fuzz_transaction_id_collision(host: str, port: int, unit_id: int,
 
 
 def scan_unit_ids(host: str, port: int,
-                  timeout: float) -> list[tuple[int, Optional[ModbusTCPFrame]]]:
+                  timeout: float) -> list[tuple[int, ModbusTCPFrame | None]]:
     """Enumerate responsive Modbus unit IDs."""
     responsive = []
     for uid in range(0, 256):

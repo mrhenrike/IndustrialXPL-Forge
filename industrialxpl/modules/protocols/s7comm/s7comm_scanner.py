@@ -83,14 +83,14 @@ class S7CommScanner(Base):
     rack = OptInt(0, "PLC rack number (default: 0)")
     slot = OptInt(2, "PLC slot number (default: 2 for CPU)")
 
-    def _connect(self) -> Optional[socket.socket]:
+    def _connect(self) -> socket.socket | None:
         """Open ISO-TSAP connection to S7 PLC."""
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.settimeout(self.timeout)
             sock.connect((self.target, self.port))
             return sock
-        except (socket.timeout, ConnectionRefusedError, OSError):
+        except (TimeoutError, ConnectionRefusedError, OSError):
             return None
 
     def _recv_tpkt(self, sock: socket.socket) -> bytes:

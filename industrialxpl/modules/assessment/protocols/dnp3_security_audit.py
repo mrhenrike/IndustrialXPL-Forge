@@ -21,9 +21,12 @@ class Exploit(Exploit):
     simulate = OptBool(False, "Simulate (default: True)")
     destructive = OptBool(False, "Active checks")
     @mute
-    def check(self): return bool(self.target)
+    def check(self):
+        return bool(self.target)
     def run(self):
-        if not self.target: print_error("Set target"); return
+        if not self.target:
+            print_error("Set target")
+            return
         print_status(f"[Assessment] DNP3 Secure Authentication v5 Assessment on {self.target}:{self.port}")
         checks = {'SAv5 challenge-response': 'Verify DNP3 Secure Authentication v5 is required for controls', 'Replay protection': 'Verify unique session keys prevent replay attacks', 'Sequence numbers': 'Verify application sequence numbers are checked', 'Unauthorized control': 'Check if controls accepted without authentication', 'Data link layer auth': 'Check if link-layer CRC provides integrity'}
         results = []

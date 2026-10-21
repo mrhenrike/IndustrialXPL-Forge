@@ -24,9 +24,12 @@ class Exploit(Exploit):
     simulate = OptBool(False, "Simulate")
     destructive = OptBool(False, "Live")
     @mute
-    def check(self): return bool(self.target)
+    def check(self):
+        return bool(self.target)
     def run(self):
-        if not self.target: print_error("Set target"); return
+        if not self.target:
+            print_error("Set target")
+            return
         if self.simulate:
             DestructiveGate.print_simulation(
                 description=(

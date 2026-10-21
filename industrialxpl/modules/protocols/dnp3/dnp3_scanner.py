@@ -100,7 +100,7 @@ class DNP3Scanner(Base):
     dst_addr = OptInt(1, "Outstation address to probe")
     timeout = OptInt(5, "Connection timeout (seconds)")
 
-    def _connect(self) -> Optional[socket.socket]:
+    def _connect(self) -> socket.socket | None:
         """Connect to DNP3 TCP port."""
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

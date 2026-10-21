@@ -82,7 +82,7 @@ def _modbus_parse(raw: bytes) -> dict:
 
 
 def _modbus_request(host: str, port: int, unit_id: int, fc: int,
-                    data: bytes, timeout: float = 5.0) -> Optional[dict]:
+                    data: bytes, timeout: float = 5.0) -> dict | None:
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             sock.settimeout(timeout)
@@ -92,12 +92,12 @@ def _modbus_request(host: str, port: int, unit_id: int, fc: int,
             if not raw:
                 return None
             return _modbus_parse(raw)
-    except (socket.error, OSError):
+    except OSError:
         return None
 
 
 def scan_modbus(target: str, port: int = 502, timeout: float = 5.0,
-                intensity: str = "low") -> Optional[ScanResult]:
+                intensity: str = "low") -> ScanResult | None:
     """Scan a target for Modbus TCP security issues."""
     result = ScanResult(protocol="modbus", target=target, port=port)
 
@@ -258,7 +258,7 @@ def _s7_read_szl(szl_id: int, szl_index: int = 1) -> bytes:
 
 
 def _s7_connect(host: str, port: int, timeout: float,
-                src_tsap: int, dst_tsap: int) -> Optional[socket.socket]:
+                src_tsap: int, dst_tsap: int) -> socket.socket | None:
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.settimeout(timeout)
@@ -274,11 +274,11 @@ def _s7_connect(host: str, port: int, timeout: float,
             sock.close()
             return None
         return sock
-    except (socket.error, OSError):
+    except OSError:
         return None
 
 
-def _s7_request(sock: socket.socket, payload: bytes) -> Optional[bytes]:
+def _s7_request(sock: socket.socket, payload: bytes) -> bytes | None:
     try:
         sock.sendall(_s7_build_tpkt(_s7_cotp_dt(payload)))
         reply = sock.recv(4096)
@@ -288,12 +288,12 @@ def _s7_request(sock: socket.socket, payload: bytes) -> Optional[bytes]:
         cotp_hdr = reply[4]
         s7_data = reply[4 + cotp_hdr + 1:]
         return s7_data
-    except (socket.error, OSError):
+    except OSError:
         return None
 
 
 def scan_s7comm(target: str, port: int = 102, timeout: float = 5.0,
-                intensity: str = "low") -> Optional[ScanResult]:
+                intensity: str = "low") -> ScanResult | None:
     """Scan for Siemens S7 PLC security issues."""
     result = ScanResult(protocol="s7comm", target=target, port=port)
 
@@ -409,7 +409,7 @@ def _dnp3_crc(data: bytes) -> int:
 
 
 def scan_dnp3(target: str, port: int = 20000, timeout: float = 5.0,
-              intensity: str = "low") -> Optional[ScanResult]:
+              intensity: str = "low") -> ScanResult | None:
     """Scan for DNP3 outstation security issues."""
     result = ScanResult(protocol="dnp3", target=target, port=port)
 
@@ -459,10 +459,10 @@ def scan_dnp3(target: str, port: int = 20000, timeout: float = 5.0,
                                                     "DNP3 Class 0 data readable",
                                                     f"Read request returned {len(data)} bytes of process data.",
                                                     "Restrict read access via ICS firewall or enable SA."))
-                except socket.timeout as e:
+                except TimeoutError as e:
                     logging.debug("Connection/IO error (non-fatal): %s", e)
 
-    except (socket.error, OSError):
+    except OSError:
         return None
 
     return result
@@ -497,7 +497,7 @@ def _bacnet_read_property(instance: int, prop_id: int) -> bytes:
 
 
 def scan_bacnet(target: str, port: int = 47808, timeout: float = 5.0,
-                intensity: str = "low") -> Optional[ScanResult]:
+                intensity: str = "low") -> ScanResult | None:
     """Scan for BACnet/IP device security issues."""
     result = ScanResult(protocol="bacnet", target=target, port=port)
 
@@ -508,7 +508,7 @@ def scan_bacnet(target: str, port: int = 47808, timeout: float = 5.0,
 
             try:
                 data, addr = sock.recvfrom(4096)
-            except socket.timeout:
+            except TimeoutError:
                 return None
 
             if not data or len(data) < 8:
@@ -548,7 +548,7 @@ def scan_bacnet(target: str, port: int = 47808, timeout: float = 5.0,
                         except (struct.error, IndexError) as e:
                             logging.debug("Parse error (malformed packet): %s", e)
 
-    except (socket.error, OSError):
+    except OSError:
         return None
 
     return result
@@ -573,7 +573,7 @@ def _enip_list_identity() -> bytes:
 
 
 def scan_enip(target: str, port: int = 44818, timeout: float = 5.0,
-              intensity: str = "low") -> Optional[ScanResult]:
+              intensity: str = "low") -> ScanResult | None:
     """Scan for EtherNet/IP (CIP) device security issues."""
     result = ScanResult(protocol="ethernet_ip", target=target, port=port)
 
@@ -629,7 +629,7 @@ def scan_enip(target: str, port: int = 44818, timeout: float = 5.0,
                                         "Standard CIP does not require authentication for implicit messaging.",
                                         "Use CIP Security (TLS/DTLS) per ODVA specification."))
 
-    except (socket.error, OSError):
+    except OSError:
         return None
 
     return result
@@ -648,7 +648,7 @@ def _iec104_startdt_act() -> bytes:
 
 
 def scan_iec104(target: str, port: int = 2404, timeout: float = 5.0,
-                intensity: str = "low") -> Optional[ScanResult]:
+                intensity: str = "low") -> ScanResult | None:
     """Scan for IEC 60870-5-104 security issues."""
     result = ScanResult(protocol="iec104", target=target, port=port)
 
@@ -680,7 +680,7 @@ def scan_iec104(target: str, port: int = 2404, timeout: float = 5.0,
                                             f"IEC 104 response type: 0x{reply[2]:02x}",
                                             "Device did not confirm STARTDT."))
 
-    except (socket.error, OSError):
+    except OSError:
         return None
 
     return result
@@ -713,7 +713,7 @@ def _mqtt_connect(client_id: str = "ixf_scan") -> bytes:
 
 
 def scan_mqtt(target: str, port: int = 1883, timeout: float = 5.0,
-              intensity: str = "low") -> Optional[ScanResult]:
+              intensity: str = "low") -> ScanResult | None:
     """Scan MQTT broker for security issues."""
     result = ScanResult(protocol="mqtt", target=target, port=port)
 
@@ -768,10 +768,10 @@ def scan_mqtt(target: str, port: int = 1883, timeout: float = 5.0,
                                                     "Subscribed to '#' (all topics). "
                                                     "Full message interception is possible.",
                                                     "Restrict topic ACLs. Require TLS client certificates."))
-                except socket.timeout as e:
+                except TimeoutError as e:
                     logging.debug("Connection/IO error (non-fatal): %s", e)
 
-    except (socket.error, OSError):
+    except OSError:
         return None
 
     return result

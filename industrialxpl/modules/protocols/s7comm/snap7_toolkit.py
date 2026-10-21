@@ -93,7 +93,7 @@ class S7DeviceProfile:
 
 
 def connect_plc(ip: str, rack: int = 0, slot: int = 1,
-                timeout: int = 5000) -> Optional["snap7.client.Client"]:
+                timeout: int = 5000) -> snap7.client.Client | None:
     """Establish S7comm connection to PLC."""
     if not HAS_SNAP7:
         return None
@@ -107,7 +107,7 @@ def connect_plc(ip: str, rack: int = 0, slot: int = 1,
         return None
 
 
-def get_cpu_state(client: "snap7.client.Client") -> str:
+def get_cpu_state(client: snap7.client.Client) -> str:
     """Read current CPU operating state."""
     try:
         state = client.get_cpu_state()
@@ -117,7 +117,7 @@ def get_cpu_state(client: "snap7.client.Client") -> str:
         return "Error reading state"
 
 
-def get_cpu_info(client: "snap7.client.Client") -> dict:
+def get_cpu_info(client: snap7.client.Client) -> dict:
     """Read CPU identification information."""
     try:
         info = client.get_cpu_info()
@@ -132,7 +132,7 @@ def get_cpu_info(client: "snap7.client.Client") -> dict:
         return {}
 
 
-def get_order_code(client: "snap7.client.Client") -> str:
+def get_order_code(client: snap7.client.Client) -> str:
     """Read order code / MLFB number."""
     try:
         code = client.get_order_code()
@@ -141,7 +141,7 @@ def get_order_code(client: "snap7.client.Client") -> str:
         return ""
 
 
-def get_protection(client: "snap7.client.Client") -> int:
+def get_protection(client: snap7.client.Client) -> int:
     """Read PLC protection level."""
     try:
         prot = client.get_protection()
@@ -150,7 +150,7 @@ def get_protection(client: "snap7.client.Client") -> int:
         return -1
 
 
-def enumerate_blocks(client: "snap7.client.Client") -> dict[str, list[int]]:
+def enumerate_blocks(client: snap7.client.Client) -> dict[str, list[int]]:
     """Enumerate all block types and their numbers."""
     blocks = {}
     for name, btype in BLOCK_TYPES.items():
@@ -170,8 +170,8 @@ def enumerate_blocks(client: "snap7.client.Client") -> dict[str, list[int]]:
     return blocks
 
 
-def read_memory_area(client: "snap7.client.Client", area: int,
-                     db_number: int, start: int, size: int) -> Optional[bytes]:
+def read_memory_area(client: snap7.client.Client, area: int,
+                     db_number: int, start: int, size: int) -> bytes | None:
     """Read a memory area from the PLC."""
     try:
         data = client.read_area(area, db_number, start, size)
@@ -181,7 +181,7 @@ def read_memory_area(client: "snap7.client.Client", area: int,
         return None
 
 
-def write_memory_area(client: "snap7.client.Client", area: int,
+def write_memory_area(client: snap7.client.Client, area: int,
                       db_number: int, start: int, data: bytes) -> bool:
     """Write data to a memory area (DESTRUCTIVE)."""
     try:
@@ -192,7 +192,7 @@ def write_memory_area(client: "snap7.client.Client", area: int,
         return False
 
 
-def cpu_stop(client: "snap7.client.Client") -> bool:
+def cpu_stop(client: snap7.client.Client) -> bool:
     """Stop the PLC CPU (DESTRUCTIVE: halts process control)."""
     try:
         client.plc_stop()
@@ -202,7 +202,7 @@ def cpu_stop(client: "snap7.client.Client") -> bool:
         return False
 
 
-def cpu_start(client: "snap7.client.Client") -> bool:
+def cpu_start(client: snap7.client.Client) -> bool:
     """Start (warm restart) the PLC CPU."""
     try:
         client.plc_hot_start()
@@ -212,7 +212,7 @@ def cpu_start(client: "snap7.client.Client") -> bool:
         return False
 
 
-def profile_device(ip: str, rack: int = 0, slot: int = 1) -> Optional[S7DeviceProfile]:
+def profile_device(ip: str, rack: int = 0, slot: int = 1) -> S7DeviceProfile | None:
     """Build a comprehensive device profile."""
     client = connect_plc(ip, rack, slot)
     if not client:

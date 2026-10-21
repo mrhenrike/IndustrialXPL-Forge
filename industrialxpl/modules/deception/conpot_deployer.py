@@ -105,7 +105,7 @@ class ConpotInstance:
     log_dir: str = ""
     protocols: list[str] = field(default_factory=list)
     start_time: float = 0.0
-    process: Optional[subprocess.Popen] = None
+    process: subprocess.Popen | None = None
 
 
 def generate_modbus_template(config: dict, output_dir: str) -> str:
@@ -143,7 +143,7 @@ def generate_modbus_template(config: dict, output_dir: str) -> str:
 
 def start_conpot(template: str = "default", bind_ip: str = "0.0.0.0",
                  log_dir: str = "/tmp/conpot-logs",
-                 custom_template_dir: str = "") -> Optional[ConpotInstance]:
+                 custom_template_dir: str = "") -> ConpotInstance | None:
     """Start a Conpot honeypot instance."""
     if not HAS_CONPOT:
         conpot_bin = "conpot"
@@ -244,7 +244,7 @@ class ConpotDeployer(Exploit):
     custom_vendor = OptString("", "Custom vendor name for Modbus template")
     custom_product = OptString("", "Custom product name for Modbus template")
 
-    _instance: Optional[ConpotInstance] = None
+    _instance: ConpotInstance | None = None
 
     def run(self) -> dict:
         action = self.action.lower()

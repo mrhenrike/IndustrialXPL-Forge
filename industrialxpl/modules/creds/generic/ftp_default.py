@@ -124,7 +124,7 @@ class Exploit(_Exploit):
                 ftp.quit()
             except ftplib.error_perm:
                 print_info(f"  FAIL: {u_display}:{p_display}")
-            except (ConnectionRefusedError, socket.timeout, OSError) as exc:
+            except (TimeoutError, ConnectionRefusedError, OSError) as exc:
                 print_warning(f"  Connection error: {exc}")
                 break
 
