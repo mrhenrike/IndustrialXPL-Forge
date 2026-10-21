@@ -18,23 +18,16 @@ Targets 100% line coverage for:
   - core/compliance/__init__.py, iec62443.py
 """
 
-import csv
-import hashlib
 import importlib
 import json
 import os
-import socket
-import struct
 import subprocess
 import sys
-import tempfile
 import threading
 import time
 import types
-import unittest
-from dataclasses import dataclass
 from pathlib import Path
-from unittest.mock import MagicMock, PropertyMock, mock_open, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -139,24 +132,24 @@ class TestSmartPool:
             assert cpu_count() == 1
 
     def test_pool_strategy_threads(self):
-        from industrialxpl.core.pool import SmartPool, PoolStrategy
+        from industrialxpl.core.pool import PoolStrategy, SmartPool
         pool = SmartPool(max_workers=4, strategy=PoolStrategy.THREADS)
         assert pool.strategy == "threads"
         assert pool.max_workers == 4
 
     def test_pool_strategy_processes(self):
-        from industrialxpl.core.pool import SmartPool, PoolStrategy
+        from industrialxpl.core.pool import PoolStrategy, SmartPool
         pool = SmartPool(max_workers=4, strategy=PoolStrategy.PROCESSES)
         assert pool.strategy == "processes"
 
     def test_pool_strategy_auto_threads(self):
-        from industrialxpl.core.pool import SmartPool, PoolStrategy
+        from industrialxpl.core.pool import PoolStrategy, SmartPool
         pool = SmartPool(max_workers=2, strategy=PoolStrategy.AUTO)
         # With 2 workers and likely >= 1 CPU, should use threads
         assert pool.strategy == "threads"
 
     def test_pool_strategy_auto_processes(self):
-        from industrialxpl.core.pool import SmartPool, PoolStrategy
+        from industrialxpl.core.pool import PoolStrategy, SmartPool
         with patch("industrialxpl.core.pool.cpu_count", return_value=1):
             pool = SmartPool(max_workers=100, strategy=PoolStrategy.AUTO)
             assert pool.strategy == "processes"
@@ -167,14 +160,14 @@ class TestSmartPool:
         assert pool.max_workers > 0
 
     def test_submit(self):
-        from industrialxpl.core.pool import SmartPool, PoolStrategy
+        from industrialxpl.core.pool import PoolStrategy, SmartPool
         pool = SmartPool(max_workers=2, strategy=PoolStrategy.THREADS)
         future = pool.submit(lambda x: x * 2, 5)
         assert future.result(timeout=5) == 10
         pool.shutdown()
 
     def test_map_unordered(self):
-        from industrialxpl.core.pool import SmartPool, PoolStrategy
+        from industrialxpl.core.pool import PoolStrategy, SmartPool
         pool = SmartPool(max_workers=2, strategy=PoolStrategy.THREADS)
         results = pool.map_unordered(lambda x: x * 2, [1, 2, 3])
         vals = sorted(r for _, r in results)
@@ -182,14 +175,14 @@ class TestSmartPool:
         pool.shutdown()
 
     def test_map_unordered_with_timeout(self):
-        from industrialxpl.core.pool import SmartPool, PoolStrategy
+        from industrialxpl.core.pool import PoolStrategy, SmartPool
         pool = SmartPool(max_workers=2, strategy=PoolStrategy.THREADS)
         results = pool.map_unordered(lambda x: x, [1], timeout_per_item=5)
         assert len(results) == 1
         pool.shutdown()
 
     def test_map_unordered_with_callbacks(self):
-        from industrialxpl.core.pool import SmartPool, PoolStrategy
+        from industrialxpl.core.pool import PoolStrategy, SmartPool
         on_result_calls = []
         pool = SmartPool(max_workers=2, strategy=PoolStrategy.THREADS)
         results = pool.map_unordered(
@@ -200,7 +193,7 @@ class TestSmartPool:
         pool.shutdown()
 
     def test_map_unordered_with_error(self):
-        from industrialxpl.core.pool import SmartPool, PoolStrategy
+        from industrialxpl.core.pool import PoolStrategy, SmartPool
         errors = []
         def fail(x):
             raise ValueError("boom")
@@ -214,7 +207,7 @@ class TestSmartPool:
         pool.shutdown()
 
     def test_map_unordered_error_no_callback(self):
-        from industrialxpl.core.pool import SmartPool, PoolStrategy
+        from industrialxpl.core.pool import PoolStrategy, SmartPool
         def fail(x):
             raise OSError("boom")
         pool = SmartPool(max_workers=2, strategy=PoolStrategy.THREADS)
@@ -223,7 +216,7 @@ class TestSmartPool:
         pool.shutdown()
 
     def test_create_executor_process(self):
-        from industrialxpl.core.pool import SmartPool, PoolStrategy
+        from industrialxpl.core.pool import PoolStrategy, SmartPool
         pool = SmartPool(max_workers=2, strategy=PoolStrategy.PROCESSES)
         pool._create_executor()
         assert pool._executor is not None
@@ -277,7 +270,7 @@ class TestSmartPool:
         pool.shutdown()  # Should be no-op
 
     def test_shutdown_type_error(self):
-        from industrialxpl.core.pool import SmartPool, PoolStrategy
+        from industrialxpl.core.pool import PoolStrategy, SmartPool
         pool = SmartPool(max_workers=2, strategy=PoolStrategy.THREADS)
         pool._create_executor()
         call_count = 0
@@ -515,8 +508,7 @@ class TestSession:
 class TestNetworkTransport:
     def test_imports(self):
         from industrialxpl.core.network import (
-            DEFAULT_OT_PORTS, connect_tcp, connect_udp,
-            probe_tcp, probe_udp, resolve_transports,
+            DEFAULT_OT_PORTS,
         )
         assert isinstance(DEFAULT_OT_PORTS, dict)
         assert "modbus" in DEFAULT_OT_PORTS
@@ -617,7 +609,7 @@ class TestNetworkTransport:
 # ===========================================================================
 class TestModbusTiming:
     def test_timing_profiles(self):
-        from industrialxpl.core.modbus.timing import TIMING_PROFILES, DEFAULT_TIMING
+        from industrialxpl.core.modbus.timing import DEFAULT_TIMING, TIMING_PROFILES
         assert len(TIMING_PROFILES) == 6
         assert DEFAULT_TIMING.level == 3
 
@@ -725,7 +717,7 @@ class TestModbusAddress:
             parse_modbus_addresses("")
 
     def test_parse_invalid_token(self):
-        from industrialxpl.core.modbus.address import parse_modbus_addresses, _parse_single
+        from industrialxpl.core.modbus.address import _parse_single
         with pytest.raises(ValueError, match="Cannot parse"):
             _parse_single("abc")
 
@@ -882,7 +874,7 @@ class TestModbusTransport:
         assert ms._next_tx() == 0  # wraps around
 
     def test_send_pdu_success(self):
-        from industrialxpl.core.modbus.transport import ModbusTCPSocket, DEFAULT_TIMING
+        from industrialxpl.core.modbus.transport import ModbusTCPSocket
         ms = ModbusTCPSocket("127.0.0.1", 502)
         ms._sock = MagicMock()
         # First recv returns enough data
@@ -900,8 +892,8 @@ class TestModbusTransport:
         assert result is None
 
     def test_send_pdu_timeout_retry(self):
-        from industrialxpl.core.modbus.transport import ModbusTCPSocket
         from industrialxpl.core.modbus.timing import TimingProfile
+        from industrialxpl.core.modbus.transport import ModbusTCPSocket
         tp = TimingProfile(level=3, name="Test", socket_timeout=0.1,
                            inter_request_delay=0, retries=2, max_rtt_timeout=0.1)
         ms = ModbusTCPSocket("127.0.0.1", 502, timing=tp)
@@ -1738,7 +1730,7 @@ class TestLLMProvider:
             assert mgr.get_active_provider() == "deepseek"
 
     def test_complete_no_key(self):
-        from industrialxpl.core.sast.llm_provider import LLMProviderManager, LLMKeyMissingError
+        from industrialxpl.core.sast.llm_provider import LLMKeyMissingError, LLMProviderManager
         with patch.dict(os.environ, {}, clear=True):
             mgr = LLMProviderManager()
             with pytest.raises(LLMKeyMissingError):
@@ -1790,8 +1782,9 @@ class TestLLMProvider:
                 assert result == "gemini result"
 
     def test_complete_http_401(self):
-        from industrialxpl.core.sast.llm_provider import LLMProviderManager, LLMKeyInvalidError
         import urllib.error
+
+        from industrialxpl.core.sast.llm_provider import LLMKeyInvalidError, LLMProviderManager
         with patch.dict(os.environ, {}, clear=True):
             mgr = LLMProviderManager()
             mgr.set_key("openai", "bad-key")
@@ -1802,8 +1795,9 @@ class TestLLMProvider:
                     mgr.complete("test")
 
     def test_complete_http_500(self):
-        from industrialxpl.core.sast.llm_provider import LLMProviderManager, LLMRequestError
         import urllib.error
+
+        from industrialxpl.core.sast.llm_provider import LLMProviderManager, LLMRequestError
         with patch.dict(os.environ, {}, clear=True):
             mgr = LLMProviderManager()
             mgr.set_key("openai", "key")
@@ -1964,21 +1958,21 @@ class TestPlcParsers:
         assert len(project.binary_files) >= 1
 
     def test_build_llm_payload(self, tmp_path):
-        from industrialxpl.core.sast.plc_parsers import walk_project, build_llm_payload
+        from industrialxpl.core.sast.plc_parsers import build_llm_payload, walk_project
         (tmp_path / "test.st").write_text("PROGRAM Main\nMaxSETTING := 100;\nEND_PROGRAM")
         project = walk_project(str(tmp_path))
         payload = build_llm_payload(project)
         assert "PLC Project" in payload
 
     def test_build_llm_payload_budget_exceeded(self, tmp_path):
-        from industrialxpl.core.sast.plc_parsers import walk_project, build_llm_payload
+        from industrialxpl.core.sast.plc_parsers import build_llm_payload, walk_project
         (tmp_path / "test.st").write_text("x" * 50000)
         project = walk_project(str(tmp_path))
         payload = build_llm_payload(project, max_chars=100)
         assert "truncated" in payload.lower()
 
     def test_summarize_project(self, tmp_path):
-        from industrialxpl.core.sast.plc_parsers import walk_project, summarize_project
+        from industrialxpl.core.sast.plc_parsers import summarize_project, walk_project
         (tmp_path / "test.st").write_text("PROGRAM Main\nEND_PROGRAM")
         project = walk_project(str(tmp_path))
         summary = summarize_project(project)
@@ -2104,7 +2098,7 @@ class TestSearchEngine:
         assert len(sr) == 1
 
     def test_imports(self):
-        from industrialxpl.core.search import SearchEngine, normalize_term
+        from industrialxpl.core.search import normalize_term
         assert callable(normalize_term)
 
 
@@ -2205,7 +2199,7 @@ class TestHartIP:
 # ===========================================================================
 class TestIEC61850:
     def test_constants(self):
-        from industrialxpl.core.protocols.iec61850 import MMS_PORT, GOOSE_ETHERTYPE, SV_ETHERTYPE
+        from industrialxpl.core.protocols.iec61850 import GOOSE_ETHERTYPE, MMS_PORT
         assert MMS_PORT == 102
         assert GOOSE_ETHERTYPE == 0x88B8
 
@@ -2220,7 +2214,7 @@ class TestIEC61850:
         assert da.quality == "good"
 
     def test_mms_client(self):
-        from industrialxpl.core.protocols.iec61850 import MmsClient, IED
+        from industrialxpl.core.protocols.iec61850 import IED, MmsClient
         ied = IED(name="IED1", ip="192.168.1.1")
         client = MmsClient(ied)
         with pytest.raises(NotImplementedError):
@@ -2275,17 +2269,17 @@ class TestCompliance:
         assert cc.requirement_id == "SR 1.1"
 
     def test_iec62443_engine(self):
-        from industrialxpl.core.compliance import IEC62443Engine, SecurityLevel
+        from industrialxpl.core.compliance import IEC62443Engine
         engine = IEC62443Engine()
         checks = engine.checks
         assert "SR 1.1" in checks
 
     def test_evaluate(self):
-        from industrialxpl.core.compliance import IEC62443Engine, SecurityLevel
+        from industrialxpl.core.compliance import IEC62443Engine
         engine = IEC62443Engine()
         result = engine.evaluate("SR 1.1", passed=True, evidence="Test evidence")
         assert result.passed is True
-        assert "SR 1.1" == result.requirement_id
+        assert result.requirement_id == "SR 1.1"
 
     def test_evaluate_unknown(self):
         from industrialxpl.core.compliance import IEC62443Engine
@@ -2326,7 +2320,7 @@ class TestCompliance:
         assert len(engine.results()) == 0
 
     def test_add_check(self):
-        from industrialxpl.core.compliance import IEC62443Engine, ComplianceCheck, SecurityLevel
+        from industrialxpl.core.compliance import ComplianceCheck, IEC62443Engine, SecurityLevel
         engine = IEC62443Engine()
         engine.add_check(ComplianceCheck(
             requirement_id="SR 99.1",
@@ -2337,22 +2331,22 @@ class TestCompliance:
         assert "SR 99.1" in engine.checks
 
     def test_iec62443_checks_for_level(self):
-        from industrialxpl.core.compliance.iec62443 import checks_for_level
         from industrialxpl.core.compliance import IEC62443Engine, SecurityLevel
+        from industrialxpl.core.compliance.iec62443 import checks_for_level
         engine = IEC62443Engine()
         result = checks_for_level(engine.checks, SecurityLevel.SL1)
         assert all(c.security_level.value <= 1 for c in result)
 
     def test_iec62443_checks_by_category(self):
-        from industrialxpl.core.compliance.iec62443 import checks_by_category
         from industrialxpl.core.compliance import IEC62443Engine
+        from industrialxpl.core.compliance.iec62443 import checks_by_category
         engine = IEC62443Engine()
         result = checks_by_category(engine.checks, "FR1")
         assert all(c.category.startswith("FR1") for c in result)
 
     def test_zone_security_level(self):
-        from industrialxpl.core.compliance.iec62443 import zone_security_level
         from industrialxpl.core.compliance import SecurityLevel
+        from industrialxpl.core.compliance.iec62443 import zone_security_level
         assert zone_security_level("safety") == SecurityLevel.SL4
         assert zone_security_level("enterprise") == SecurityLevel.SL1
         assert zone_security_level("unknown_zone") == SecurityLevel.SL1
@@ -2387,7 +2381,7 @@ class TestIcsToolsCatalog:
         assert cat.list_slugs() == ["a", "b"]
 
     def test_get(self):
-        from industrialxpl.core.ics_tools.catalog import IcsToolsCatalog, IcsToolFamily
+        from industrialxpl.core.ics_tools.catalog import IcsToolFamily, IcsToolsCatalog
         cat = IcsToolsCatalog()
         fam = IcsToolFamily(slug="test", label="Test", vendor_path=Path("/tmp"), source_repo="test")
         cat._families = {"test": fam}
@@ -2413,7 +2407,7 @@ class TestIcsToolsCatalog:
                 assert "scadapass" in families
 
     def test_discover_cached(self):
-        from industrialxpl.core.ics_tools.catalog import IcsToolsCatalog, IcsToolFamily
+        from industrialxpl.core.ics_tools.catalog import IcsToolFamily, IcsToolsCatalog
         cat = IcsToolsCatalog()
         cat._families = {"cached": IcsToolFamily(slug="cached", label="C", vendor_path=Path("/tmp"), source_repo="c")}
         result = cat.discover()
@@ -2474,8 +2468,8 @@ class TestIcsToolsRunner:
                 assert "error" in result
 
     def test_analyze_known(self, tmp_path):
-        from industrialxpl.core.ics_tools.runner import IcsToolsRunner
         from industrialxpl.core.ics_tools.catalog import IcsToolFamily
+        from industrialxpl.core.ics_tools.runner import IcsToolsRunner
         fam = IcsToolFamily(slug="test", label="Test", vendor_path=tmp_path, source_repo="test",
                             entry_script="main.py", ixf_module="test.mod")
         runner = IcsToolsRunner()
@@ -2491,8 +2485,8 @@ class TestIcsToolsRunner:
             assert "error" in result
 
     def test_run_entry_native(self, tmp_path):
-        from industrialxpl.core.ics_tools.runner import IcsToolsRunner
         from industrialxpl.core.ics_tools.catalog import IcsToolFamily
+        from industrialxpl.core.ics_tools.runner import IcsToolsRunner
         fam = IcsToolFamily(slug="scadapass", label="SCADAPASS", vendor_path=tmp_path,
                             source_repo="test")
         runner = IcsToolsRunner()
@@ -2503,8 +2497,8 @@ class TestIcsToolsRunner:
                 assert result["success"] is True
 
     def test_run_entry_no_entry_script(self, tmp_path):
-        from industrialxpl.core.ics_tools.runner import IcsToolsRunner
         from industrialxpl.core.ics_tools.catalog import IcsToolFamily
+        from industrialxpl.core.ics_tools.runner import IcsToolsRunner
         fam = IcsToolFamily(slug="test", label="Test", vendor_path=tmp_path,
                             source_repo="test", entry_script="")
         runner = IcsToolsRunner()
@@ -2514,8 +2508,8 @@ class TestIcsToolsRunner:
                 assert "error" in result
 
     def test_run_entry_simulate(self, tmp_path):
-        from industrialxpl.core.ics_tools.runner import IcsToolsRunner
         from industrialxpl.core.ics_tools.catalog import IcsToolFamily
+        from industrialxpl.core.ics_tools.runner import IcsToolsRunner
         fam = IcsToolFamily(slug="test", label="Test", vendor_path=tmp_path,
                             source_repo="test", entry_script="main.py")
         runner = IcsToolsRunner()
@@ -2546,8 +2540,8 @@ class TestIcsToolsRunner:
             assert "error" in result
 
     def test_compile_vendor_no_sln(self, tmp_path):
-        from industrialxpl.core.ics_tools.runner import IcsToolsRunner
         from industrialxpl.core.ics_tools.catalog import IcsToolFamily
+        from industrialxpl.core.ics_tools.runner import IcsToolsRunner
         fam = IcsToolFamily(slug="test", label="Test", vendor_path=tmp_path, source_repo="test")
         runner = IcsToolsRunner()
         with patch.object(runner.catalog, "get", return_value=fam):
@@ -2823,6 +2817,7 @@ class TestPoolKeyboardInterrupt:
     def test_keyboard_interrupt_during_join(self):
         """KeyboardInterrupt while waiting for threads calls stop_event.clear()."""
         import threading as _threading
+
         from industrialxpl.core.pool import SmartPool
 
         pool = SmartPool(max_workers=2, thread_name_prefix="test-kbi")
@@ -2909,7 +2904,7 @@ class TestMitreIndexTypeError:
             pass
 
         # Manually set the mangled __info__ to something non-dict
-        setattr(FakeExploit, "_FakeExploit__info__", 42)
+        FakeExploit._FakeExploit__info__ = 42
 
         fake_mod = MagicMock()
         fake_mod.Exploit = FakeExploit
@@ -2932,7 +2927,7 @@ class TestMitreIndexBuiltEarlyReturn:
     def test_built_none_returns_early(self):
         """When _built=True and module_paths=None, build_index returns immediately."""
         import industrialxpl.core.mitre.index as idx_mod
-        from industrialxpl.core.mitre.index import build_index, TECHNIQUE_INDEX
+        from industrialxpl.core.mitre.index import TECHNIQUE_INDEX, build_index
 
         old_built = idx_mod._built
 
@@ -2984,7 +2979,7 @@ class TestSessionErrorPaths:
 
     def test_save_session_oserror(self, tmp_path):
         """OSError during save() logs warning and returns without updating index."""
-        from industrialxpl.core.session import SessionManager, HostSession
+        from industrialxpl.core.session import HostSession, SessionManager
 
         mgr = SessionManager(sessions_dir=tmp_path)
         session = HostSession(host_id="abc123", ip="10.0.0.1")
@@ -3066,6 +3061,7 @@ class TestHTTPClientExploit:
     @patch("industrialxpl.core.http.http_client.print_error")
     def test_http_request_missing_schema(self, _pe):
         import requests
+
         from industrialxpl.core.http.http_client import HTTPClient
         client = HTTPClient()
         client.target = "127.0.0.1"
@@ -3080,6 +3076,7 @@ class TestHTTPClientExploit:
     @patch("industrialxpl.core.http.http_client.print_error")
     def test_http_request_connection_error(self, _pe):
         import requests
+
         from industrialxpl.core.http.http_client import HTTPClient
         client = HTTPClient()
         client.target = "127.0.0.1"
@@ -3094,6 +3091,7 @@ class TestHTTPClientExploit:
     @patch("industrialxpl.core.http.http_client.print_error")
     def test_http_request_generic_exception(self, _pe):
         import requests
+
         from industrialxpl.core.http.http_client import HTTPClient
         client = HTTPClient()
         client.target = "127.0.0.1"
@@ -3314,8 +3312,8 @@ class TestMitreSweeper:
                 assert len(sw.results) == 1
 
     def test_run_modules_ixf_exception(self):
-        from industrialxpl.core.mitre.sweeper import MitreTacticSweeper
         from industrialxpl.core.exploit.exceptions import IXFException
+        from industrialxpl.core.mitre.sweeper import MitreTacticSweeper
         with patch("industrialxpl.core.mitre.sweeper.build_index"):
             with patch("industrialxpl.core.mitre.sweeper.import_exploit",
                         side_effect=IXFException("load error")):
@@ -3347,8 +3345,9 @@ class TestMitreSweeper:
                 assert len(sw.results) == 1
 
     def test_discover_hosts(self):
-        from industrialxpl.core.mitre.sweeper import MitreTacticSweeper
         import ipaddress
+
+        from industrialxpl.core.mitre.sweeper import MitreTacticSweeper
         with patch("industrialxpl.core.mitre.sweeper.build_index"):
             sw = MitreTacticSweeper(module_paths=[])
             net = ipaddress.ip_network("10.0.0.0/30", strict=False)
@@ -3569,6 +3568,7 @@ class TestDockerStackManager:
 
     def test_wait_http_timeout(self, tmp_path):
         import urllib.error
+
         from industrialxpl.core.lab.docker_stack import DockerStackManager
         mgr = DockerStackManager(compose_dir=tmp_path)
         with patch("urllib.request.urlopen",
@@ -3898,8 +3898,8 @@ class TestIcsToolsRunnerDeep:
     """Cover missing branches in runner.py."""
 
     def test_run_entry_nmap_nse(self, tmp_path):
-        from industrialxpl.core.ics_tools.runner import IcsToolsRunner
         from industrialxpl.core.ics_tools.catalog import IcsToolFamily
+        from industrialxpl.core.ics_tools.runner import IcsToolsRunner
         entry = "test.nse"
         (tmp_path / entry).touch()
         fam = IcsToolFamily(slug="test", label="Test", vendor_path=tmp_path,
@@ -3916,8 +3916,8 @@ class TestIcsToolsRunnerDeep:
                     assert result["success"] is True
 
     def test_run_entry_data_interpreter(self, tmp_path):
-        from industrialxpl.core.ics_tools.runner import IcsToolsRunner
         from industrialxpl.core.ics_tools.catalog import IcsToolFamily
+        from industrialxpl.core.ics_tools.runner import IcsToolsRunner
         csv_file = tmp_path / "data.csv"
         csv_file.write_text("a,b\n1,2\n")
         fam = IcsToolFamily(slug="test", label="Test", vendor_path=tmp_path,
@@ -3929,8 +3929,8 @@ class TestIcsToolsRunnerDeep:
                 assert result["success"] is True
 
     def test_run_entry_python3_default(self, tmp_path):
-        from industrialxpl.core.ics_tools.runner import IcsToolsRunner
         from industrialxpl.core.ics_tools.catalog import IcsToolFamily
+        from industrialxpl.core.ics_tools.runner import IcsToolsRunner
         fam = IcsToolFamily(slug="test", label="Test", vendor_path=tmp_path,
                             source_repo="test", entry_script="main.py", interpreter="python3")
         runner = IcsToolsRunner()
@@ -3945,8 +3945,8 @@ class TestIcsToolsRunnerDeep:
                     assert result["success"] is True
 
     def test_run_entry_file_not_found(self, tmp_path):
-        from industrialxpl.core.ics_tools.runner import IcsToolsRunner
         from industrialxpl.core.ics_tools.catalog import IcsToolFamily
+        from industrialxpl.core.ics_tools.runner import IcsToolsRunner
         fam = IcsToolFamily(slug="test", label="Test", vendor_path=tmp_path,
                             source_repo="test", entry_script="main.py")
         runner = IcsToolsRunner()
@@ -3957,8 +3957,8 @@ class TestIcsToolsRunnerDeep:
                     assert result["success"] is False
 
     def test_run_entry_timeout(self, tmp_path):
-        from industrialxpl.core.ics_tools.runner import IcsToolsRunner
         from industrialxpl.core.ics_tools.catalog import IcsToolFamily
+        from industrialxpl.core.ics_tools.runner import IcsToolsRunner
         fam = IcsToolFamily(slug="test", label="Test", vendor_path=tmp_path,
                             source_repo="test", entry_script="main.py")
         runner = IcsToolsRunner()
@@ -3970,8 +3970,8 @@ class TestIcsToolsRunnerDeep:
                     assert "timeout" in result["error"]
 
     def test_compile_vendor_simulate(self, tmp_path):
-        from industrialxpl.core.ics_tools.runner import IcsToolsRunner
         from industrialxpl.core.ics_tools.catalog import IcsToolFamily
+        from industrialxpl.core.ics_tools.runner import IcsToolsRunner
         sln_dir = tmp_path / "sub"
         sln_dir.mkdir()
         (sln_dir / "project.sln").touch()
@@ -3982,8 +3982,8 @@ class TestIcsToolsRunnerDeep:
             assert result["simulate"] is True
 
     def test_compile_vendor_with_msbuild(self, tmp_path):
-        from industrialxpl.core.ics_tools.runner import IcsToolsRunner
         from industrialxpl.core.ics_tools.catalog import IcsToolFamily
+        from industrialxpl.core.ics_tools.runner import IcsToolsRunner
         (tmp_path / "project.sln").touch()
         fam = IcsToolFamily(slug="test", label="Test", vendor_path=tmp_path, source_repo="test")
         runner = IcsToolsRunner()
@@ -4136,7 +4136,7 @@ class TestLLMProviderDeep:
             assert mgr.get_active_provider() is None
 
     def test_complete_unknown_format(self):
-        from industrialxpl.core.sast.llm_provider import LLMProviderManager, LLMRequestError, _PROVIDER_CONFIG
+        from industrialxpl.core.sast.llm_provider import _PROVIDER_CONFIG, LLMProviderManager, LLMRequestError
         with patch.dict(os.environ, {}, clear=True):
             mgr = LLMProviderManager()
             mgr.set_key("openai", "key")
@@ -4245,7 +4245,7 @@ class TestPlcParsersDeep:
         assert all(".md" not in f.path for f in project.files)
 
     def test_build_llm_payload_with_findings(self, tmp_path):
-        from industrialxpl.core.sast.plc_parsers import walk_project, build_llm_payload
+        from industrialxpl.core.sast.plc_parsers import build_llm_payload, walk_project
         f = tmp_path / "full.st"
         f.write_text(
             "FUNCTION_BLOCK FB1\n"
@@ -4267,7 +4267,7 @@ class TestPlcParsersDeep:
         assert "PLC Project" in payload
 
     def test_summarize_project_detailed(self, tmp_path):
-        from industrialxpl.core.sast.plc_parsers import walk_project, summarize_project
+        from industrialxpl.core.sast.plc_parsers import summarize_project, walk_project
         f = tmp_path / "test.st"
         f.write_text(
             "FUNCTION_BLOCK FB1\n"
@@ -4468,7 +4468,9 @@ class TestFinalMediumGaps:
     def test_build_llm_payload_redactions_and_findings(self):
         """Lines 465, 477, 485, 495: build_llm_payload with redactions, hardcoded, network, truncation."""
         from industrialxpl.core.sast.plc_parsers import (
-            PLCProject, ParsedPLCFile, build_llm_payload,
+            ParsedPLCFile,
+            PLCProject,
+            build_llm_payload,
         )
         pf = ParsedPLCFile(
             path="/fake/main.st",
@@ -4494,7 +4496,9 @@ class TestFinalMediumGaps:
     def test_summarize_project_setpoints_hardcoded_network_redactions(self):
         """Lines 525-527, 533, 537, 539: summarize_project branches."""
         from industrialxpl.core.sast.plc_parsers import (
-            PLCProject, ParsedPLCFile, summarize_project,
+            ParsedPLCFile,
+            PLCProject,
+            summarize_project,
         )
         pf = ParsedPLCFile(
             path="/fake/ctrl.st",
@@ -4783,7 +4787,7 @@ class TestFinalMediumGaps:
 
     def test_resolve_sector_str_to_str_chain(self):
         """Line 428: SECTOR_ALIASES value is str, and target is also str."""
-        from industrialxpl.core.search.engine import SearchEngine, SECTOR_ALIASES
+        from industrialxpl.core.search.engine import SECTOR_ALIASES, SearchEngine
 
         # Create a scenario where the EN key maps to a string (chain)
         modules = ["industrialxpl.modules.scanners.mining_fms"]
@@ -4799,7 +4803,7 @@ class TestFinalMediumGaps:
 
     def test_resolve_sector_multilingual_alias(self):
         """Line 432: _resolve_sector falls through to MULTILINGUAL_ALIASES."""
-        from industrialxpl.core.search.engine import SearchEngine, MULTILINGUAL_ALIASES
+        from industrialxpl.core.search.engine import SearchEngine
 
         modules = ["industrialxpl.modules.scanners.modbus_scanner"]
         engine = SearchEngine(modules)
@@ -4828,7 +4832,7 @@ class TestFinalMediumGaps:
 
     def test_suggest_terms_candidate_append(self):
         """Line 542: _suggest_terms appends close-match candidates from alias keys."""
-        from industrialxpl.core.search.engine import SearchEngine, MULTILINGUAL_ALIASES, SECTOR_ALIASES
+        from industrialxpl.core.search.engine import SearchEngine
 
         modules = ["industrialxpl.modules.scanners.modbus_scanner"]
         engine = SearchEngine(modules)
@@ -4854,7 +4858,8 @@ class TestFinalMediumGaps:
     def test_complete_reraises_llm_key_missing(self):
         """Line 157: LLMKeyMissingError is re-raised in complete()."""
         from industrialxpl.core.sast.llm_provider import (
-            LLMProviderManager, LLMKeyMissingError,
+            LLMKeyMissingError,
+            LLMProviderManager,
         )
         mgr = LLMProviderManager.__new__(LLMProviderManager)
         mgr._keys = {"openai": "sk-test"}
@@ -4867,7 +4872,7 @@ class TestFinalMediumGaps:
 
     def test_request_anthropic_with_system_prompt(self):
         """Line 189: _request_anthropic includes system prompt in body."""
-        from industrialxpl.core.sast.llm_provider import LLMProviderManager, _PROVIDER_CONFIG
+        from industrialxpl.core.sast.llm_provider import _PROVIDER_CONFIG, LLMProviderManager
         mgr = LLMProviderManager.__new__(LLMProviderManager)
         mgr._keys = {"anthropic": "sk-ant-test"}
         mgr._timeout = 30

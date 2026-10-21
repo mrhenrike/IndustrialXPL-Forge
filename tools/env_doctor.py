@@ -46,9 +46,9 @@ def main() -> None:
     print("\n[Python]")
     pv = sys.version_info
     py_ok = pv >= (3, 9)
-    v_str = "{}.{}.{}".format(pv.major, pv.minor, pv.micro)
+    v_str = f"{pv.major}.{pv.minor}.{pv.micro}"
     status = "\033[32mOK\033[0m" if py_ok else "\033[31mFAIL (requires 3.9+)\033[0m"
-    print("  Python {:>10}  {}  ({})".format(v_str, status, platform.python_implementation()))
+    print(f"  Python {v_str:>10}  {status}  ({platform.python_implementation()})")
 
     # ── Tier 1 - required pip packages ──────────────────────────────────
     print("\n[Tier 1 - Required pip dependencies]")
@@ -63,9 +63,9 @@ def main() -> None:
     for pkg, imp, install in tier1:
         ok = _check_import(pkg, imp)
         ver = _check_version(pkg, imp)
-        status = "\033[32mOK ({:>12})\033[0m".format(ver) if ok else "\033[31mMISSING\033[0m"
+        status = f"\033[32mOK ({ver:>12})\033[0m" if ok else "\033[31mMISSING\033[0m"
         note = "" if ok else install
-        print("  {:<15} {}  {}".format(pkg, status, note))
+        print(f"  {pkg:<15} {status}  {note}")
 
     # ── Tier 2 - optional pip packages ──────────────────────────────────
     print("\n[Tier 2 - Optional pip extras (needed for specific protocols)]")
@@ -79,9 +79,9 @@ def main() -> None:
     for pkg, imp, install in tier2:
         ok = _check_import(pkg, imp)
         ver = _check_version(pkg, imp)
-        status = "\033[32mOK ({:>12})\033[0m".format(ver) if ok else "\033[33mOPTIONAL\033[0m"
+        status = f"\033[32mOK ({ver:>12})\033[0m" if ok else "\033[33mOPTIONAL\033[0m"
         note = "" if ok else install
-        print("  {:<15} {}  {}".format(pkg, status, note))
+        print(f"  {pkg:<15} {status}  {note}")
 
     # ── Tier 3 - external runtimes (all optional) ────────────────────────
     print("\n[Tier 3 - External runtimes (ALL OPTIONAL - Python fallback always available)]")
@@ -110,9 +110,9 @@ def main() -> None:
     try:
         from industrialxpl.core.exploit.utils import index_modules
         mods = index_modules()
-        print("  Modules indexed: \033[32m{}\033[0m".format(len(mods)))
+        print(f"  Modules indexed: \033[32m{len(mods)}\033[0m")
     except Exception as exc:
-        print("  Module indexing failed: \033[31m{}\033[0m".format(exc))
+        print(f"  Module indexing failed: \033[31m{exc}\033[0m")
 
     # ── Incorporation gates ─────────────────────────────────────────────
     print("\n[Incorporation gates]")

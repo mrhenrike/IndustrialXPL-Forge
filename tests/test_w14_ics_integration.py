@@ -7,10 +7,6 @@ No live targets required.
 import importlib
 import sys
 from pathlib import Path
-from unittest.mock import MagicMock, patch
-
-import pytest
-
 
 # Ensure the package is importable
 FORGE_ROOT = Path(__file__).parent.parent
@@ -44,7 +40,7 @@ class TestICSNinjaScanner:
 
     def test_modbus_packet_build(self):
         from industrialxpl.modules.scanners.ics.ics_ninja_scanner import (
-            _modbus_build, _modbus_parse,
+            _modbus_build,
         )
         pkt = _modbus_build(1, 3, b"\x00\x00\x00\x01", tid=42)
         assert len(pkt) == 12
@@ -110,8 +106,11 @@ class TestModbusFuzzer:
 
     def test_request_builders(self):
         from industrialxpl.modules.fuzzers.modbus_fuzzer import (
-            read_coils, read_holding_registers, write_single_coil,
-            write_single_register, write_multiple_registers,
+            read_coils,
+            read_holding_registers,
+            write_multiple_registers,
+            write_single_coil,
+            write_single_register,
         )
         assert len(read_coils(0, 10)) == 4
         assert len(read_holding_registers(100, 5)) == 4
@@ -240,7 +239,9 @@ class TestSnap7Toolkit:
 
     def test_constants(self):
         from industrialxpl.modules.protocols.s7comm.snap7_toolkit import (
-            S7_AREA_DB, S7_AREA_MK, BLOCK_TYPES,
+            BLOCK_TYPES,
+            S7_AREA_DB,
+            S7_AREA_MK,
         )
         assert S7_AREA_DB == 0x84
         assert S7_AREA_MK == 0x83

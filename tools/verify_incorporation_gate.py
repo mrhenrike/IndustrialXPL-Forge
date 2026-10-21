@@ -37,14 +37,14 @@ def _run(cmd: list[str], cwd: Path | None = None) -> tuple[int, str]:
 
 def load_gates() -> dict:
     if not GATES_FILE.is_file():
-        raise SystemExit("missing {}".format(GATES_FILE))
+        raise SystemExit(f"missing {GATES_FILE}")
     return json.loads(GATES_FILE.read_text(encoding="utf-8"))
 
 
 def step_env_doctor() -> list[str]:
     code, _out = _run([sys.executable, "tools/env_doctor.py"])
     if code != 0:
-        return ["env_doctor exited {}".format(code)]
+        return [f"env_doctor exited {code}"]
     return []
 
 
@@ -81,12 +81,12 @@ def step_score_incorporation() -> list[str]:
 
 def step_forensics_ioc() -> list[str]:
     if not IOC_HASHES.is_file():
-        return ["IOC hash file missing: {}".format(IOC_HASHES)]
+        return [f"IOC hash file missing: {IOC_HASHES}"]
     data = json.loads(IOC_HASHES.read_text(encoding="utf-8"))
     families = data.get("families", {})
     total = sum(len(v.get("hashes", [])) for v in families.values())
     if total < 50:
-        return ["IOC hashes too few: {} (need >=50)".format(total)]
+        return [f"IOC hashes too few: {total} (need >=50)"]
     try:
         from industrialxpl.core.ics_tools.forensics_engine import ioc_inventory, match_ioc_hash
 
@@ -100,7 +100,7 @@ def step_forensics_ioc() -> list[str]:
         if not m.get("matched"):
             return ["match_ioc_hash smoke failed for sample hash"]
     except Exception as exc:
-        return ["forensics_ioc import/check: {}".format(exc)]
+        return [f"forensics_ioc import/check: {exc}"]
     return []
 
 
@@ -129,7 +129,7 @@ def step_aim2_modules() -> list[str]:
         if not z.get("modbus_frame_hex"):
             return ["zionsiphon probe missing frame"]
     except Exception as exc:
-        return ["aim2_modules: {}".format(exc)]
+        return [f"aim2_modules: {exc}"]
     return []
 
 
@@ -148,7 +148,7 @@ def step_fuzz_compile() -> list[str]:
             if not r.get("success"):
                 return ["compile {}: {}".format(tname, (r.get("error") or "")[:100])]
     except Exception as exc:
-        return ["fuzz_compile: {}".format(exc)]
+        return [f"fuzz_compile: {exc}"]
     return []
 
 
@@ -159,7 +159,7 @@ def step_otscan_smoke() -> list[str]:
         from industrialxpl.core.ics_tools.native_handlers import run_native
 
         if len(PROTOCOLS) < 10:
-            return ["otscan expected >= 10 protocols, got {}".format(len(PROTOCOLS))]
+            return [f"otscan expected >= 10 protocols, got {len(PROTOCOLS)}"]
         plan = simulate_scan("127.0.0.1")
         if not plan.get("success") or plan.get("count", 0) < 10:
             return ["otscan simulate_scan failed"]
@@ -172,7 +172,7 @@ def step_otscan_smoke() -> list[str]:
         if not nat or not nat.get("simulate"):
             return ["otscan run_native simulate failed"]
     except Exception as exc:
-        return ["otscan_smoke: {}".format(exc)]
+        return [f"otscan_smoke: {exc}"]
     return []
 
 
@@ -187,7 +187,7 @@ def step_aim3_modules() -> list[str]:
         if not (ROOT / "industrialxpl/modules/cve/malware/stuxnet_analyze.py").is_file():
             return ["stuxnet_analyze.py missing"]
     except Exception as exc:
-        return ["aim3_modules: {}".format(exc)]
+        return [f"aim3_modules: {exc}"]
     return []
 
 
@@ -203,7 +203,7 @@ def step_s7scan_smoke() -> list[str]:
             return ["rack_scan_plan empty"]
         parse_cotp_response(pkt[:22] + b"\xd0\x00")
     except Exception as exc:
-        return ["s7scan_smoke: {}".format(exc)]
+        return [f"s7scan_smoke: {exc}"]
     return []
 
 
@@ -216,7 +216,7 @@ def step_vendors_smoke() -> list[str]:
         if not simulate_all().get("success"):
             return ["vendors simulate failed"]
     except Exception as exc:
-        return ["vendors_smoke: {}".format(exc)]
+        return [f"vendors_smoke: {exc}"]
     return []
 
 
@@ -234,7 +234,7 @@ def step_bacnet_smoke() -> list[str]:
         if not run_native("bacteria", simulate=True):
             return ["bacteria native failed"]
     except Exception as exc:
-        return ["bacnet_smoke: {}".format(exc)]
+        return [f"bacnet_smoke: {exc}"]
     return []
 
 
@@ -246,7 +246,7 @@ def step_iec104_smoke() -> list[str]:
         if not sess.get("frames", {}).get("startdt_act"):
             return ["iec104 startdt missing"]
     except Exception as exc:
-        return ["iec104_smoke: {}".format(exc)]
+        return [f"iec104_smoke: {exc}"]
     return []
 
 
@@ -259,7 +259,7 @@ def step_isf_port_smoke() -> list[str]:
         if not simulate_inventory().get("success"):
             return ["isf_port inventory failed"]
     except Exception as exc:
-        return ["isf_port_smoke: {}".format(exc)]
+        return [f"isf_port_smoke: {exc}"]
     return []
 
 
@@ -281,7 +281,7 @@ def step_mozi_smoke() -> list[str]:
         if not nat.get("success"):
             return ["mozi native_action failed"]
     except Exception as exc:
-        return ["mozi_smoke: {}".format(exc)]
+        return [f"mozi_smoke: {exc}"]
     return []
 
 
@@ -294,7 +294,7 @@ def step_ricnar_smoke() -> list[str]:
         if not get_poc("seig_modbus_dos").get("payload_hex"):
             return ["seig poc missing"]
     except Exception as exc:
-        return ["ricnar_smoke: {}".format(exc)]
+        return [f"ricnar_smoke: {exc}"]
     return []
 
 
@@ -308,7 +308,7 @@ def step_icsforge_smoke() -> list[str]:
         if not export_sigma_rule(inv["ids"][0]).get("sigma"):
             return ["sigma export failed"]
     except Exception as exc:
-        return ["icsforge_smoke: {}".format(exc)]
+        return [f"icsforge_smoke: {exc}"]
     return []
 
 
@@ -322,7 +322,7 @@ def step_ot_audit_smoke() -> list[str]:
         if not diff_vs_otscan(list(PROTOCOLS)).get("overlap_ok"):
             return ["ot_audit overlap check failed"]
     except Exception as exc:
-        return ["ot_audit_smoke: {}".format(exc)]
+        return [f"ot_audit_smoke: {exc}"]
     return []
 
 
@@ -333,7 +333,7 @@ def step_modbus_toolkit_smoke() -> list[str]:
         if not simulate_toolkit().get("frames"):
             return ["modbus_toolkit empty"]
     except Exception as exc:
-        return ["modbus_toolkit_smoke: {}".format(exc)]
+        return [f"modbus_toolkit_smoke: {exc}"]
     return []
 
 
@@ -347,7 +347,7 @@ def step_mirai_loader_smoke() -> list[str]:
         if not r.get("success"):
             return ["mirai_loader_smoke compile: {}".format((r.get("error") or "")[:80])]
     except Exception as exc:
-        return ["mirai_loader_smoke: {}".format(exc)]
+        return [f"mirai_loader_smoke: {exc}"]
     return []
 
 
@@ -360,7 +360,7 @@ def step_incontroller_smoke() -> list[str]:
         if not simulate_suite().get("modules"):
             return ["incontroller suite empty"]
     except Exception as exc:
-        return ["incontroller_smoke: {}".format(exc)]
+        return [f"incontroller_smoke: {exc}"]
     return []
 
 
@@ -372,7 +372,7 @@ def step_frostygoop_json_smoke() -> list[str]:
         if r.get("task_count", 0) < 1:
             return ["frostygoop tasks < 1"]
     except Exception as exc:
-        return ["frostygoop_json_smoke: {}".format(exc)]
+        return [f"frostygoop_json_smoke: {exc}"]
     return []
 
 
@@ -390,7 +390,7 @@ def step_edb_smoke() -> list[str]:
         if not r.get("success"):
             return ["modbus_seig_dos: {}".format((r.get("error") or "")[:80])]
     except Exception as exc:
-        return ["edb_smoke: {}".format(exc)]
+        return [f"edb_smoke: {exc}"]
     return []
 
 
@@ -408,7 +408,7 @@ def step_s2opc_smoke() -> list[str]:
         if not s2opc_status().get("success"):
             return ["s2opc status failed"]
     except Exception as exc:
-        return ["s2opc_smoke: {}".format(exc)]
+        return [f"s2opc_smoke: {exc}"]
     return []
 
 
@@ -419,7 +419,7 @@ def step_open_plc_smoke() -> list[str]:
         if not open_plc_status().get("success"):
             return ["open_plc status failed"]
     except Exception as exc:
-        return ["open_plc_smoke: {}".format(exc)]
+        return [f"open_plc_smoke: {exc}"]
     return []
 
 
@@ -433,7 +433,7 @@ def step_nse_quickdraw_smoke() -> list[str]:
         if "alert" not in inv.get("sample_rule", ""):
             return ["suricata rule sample missing"]
     except Exception as exc:
-        return ["nse_quickdraw_smoke: {}".format(exc)]
+        return [f"nse_quickdraw_smoke: {exc}"]
     return []
 
 
@@ -488,7 +488,7 @@ def check_phase_constraints(phase_id: str, cfg: dict) -> list[str]:
         n = len(data.get("urls", []))
         need = int(cfg["min_manifest_urls"])
         if n < need:
-            failures.append("manifest urls {} < {}".format(n, need))
+            failures.append(f"manifest urls {n} < {need}")
 
     summary = RESEARCH / "study_summary.json"
     if cfg.get("min_study_ok_ratio") and summary.is_file():
@@ -496,7 +496,7 @@ def check_phase_constraints(phase_id: str, cfg: dict) -> list[str]:
         ratio = data.get("ok_ratio", 0)
         need = float(cfg["min_study_ok_ratio"])
         if ratio < need:
-            failures.append("study ok_ratio {:.2f} < {:.2f}".format(ratio, need))
+            failures.append(f"study ok_ratio {ratio:.2f} < {need:.2f}")
 
     return failures
 
@@ -504,15 +504,15 @@ def check_phase_constraints(phase_id: str, cfg: dict) -> list[str]:
 def run_phase(phase_id: str, gates: dict) -> list[str]:
     phases = gates.get("phases", {})
     if phase_id not in phases:
-        return ["unknown phase: {}".format(phase_id)]
+        return [f"unknown phase: {phase_id}"]
     cfg = phases[phase_id]
     failures: list[str] = []
     print("\n=== Gate {} - {} ===".format(phase_id, cfg.get("label", "")))
     for step in cfg.get("steps", []):
-        print("  -> {}".format(step))
+        print(f"  -> {step}")
         runner = STEP_RUNNERS.get(step)
         if not runner:
-            failures.append("no runner for step {}".format(step))
+            failures.append(f"no runner for step {step}")
             continue
         step_fail = runner()
         if step_fail:
@@ -536,7 +536,7 @@ def main() -> int:
         all_failures.extend(run_phase(pid, gates))
 
     if all_failures:
-        print("\nGATE FAILURES ({}):".format(len(all_failures)))
+        print(f"\nGATE FAILURES ({len(all_failures)}):")
         for f in all_failures:
             print(" -", f)
         return 1

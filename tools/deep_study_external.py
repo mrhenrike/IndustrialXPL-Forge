@@ -67,7 +67,7 @@ def _fetch(url: str, timeout: float = 25.0) -> tuple[str, bytes, str]:
             return "ok", resp.read(2_000_000), ct
     except urllib.error.HTTPError as exc:
         if exc.code in (403, 404, 410):
-            arch = "https://web.archive.org/web/0/{}".format(url)
+            arch = f"https://web.archive.org/web/0/{url}"
             try:
                 req2 = urllib.request.Request(arch, headers={"User-Agent": "IXF-deep-study/1.0"})
                 with urllib.request.urlopen(req2, timeout=timeout) as resp:
@@ -75,9 +75,9 @@ def _fetch(url: str, timeout: float = 25.0) -> tuple[str, bytes, str]:
                     return "ok_archive", resp.read(2_000_000), ct
             except (urllib.error.URLError, OSError, urllib.error.HTTPError):
                 pass
-        return "http_{}".format(exc.code), b"", ""
+        return f"http_{exc.code}", b"", ""
     except (urllib.error.URLError, OSError, TimeoutError) as exc:
-        return "error:{}".format(type(exc).__name__), b"", ""
+        return f"error:{type(exc).__name__}", b"", ""
 
 
 def _pdf_to_text(data: bytes) -> str:
@@ -188,7 +188,7 @@ def main() -> int:
     scored: list[dict] = []
     for i, entry in enumerate(urls):
         uid = _url_id(entry["url"])
-        out_path = STUDIES / "{}.json".format(uid)
+        out_path = STUDIES / f"{uid}.json"
         if out_path.is_file() and not args.retry_failed:
             existing = json.loads(out_path.read_text(encoding="utf-8"))
             scored.append(existing)
@@ -220,7 +220,7 @@ def main() -> int:
         ),
     }
     SUMMARY.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-    print("study_summary: ok={}/{} ratio={:.2f} -> {}".format(ok, len(urls), ratio, SUMMARY))
+    print(f"study_summary: ok={ok}/{len(urls)} ratio={ratio:.2f} -> {SUMMARY}")
     return 0
 
 

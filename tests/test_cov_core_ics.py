@@ -6,11 +6,9 @@ All socket I/O is mocked; no network connections are made.
 """
 
 import struct
-import socket
-from unittest.mock import patch, MagicMock, PropertyMock
+from unittest.mock import MagicMock, patch
 
 import pytest
-
 
 # ---------------------------------------------------------------------------
 # __init__.py imports
@@ -1244,7 +1242,7 @@ class TestIEC104Stack:
         assert result["valid"] is False
 
     def test_parse_apci_startdt_con(self):
-        from industrialxpl.core.ics.iec104_stack import parse_apci, build_startdt_con
+        from industrialxpl.core.ics.iec104_stack import build_startdt_con, parse_apci
         result = parse_apci(build_startdt_con())
         assert result["valid"] is True
         assert result["is_startdt_con"] is True
@@ -1252,7 +1250,7 @@ class TestIEC104Stack:
         assert result["is_i_format"] is False
 
     def test_parse_apci_testfr_con(self):
-        from industrialxpl.core.ics.iec104_stack import parse_apci, build_testfr_con
+        from industrialxpl.core.ics.iec104_stack import build_testfr_con, parse_apci
         result = parse_apci(build_testfr_con())
         assert result["valid"] is True
         assert result["is_testfr_con"] is True
@@ -1853,7 +1851,7 @@ class TestISFPort:
         assert result["results"]["unknown_proto"] == {"error": "unknown"}
 
     def test_scan_protocols_default(self):
-        from industrialxpl.core.ics.isf_port import scan_protocols, PROTOCOL_HANDLERS
+        from industrialxpl.core.ics.isf_port import PROTOCOL_HANDLERS, scan_protocols
         with patch("industrialxpl.core.ics.isf_port._PROBE_FNS", {
             p: MagicMock(return_value={"detected": False}) for p in PROTOCOL_HANDLERS
         }):
@@ -2010,7 +2008,7 @@ class TestRicnarPocs:
         assert result["success"] is False
 
     def test_constants(self):
-        from industrialxpl.core.ics.ricnar_pocs import SEIG_MODBUS_DOS_HEX, UNITY_CRED_PROBE, RICNAR_POCS
+        from industrialxpl.core.ics.ricnar_pocs import RICNAR_POCS, SEIG_MODBUS_DOS_HEX, UNITY_CRED_PROBE
         assert isinstance(SEIG_MODBUS_DOS_HEX, str)
         assert len(UNITY_CRED_PROBE) == 2
         assert len(RICNAR_POCS) == 2
@@ -2165,7 +2163,7 @@ class TestS7Packets:
         assert length == len(payload) + 4
 
     def test_constants(self):
-        from industrialxpl.core.ics.s7_packets import S7_STOP_HEX, S7_START_HEX, S7_1200_CPU_INFO_TEMPLATE
+        from industrialxpl.core.ics.s7_packets import S7_1200_CPU_INFO_TEMPLATE, S7_START_HEX, S7_STOP_HEX
         assert isinstance(S7_STOP_HEX, str)
         assert isinstance(S7_START_HEX, str)
         assert isinstance(S7_1200_CPU_INFO_TEMPLATE, str)
@@ -2187,7 +2185,7 @@ class TestS7PlusClient:
         assert c._connected is False
 
     def test_s7plus_helpers(self):
-        from industrialxpl.core.ics.s7plus_client import _build_tpkt, _build_cotp_cr, _build_cotp_dt
+        from industrialxpl.core.ics.s7plus_client import _build_cotp_cr, _build_cotp_dt, _build_tpkt
         tpkt = _build_tpkt(b"\x01")
         assert tpkt[0] == 0x03
         cr = _build_cotp_cr(b"\x01\x00", b"SIMATIC-ROOT-ES")
@@ -3038,14 +3036,10 @@ class TestS7LlcCotpEdgeCases:
 #                 core/ics_tools, core/http
 # ═══════════════════════════════════════════════════════════════════════════
 
-import json
-import os
-import re
 import csv
-import time
 import tempfile
 from pathlib import Path
-from unittest.mock import MagicMock, patch, mock_open
+from unittest.mock import MagicMock, patch
 
 
 class TestSmallGaps_core:
@@ -3118,8 +3112,8 @@ class TestSmallGaps_core:
 
     # ── modbus/transport.py L86: recv returns empty bytes ────────────────
     def test_modbus_transport_recv_empty(self):
-        from industrialxpl.core.modbus.transport import ModbusTCPSocket
         from industrialxpl.core.modbus.timing import TimingProfile
+        from industrialxpl.core.modbus.transport import ModbusTCPSocket
         timing = TimingProfile(level=3, name="Normal",
                                socket_timeout=1.0, inter_request_delay=0.0,
                                max_rtt_timeout=0.5, retries=1)
@@ -3261,8 +3255,10 @@ class TestSmallGaps_core:
 
     # ── native_handlers.py L187-188: OSError on py.read_text -> continue ─
     def test_native_handlers_oserror_on_read(self):
+        import os
+        import tempfile
+
         from industrialxpl.core.ics_tools.native_handlers import handle_isf_dark_lbp
-        import tempfile, os
         with tempfile.TemporaryDirectory() as td:
             td_path = Path(td)
             mod_root = td_path / "modules"
@@ -3282,6 +3278,7 @@ class TestSmallGaps_core:
     # ── http/http_client.py L57-58: generic RequestException -> break ──────
     def test_http_client_generic_request_exception(self):
         import requests
+
         from industrialxpl.core.http.http_client import HTTPClient
         client = HTTPClient()
         client.target = "10.0.0.1"

@@ -12,9 +12,7 @@ if str(_ROOT) not in sys.path:
 
 if sys.version_info < (3, 9):
     print(
-        "IndustrialXPL-Forge requires Python 3.9+ (detected: {}).".format(
-            platform.python_version()
-        )
+        f"IndustrialXPL-Forge requires Python 3.9+ (detected: {platform.python_version()})."
     )
     sys.exit(1)
 
@@ -32,7 +30,7 @@ def _launcher(argv):
     try:
         from industrialxpl.interpreter import IXFInterpreter
     except ModuleNotFoundError as err:
-        print("IndustrialXPL bootstrap error: missing Python dependency: {}".format(err))
+        print(f"IndustrialXPL bootstrap error: missing Python dependency: {err}")
         print("Run: pip install -r requirements.txt")
         print("Check: ixf --doctor")
         raise SystemExit(1)

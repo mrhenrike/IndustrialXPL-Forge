@@ -33,7 +33,7 @@ def test_c2_simulate() -> list[str]:
 
     r = run_native_action("mirai-iot-botnet")
     if not r.get("success") and not r.get("skipped"):
-        return ["c2 mirai native_action: {}".format(r)]
+        return [f"c2 mirai native_action: {r}"]
     return []
 
 
@@ -159,12 +159,12 @@ def main() -> int:
     for mode in modes:
         fn = MODES.get(mode)
         if not fn:
-            failures.append("unknown mode: {}".format(mode))
+            failures.append(f"unknown mode: {mode}")
             continue
-        print("[E2E] {} ...".format(mode))
+        print(f"[E2E] {mode} ...")
         err = fn()
         if err:
-            failures.extend(["{}: {}".format(mode, e) for e in err])
+            failures.extend([f"{mode}: {e}" for e in err])
             print("  FAIL")
         else:
             print("  OK")

@@ -20,11 +20,8 @@ import io
 import json
 import sys
 import types
-from http.server import BaseHTTPRequestHandler
 from pathlib import Path
-from typing import Any
-from unittest import mock
-from unittest.mock import MagicMock, PropertyMock, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -2308,7 +2305,6 @@ class TestICSCommands:
              patch("industrialxpl.cli.commands_ics.print_error"), \
              patch("industrialxpl.cli.commands_ics.print_warning"):
             # Use platform module mock to simulate win32
-            import industrialxpl.cli.commands_ics as _mod_ics
             interp.command_nse("install")
 
     def test_command_nse_unknown(self):
@@ -4220,6 +4216,7 @@ class TestInterpreterFinalGaps:
     def test_readline_fallback_pyreadline3(self):
         """When readline is absent but pyreadline3 is available (lines 21-24)."""
         import importlib
+
         from industrialxpl import interpreter as interp_mod
 
         # Save originals
@@ -4254,6 +4251,7 @@ class TestInterpreterFinalGaps:
     def test_readline_completely_absent(self):
         """When both readline and pyreadline3 are absent (lines 25-27)."""
         import importlib
+
         from industrialxpl import interpreter as interp_mod
 
         orig_has = interp_mod._HAS_READLINE

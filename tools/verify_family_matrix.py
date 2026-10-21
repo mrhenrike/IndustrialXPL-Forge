@@ -26,23 +26,23 @@ def check_malware() -> list[str]:
     for slug in cat.list_slugs():
         cap = get_capability(slug)
         if not cap:
-            failures.append("malware {}: missing capability".format(slug))
+            failures.append(f"malware {slug}: missing capability")
             continue
         fam = cat.get(slug)
         if not fam or not fam.vendor_path.is_dir():
-            failures.append("malware {}: vendor missing".format(slug))
+            failures.append(f"malware {slug}: vendor missing")
             continue
         a = orch.analyze(slug)
         if not a.get("ixf_module"):
-            failures.append("malware {}: no ixf_module".format(slug))
+            failures.append(f"malware {slug}: no ixf_module")
         nat = run_native_action(slug)
         if cap.native_action and not nat.get("success") and not nat.get("skipped"):
-            failures.append("malware {}: native_action failed: {}".format(slug, nat))
+            failures.append(f"malware {slug}: native_action failed: {nat}")
 
         for tname in cap.compile_targets[:2]:
             t = comp.get_target(tname)
             if not t:
-                failures.append("malware {}: compile target {} not registered".format(slug, tname))
+                failures.append(f"malware {slug}: compile target {tname} not registered")
 
     # compile smoke (fast targets only)
     for tname in ("akaja_akaja", "killdisk"):
@@ -69,10 +69,10 @@ def check_ics() -> list[str]:
     for slug in cat.list_slugs():
         fam = cat.get(slug)
         if not fam or not fam.vendor_path.is_dir():
-            failures.append("ics {}: vendor missing".format(slug))
+            failures.append(f"ics {slug}: vendor missing")
             continue
         if not fam.entry_script and slug not in ("scadapass", "otscan", "bacteria"):
-            failures.append("ics {}: no entry_script".format(slug))
+            failures.append(f"ics {slug}: no entry_script")
         inv = runner.run_entry(slug, simulate=False, prefer_native=True)
         if not inv.get("success") and not inv.get("simulate"):
             failures.append(
@@ -126,14 +126,11 @@ def main() -> int:
     ic = check_ics()
     all_f = mf + ic
     if all_f:
-        print("\nFAILURES ({}):".format(len(all_f)))
+        print(f"\nFAILURES ({len(all_f)}):")
         for f in all_f:
             print(" -", f)
         return 1
-    print("\nALL FAMILIES OK ({} malware + {} ics-tools)".format(
-        len(MalwareCatalog().list_slugs()),
-        len(IcsToolsCatalog().list_slugs()),
-    ))
+    print(f"\nALL FAMILIES OK ({len(MalwareCatalog().list_slugs())} malware + {len(IcsToolsCatalog().list_slugs())} ics-tools)")
     return 0
 
 

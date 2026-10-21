@@ -158,7 +158,7 @@ def fetch_nvd_cves(api_key: str, keyword: str, max_results: int = 50) -> list:
             data = json.loads(resp.read().decode())
         return data.get("vulnerabilities", [])
     except Exception as exc:
-        print("[nvd_crawler] Fetch error for '{}': {}".format(keyword, exc), file=sys.stderr)
+        print(f"[nvd_crawler] Fetch error for '{keyword}': {exc}", file=sys.stderr)
         return []
 
 
@@ -185,9 +185,9 @@ def extract_affected(vuln: dict) -> tuple:
                     v_start = cpe.get("versionStartIncluding", "")
                     v_end   = cpe.get("versionEndExcluding", cpe.get("versionEndIncluding", ""))
                     if v_end:
-                        affected.append("< {}".format(v_end))
+                        affected.append(f"< {v_end}")
                     elif v_start:
-                        affected.append(">= {}".format(v_start))
+                        affected.append(f">= {v_start}")
     return ("; ".join(affected[:3]) or "All versions") if affected else "All versions"
 
 
@@ -206,7 +206,7 @@ def generate_stub(entry: dict, output_dir: Path) -> str:
     if not init.exists():
         init.write_text("")
 
-    stub_path = output_dir / "{}.py".format(cve_id)
+    stub_path = output_dir / f"{cve_id}.py"
     if stub_path.exists():
         return str(stub_path)
 
@@ -262,7 +262,7 @@ def main() -> None:
     if not args.no_api:
         print("[nvd_crawler] Fetching CVEs from NVD API...")
         for keyword in args.keywords:
-            print("[nvd_crawler]   Keyword: {}".format(keyword))
+            print(f"[nvd_crawler]   Keyword: {keyword}")
             vulns = fetch_nvd_cves(args.api_key, keyword, args.max_results)
             for v in vulns:
                 cve_data = v.get("cve", {})
@@ -302,7 +302,7 @@ def main() -> None:
         "cves": list(existing.values()),
     }
     db_path.write_text(json.dumps(updated_data, indent=2), encoding="utf-8")
-    print("[nvd_crawler] DB updated: {} total CVEs ({} new)".format(len(existing), new_count))
+    print(f"[nvd_crawler] DB updated: {len(existing)} total CVEs ({new_count} new)")
 
     # Generate stubs for CVEs without existing modules
     stub_count = 0
@@ -314,16 +314,16 @@ def main() -> None:
                 stub_count += 1
             except Exception:
                 pass
-    print("[nvd_crawler] Generated {} new module stubs in industrialxpl/modules/cve/".format(stub_count))
+    print(f"[nvd_crawler] Generated {stub_count} new module stubs in industrialxpl/modules/cve/")
 
     # Verify indexing
     sys.path.insert(0, str(PROJECT_ROOT))
     try:
         from industrialxpl.core.exploit.utils import index_modules
         mods = index_modules()
-        print("[nvd_crawler] IXF module index: {} modules".format(len(mods)))
+        print(f"[nvd_crawler] IXF module index: {len(mods)} modules")
     except Exception as exc:
-        print("[nvd_crawler] Index check skipped: {}".format(exc))
+        print(f"[nvd_crawler] Index check skipped: {exc}")
 
 
 if __name__ == "__main__":

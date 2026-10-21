@@ -4,10 +4,8 @@ Validates that the Modbus exploit class is properly structured and
 that connection attempts to unreachable hosts fail gracefully.
 """
 
-import socket
 import sys
 from pathlib import Path
-from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -50,7 +48,7 @@ class TestModbusExploitStructure:
 
     def test_write_fcs_set(self):
         from industrialxpl.modules.exploits.protocols.modbus.modbus_client import WRITE_FCS
-        assert WRITE_FCS == {5, 6, 15, 16}
+        assert {5, 6, 15, 16} == WRITE_FCS
 
     def test_fc_map_read_actions(self):
         fc_map = ModbusExploit._fc_map
