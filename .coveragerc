@@ -14,6 +14,10 @@ omit =
     */site-packages/*
     conftest.py
     */__pycache__/*
+show_missing = true
+exclude_lines =
+    pragma: no cover
+    if TYPE_CHECKING
 
 [paths]
 source =
