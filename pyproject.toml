@@ -260,5 +260,5 @@ known-first-party = ["industrialxpl"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
-addopts = "-v --tb=short"
+addopts = "-v --tb=short --cov=industrialxpl --cov-fail-under=8"
 
