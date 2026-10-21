@@ -1,5 +1,12 @@
 # Author: André Henrique (LinkedIn/X: @mrhenrike)
-from industrialxpl.core.exploit import *
+from industrialxpl.core.exploit import (
+    Exploit,
+    OptBool,
+    OptIP,
+    OptInteger,
+    OptPort,
+    OptWordlist,
+)
 from industrialxpl.modules.creds.generic.ssh_default import Exploit as SSHDefault
 
 

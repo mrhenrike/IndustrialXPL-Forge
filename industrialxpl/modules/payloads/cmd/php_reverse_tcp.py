@@ -1,4 +1,4 @@
-from industrialxpl.core.exploit import *
+from industrialxpl.core.exploit import OptString
 from industrialxpl.modules.payloads.php.reverse_tcp import Payload as PHPReverseTCP
 
 

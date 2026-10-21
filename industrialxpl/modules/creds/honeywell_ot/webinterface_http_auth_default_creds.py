@@ -1,5 +1,13 @@
 # Author: André Henrique (LinkedIn/X: @mrhenrike)
-from industrialxpl.core.exploit import *
+from industrialxpl.core.exploit import (
+    Exploit,
+    OptBool,
+    OptIP,
+    OptInteger,
+    OptPort,
+    OptString,
+    OptWordlist,
+)
 from industrialxpl.modules.creds.generic.http_basic_digest_default import Exploit as HTTPBasicDigestDefault
 
 
