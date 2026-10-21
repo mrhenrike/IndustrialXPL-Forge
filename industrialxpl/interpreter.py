@@ -7,6 +7,7 @@ Shell hierarchy:
 Prompt: "ixf >" (global) / "ixf (Module Name) >" (module loaded)
 """
 
+import logging
 import os
 import sys
 
@@ -223,14 +224,14 @@ class BaseInterpreter:
             return
         try:
             readline.read_history_file(self.history_file)
-        except (FileNotFoundError, OSError):
-            pass
+        except (FileNotFoundError, OSError) as e:
+            logging.debug("Connection/IO error (non-fatal): %s", e)
         try:
             readline.set_history_length(1000)
             readline.parse_and_bind("tab: complete")
             readline.set_completer_delims(" \t\n;")
-        except (AttributeError, OSError):
-            pass
+        except (AttributeError, OSError) as e:
+            logging.debug("Connection/IO error (non-fatal): %s", e)
 
     def _bind_completer(self) -> None:
         if not _HAS_READLINE or readline is None:
@@ -333,8 +334,8 @@ class BaseInterpreter:
                 print_info("  'update' -- check details and upgrade interactively")
                 print_info("  'update --silent' -- upgrade without confirmation")
                 print_info("")
-        except (OSError, ValueError, KeyError, TimeoutError):
-            pass
+        except (OSError, ValueError, KeyError, TimeoutError) as e:
+            logging.debug("Connection/IO error (non-fatal): %s", e)
 
     def start(self, show_banner: bool = True) -> None:
         """Start the interactive REPL loop.
@@ -362,8 +363,8 @@ class BaseInterpreter:
                 if _HAS_READLINE and readline is not None:
                     try:
                         readline.write_history_file(self.history_file)
-                    except OSError:
-                        pass
+                    except OSError as e:
+                        logging.debug("Connection/IO error (non-fatal): %s", e)
 
                 keep_going = self._dispatch(raw)
                 if not keep_going:
@@ -372,8 +373,8 @@ class BaseInterpreter:
             if _HAS_READLINE and readline is not None:
                 try:
                     readline.write_history_file(self.history_file)
-                except OSError:
-                    pass
+                except OSError as e:
+                    logging.debug("Connection/IO error (non-fatal): %s", e)
 
     def nonInteractive(self, argv: list) -> None:  # type: ignore[type-arg]
         """Execute a single command from command-line arguments (legacy mode)."""
@@ -410,8 +411,8 @@ class IXFInterpreter(
         try:
             from industrialxpl.core.malware.crosscompile import ensure_cross_path_in_env
             ensure_cross_path_in_env()
-        except (ImportError, OSError):
-            pass
+        except (ImportError, OSError) as e:
+            logging.debug("cross-compile env setup skipped: %s", e)
         print_status("Indexing modules…")
         self.modules: list = index_modules()  # type: ignore[type-arg]
         print_success(f"{len(self.modules)} modules indexed.")
@@ -434,8 +435,8 @@ class IXFInterpreter(
                     online, total, pid, r.get("go_cnc_pid", " - "),
                 )
             )
-        except (ImportError, OSError, KeyError):
-            pass
+        except (ImportError, OSError, KeyError) as e:
+            logging.debug("C2 resume skipped: %s", e)
 
     # -- Global commands ----------------------------------------------------
 
@@ -1431,24 +1432,24 @@ Example:
                 if key in self.current_module.options:  # type: ignore[attr-defined]
                     try:
                         setattr(self.current_module, key, val)
-                    except (AttributeError, TypeError, ValueError):
-                        pass
+                    except (AttributeError, TypeError, ValueError) as e:
+                        logging.debug("Data error (unexpected format): %s", e)
             # Explicit globals for targeting (port/transport/unit_id override module defaults)
             for gkey in ("port", "transport", "unit_id"):
                 gval = self._global_opts.get(gkey, "")
                 if gval and gkey in self.current_module.options:  # type: ignore[attr-defined]
                     try:
                         setattr(self.current_module, gkey, gval)
-                    except (AttributeError, TypeError, ValueError):
-                        pass
+                    except (AttributeError, TypeError, ValueError) as e:
+                        logging.debug("Data error (unexpected format): %s", e)
             # Always propagate target if module has it and global is set
             g_target = self._global_opts.get("target", "")
             if g_target and "target" in self.current_module.options:  # type: ignore[attr-defined]
                 try:
                     if not getattr(self.current_module, "target", ""):
                         self.current_module.target = g_target  # type: ignore[attr-defined]
-                except (AttributeError, TypeError, ValueError):
-                    pass
+                except (AttributeError, TypeError, ValueError) as e:
+                    logging.debug("Data error (unexpected format): %s", e)
             # Warn if poly language requires external runtime
             info = self.current_module.get_info()  # type: ignore[attr-defined]
             poly_lang = info.get("poly_language", "python")
@@ -1616,8 +1617,8 @@ Example:
                 if self.current_module and "port" in self.current_module.options:  # type: ignore[attr-defined]
                     try:
                         self.current_module.port = expr  # type: ignore[attr-defined]
-                    except (AttributeError, TypeError, ValueError):
-                        pass
+                    except (AttributeError, TypeError, ValueError) as e:
+                        logging.debug("Data error (unexpected format): %s", e)
                 return
             except (ValueError, OSError) as exc:
                 print_error(f"Invalid port expression: {value} ({exc})")
@@ -1636,8 +1637,8 @@ Example:
             if self.current_module and "transport" in self.current_module.options:  # type: ignore[attr-defined]
                 try:
                     self.current_module.transport = lv  # type: ignore[attr-defined]
-                except (AttributeError, TypeError, ValueError):
-                    pass
+                except (AttributeError, TypeError, ValueError) as e:
+                    logging.debug("Data error (unexpected format): %s", e)
             return
 
         if key == "unit_id":
@@ -1650,8 +1651,8 @@ Example:
                 if self.current_module and "unit_id" in self.current_module.options:  # type: ignore[attr-defined]
                     try:
                         self.current_module.unit_id = uid  # type: ignore[attr-defined]
-                    except (AttributeError, TypeError, ValueError):
-                        pass
+                    except (AttributeError, TypeError, ValueError) as e:
+                        logging.debug("Data error (unexpected format): %s", e)
                 return
             except ValueError:
                 print_error(f"UNIT_ID must be 0-255, got: {value}")
@@ -1666,8 +1667,8 @@ Example:
                 if self.current_module and "timing" in self.current_module.options:  # type: ignore[attr-defined]
                     try:
                         self.current_module.timing = value  # type: ignore[attr-defined]
-                    except (AttributeError, TypeError, ValueError):
-                        pass
+                    except (AttributeError, TypeError, ValueError) as e:
+                        logging.debug("Data error (unexpected format): %s", e)
                 return
             except ValueError as exc:
                 print_error(str(exc))
@@ -1677,8 +1678,8 @@ Example:
         if self.current_module and key in self.current_module.options:  # type: ignore[attr-defined]
             try:
                 setattr(self.current_module, key, value)
-            except (AttributeError, TypeError, ValueError):
-                pass
+            except (AttributeError, TypeError, ValueError) as e:
+                logging.debug("Data error (unexpected format): %s", e)
         print_success(f"[global] {key} => {value}")
 
     def command_unsetg(self, args: str, **kwargs) -> None:

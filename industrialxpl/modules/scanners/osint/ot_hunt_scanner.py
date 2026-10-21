@@ -23,6 +23,7 @@ References:
     ZeronTek OT Hunt reports
 """
 
+import logging
 import socket
 import struct
 
@@ -132,8 +133,8 @@ class Exploit(Exploit):
                     s.recvfrom(256)
                 s.close()
                 return True
-            except OSError:
-                pass
+            except OSError as e:
+                logging.debug("Connection/IO error (non-fatal): %s", e)
         return False
 
     def _probe_honeywell(self) -> None:

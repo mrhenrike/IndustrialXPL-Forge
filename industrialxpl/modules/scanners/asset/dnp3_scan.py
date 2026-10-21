@@ -15,6 +15,7 @@ References:
 Version: 1.0.0
 """
 
+import logging
 import socket
 import struct
 import time
@@ -177,8 +178,8 @@ class Exploit(Exploit):
             resp = sock.recv(292)
             if resp:
                 return self._parse_link_response(resp)
-        except TimeoutError:
-            pass
+        except TimeoutError as e:
+            logging.debug("Connection/IO error (non-fatal): %s", e)
         return {}
 
     @mute

@@ -24,6 +24,7 @@ References:
 Version: 1.0.0
 """
 
+import logging
 import socket
 import struct
 from typing import Optional
@@ -149,8 +150,8 @@ def _parse_i_am(data: bytes, src_ip: str) -> dict | None:
                 offset += 3
             result["VendorID"] = vendor_id
             result["VendorName"] = _VENDOR_NAMES.get(vendor_id, f"Unknown(ID={vendor_id})")
-    except (KeyError, struct.error):
-        pass
+    except (KeyError, struct.error) as e:
+        logging.debug("Parse error (malformed packet): %s", e)
 
     return result
 

@@ -16,6 +16,8 @@ Author: Andre Henrique (@mrhenrike) | Uniao Geek
 
 from __future__ import annotations
 
+import logging
+
 import socket
 import struct
 from typing import Optional
@@ -168,8 +170,8 @@ class DNP3Scanner(Base):
                         r = s.recv(64)
                         if r and r[:2] == DNP3_START_BYTES:
                             print(f"    [+] Active outstation at address {addr}")
-                    except OSError:
-                        pass
+                    except OSError as e:
+                        logging.debug("Connection/IO error (non-fatal): %s", e)
 
         except OSError as exc:
             print(f"[-] Error: {exc}")

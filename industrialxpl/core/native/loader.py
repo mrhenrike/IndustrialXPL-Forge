@@ -18,6 +18,7 @@ In-memory compilation (C/Rust payloads):
 """
 
 
+import logging
 import importlib.util
 import os
 import subprocess
@@ -302,8 +303,8 @@ class NativePayloadLoader:
                 try:
                     if artifact.exists():
                         artifact.unlink()
-                except OSError:
-                    pass
+                except OSError as e:
+                    logging.debug("Connection/IO error (non-fatal): %s", e)
 
     @classmethod
     def _exec_rust(cls, payload: NativePayload, target: str, options: dict) -> bool:
@@ -340,8 +341,8 @@ class NativePayloadLoader:
             try:
                 if out_bin.exists():
                     out_bin.unlink()
-            except OSError:
-                pass
+            except OSError as e:
+                logging.debug("Connection/IO error (non-fatal): %s", e)
 
     @classmethod
     def _exec_go(cls, payload: NativePayload, target: str, options: dict) -> bool:
@@ -376,8 +377,8 @@ class NativePayloadLoader:
             try:
                 if out_bin.exists():
                     out_bin.unlink()
-            except OSError:
-                pass
+            except OSError as e:
+                logging.debug("Connection/IO error (non-fatal): %s", e)
 
     @staticmethod
     def _find_compiler() -> str | None:

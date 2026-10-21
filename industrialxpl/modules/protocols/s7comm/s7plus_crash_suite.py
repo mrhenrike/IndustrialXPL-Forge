@@ -13,6 +13,7 @@ References:
   - https://github.com/Esamgold/SIEMENS-S7-PLCs-attacks
   - CVE-2019-10929 (S7CommPlus integrity bypass)
 """
+import logging
 import socket
 import struct
 import time
@@ -133,8 +134,8 @@ class Exploit(Exploit):
                 time.sleep(0.3)
                 try:
                     s.recv(64)
-                except OSError:
-                    pass
+                except OSError as e:
+                    logging.debug("Connection/IO error (non-fatal): %s", e)
 
                 # Send OMS+ crash payload wrapped in TPKT/COTP DT
                 payload = self._CRASH_VARIANTS[v]

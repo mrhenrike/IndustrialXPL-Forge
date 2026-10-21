@@ -23,6 +23,7 @@ Version: 1.0.0
 """
 
 
+import logging
 import socket
 import struct
 import time
@@ -138,8 +139,8 @@ def _parse_szl_response(data: bytes) -> dict[str, str]:
                 if name:
                     result["module_name"] = name
 
-    except KeyError:
-        pass
+    except KeyError as e:
+        logging.debug("Data error (unexpected format): %s", e)
     return result
 
 

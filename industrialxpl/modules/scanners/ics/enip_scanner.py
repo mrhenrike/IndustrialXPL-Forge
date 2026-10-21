@@ -22,6 +22,7 @@ References:
 Version: 1.0.0
 """
 
+import logging
 import socket
 import struct
 
@@ -150,8 +151,8 @@ def _parse_list_identity(data: bytes) -> dict:
                 result["ip_address"] = sin_addr
                 result["status"] = f"0x{status:04X}"
             offset += item_len
-    except KeyError:
-        pass
+    except KeyError as e:
+        logging.debug("Data error (unexpected format): %s", e)
     return result
 
 

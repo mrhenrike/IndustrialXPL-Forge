@@ -31,6 +31,7 @@ References:
 Version: 1.0.0
 """
 
+import logging
 import socket
 import struct
 import sys
@@ -176,8 +177,8 @@ def _scan_l2(iface: str, timeout: int) -> list[dict]:
             except TimeoutError:
                 break
         sock.close()
-    except OSError:
-        pass
+    except OSError as e:
+        logging.debug("Connection/IO error (non-fatal): %s", e)
     return results
 
 

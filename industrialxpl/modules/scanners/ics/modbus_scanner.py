@@ -19,6 +19,7 @@ References:
   - MITRE ATT&CK ICS: T0846 (Remote System Discovery)
 """
 
+import logging
 import random
 import socket as _socket
 import struct
@@ -52,8 +53,8 @@ def _parse_mei_response(data: bytes) -> dict:
             oval = data[offset + 2: offset + 2 + olen].decode("ascii", errors="replace")
             result[obj_labels.get(oid, f"Obj_0x{oid:02X}")] = oval
             offset += 2 + olen
-    except (UnicodeDecodeError, ValueError):
-        pass
+    except (UnicodeDecodeError, ValueError) as e:
+        logging.debug("Parse error (malformed packet): %s", e)
     return result
 
 

@@ -12,6 +12,7 @@ Supports:
   - T0-T5 timing profiles
 """
 
+import logging
 import struct
 
 from industrialxpl.core.exploit import (
@@ -87,8 +88,8 @@ class Exploit(ModbusBaseExploit):
                         oval = resp[off + 2: off + 2 + olen].decode("ascii", errors="replace")
                         print_info("    {:20s}: {}".format(obj_labels.get(oid, f"ObjID_0x{oid:02X}"), oval))
                         off += 2 + olen
-                except (UnicodeDecodeError, ValueError):
-                    pass
+                except (UnicodeDecodeError, ValueError) as e:
+                    logging.debug("Parse error (malformed packet): %s", e)
             elif fc_resp & 0x80:
                 exc = resp[8] if len(resp) > 8 else "?"
                 print_status(f"  FC43 exception {exc} - MEI not supported, device present")

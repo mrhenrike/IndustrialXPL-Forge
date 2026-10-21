@@ -1,6 +1,7 @@
 """ISF/icssploit port - MIT protocol handlers (REFERENCE_ONLY upstream GPL)."""
 
 
+import logging
 import socket
 from typing import Any
 
@@ -32,8 +33,8 @@ def probe_dnp3(host: str, timeout: float = 3.0) -> dict[str, Any]:
         s = socket.create_connection((host, 20000), timeout=timeout)
         s.close()
         ok = True
-    except OSError:
-        pass
+    except OSError as e:
+        logging.debug("Connection/IO error (non-fatal): %s", e)
     return {"protocol": "dnp3", "detected": ok, "port": 20000}
 
 

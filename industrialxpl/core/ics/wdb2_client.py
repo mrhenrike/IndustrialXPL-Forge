@@ -74,8 +74,8 @@ class Wdb2Client:
         if self._sock:
             try:
                 self._sock.close()
-            except OSError:
-                pass
+            except OSError as e:
+                logging.debug("Connection/IO error (non-fatal): %s", e)
             self._sock = None
 
     def __enter__(self) -> "Wdb2Client":

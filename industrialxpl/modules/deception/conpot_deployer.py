@@ -198,8 +198,8 @@ def stop_conpot(instance: ConpotInstance) -> bool:
         except subprocess.TimeoutExpired:
             instance.process.kill()
             return True
-        except (OSError, subprocess.SubprocessError):
-            pass
+        except (OSError, subprocess.SubprocessError) as e:
+            logging.debug("Connection/IO error (non-fatal): %s", e)
     if instance.pid:
         try:
             os.kill(instance.pid, signal.SIGTERM)

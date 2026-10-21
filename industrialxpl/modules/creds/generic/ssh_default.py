@@ -1,5 +1,6 @@
 """Generic SSH Default Credentials bruteforce for OT/ICS devices."""
 
+import logging
 import socket
 
 from industrialxpl.core.exploit import (
@@ -93,8 +94,8 @@ class Exploit(_Exploit):
                 print_success(f"VALID: {username}:{password} on {self.target}:{self.port}")
                 client.close()
                 return
-            except _paramiko.AuthenticationException:
-                pass
+            except _paramiko.AuthenticationException as e:
+                logging.debug("SSH auth failed: %s", e)
             except (ConnectionError, TimeoutError, OSError):
                 break
         print_info("No valid default credentials found.")

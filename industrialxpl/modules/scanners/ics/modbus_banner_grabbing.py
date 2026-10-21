@@ -7,6 +7,7 @@ product code, firmware version, and serial number.
 Supports port ranges and T0-T5 timing profiles.
 """
 
+import logging
 import struct
 
 from industrialxpl.core.exploit import (
@@ -42,8 +43,8 @@ def _parse_mei(data: bytes) -> dict[str, str]:
             oval = data[off + 2: off + 2 + olen].decode("ascii", errors="replace")
             result[_OBJ_LABELS.get(oid, f"Obj_0x{oid:02X}")] = oval
             off += 2 + olen
-    except (UnicodeDecodeError, ValueError):
-        pass
+    except (UnicodeDecodeError, ValueError) as e:
+        logging.debug("Parse error (malformed packet): %s", e)
     return result
 
 

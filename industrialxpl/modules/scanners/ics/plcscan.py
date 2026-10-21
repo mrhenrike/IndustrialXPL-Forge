@@ -149,8 +149,8 @@ def scan_modbus_unit(ip: str, port: int, uid: int, timeout: float,
             info.append(f"Device info error: {e.message}")
         else:
             return info
-    except ModbusProtocolError:
-        pass
+    except ModbusProtocolError as e:
+        logging.debug("Modbus protocol error: %s", e)
 
     return info
 
@@ -290,8 +290,8 @@ class S7Client:
         if self._sock:
             try:
                 self._sock.close()
-            except OSError:
-                pass
+            except OSError as e:
+                logging.debug("Connection/IO error (non-fatal): %s", e)
 
 
 def brute_tsap(ip: str, port: int, timeout: float,

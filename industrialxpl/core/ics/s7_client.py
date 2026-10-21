@@ -121,8 +121,8 @@ class S7Client:
         if self._sock:
             try:
                 self._sock.close()
-            except OSError:
-                pass
+            except OSError as e:
+                logging.debug("Connection/IO error (non-fatal): %s", e)
             self._sock = None
             self._connected = False
 
@@ -264,14 +264,14 @@ class S7Client:
         if rsp and len(rsp) > 30:
             try:
                 result["order_code"] = rsp[14:34].decode("ascii", errors="replace").rstrip("\x00 ")
-            except KeyError:
-                pass
+            except KeyError as e:
+                logging.debug("Data error (unexpected format): %s", e)
         rsp2 = self.read_szl(0x001c)
         if rsp2 and len(rsp2) > 30:
             try:
                 result["module_name"] = rsp2[2:24].decode("ascii", errors="replace").rstrip("\x00 ")
-            except KeyError:
-                pass
+            except KeyError as e:
+                logging.debug("Data error (unexpected format): %s", e)
         return result
 
     # ------------------------------------------------------------------ #
