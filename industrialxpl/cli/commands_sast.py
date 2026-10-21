@@ -28,7 +28,7 @@ class SASTCommandsMixin:
             rows = [(p, s) for p, s in status.items()]
             print_table(["Provider", "Status"], rows, title="LLM Providers")
             print_info(f"Active: {active}")
-        except Exception as exc:
+        except (ImportError, KeyError) as exc:
             print_error(f"Error: {exc}")
 
     def command_sast(self, args: str, **kwargs) -> None:

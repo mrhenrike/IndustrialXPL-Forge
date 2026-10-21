@@ -75,7 +75,7 @@ def _tcp_connect(target: str, port: int, timeout: int) -> socket.socket | None:
     try:
         sock = socket.create_connection((target, port), timeout=timeout)
         return sock
-    except Exception:
+    except (ConnectionError, TimeoutError, OSError):
         return None
 
 
@@ -195,5 +195,5 @@ class Exploit(Exploit):
                 f"[CVE-2019-13946] Packet sent. Monitor {self.target}:{self.port} for loss of connectivity "
                 "(indicates CPU entered STOP mode)."
             )
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, OSError) as exc:
             print_error(f"[CVE-2019-13946] Error: {exc}")

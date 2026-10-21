@@ -125,7 +125,7 @@ def _probe_fc(
         return "refused", b""
     except TimeoutError:
         return "timeout", b""
-    except Exception:
+    except (ConnectionError, TimeoutError, OSError):
         return "error", b""
 
 
@@ -263,7 +263,7 @@ class Exploit(BaseExploit):
             sock.connect((host, int(self.rport)))
             sock.close()
             return True
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, ValueError, OSError) as exc:
             print(f"[-] Cannot reach {host}:{self.rport} - {exc}")
             return False
 

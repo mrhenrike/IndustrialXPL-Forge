@@ -113,7 +113,7 @@ def _check_http_banner(host: str, port: int = 80, timeout: float = 5.0) -> str |
             f"http://{host}:{port}/", timeout=timeout
         ) as resp:
             return resp.read(2000).decode("utf-8", errors="ignore").lower()
-    except Exception:
+    except (ImportError, ValueError, OSError):
         return None
 
 
@@ -136,7 +136,7 @@ def _check_modbus_device_id(host: str, port: int = 502, timeout: float = 3.0) ->
             sock.sendall(mbap)
             sock.settimeout(timeout)
             return sock.recv(256)
-    except Exception:
+    except (ConnectionError, TimeoutError, OSError):
         return None
 
 

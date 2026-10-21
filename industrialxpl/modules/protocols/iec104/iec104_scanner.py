@@ -61,7 +61,7 @@ class IEC104Scanner(Base):
             s.settimeout(self.timeout)
             s.connect((self.target, self.port))
             return s
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError):
             return None
 
     def check(self) -> bool:
@@ -118,7 +118,7 @@ class IEC104Scanner(Base):
             else:
                 print("[?] No data objects returned (may require auth)")
 
-        except Exception as exc:
+        except OSError as exc:
             print(f"[-] Error: {exc}")
         finally:
             s.close()

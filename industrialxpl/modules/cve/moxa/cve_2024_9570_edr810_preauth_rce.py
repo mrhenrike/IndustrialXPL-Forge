@@ -65,7 +65,7 @@ class Exploit(Exploit):
             resp = ss.recv(512)
             ss.close()
             return b"Moxa" in resp or b"EDR" in resp or b"HTTP" in resp
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError):
             return False
 
     def run(self):
@@ -124,7 +124,7 @@ class Exploit(Exploit):
                     chunk = ss.recv(1024)
                     if not chunk: break
                     resp += chunk
-            except Exception:
+            except OSError:
                 pass
             ss.close()
 
@@ -139,5 +139,5 @@ class Exploit(Exploit):
                 print_info(f"[CVE-2024-9570] Response: {resp_str[:100]}")
         except ConnectionRefusedError:
             print_warning(f"[CVE-2024-9570] Connection refused on port {self.port}")
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, ImportError, OSError) as exc:
             print_error(f"[CVE-2024-9570] Error: {exc}")

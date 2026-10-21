@@ -105,7 +105,7 @@ class DNP3Scanner(Base):
             s.settimeout(self.timeout)
             s.connect((self.target, self.port))
             return s
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError):
             return None
 
     def check(self) -> bool:
@@ -168,10 +168,10 @@ class DNP3Scanner(Base):
                         r = s.recv(64)
                         if r and r[:2] == DNP3_START_BYTES:
                             print(f"    [+] Active outstation at address {addr}")
-                    except Exception:
+                    except OSError:
                         pass
 
-        except Exception as exc:
+        except OSError as exc:
             print(f"[-] Error: {exc}")
         finally:
             s.close()

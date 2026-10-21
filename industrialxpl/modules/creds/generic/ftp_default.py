@@ -65,7 +65,7 @@ class Exploit(_Exploit):
             banner = sock.recv(256)
             sock.close()
             return b"220" in banner or b"FTP" in banner.upper()
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError):
             return False
 
     def run(self) -> None:
@@ -118,7 +118,7 @@ class Exploit(_Exploit):
                         print_info(f"    Directory listing ({len(listing)} entries)")
                         for line in listing[:5]:
                             print_info(f"      {line}")
-                except Exception:
+                except (KeyError, TypeError, ValueError):
                     pass
                 ftp.quit()
             except ftplib.error_perm:

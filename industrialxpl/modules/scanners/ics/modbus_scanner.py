@@ -52,7 +52,7 @@ def _parse_mei_response(data: bytes) -> dict:
             oval = data[offset + 2: offset + 2 + olen].decode("ascii", errors="replace")
             result[obj_labels.get(oid, f"Obj_0x{oid:02X}")] = oval
             offset += 2 + olen
-    except Exception:
+    except (UnicodeDecodeError, ValueError):
         pass
     return result
 
@@ -135,7 +135,7 @@ class Exploit(ModbusBaseExploit):
                         print_info(f"    FC{fc:02d} {label} (addr {start}-{start + qty - 1}): {bits}  [SIMULATED]")
                     print_info("")
                     print_warning("  To read REAL values: set SIMULATE false && run")
-                except Exception:
+                except (ConnectionError, TimeoutError, OSError):
                     print_info(f"  [SIMULATE] {self.target}:{port} no response (closed or filtered)")
             return
 

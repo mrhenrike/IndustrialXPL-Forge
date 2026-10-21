@@ -105,7 +105,7 @@ def _recv_tpkt(sock: socket.socket) -> bytes | None:
                 break
             body += chunk
         return header + body
-    except Exception:
+    except (OSError, struct.error):
         return None
 
 
@@ -147,7 +147,7 @@ class Exploit(BaseExploit):
         print_status(f"Connecting to S7 PLC on {self.target}:{self.port}...")
         try:
             sock = socket.create_connection((self.target, self.port), timeout=self.timeout)
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, OSError) as exc:
             print_error(f"Connection failed: {exc}")
             return
 
@@ -191,7 +191,7 @@ class Exploit(BaseExploit):
                         if len(szl_data) > 32 else ""
                     if plant_id:
                         print_status(f"Plant ID: {plant_id}")
-                except Exception:
+                except (UnicodeDecodeError, ValueError):
                     print_status(f"SZL data ({len(szl_data)} bytes) - could not parse fields")
             else:
                 print_status("No SZL response or insufficient data")
@@ -206,5 +206,5 @@ class Exploit(BaseExploit):
             resp = _recv_tpkt(sock)
             sock.close()
             return resp is not None and len(resp) >= 5
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError):
             return False

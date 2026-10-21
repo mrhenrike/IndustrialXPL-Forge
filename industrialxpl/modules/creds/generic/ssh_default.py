@@ -61,7 +61,7 @@ class Exploit(_Exploit):
             banner = sock.recv(64)
             sock.close()
             return b"SSH" in banner
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError):
             return False
 
     def run(self) -> None:
@@ -95,6 +95,6 @@ class Exploit(_Exploit):
                 return
             except _paramiko.AuthenticationException:
                 pass
-            except Exception:
+            except (ConnectionError, TimeoutError, OSError):
                 break
         print_info("No valid default credentials found.")

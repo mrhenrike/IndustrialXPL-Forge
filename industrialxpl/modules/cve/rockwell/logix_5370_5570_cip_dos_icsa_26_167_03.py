@@ -197,7 +197,7 @@ class Exploit(Exploit):
             return f"Port {self.port} closed at {self.target}"
         except TimeoutError:
             return f"Timeout at {self.target}:{self.port}"
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, ValueError, OSError) as exc:
             return f"Check error: {exc}"
 
     def run(self) -> None:
@@ -235,7 +235,7 @@ class Exploit(Exploit):
                 except ConnectionRefusedError:
                     logger.info("[+] Connection refused - EtherNet/IP service down (MNRF confirmed)")
                     return
-                except Exception as exc:
+                except (ConnectionError, TimeoutError, ValueError, OSError) as exc:
                     logger.warning("[*] Pkt %d error: %s", i + 1, exc)
                 time.sleep(0.2)
 
@@ -248,7 +248,7 @@ class Exploit(Exploit):
                 resp = sock.recv(28)
                 if len(resp) >= 8:
                     return struct.unpack_from("<I", resp, 4)[0]
-        except Exception:
+        except (ConnectionError, TimeoutError, ValueError, OSError):
             pass
         return 0
 

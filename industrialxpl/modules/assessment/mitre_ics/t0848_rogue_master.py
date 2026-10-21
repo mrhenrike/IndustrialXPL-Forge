@@ -76,7 +76,7 @@ class Exploit(Exploit):
             resp = sock.recv(64)
             sock.close()
             return len(resp) >= 8 and resp[7] == 0x03
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError, struct.error):
             return False
 
     def run(self) -> None:
@@ -114,7 +114,7 @@ class Exploit(Exploit):
                     )
                 else:
                     print_info("[T0848] No valid Modbus response.")
-            except Exception as exc:
+            except (ConnectionError, TimeoutError, KeyError, OSError, struct.error) as exc:
                 print_error(f"[T0848] Error: {exc}")
             return
 
@@ -135,5 +135,5 @@ class Exploit(Exploit):
                 print_success(f"[T0848] Rogue write accepted - register {self.write_address} set to {self.write_value}.")
             else:
                 print_error(f"[T0848] Write response unexpected: {resp.hex()}")
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, OSError, struct.error) as exc:
             print_error(f"[T0848] Error: {exc}")

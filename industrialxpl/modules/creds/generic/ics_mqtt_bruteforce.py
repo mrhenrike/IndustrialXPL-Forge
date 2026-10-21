@@ -139,7 +139,7 @@ def _send_connect_read_connack(
         if resp and len(resp) >= 4 and resp[0] == 0x20:
             return resp[3]
         return None
-    except Exception:
+    except (ConnectionError, TimeoutError, OSError):
         return None
 
 
@@ -193,7 +193,7 @@ class Exploit(_Exploit):
             conn = socket.create_connection((self.target, int(self.port)), timeout=5)
             conn.close()
             return True
-        except Exception:
+        except (ConnectionError, TimeoutError, ValueError, OSError):
             return False
 
     def _load_credentials(self) -> list[tuple[str, str]]:

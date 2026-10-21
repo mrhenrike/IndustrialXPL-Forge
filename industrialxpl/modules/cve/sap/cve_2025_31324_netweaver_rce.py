@@ -121,7 +121,7 @@ def _http_get(host: str, port: int, path: str, use_tls: bool, timeout: float) ->
                 headers[k.lower()] = v
         body = text.split("\r\n\r\n", 1)[1] if "\r\n\r\n" in text else ""
         return {"status": status_line, "headers": headers, "body": body[:8192]}
-    except Exception:
+    except (ConnectionError, TimeoutError, ImportError, OSError):
         return None
 
 

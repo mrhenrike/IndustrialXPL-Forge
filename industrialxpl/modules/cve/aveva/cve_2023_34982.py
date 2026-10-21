@@ -44,7 +44,7 @@ class Exploit(Exploit):
             s.connect((self.target, self.port))
             s.close()
             return True
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError):
             return False
 
     def run(self):

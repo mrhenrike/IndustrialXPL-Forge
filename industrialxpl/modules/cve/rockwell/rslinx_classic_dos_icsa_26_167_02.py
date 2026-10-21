@@ -109,7 +109,7 @@ class Exploit(Exploit):
             return f"Port {self.port} closed - RSLinx Classic not running or firewalled"
         except TimeoutError:
             return f"Timeout on {self.target}:{self.port}"
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, ValueError, OSError) as exc:
             return f"Check error: {exc}"
 
     def run(self) -> None:
@@ -142,7 +142,7 @@ class Exploit(Exploit):
                 logger.info("[+] Packet %d: Connection refused - RSLinx service likely crashed", i + 1)
                 logger.info("[+] CVE-2020-13573 DoS SUCCESSFUL - RSLinx Classic service down")
                 break
-            except Exception as exc:
+            except (ConnectionError, TimeoutError, ValueError, OSError) as exc:
                 logger.warning("[*] Packet %d error: %s", i + 1, exc)
 
         if successes == count:

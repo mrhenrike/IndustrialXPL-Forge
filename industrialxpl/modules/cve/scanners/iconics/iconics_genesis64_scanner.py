@@ -62,7 +62,7 @@ class Exploit(Exploit):
             vendor_detected = b"GENESIS64" in banner
             results.append(("ICONICS/Mitsubishi GENESIS64 SCADA", f"{self.target}:{self.port}",
                            "Detected" if vendor_detected else "Unknown", banner[:64].hex()))
-        except Exception as e:
+        except OSError as e:
             results.append(("ICONICS/Mitsubishi GENESIS64 SCADA", f"{self.target}:{self.port}",
                            "Unreachable", str(e)))
         if results:

@@ -94,7 +94,7 @@ class Exploit(Exploit):
             resp = sock.recv(64)
             sock.close()
             return len(resp) >= 4 and resp[7] == 0x03
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError, struct.error):
             return False
 
     def run(self) -> None:
@@ -163,5 +163,5 @@ class Exploit(Exploit):
                 print_warning("Process impact: heating output modified. Operator intervention required.")
             else:
                 print_error("Unexpected response: {}".format(resp.hex() if resp else "empty"))
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, OSError) as exc:
             print_error(f"Error: {exc}")

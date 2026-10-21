@@ -103,7 +103,7 @@ class Exploit(Exploit):
             sock.connect((self.target, self.port))
             sock.close()
             return True
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError):
             return False
 
     def run(self) -> None:
@@ -165,7 +165,7 @@ class Exploit(Exploit):
                     if e.code in (401, 403):
                         found.append((vendor[:20], path[:40], str(e.code)))
                         print_info(f"[ELITEWOLF] {vendor} - HTTP {e.code} {url}")
-                except Exception:
+                except (ValueError, OSError):
                     pass
 
         if found:

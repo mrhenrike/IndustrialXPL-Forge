@@ -155,7 +155,7 @@ class LLMProviderManager:
             raise
         except LLMKeyMissingError:
             raise
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, OSError, ValueError, RuntimeError) as exc:
             raise LLMRequestError(
                 f"LLM request failed (provider={provider}): {exc}"
             ) from exc

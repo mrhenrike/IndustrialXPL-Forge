@@ -40,7 +40,7 @@ def _load_dorks() -> dict:
     if _DORKS_PATH.exists():
         try:
             return json.loads(_DORKS_PATH.read_text(encoding="utf-8"))
-        except Exception:
+        except (ValueError, KeyError):
             pass
     return {}
 
@@ -162,7 +162,7 @@ class Exploit(Exploit):
                     return
                 else:
                     print_warning(f"[Shodan] HTTP {resp.status_code} for query: {query}")
-            except Exception as exc:
+            except (ConnectionError, TimeoutError, OSError, ValueError) as exc:
                 print_error(f"[Shodan] Error: {exc}")
 
         if all_results:

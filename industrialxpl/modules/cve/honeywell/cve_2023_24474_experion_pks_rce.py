@@ -57,7 +57,7 @@ class Exploit(Exploit):
             s.connect((self.target, self.port))
             s.close()
             return True
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError):
             return False
 
     def run(self):
@@ -118,10 +118,10 @@ class Exploit(Exploit):
                 print_success("[CVE-2023-24474] Timeout - overflow likely triggered crash/code execution")
         except ConnectionRefusedError:
             print_warning(f"[CVE-2023-24474] Port {self.port} refused - verify Experion PKS API is on this port")
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, ImportError, OSError, struct.error) as exc:
             print_error(f"[CVE-2023-24474] Error: {exc}")
         finally:
             try:
                 sock.close()
-            except Exception:
+            except OSError:
                 pass

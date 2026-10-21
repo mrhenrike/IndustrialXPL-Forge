@@ -69,7 +69,7 @@ class Exploit(Exploit):
             r = s.recv(16)
             s.close()
             return len(r) >= 6
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError, struct.error):
             return False
 
     def run(self):
@@ -116,5 +116,5 @@ class Exploit(Exploit):
                 except TimeoutError:
                     print_success(f"[CVE-2024-11737] Packet {i}: Timeout - device unresponsive!")
                     return
-            except Exception as e:
+            except (ConnectionError, TimeoutError, ImportError, OSError) as e:
                 print_error(f"[CVE-2024-11737] Packet {i}: {e}")

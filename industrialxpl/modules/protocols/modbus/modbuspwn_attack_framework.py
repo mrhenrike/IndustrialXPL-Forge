@@ -106,7 +106,7 @@ class Exploit(Base):
                     print_good("FC01 (coils) accessible")
                     client.close()
                     return True
-        except Exception as exc:
+        except ValueError as exc:
             print_error(f"Modbus check error: {exc}")
         finally:
             client.close()
@@ -129,7 +129,7 @@ class Exploit(Base):
                     print_good(f"  {name}: ACCESSIBLE")
                 else:
                     results[name] = f"ERROR: {r}"
-            except Exception as exc:
+            except (KeyError, TypeError, ValueError) as exc:
                 results[name] = f"EXCEPTION: {exc}"
 
         # FC43 Device Identification
@@ -138,7 +138,7 @@ class Exploit(Base):
             if not r.isError():
                 results["FC43_device_id"] = str(r.information)
                 print_good(f"  FC43 Device ID: {results['FC43_device_id']}")
-        except Exception:
+        except (ValueError, KeyError):
             pass
         return results
 
@@ -165,7 +165,7 @@ class Exploit(Base):
             print_good(f"Read {len(values)} {fc} values from address {start}:")
             for i, v in enumerate(values):
                 print_status(f"  [{start + i}] = {v} (0x{v:04X})" if isinstance(v, int) else f"  [{start + i}] = {v}")
-        except Exception as exc:
+        except (AttributeError, TypeError, ValueError) as exc:
             print_error(f"Dump error: {exc}")
         return values
 
@@ -202,7 +202,7 @@ class Exploit(Base):
                         print_good(f"Device identification: {r.information}")
                     else:
                         print_error(f"FC43 failed: {r}")
-                except Exception as exc:
+                except ValueError as exc:
                     print_error(f"Device ID failed: {exc}")
 
             elif mode == "write_register":

@@ -79,7 +79,7 @@ def _parse_ip_range(ip_range: str) -> list:
         start_int = _ip_to_int(start_ip)
         end_int = _ip_to_int(end_ip)
         return [_int_to_ip(i) for i in range(start_int, end_int + 1)]
-    except Exception as exc:
+    except (ValueError, TypeError) as exc:
         raise ValueError(f"Invalid IP range '{ip_range}': {exc}") from exc
 
 
@@ -95,7 +95,7 @@ def _get_iface_mac(iface: str) -> bytes | None:
             (iface + "\x00" * 16)[:16].encode("utf-8").ljust(32, b"\x00"),
         )
         return info[18:24]
-    except Exception:
+    except ImportError:
         return None
 
 
@@ -290,7 +290,7 @@ class Exploit(_Exploit):
 
         try:
             sock_send.sendto(reply, ("255.255.255.255", 68))
-        except Exception as exc:
+        except OSError as exc:
             print_error(f"[FakeDHCP] Send failed: {exc}")
 
     def run(self) -> None:
@@ -344,7 +344,7 @@ class Exploit(_Exploit):
         except PermissionError:
             print_error("[FakeDHCP] Permission denied - run as root.")
             return
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, OSError) as exc:
             print_error(f"[FakeDHCP] Socket setup failed: {exc}")
             return
 
@@ -374,5 +374,5 @@ class Exploit(_Exploit):
             sock.bind(("0.0.0.0", 67))
             sock.close()
             return True
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError):
             return False

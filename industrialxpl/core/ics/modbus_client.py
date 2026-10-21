@@ -303,6 +303,6 @@ class ModbusClient:
                 elif obj_id == 0x02:
                     result["version"] = obj_val
                 offset += 2 + obj_len
-        except Exception:
+        except KeyError:
             pass
         return result or None

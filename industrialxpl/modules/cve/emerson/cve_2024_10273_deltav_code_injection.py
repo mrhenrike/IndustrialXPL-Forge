@@ -56,7 +56,7 @@ class Exploit(Exploit):
             s.connect((self.target, self.port))
             s.close()
             return True
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError):
             return False
 
     def run(self):
@@ -115,10 +115,10 @@ class Exploit(Exploit):
                 print_warning("[CVE-2024-10273] Timeout after payload")
         except ConnectionRefusedError:
             print_warning(f"[CVE-2024-10273] Port {self.port} refused - DeltaV App Station not running")
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, ImportError, OSError, struct.error) as exc:
             print_error(f"[CVE-2024-10273] Error: {exc}")
         finally:
             try:
                 sock.close()
-            except Exception:
+            except OSError:
                 pass

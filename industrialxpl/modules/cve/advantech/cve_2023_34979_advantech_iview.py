@@ -73,7 +73,7 @@ def _http_get(url: str, timeout: int = 5) -> tuple:
             return resp.status, resp.read(4096).decode("utf-8", errors="replace")
     except urllib.error.HTTPError as exc:
         return exc.code, ""
-    except Exception:
+    except (ValueError, OSError):
         return 0, ""
 
 
@@ -92,7 +92,7 @@ def _http_post(url: str, data: dict, timeout: int = 5) -> tuple:
             return resp.status, resp.read(4096).decode("utf-8", errors="replace")
     except urllib.error.HTTPError as exc:
         return exc.code, ""
-    except Exception:
+    except (ValueError, OSError):
         return 0, ""
 
 

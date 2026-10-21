@@ -53,7 +53,7 @@ class Exploit(Exploit):
             s.connect((self.target, self.port))
             s.close()
             return True
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError):
             return False
 
     def run(self):
@@ -95,7 +95,7 @@ class Exploit(Exploit):
                 return
             session_handle = struct.unpack_from("<I", resp, 4)[0]
             print_success(f"[CVE-2023-3596] Session: 0x{session_handle:08X}")
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, OSError) as exc:
             print_error(f"[CVE-2023-3596] Connection failed: {exc}")
             return
 
@@ -123,10 +123,10 @@ class Exploit(Exploit):
                     print_success("[CVE-2023-3596] EN2x silent after overflow - possible code execution or crash")
             except TimeoutError:
                 print_success("[CVE-2023-3596] No response (EN2x timeout) - overflow likely triggered")
-        except Exception as exc:
+        except OSError as exc:
             print_error(f"[CVE-2023-3596] Payload send failed: {exc}")
         finally:
             try:
                 sock.close()
-            except Exception:
+            except OSError:
                 pass

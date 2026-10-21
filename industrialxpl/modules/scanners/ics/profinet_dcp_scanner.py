@@ -90,7 +90,7 @@ def _get_local_mac(iface: str) -> bytes | None:
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         info = fcntl.ioctl(s.fileno(), SIOCGIFHWADDR, b"\x00" * 8 + iface.ljust(16).encode())
         return info[18:24]
-    except Exception:
+    except ImportError:
         return None
 
 
@@ -140,7 +140,7 @@ def _parse_dcp_response(data: bytes, src_mac: str) -> dict | None:
                 result["name_of_station"] = block_data.rstrip(b"\x00").decode("ascii", errors="replace")
 
         return result if len(result) > 1 else None
-    except Exception:
+    except KeyError:
         return None
 
 
@@ -176,7 +176,7 @@ def _scan_l2(iface: str, timeout: int) -> list[dict]:
             except TimeoutError:
                 break
         sock.close()
-    except Exception:
+    except OSError:
         pass
     return results
 
@@ -187,7 +187,7 @@ def _check_tcp_port(host: str, port: int, timeout: int) -> bool:
         sock = socket.create_connection((host, port), timeout=timeout)
         sock.close()
         return True
-    except Exception:
+    except (ConnectionError, TimeoutError, OSError):
         return False
 
 

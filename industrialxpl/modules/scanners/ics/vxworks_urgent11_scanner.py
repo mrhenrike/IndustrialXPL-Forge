@@ -160,5 +160,5 @@ class Exploit(BaseExploit):
 
         except subprocess.TimeoutExpired:
             print_error("Scan timed out")
-        except Exception as e:
+        except (OSError, subprocess.SubprocessError) as e:
             print_error(f"Scan error: {e}")

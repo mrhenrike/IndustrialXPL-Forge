@@ -87,7 +87,7 @@ class Exploit(ModbusBaseExploit):
                         oval = resp[off + 2: off + 2 + olen].decode("ascii", errors="replace")
                         print_info("    {:20s}: {}".format(obj_labels.get(oid, f"ObjID_0x{oid:02X}"), oval))
                         off += 2 + olen
-                except Exception:
+                except (UnicodeDecodeError, ValueError):
                     pass
             elif fc_resp & 0x80:
                 exc = resp[8] if len(resp) > 8 else "?"

@@ -90,7 +90,7 @@ def _send_list_identity_udp(target: str, port: int, timeout: int) -> bytes | Non
         data, _ = sock.recvfrom(512)
         sock.close()
         return data
-    except Exception:
+    except OSError:
         return None
 
 
@@ -102,7 +102,7 @@ def _send_list_identity_tcp(target: str, port: int, timeout: int) -> bytes | Non
         data = sock.recv(512)
         sock.close()
         return data
-    except Exception:
+    except (ConnectionError, TimeoutError, OSError):
         return None
 
 
@@ -150,7 +150,7 @@ def _parse_list_identity(data: bytes) -> dict:
                 result["ip_address"] = sin_addr
                 result["status"] = f"0x{status:04X}"
             offset += item_len
-    except Exception:
+    except KeyError:
         pass
     return result
 

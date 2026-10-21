@@ -57,7 +57,7 @@ class Exploit(Exploit):
             # Port is open - device may be present
             # Full version check requires protocol-specific fingerprinting
             return True  # POSSIBLY_VULNERABLE until version confirmed
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError):
             return False
 
     def run(self) -> None:

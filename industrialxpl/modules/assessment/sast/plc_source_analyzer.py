@@ -264,7 +264,7 @@ class Exploit(Exploit):
         try:
             binary = target_path.read_bytes()[:4096]
             hex_dump = " ".join(f"{b:02X}" for b in binary)
-        except Exception as exc:
+        except OSError as exc:
             print_error(f"Cannot read file: {exc}")
             return
 
@@ -285,7 +285,7 @@ class Exploit(Exploit):
             )
             for line in analysis.split("\n"):
                 print_info(line)
-        except Exception as exc:
+        except (ValueError, TypeError) as exc:
             print_error(f"[SAST/RE] Error: {exc}")
 
     def _run_diff(self, path1: Path, path2: Path, provider: str) -> None:
@@ -302,7 +302,7 @@ class Exploit(Exploit):
             )
             for line in analysis.split("\n"):
                 print_info(line)
-        except Exception as exc:
+        except (OSError, ValueError) as exc:
             print_error(f"[SAST/DIFF] Error: {exc}")
 
     def _run_exploit_gen(self, target_path: Path, provider: str) -> None:
@@ -323,5 +323,5 @@ class Exploit(Exploit):
             )
             for line in analysis.split("\n"):
                 print_info(line)
-        except Exception as exc:
+        except (ValueError, TypeError) as exc:
             print_error(f"[SAST/EXPLOIT-GEN] Error: {exc}")

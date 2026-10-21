@@ -141,7 +141,7 @@ class MitreTacticSweeper:
                     result["status"] = "VULNERABLE" if is_vuln else "NOT_VULNERABLE"
                 except NotImplementedError:
                     result["status"] = "NOT_IMPLEMENTED"
-                except Exception as exc:
+                except KeyError as exc:
                     result["status"] = "CHECK_ERROR"
                     result["error"] = str(exc)[:120]
 
@@ -151,7 +151,7 @@ class MitreTacticSweeper:
                         mod.run()
                     except NotImplementedError:
                         pass
-                    except Exception as exc:
+                    except (ConnectionError, TimeoutError, OSError, RuntimeError) as exc:
                         result["error"] = str(exc)[:120]
 
                 if self.simulate and result["status"] in ("VULNERABLE", "NOT_VULNERABLE"):
@@ -166,7 +166,7 @@ class MitreTacticSweeper:
                 result["status"] = "LOAD_ERROR"
                 result["error"] = str(exc)[:120]
                 print_error(f"[sweep] {path}: {exc}")
-            except Exception as exc:
+            except (AttributeError, TypeError, KeyError) as exc:
                 result["status"] = "ERROR"
                 result["error"] = str(exc)[:120]
 
@@ -204,6 +204,6 @@ class MitreTacticSweeper:
                 s.connect((str(host), 502))
                 s.close()
                 live.append(str(host))
-            except Exception:
+            except (ConnectionError, TimeoutError, OSError):
                 pass
         return live

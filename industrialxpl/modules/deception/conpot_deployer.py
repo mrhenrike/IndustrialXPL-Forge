@@ -183,7 +183,7 @@ def start_conpot(template: str = "default", bind_ip: str = "0.0.0.0",
     except FileNotFoundError:
         log.error("conpot binary not found. Install: pip install conpot")
         return None
-    except Exception as e:
+    except (ValueError, OSError, subprocess.SubprocessError) as e:
         log.error("Failed to start conpot: %s", e)
         return None
 
@@ -198,7 +198,7 @@ def stop_conpot(instance: ConpotInstance) -> bool:
         except subprocess.TimeoutExpired:
             instance.process.kill()
             return True
-        except Exception:
+        except (OSError, subprocess.SubprocessError):
             pass
     if instance.pid:
         try:
@@ -206,7 +206,7 @@ def stop_conpot(instance: ConpotInstance) -> bool:
             return True
         except ProcessLookupError:
             return True
-        except Exception:
+        except OSError:
             return False
     return False
 

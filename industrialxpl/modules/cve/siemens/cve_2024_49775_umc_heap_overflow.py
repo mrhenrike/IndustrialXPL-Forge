@@ -56,7 +56,7 @@ class Exploit(Exploit):
             s.connect((self.target, self.port))
             s.close()
             return True
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError):
             return False
 
     def run(self):
@@ -121,10 +121,10 @@ class Exploit(Exploit):
                 print_success("[CVE-2024-49775] Timeout after overflow - RCE or DoS likely triggered")
         except ConnectionRefusedError:
             print_warning(f"[CVE-2024-49775] Port {self.port} refused - UMC may use different port on this device")
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, ImportError, OSError, struct.error) as exc:
             print_error(f"[CVE-2024-49775] Error: {exc}")
         finally:
             try:
                 sock.close()
-            except Exception:
+            except OSError:
                 pass

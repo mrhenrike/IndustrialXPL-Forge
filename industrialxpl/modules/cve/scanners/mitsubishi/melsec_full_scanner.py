@@ -38,7 +38,7 @@ class Exploit(Exploit):
             banner = s.recv(256)
             s.close()
             results.append(("Mitsubishi Electric", f"{self.target}:{self.port}", "Detected", banner[:24].hex()))
-        except Exception as e:
+        except OSError as e:
             results.append(("Mitsubishi Electric", f"{self.target}:{self.port}", "Unreachable", str(e)[:25]))
         if results:
             print_table(["Vendor","Address","Status","Banner"], results)

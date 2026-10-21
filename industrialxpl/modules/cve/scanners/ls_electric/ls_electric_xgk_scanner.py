@@ -62,7 +62,7 @@ class Exploit(Exploit):
             vendor_detected = b"LS" in banner
             results.append(("LS Electric XGK/XGI Series PLC", f"{self.target}:{self.port}",
                            "Detected" if vendor_detected else "Unknown", banner[:64].hex()))
-        except Exception as e:
+        except OSError as e:
             results.append(("LS Electric XGK/XGI Series PLC", f"{self.target}:{self.port}",
                            "Unreachable", str(e)))
         if results:

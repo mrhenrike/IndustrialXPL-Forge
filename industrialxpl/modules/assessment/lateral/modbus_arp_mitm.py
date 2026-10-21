@@ -110,7 +110,7 @@ def _get_mac_via_arp(target_ip: str, iface: str, timeout: float = 3.0) -> bytes 
             except TimeoutError:
                 break
         sock.close()
-    except Exception:
+    except (OSError, struct.error):
         pass
     return None
 
@@ -126,7 +126,7 @@ def _get_iface_mac(iface: str) -> bytes | None:
             (iface + "\x00" * 16)[:16].encode("utf-8").ljust(32, b"\x00"),
         )
         return info[18:24]
-    except Exception:
+    except ImportError:
         return None
 
 
@@ -141,7 +141,7 @@ def _get_iface_ip(iface: str) -> str | None:
             (iface + "\x00" * 16)[:16].encode("utf-8").ljust(32, b"\x00"),
         )
         return socket.inet_ntoa(info[20:24])
-    except Exception:
+    except ImportError:
         return None
 
 
@@ -180,7 +180,7 @@ def _enable_ip_forward() -> str | None:
             f.write("1")
         print_status("[ARP MITM] IP forwarding enabled.")
         return prev
-    except Exception as exc:
+    except (ValueError, OSError) as exc:
         print_warning(f"[ARP MITM] Cannot set IP forward: {exc} - run as root.")
         return None
 
@@ -193,7 +193,7 @@ def _restore_ip_forward(prev: str | None) -> None:
         with open(fwd_path, "w") as f:
             f.write(prev)
         print_status(f"[ARP MITM] IP forwarding restored to {prev}.")
-    except Exception:
+    except (ValueError, OSError):
         pass
 
 
@@ -294,7 +294,7 @@ class Exploit(_Exploit):
             print_error("[ARP MITM] Permission denied - run as root.")
             _restore_ip_forward(prev_forward)
             return
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, OSError) as exc:
             print_error(f"[ARP MITM] Raw socket error: {exc}")
             _restore_ip_forward(prev_forward)
             return
@@ -335,10 +335,10 @@ class Exploit(_Exploit):
             sock1 = socket.create_connection((self.host1, 502), timeout=2)
             sock1.close()
             return True
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError):
             pass
         try:
             socket.create_connection((self.host1, 80), timeout=2).close()
             return True
-        except Exception:
+        except OSError:
             return False

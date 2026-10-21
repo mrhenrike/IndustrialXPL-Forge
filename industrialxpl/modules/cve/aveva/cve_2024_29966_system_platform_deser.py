@@ -60,7 +60,7 @@ class Exploit(Exploit):
             resp = s.recv(256)
             s.close()
             return b"AVEVA" in resp or b"InduSoft" in resp or b"HTTP" in resp
-        except Exception:
+        except OSError:
             return False
 
     def run(self):
@@ -143,10 +143,10 @@ class Exploit(Exploit):
                 print_success("[CVE-2024-29966] Timeout after probe - server may have crashed (exploitation indicator)")
         except ConnectionRefusedError:
             print_warning(f"[CVE-2024-29966] Connection refused - verify AVEVA service port {self.port}")
-        except Exception as exc:
+        except (ConnectionError, TimeoutError, ImportError, OSError) as exc:
             print_error(f"[CVE-2024-29966] Error: {exc}")
         finally:
             try:
                 sock.close()
-            except Exception:
+            except OSError:
                 pass

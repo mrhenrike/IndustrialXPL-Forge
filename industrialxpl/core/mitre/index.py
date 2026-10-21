@@ -63,7 +63,7 @@ def build_index(module_paths: list | None = None) -> None:
                     TACTIC_INDEX.setdefault(tac, [])
                     if mod_path not in TACTIC_INDEX[tac]:
                         TACTIC_INDEX[tac].append(mod_path)
-        except Exception as exc:
+        except (AttributeError, TypeError) as exc:
             logger.debug("MITRE index: skip %s - %s", mod_path, exc)
 
     _built = True

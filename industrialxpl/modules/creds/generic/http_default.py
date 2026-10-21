@@ -60,7 +60,7 @@ class Exploit(_Exploit):
             sock.connect((self.target, self.port))
             sock.close()
             return True
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError):
             return False
 
     def run(self) -> None:
@@ -86,6 +86,6 @@ class Exploit(_Exploit):
                 if resp.status_code == 200:
                     print_success(f"VALID: {username}:{password} on {url}")
                     return
-            except Exception:
+            except (ConnectionError, TimeoutError, OSError, ValueError):
                 break
         print_info("No valid credentials found.")

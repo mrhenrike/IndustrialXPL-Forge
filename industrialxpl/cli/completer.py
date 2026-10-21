@@ -86,7 +86,7 @@ class IXFCompleter:
             try:
                 import readline
                 buf = readline.get_line_buffer()
-            except Exception:
+            except ImportError:
                 buf = text
             self._matches = self._get_matches(buf, text)
         try:

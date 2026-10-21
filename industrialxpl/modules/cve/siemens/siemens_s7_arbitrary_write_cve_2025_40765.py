@@ -61,7 +61,7 @@ class Exploit(Exploit):
             s.close()
             # S7 COTP CC (0x0d) response indicates S7 device
             return len(resp) >= 4 and resp[5:6] == b'\xd0'
-        except Exception:
+        except (ConnectionError, TimeoutError, OSError):
             return False
 
     def run(self):
@@ -116,5 +116,5 @@ class Exploit(Exploit):
                 print_success("[CVE-2025-40765] WRITE CONFIRMED - PIO modified on target PLC")
             else:
                 print_info(f"[CVE-2025-40765] Response: {wresp.hex()}")
-        except Exception as e:
+        except (ConnectionError, TimeoutError, OSError) as e:
             print_error(f"[CVE-2025-40765] {e}")

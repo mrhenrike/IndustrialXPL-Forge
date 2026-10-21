@@ -120,5 +120,5 @@ class Exploit(Exploit):
                 print_success(f"[T0842] Captured {sum(stats.values())} OT packets - protocols identified above.")
             else:
                 print_info("[T0842] No OT traffic detected on standard ports.")
-        except Exception as exc:
+        except KeyError as exc:
             print_error(f"[T0842] Capture error: {exc}")

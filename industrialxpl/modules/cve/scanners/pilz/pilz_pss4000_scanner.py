@@ -62,7 +62,7 @@ class Exploit(Exploit):
             vendor_detected = b"PILZ" in banner
             results.append(("Pilz PNOZmulti/PSS4000 Safety PLC", f"{self.target}:{self.port}",
                            "Detected" if vendor_detected else "Unknown", banner[:64].hex()))
-        except Exception as e:
+        except OSError as e:
             results.append(("Pilz PNOZmulti/PSS4000 Safety PLC", f"{self.target}:{self.port}",
                            "Unreachable", str(e)))
         if results:

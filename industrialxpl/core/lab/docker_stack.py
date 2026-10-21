@@ -73,7 +73,7 @@ class DockerStackManager:
                 "stdout": (r.stdout or "")[:2000],
                 "stderr": (r.stderr or "")[:500],
             }
-        except Exception as exc:
+        except (KeyError, OSError, subprocess.SubprocessError) as exc:
             return {"success": False, "error": str(exc)}
 
     def up(self, build: bool = True, detach: bool = True) -> dict[str, Any]:
@@ -95,7 +95,7 @@ class DockerStackManager:
             }
         except subprocess.TimeoutExpired:
             return {"success": False, "error": "docker compose timeout"}
-        except Exception as exc:
+        except (OSError, subprocess.SubprocessError) as exc:
             return {"success": False, "error": str(exc)}
 
     def down(self) -> dict[str, Any]:
@@ -112,7 +112,7 @@ class DockerStackManager:
                 cwd=str(self.compose_dir),
             )
             return {"success": r.returncode == 0, "stdout": (r.stdout or "")[:500]}
-        except Exception as exc:
+        except (KeyError, OSError, subprocess.SubprocessError) as exc:
             return {"success": False, "error": str(exc)}
 
     def wait_http(self, url: str = "http://127.0.0.1:4242", timeout: int = 120) -> dict[str, Any]:

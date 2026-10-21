@@ -43,7 +43,7 @@ class Exploit(Exploit):
             s.close()
             results.append(("Endress+Hauser Fieldgate FXA42 Gateway", f"{self.target}:{self.port}",
                            "Detected", banner[:32].hex()))
-        except Exception as e:
+        except OSError as e:
             results.append(("Endress+Hauser Fieldgate FXA42 Gateway", f"{self.target}:{self.port}",
                            "Unreachable", str(e)[:30]))
         if results:
