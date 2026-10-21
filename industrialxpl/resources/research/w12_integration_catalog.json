@@ -1,0 +1,206 @@
+{
+  "version": "12.0",
+  "generated": "2026-10-21",
+  "description": "Wave 12 integration catalog for IndustrialXPL",
+  "clusters": {
+    "ics_exploitation": {
+      "description": "ICS exploitation frameworks and scanners",
+      "entries": [
+        {
+          "src_id": "SRC-653",
+          "name": "ISF/ICSSPLOIT",
+          "url": "https://github.com/dark-lbp/isf",
+          "priority": "Alta",
+          "action": "A",
+          "module": "scanners/ics/isf_icssploit_wrapper.py",
+          "notes": "ICS exploitation framework: S7-300/400, Modbus"
+        },
+        {
+          "src_id": "SRC-655",
+          "name": "ICS-Ninja-Scanner",
+          "url": "https://github.com/MottaSec/ICS-Ninja-Scanner",
+          "priority": "Alta",
+          "action": "A",
+          "module": "scanners/ics/ics_ninja_scanner.py",
+          "notes": "Multi-protocol ICS scanner"
+        },
+        {
+          "src_id": "SRC-991",
+          "name": "IndustrialScanner-Lite",
+          "url": "https://github.com/frangelbarrera/IndustrialScanner-Lite",
+          "priority": "Alta",
+          "action": "A",
+          "module": "scanners/ics/industrial_scanner_lite.py",
+          "notes": "Modbus/S7Comm/DNP3 scanner with PCAP"
+        },
+        {
+          "src_id": "SRC-992",
+          "name": "ICS-SCADA-Fuzzer",
+          "url": "https://github.com/ridpath/ics-scada-fuzzer",
+          "priority": "Alta",
+          "action": "A",
+          "module": "scanners/ics/ics_scada_fuzzer.py",
+          "notes": "Protocol-aware fuzzer Modbus/DNP3/S7comm/IEC104/OPC-UA"
+        },
+        {
+          "src_id": "SRC-993",
+          "name": "Protofire",
+          "url": "https://github.com/ridpath/protofire",
+          "priority": "Alta",
+          "action": "A",
+          "module": "scanners/ics/protofire_fuzzer.py",
+          "notes": "Modular OT/ICS protocol fuzzer with plugin support"
+        },
+        {
+          "src_id": "SRC-654",
+          "name": "ics-scada-collection",
+          "url": "https://github.com/clizSec/ics-scada",
+          "priority": "Media",
+          "action": "A",
+          "notes": "ICS/SCADA tools and exploits collection"
+        }
+      ]
+    },
+    "ics_credentials": {
+      "description": "Default credential databases for ICS/SCADA",
+      "entries": [
+        {
+          "src_id": "SRC-112",
+          "name": "SCaDAPass",
+          "url": "https://github.com/scadastrangelove/SCaDAPass",
+          "priority": "Alta",
+          "action": "A",
+          "notes": "Default ICS/SCADA credentials database"
+        }
+      ]
+    },
+    "ics_labs": {
+      "description": "OT security labs and simulation environments",
+      "entries": [
+        {
+          "src_id": "SRC-656",
+          "name": "GRFICSv3",
+          "url": "https://github.com/Fortiphyd/GRFICSv3",
+          "priority": "Alta",
+          "action": "A",
+          "notes": "OT security lab with 3D process simulation"
+        },
+        {
+          "src_id": "SRC-996",
+          "name": "FUXA",
+          "url": "https://github.com/frangoteam/FUXA",
+          "priority": "Media",
+          "action": "Q",
+          "notes": "Web-based SCADA/HMI for lab environments"
+        }
+      ]
+    },
+    "surveillance": {
+      "description": "Camera and CCTV pentesting tools",
+      "entries": [
+        {
+          "src_id": "SRC-163",
+          "name": "cameradar",
+          "url": "https://github.com/Ullaakut/cameradar",
+          "stars": 5260,
+          "priority": "Alta",
+          "action": "A",
+          "module": "scanners/surveillance/cameradar_wrapper.py",
+          "notes": "RTSP/CCTV camera discovery and credential testing"
+        },
+        {
+          "src_id": "SRC-997",
+          "name": "CamXploit",
+          "url": "https://github.com/spyboy-productions/CamXploit",
+          "priority": "Alta",
+          "action": "A",
+          "module": "scanners/surveillance/camxploit_recon.py",
+          "notes": "IP camera recon, default creds, non-standard ports"
+        },
+        {
+          "src_id": "SRC-998",
+          "name": "CCTVscan",
+          "url": "https://github.com/postfix/cctvscan",
+          "priority": "Alta",
+          "action": "A",
+          "module": "scanners/surveillance/cctvscan_pentest.py",
+          "notes": "Camera pentest: HTTP/RTSP/ONVIF/RTMP"
+        },
+        {
+          "src_id": "SRC-999",
+          "name": "camera-exploit-tool",
+          "url": "https://github.com/TasosY2K/camera-exploit-tool",
+          "priority": "Media",
+          "action": "A",
+          "notes": "Automated Hikvision/Avtech camera scanner"
+        },
+        {
+          "src_id": "SRC-1000",
+          "name": "HIKScript",
+          "url": "https://github.com/fracergu/HIKSCript",
+          "priority": "Media",
+          "action": "A",
+          "notes": "ICSA-17-124-01 Hikvision backdoor detection/exploit"
+        },
+        {
+          "src_id": "SRC-1001",
+          "name": "DahuaLoginBypass",
+          "url": "https://github.com/bp2008/DahuaLoginBypass",
+          "priority": "Media",
+          "action": "A",
+          "notes": "CVE-2021-33044/33045 Dahua login bypass exploit"
+        }
+      ]
+    },
+    "opcua": {
+      "description": "OPC-UA protocol testing and research",
+      "entries": [
+        {
+          "src_id": "SRC-098",
+          "name": "OPCUAWebPlatform",
+          "url": "https://github.com/OPCUAUniCT/OPCUAWebPlatformUniCT",
+          "stars": 108,
+          "priority": "Alta",
+          "action": "A",
+          "module": "exploits/protocols/opcua/opcua_web_platform.py",
+          "notes": "REST bridge to OPC UA for exposure testing"
+        },
+        {
+          "src_id": "SRC-232",
+          "name": "node-opcua-coreaas",
+          "url": "https://github.com/OPCUAUniCT/node-opcua-coreaas",
+          "priority": "Media",
+          "action": "Q",
+          "notes": "CoreAAS Information Model extension for node-opcua"
+        }
+      ]
+    },
+    "plc_scanners": {
+      "description": "PLC-specific scanning tools",
+      "entries": [
+        {
+          "src_id": "SRC-994",
+          "name": "scadaplcscanner",
+          "url": "https://github.com/bulw4rk/scadaplcscanner",
+          "priority": "Media",
+          "action": "A",
+          "notes": "S7comm/Modbus PLC scanner based on PLCSCAN"
+        },
+        {
+          "src_id": "SRC-995",
+          "name": "plcscan",
+          "url": "https://github.com/meeas/plcscan",
+          "priority": "Media",
+          "action": "A",
+          "notes": "Original PLC scanner via S7comm/Modbus"
+        }
+      ]
+    }
+  },
+  "stats": {
+    "total_entries": 22,
+    "stubs_created": 9,
+    "references_cataloged": 13,
+    "clusters": 6
+  }
+}
