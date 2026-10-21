@@ -16,17 +16,17 @@ REPO_SRC = Path(__file__).resolve().parents[1] / "src"
 if str(REPO_SRC) not in sys.path:
     sys.path.insert(0, str(REPO_SRC))
 
-from industrialxpl.lab.virtualplants.attacks import load_catalog
-from industrialxpl.lab.virtualplants.attacks.pocs import run_internal
-from industrialxpl.lab.virtualplants.attacks.runner import run_attack_id
-from industrialxpl.lab.virtualplants.core.detection import DetectionEngine
-from industrialxpl.lab.virtualplants.core.events import PlantEvent
-from industrialxpl.lab.virtualplants.core.safety import LabSafetyError, assert_lab_target, require_confirmation, validate_bind_host
-from industrialxpl.lab.virtualplants.core.scenario import ManifestError, get_manifest, list_manifests, parse_manifest
-from industrialxpl.lab.virtualplants.core.snapshots import SnapshotStore
-from industrialxpl.lab.virtualplants.core.telemetry import TelemetryBus
-from industrialxpl.lab.virtualplants.lab import FuxaHttpTarget, ProtocolCrashTarget
-from industrialxpl.lab.virtualplants.protocols.modbus import DeviceIdentity, ModbusMemory, handle_pdu
+from virtualplants.attacks import load_catalog
+from virtualplants.attacks.pocs import run_internal
+from virtualplants.attacks.runner import run_attack_id
+from virtualplants.core.detection import DetectionEngine
+from virtualplants.core.events import PlantEvent
+from virtualplants.core.safety import LabSafetyError, assert_lab_target, require_confirmation, validate_bind_host
+from virtualplants.core.scenario import ManifestError, get_manifest, list_manifests, parse_manifest
+from virtualplants.core.snapshots import SnapshotStore
+from virtualplants.core.telemetry import TelemetryBus
+from virtualplants.lab import FuxaHttpTarget, ProtocolCrashTarget
+from virtualplants.protocols.modbus import DeviceIdentity, ModbusMemory, handle_pdu
 
 
 class SafetyTests(unittest.TestCase):
@@ -218,8 +218,8 @@ class PairingLoopbackTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_delta_modbus_and_quota(self) -> None:
         """Unauth write works; patched quota rejects extra connections."""
-        from industrialxpl.lab.virtualplants.core.runtime import start_pairing_lab
-        from industrialxpl.lab.virtualplants.core.telemetry import TelemetryBus
+        from virtualplants.core.runtime import start_pairing_lab
+        from virtualplants.core.telemetry import TelemetryBus
 
         vul_manifest = get_manifest("delta-dvp12se-vulnerable")
         pat_manifest = get_manifest("delta-dvp12se-patched")
@@ -262,7 +262,7 @@ class CliTests(unittest.TestCase):
 
     def test_bottle_filling_start_rejected(self) -> None:
         """Plant UI is started by plantctl, not the pairing CLI."""
-        from industrialxpl.lab.virtualplants.cli import main
+        from virtualplants.cli import main
 
         self.assertEqual(main(["start", "--scenario", "bottle-filling"]), 2)
 
