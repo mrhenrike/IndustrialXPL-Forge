@@ -1,0 +1,26 @@
+community,context
+public,Read-only default (RFC 1157)
+private,Read-write default (RFC 1157)
+community,Common alternate
+snmpd,Net-SNMP default
+mngt,Management default
+admin,Administrative community
+cisco,Cisco default
+cable-d0csis,Cable modem
+ILMI,ATM interface (Cisco)
+Intermec,Intermec devices
+internal,Internal community
+all,Some HP devices
+all private,Some HP devices
+secret,Common weak community
+manager,Management community
+security,Security community
+monitor,Monitoring community
+default,Generic default
+public@es0,Context-specific SNMPv3 migration
+ANYCOM,3Com/HP switches
+volition,Belden/Hirschmann switches
+TENmanUFactworworworworworworworwoworwor,Siemens SCALANCE (some firmware)
+ABB,ABB RTU/relay
+schneider,Schneider Electric
+moxa,Moxa serial servers

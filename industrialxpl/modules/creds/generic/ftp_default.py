@@ -19,19 +19,9 @@ from industrialxpl.core.exploit import (
     DestructiveGate,
 )
 
-_DEFAULT_CREDS = [
-    ("admin", "admin"), ("admin", "password"), ("admin", ""),
-    ("admin", "1234"), ("admin", "wago"), ("admin", "moxa"),
-    ("root", "root"), ("root", ""), ("root", "password"),
-    ("USER", "USER"),
-    ("anonymous", ""), ("anonymous", "anonymous@"),
-    ("ftp", "ftp"), ("ftp", ""),
-    ("apc", "apc"),
-    ("CENTUM", "CENTUM"),
-    ("LOI", "1000"),
-    ("loader", "fwdownload"),
-    ("", "fwdownload"), ("", "datadownload"),
-]
+from industrialxpl.modules.creds._wordlist_loader import load_credential_pairs
+
+_DEFAULT_CREDS = load_credential_pairs("ftp_default_credentials.txt")
 
 
 class Exploit(_Exploit):

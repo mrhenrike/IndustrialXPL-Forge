@@ -58,11 +58,9 @@ from industrialxpl.core.exploit import (
 )
 
 WORDLISTS_DIR = Path(__file__).resolve().parents[4] / "resources" / "wordlists"
-_DEFAULT_SNMP_COMMUNITIES = [
-    "public", "private", "community", "CISCO", "admin", "manager",
-    "monitor", "guest", "readonly", "readwrite", "secret",
-    "cisco", "snmpd", "default", "write", "snmp",
-]
+from industrialxpl.modules.creds._wordlist_loader import load_single_column
+
+_DEFAULT_SNMP_COMMUNITIES = load_single_column("snmp_communities_bruteforce.txt")
 
 
 def _build_snmp_get_request(community: str, version: int = 1) -> bytes:
