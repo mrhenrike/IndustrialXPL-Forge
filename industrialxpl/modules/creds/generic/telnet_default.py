@@ -17,10 +17,9 @@ from industrialxpl.core.exploit import (
     DestructiveGate,
 )
 
-_DEFAULT_CREDS = [
-    ("admin", "admin"), ("admin", ""), ("root", "root"), ("root", ""),
-    ("user", "user"), ("guest", "guest"), ("operator", "operator"),
-]
+from industrialxpl.modules.creds._wordlist_loader import load_credential_pairs
+
+_DEFAULT_CREDS = load_credential_pairs("telnet_default_credentials.txt")
 
 
 class Exploit(_Exploit):

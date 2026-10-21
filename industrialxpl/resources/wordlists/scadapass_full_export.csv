@@ -1,0 +1,451 @@
+Vendor,Product,Protocol,Port,Username,Password,Access Level,Notes,CVE,Category
+Siemens,S7-300/400,S7comm,102,,,full,No auth by default; full PLC memory R/W,,plc
+Siemens,S7-1200 Web,HTTP,80,admin,admin,admin,,,plc
+Siemens,S7-1200 Web,HTTP,80,Everybody,,read,Read-only user; Siemens default,,plc
+Siemens,S7-1500 Web,HTTPS,443,admin,,admin,Empty password on factory reset,,plc
+Siemens,S7-1500 OPC-UA,OPC-UA,4840,,,read,Anonymous OPC-UA access enabled by default,,plc
+Siemens,WinCC,HTTP,80,administrator,,admin,,,scada
+Siemens,WinCC OA,HTTP,4999,root,,admin,,,scada
+Siemens,WinCC Flexible,HTTP,80,admin,admin,admin,,,scada
+Siemens,SCALANCE X-200,HTTP,80,admin,admin,admin,Industrial Ethernet switch,,switch
+Siemens,SCALANCE X-300,HTTP,80,admin,admin,admin,Managed industrial switch,,switch
+Siemens,SCALANCE X-400,HTTPS,443,admin,admin,admin,Modular industrial switch,,switch
+Siemens,SCALANCE XR-500,HTTPS,443,admin,admin,admin,Rack switch,,switch
+Siemens,SCALANCE W,HTTP,80,admin,admin,admin,Industrial WLAN AP,,switch
+Siemens,SCALANCE M,HTTPS,443,admin,admin,admin,Industrial router 3G/4G,,router
+Siemens,SCALANCE SC-600,HTTPS,443,admin,admin,admin,Industrial security appliance,,firewall_ot
+Siemens,RUGGEDCOM ROS,SSH,22,admin,admin,admin,Ruggedized switch/router,,switch
+Siemens,RUGGEDCOM ROS,HTTPS,443,admin,admin,admin,,,switch
+Siemens,RUGGEDCOM ROX II,SSH,22,admin,admin,admin,Ruggedized router,,router
+Siemens,RUGGEDCOM APE,SSH,22,admin,admin,admin,Application Processing Engine,,gateway
+Siemens,SINEMA Server,HTTPS,443,admin,admin,admin,Network management,,scada
+Siemens,SINEMA Remote Connect,HTTPS,443,admin,admin,admin,Remote access platform,,gateway
+Siemens,TIA Portal,OPC-UA,4840,,,read,OPC-UA anonymous access,,ews
+Siemens,LOGO!,HTTP,80,admin,admin,admin,Micro PLC,,plc
+Siemens,LOGO! 8,HTTP,80,admin,admin,admin,,,plc
+Siemens,SIPROTEC 4,HTTP,80,admin,admin,admin,Protection relay; CVE-2015-5374,CVE-2015-5374,relay
+Siemens,SIPROTEC 5,HTTPS,443,admin,,admin,Protection relay,,relay
+Siemens,SICAM A8000,HTTPS,443,admin,admin,admin,RTU/automation controller,,rtu
+Siemens,SICAM PAS,HTTP,80,admin,admin,admin,Power Automation System,,scada
+Siemens,SIMATIC ET 200SP,HTTP,80,admin,admin,admin,Distributed I/O,,plc
+Siemens,SIMATIC HMI Comfort,HTTP,80,admin,admin,admin,HMI panel,,hmi
+Siemens,SINAMICS G120,HTTP,80,admin,admin,admin,Variable frequency drive,,drive
+Siemens,SIMATIC IPC,SSH,22,root,root,admin,Industrial PC (some firmware),,ews
+Siemens,SIMATIC PDM,HTTP,80,admin,admin,admin,Process Device Manager,,ews
+Siemens,Desigo CC,HTTPS,443,admin,admin,admin,Building management,,bms
+Rockwell,ControlLogix L7x,EtherNet/IP,44818,,,full,No auth default; CIP unconnected messaging,,plc
+Rockwell,ControlLogix L8x,EtherNet/IP,44818,,,full,CIP Security optional; off by default,,plc
+Rockwell,CompactLogix L3x,EtherNet/IP,44818,,,full,No auth default,,plc
+Rockwell,CompactLogix 5380,EtherNet/IP,44818,,,full,,,plc
+Rockwell,MicroLogix 1100,HTTP,80,admin,1234,admin,,,plc
+Rockwell,MicroLogix 1400,HTTP,80,admin,1234,admin,LCD default master key,,plc
+Rockwell,MicroLogix 1400 SNMP,SNMP,161,public,,read,CVE-2016-5645; hardcoded RO,CVE-2016-5645,plc
+Rockwell,MicroLogix 1400 SNMP,SNMP,161,private,,write,CVE-2016-5645; hardcoded RW,CVE-2016-5645,plc
+Rockwell,MicroLogix 1400 SNMP,SNMP,161,wheel,,write,Undocumented hardcoded RW community; Talos report,CVE-2016-5645,plc
+Rockwell,PanelView Plus,HTTP,80,admin,,admin,HMI terminal,,hmi
+Rockwell,PanelView Plus 7,HTTP,80,admin,,admin,,,hmi
+Rockwell,FactoryTalk View SE,HTTP,80,admin,,admin,SCADA/HMI server,,scada
+Rockwell,FactoryTalk Linx,HTTP,80,admin,,admin,,,ews
+Rockwell,Stratix 5700,SSH,22,admin,admin,admin,Managed industrial switch (Cisco IOS),,switch
+Rockwell,Stratix 5700,HTTP,80,admin,admin,admin,,,switch
+Rockwell,Stratix 5400,SSH,22,admin,admin,admin,Layer 3 switch,,switch
+Rockwell,1756-EN2T,EtherNet/IP,44818,,,full,Communication module; no auth,,plc
+Rockwell,ArmorStart,EtherNet/IP,44818,,,full,Motor controller,,drive
+Schneider,Modicon M340,Modbus,502,,,full,No Modbus auth,,plc
+Schneider,Modicon M340 FTP,FTP,21,USER,USER,engineer,FactoryCast FTP default,,plc
+Schneider,Modicon M340 Web,HTTP,80,USER,USER,engineer,FactoryCast WebServer,,plc
+Schneider,Modicon M580,Modbus,502,,,full,No Modbus auth,,plc
+Schneider,Modicon M580 Web (fw>=4.02),HTTPS,443,webuser,webuser,admin,Default web credentials post firmware 4.02,,plc
+Schneider,Modicon M580 FTP,FTP,21,USER,USER,engineer,,,plc
+Schneider,Modicon M340/M580 FW Download,FTP,21,,fwdownload,firmware,Firmware download password (no username),,plc
+Schneider,Modicon M340/M580 Data Storage,FTP,21,,datadownload,data,Data storage password (no username),,plc
+Schneider,Modicon Migration FW V3.99,FTP,21,loader,fwdownload,firmware,Migration device authentication,,plc
+Schneider,Quantum,Modbus,502,,,full,,,plc
+Schneider,Quantum FTP,FTP,21,USER,USER,admin,,,plc
+Schneider,Quantum Telnet,Telnet,23,USER,USER,admin,,,plc
+Schneider,Premium,Modbus,502,,,full,Legacy PLC; no Modbus auth,,plc
+Schneider,Unity Pro / EcoStruxure,HTTP,80,USER,USER,engineer,,,ews
+Schneider,ClearSCADA / GeoSCADA,HTTPS,443,admin,admin,admin,,,scada
+Schneider,ION 7650,HTTP,80,ADMIN,0,admin,Power meter,,meter
+Schneider,ION 8800,HTTP,80,ADMIN,0,admin,Power quality meter,,meter
+Schneider,PowerLogic PM800,HTTP,80,admin,admin,admin,,,meter
+Schneider,PowerLogic PM5500,HTTP,80,admin,admin,admin,,,meter
+Schneider,Magelis HMI,HTTP,80,USER,USER,operator,,,hmi
+Schneider,Magelis iPC,HTTP,80,USER,USER,operator,,,hmi
+Schneider,APC UPS NMC (AP9630/31),HTTP,80,apc,apc,admin,Network Management Card,,ups
+Schneider,APC UPS NMC,SSH,22,apc,apc,admin,,,ups
+Schneider,APC UPS NMC,SNMP,161,public,,read,SNMP default community,,ups
+Schneider,APC UPS NMC,Telnet,23,apc,apc,admin,,,ups
+Schneider,APC Rack PDU,HTTP,80,apc,apc,admin,,,ups
+Schneider,Triconex TriStation,TriStation,1502,,,full,No auth; TRITON/TRISIS target protocol,,plc
+Schneider,Trio Q Data Radio,HTTP,80,admin,admin,admin,Radio modem for SCADA,,gateway
+Schneider,ConneXium (TCSESM),HTTP,80,admin,admin,admin,Industrial Ethernet switch,,switch
+Schneider,Altivar Drive ATV,HTTP,80,USER,USER,admin,Variable frequency drive web,,drive
+Schneider,EcoStruxure Building,HTTPS,443,admin,admin,admin,Building management,,bms
+Schneider,SCADAPack RTU,HTTP,80,admin,admin,admin,Telemetry RTU,,rtu
+ABB,AC500,HTTP,80,admin,admin,admin,PLC web interface,,plc
+ABB,AC500 SSH,SSH,22,admin,admin,admin,,,plc
+ABB,AC800M,OPC-UA,4840,,,read,DCS controller; OPC-UA anonymous,,dcs
+ABB,Freelance,HTTP,80,admin,admin,admin,DCS web interface,,dcs
+ABB,REF615,HTTP,80,admin,admin,admin,Protection relay,,relay
+ABB,REF615 SSH,SSH,22,admin,admin,admin,,,relay
+ABB,REF630,HTTP,80,admin,admin,admin,Bay control relay,,relay
+ABB,Relion 670,HTTP,80,admin,admin,admin,High-voltage protection relay,,relay
+ABB,RTU560,HTTP,80,admin,admin,admin,Remote Terminal Unit,,rtu
+ABB,RTU560 SSH,SSH,22,admin,admin,admin,,,rtu
+ABB,RTU520,HTTP,80,admin,admin,admin,,,rtu
+ABB,Symphony Plus,HTTP,80,ADMIN,ADMIN,admin,DCS system,,dcs
+ABB,800xA,HTTP,80,admin,admin,admin,DCS platform,,dcs
+ABB,ACS880 Drive,HTTP,80,admin,admin,admin,Variable frequency drive,,drive
+ABB,IRC5 Robot Controller,HTTP,80,admin,,admin,Robot controller FlexPendant,,robot
+ABB,AFS Ethernet Module,HTTP,80,admin,admin,admin,,,gateway
+ABB,FOX515 RTU,HTTP,80,admin,admin,admin,,,rtu
+GE,Mark VIe,HTTP,80,admin,admin,admin,Turbine control system,,dcs
+GE,Mark VIe SSH,SSH,22,admin,admin,admin,,,dcs
+GE,PACSystems RX3i,SRTP,18245,,,full,No SRTP auth by default,,plc
+GE,PACSystems RX3i Web,HTTP,80,admin,admin,admin,,,plc
+GE,PACSystems RSTi-EP,HTTP,80,admin,,admin,,,plc
+GE,Cimplicity,HTTP,80,admin,,admin,HMI/SCADA,,scada
+GE,iFIX,HTTP,80,admin,,admin,HMI/SCADA,,scada
+GE,Historian,HTTP,80,admin,admin,admin,OSIsoft-based historian,,historian
+GE,Multilin 850,HTTP,80,admin,admin,admin,Feeder protection relay,,relay
+GE,Multilin 489,HTTP,80,admin,admin,admin,Generator protection relay,,relay
+GE,UR Series (B30/C60/G60),HTTP,80,admin,admin,admin,Universal relay,,relay
+GE,D20MX RTU,Telnet,23,root,root,admin,Substation gateway,,rtu
+GE,D400 Substation Gateway,HTTP,80,admin,admin,admin,,,gateway
+Honeywell,Experion PKS,HTTP,80,ADMIN,ADMIN,admin,DCS platform,,dcs
+Honeywell,Experion PKS SSH,SSH,22,admin,admin,admin,,,dcs
+Honeywell,C300 Controller,HTTP,80,admin,1234,admin,,,plc
+Honeywell,Safety Manager (SC),Serial,0,,,full,CVE-2022-30314; hardcoded credentials in ROM,CVE-2022-30314,plc
+Honeywell,Safety Manager (SC) DCOM,DCOM,135,,,full,CVE-2022-30314; hardcoded ROM credentials,CVE-2022-30314,plc
+Honeywell,Spyder BMS Controller,HTTP,80,admin,admin,admin,Building controller; BACnet/IP,,bms
+Honeywell,Spyder BMS Controller,BACnet,47808,,,full,No BACnet auth,,bms
+Honeywell,Tuxedo Touch,HTTP,80,admin,admin,admin,Security/BMS panel,,bms
+Honeywell,Niagara (Tridium),HTTPS,443,admin,admin,admin,Framework for BMS,,bms
+Honeywell,ControlEdge RTU,HTTP,80,admin,admin,admin,,,rtu
+Honeywell,ControlEdge PLC,HTTP,80,admin,admin,admin,,,plc
+Honeywell,Falcon XL,HTTP,80,admin,honeywell,admin,Gas chromatograph,,iiot
+Honeywell,Enraf CIU,HTTP,80,admin,admin,admin,Tank gauging,,iiot
+Emerson,DeltaV,HTTP,80,admin,admin,admin,DCS platform,,dcs
+Emerson,DeltaV SIS,HTTP,80,admin,deltav,admin,Safety Instrumented System,,dcs
+Emerson,ROC800,Serial,0,LOI,1000,engineer,Flow computer; serial console,,rtu
+Emerson,ROC800 (sw<=3.50),Serial,0,,,full,CVE-2013-0694; hardcoded ROM credentials,CVE-2013-0694,rtu
+Emerson,ROC800 Telnet,Telnet,23,ROC,ROC,admin,,,rtu
+Emerson,FloBoss 107,HTTP,80,admin,admin,admin,Flow computer,,rtu
+Emerson,OpenBSI,HTTP,80,admin,,admin,SCADA server,,scada
+Emerson,Ovation DCS,HTTP,80,admin,admin,admin,Power generation DCS,,dcs
+Emerson,Fisher DVC6200,HART,0,,,full,HART field device; no auth,,iiot
+Emerson,Rosemount 3051S,HART,0,,,full,Pressure transmitter; HART no auth,,iiot
+Emerson,AMS Device Manager,HTTP,80,admin,admin,admin,,,ews
+Emerson,Wireless Gateway 1420,HTTP,80,admin,admin,admin,WirelessHART gateway,,gateway
+Yokogawa,CENTUM VP,HTTP,20171,admin,admin,admin,DCS platform,,dcs
+Yokogawa,CENTUM VP HIS,HTTP,80,CENTUM,,operator,Predefined user accounts,,dcs
+Yokogawa,CENTUM VP FCS,Vnet/IP,0,,,full,No Vnet/IP auth by design,,dcs
+Yokogawa,ProSafe-RS,HTTP,80,admin,admin,admin,Safety Instrumented System,,dcs
+Yokogawa,STARDOM,HTTP,80,admin,admin,admin,RTU/PLC; YSAR-18-0004 hardcoded pw,,rtu
+Yokogawa,STARDOM (hardcoded),HTTP,80,admin,Yoko2018!,admin,Hardcoded in some firmware versions,,rtu
+Yokogawa,e-RT3 (FA-M3),HTTP,80,admin,admin,admin,Range-free controller,,plc
+Yokogawa,FAST/TOOLS,HTTP,80,admin,admin,admin,SCADA platform,,scada
+Yokogawa,Exaquantum,HTTP,80,admin,admin,admin,Plant information management,,historian
+Yokogawa,AQ1000 Analyzer,HTTP,80,admin,admin,admin,Water quality analyzer,,iiot
+Mitsubishi,MELSEC-Q,MELSEC,5007,,,full,No MELSEC binary protocol auth,,plc
+Mitsubishi,MELSEC iQ-R,MELSEC,5007,,,full,No auth unless SLMP secure mode,,plc
+Mitsubishi,MELSEC iQ-F (FX5U),MELSEC,5007,,,full,,,plc
+Mitsubishi,MELSEC-L,MELSEC,5007,,,full,,,plc
+Mitsubishi,GOT2000 HMI,HTTP,80,admin,,admin,,,hmi
+Mitsubishi,GOT2000 HMI VNC,VNC,5900,,0000,view,Default VNC password,,hmi
+Mitsubishi,MELSOFT GX Works3,HTTP,80,admin,,admin,Engineering workstation,,ews
+Mitsubishi,CC-Link IE Field,CC-Link,61450,,,full,No auth; industrial fieldbus,,plc
+Mitsubishi,MR-J5 Servo,CC-Link,61450,,,full,Servo amplifier; no auth,,drive
+Omron,CJ2M,FINS,9600,,,full,No FINS authentication,,plc
+Omron,CP1L,FINS,9600,,,full,Compact PLC; no auth,,plc
+Omron,NJ/NX Series,HTTP,80,admin,admin,admin,Machine controller web,,plc
+Omron,NX1P2,HTTP,80,admin,,admin,Compact machine controller,,plc
+Omron,NA Series HMI,HTTP,80,admin,,admin,Programmable terminal,,hmi
+Omron,NS Series HMI,HTTP,80,admin,,admin,,,hmi
+Omron,Sysmac Studio,HTTP,80,,,full,Engineering workstation; no default auth on NJ/NX target,,ews
+Beckhoff,TwinCAT (ADS),ADS,48898,,,full,No ADS auth by default; direct PLC memory access,,plc
+Beckhoff,CX Series (Windows CE),HTTP,80,Administrator,1,admin,Windows CE Embedded,,plc
+Beckhoff,CX Series (Windows CE),Telnet,23,Administrator,1,admin,,,plc
+Beckhoff,CX Series (BSD/Linux),SSH,22,Administrator,1,admin,,,plc
+Beckhoff,C6015 IPC,SSH,22,administrator,1,admin,Industrial PC,,ews
+Beckhoff,EK9000 Coupler,HTTP,80,admin,admin,admin,EtherCAT bus coupler,,gateway
+CODESYS,Runtime V3,HTTP,8080,admin,,admin,Web visualization; affects 500+ OEMs,,plc
+CODESYS,Runtime V3 Gateway,TCP,11740,,,full,Gateway port; no auth,,gateway
+CODESYS,Runtime V2 (<2.4.7.57),TCP,1200,,,full,CVE-2022-31806; no auth on control port,CVE-2022-31806,plc
+CODESYS,Runtime V3 Web (some OEMs),HTTP,8080,admin,admin,admin,OEM-specific default,,plc
+WAGO,PFC200 (750-8212),HTTP,80,admin,wago,admin,,,plc
+WAGO,PFC200,SSH,22,admin,wago,admin,,,plc
+WAGO,PFC100 (750-8101),HTTP,80,admin,wago,admin,,,plc
+WAGO,PFC100,SSH,22,admin,wago,admin,,,plc
+WAGO,750-881 Ethernet Controller,HTTP,80,admin,wago,admin,CVE-2019-5080; defaults restored on factory reset,CVE-2019-5080,plc
+WAGO,750-352 Coupler,HTTP,80,admin,wago,admin,Fieldbus coupler,,gateway
+WAGO,Touch Panel TP600,HTTP,80,admin,wago,admin,HMI panel,,hmi
+Phoenix Contact,ILC 2050 BI,HTTP,80,admin,admin,admin,Inline controller,,plc
+Phoenix Contact,AXC F 2152,HTTP,80,admin,,admin,PLCnext controller,,plc
+Phoenix Contact,AXC F 2152,SSH,22,admin,,admin,PLCnext SSH; empty password on first boot,,plc
+Phoenix Contact,AXC F 3152,HTTPS,443,admin,,admin,,,plc
+Phoenix Contact,RFC 4072S,HTTP,80,admin,admin,admin,Safety controller,,plc
+Phoenix Contact,FL SWITCH,HTTP,80,admin,admin,admin,Industrial switch,,switch
+Phoenix Contact,FL SWITCH,SSH,22,admin,admin,admin,,,switch
+Phoenix Contact,FL MGUARD,HTTPS,443,admin,admin,admin,Industrial firewall/VPN,,firewall_ot
+Phoenix Contact,TC ROUTER,HTTP,80,admin,admin,admin,Industrial 3G/4G router,,router
+Phoenix Contact,EEM-MA600,HTTP,80,admin,admin,admin,Energy meter,CVE-2016-8366,meter
+Moxa,NPort 5100/5200,HTTP,80,admin,,admin,Serial device server,,serial
+Moxa,NPort 5100/5200,Telnet,23,admin,,admin,,,serial
+Moxa,NPort 5100/5200,SSH,22,admin,,admin,,,serial
+Moxa,NPort 5600,HTTP,80,admin,moxa,admin,Rack serial server; hardening guide ref,,serial
+Moxa,NPort 5600,SSH,22,admin,moxa,admin,,,serial
+Moxa,NPort 6000,HTTPS,443,admin,moxa,admin,Secure serial server,,serial
+Moxa,EDS-408A/508A,HTTP,80,admin,,admin,Industrial Ethernet switch,,switch
+Moxa,EDS-G4000 Series,HTTP,80,admin,moxa,admin,Managed switch,,switch
+Moxa,IKS-G6824A,HTTP,80,admin,moxa,admin,24-port managed switch,,switch
+Moxa,EDR-G903,HTTPS,443,admin,moxa,admin,Industrial secure router,,router
+Moxa,EDR-810,HTTPS,443,admin,moxa,admin,Firewall/VPN router,,firewall_ot
+Moxa,MGate 5105-MB-EIP,HTTP,80,admin,,admin,Modbus/EtherNet/IP gateway,,gateway
+Moxa,MGate 5217,HTTP,80,admin,moxa,admin,Protocol gateway,,gateway
+Moxa,ioLogik E1210,HTTP,80,admin,,admin,Ethernet I/O,,iiot
+Moxa,ioLogik E2210,HTTP,80,admin,moxa,admin,,,iiot
+Moxa,UC-8100,SSH,22,moxa,moxa,admin,IIoT gateway/edge computer,,gateway
+Moxa,VPort 06EC-2V,HTTP,80,admin,,admin,Industrial IP camera,,camera
+Moxa,AWK-3131A,HTTP,80,admin,moxa,admin,Industrial wireless AP,,switch
+Advantech,WebAccess/SCADA,HTTP,8080,admin,,admin,SCADA/HMI platform,,scada
+Advantech,ADAM-6000 Series,HTTP,80,admin,00000000,admin,CVE-2008-5848; data acquisition module,CVE-2008-5848,iiot
+Advantech,ADAM-6000 Modbus,Modbus,502,,,full,No Modbus auth,,iiot
+Advantech,WISE-4000 Series,HTTP,80,admin,admin,admin,IoT wireless I/O,,iiot
+Advantech,EKI-1524 Serial,HTTP,80,admin,,admin,Serial device server,,serial
+Advantech,EKI-7000 Switch,HTTP,80,admin,admin,admin,Industrial managed switch,,switch
+Advantech,UNO-2484G IPC,SSH,22,root,root,admin,Industrial PC / Edge,,ews
+Unitronics,Vision/Samba PLC,PCOM,20256,admin,1111,admin,CVE-2023-6448; CISA advisory; Water/Wastewater targets,CVE-2023-6448,plc
+Unitronics,Vision/Samba Web,HTTP,80,admin,1111,admin,CVE-2023-6448,CVE-2023-6448,plc
+Unitronics,UniStream,HTTP,80,admin,admin,admin,Next-gen PLC+HMI,,plc
+Unitronics,UniStream SSH,SSH,22,root,root,admin,Linux-based OS,,plc
+Delta,DVP Series PLC,Modbus,502,,,full,No Modbus auth,,plc
+Delta,DOP Series HMI,HTTP,80,admin,admin,admin,,,hmi
+Delta,AS Series PLC,Modbus,502,,,full,,,plc
+Delta,AS Series Web,HTTP,80,admin,admin,admin,,,plc
+Delta,InfraSuite Device Master,HTTP,80,admin,admin,admin,Device management; CVE-2023-1133 series,,scada
+Delta,CNCSoft-G2 HMI,HTTP,80,admin,admin,admin,,,hmi
+Pilz,PSS 4000 (PSSuniversal PLC),HTTP,80,admin,admin,admin,Safety PLC,,plc
+Pilz,PMCprimo,HTTP,80,admin,admin,admin,Motion controller,,plc
+Pilz,SecurityBridge,HTTPS,443,admin,admin,admin,OT firewall,,firewall_ot
+Pilz,PITreader,HTTP,80,admin,admin,admin,RFID access system,,iiot
+Tridium,Niagara AX,HTTPS,443,admin,admin,admin,Building automation framework,,bms
+Tridium,Niagara 4 (N4),HTTPS,443,admin,admin,admin,,,bms
+Tridium,JACE 8000,HTTPS,443,admin,admin,admin,Java Application Control Engine,,bms
+Tridium,JACE 8000 SSH,SSH,22,admin,admin,admin,,,bms
+Lantronix,XPort,Telnet,9999,,,admin,Serial-to-Ethernet; no password,,serial
+Lantronix,XPort,HTTP,80,,,admin,No default credentials,,serial
+Lantronix,UDS1100,HTTP,80,admin,PASS,admin,Device server,,serial
+Lantronix,UDS1100,Telnet,9999,,PASS,admin,,,serial
+Lantronix,EDS-MD,HTTP,80,admin,admin,admin,Medical device server,,serial
+Lantronix,SLC8000,SSH,22,sysadmin,PASS,admin,Console manager,,serial
+HMS/eWON,eWON Flexy,HTTPS,443,adm,adm,admin,Industrial VPN router,,gateway
+HMS/eWON,eWON Flexy,SSH,22,adm,adm,admin,,,gateway
+HMS/eWON,eWON Cosy,HTTPS,443,adm,adm,admin,Remote access VPN,,gateway
+HMS/eWON,Anybus CompactCom,HTTP,80,admin,admin,admin,Communication module,,gateway
+HMS/eWON,Anybus X-gateway,HTTP,80,admin,admin,admin,Protocol converter,,gateway
+Hirschmann,MACH Series Switch,HTTP,80,admin,private,admin,Industrial switch,,switch
+Hirschmann,MACH Series Switch,SSH,22,admin,private,admin,,,switch
+Hirschmann,RSP/RSPS,HTTP,80,admin,private,admin,Rail switch,,switch
+Hirschmann,EAGLE Firewall,HTTPS,443,admin,private,admin,Industrial firewall,,firewall_ot
+Hirschmann,OpenBAT WLAN,HTTP,80,admin,private,admin,Industrial wireless,,switch
+SEL,SEL-2740S Switch,SSH,22,admin,TAIL,admin,Software-Defined Networking switch,,switch
+SEL,SEL-2740S,HTTPS,443,admin,TAIL,admin,,,switch
+SEL,SEL-3530 RTAC,SSH,22,admin,TAIL,admin,Real-time automation controller,,rtu
+SEL,SEL-3530 RTAC,HTTPS,443,admin,TAIL,admin,,,rtu
+SEL,SEL-351/SEL-421 Relay,Serial,0,2AC,2AC,engineer,Protection relay; Level 2 password,,relay
+SEL,SEL-751 Relay,HTTP,80,admin,TAIL,admin,Feeder protection,,relay
+Bosch Rexroth,ctrlX CORE,HTTPS,443,boschrexroth,boschrexroth,admin,Automation platform,,plc
+Bosch Rexroth,IndraControl XM,HTTP,80,admin,admin,admin,Motion controller,,plc
+Bosch Rexroth,IndraMotion MLC,HTTP,80,admin,admin,admin,,,plc
+Bosch Rexroth,IndraWorks,HTTP,80,admin,admin,admin,Engineering environment,,ews
+FANUC,R-30iB Controller,HTTP,80,admin,,admin,Robot controller (iRVision),,robot
+FANUC,R-30iB Plus,HTTP,80,admin,,admin,,,robot
+FANUC,0i-TF CNC,HTTP,80,admin,,admin,CNC controller,,plc
+FANUC,ROBOGUIDE,HTTP,80,,,read,Simulation software,,ews
+KUKA,KR C4 Controller,HTTP,80,admin,,admin,Robot controller,,robot
+KUKA,KR C4 VNC,VNC,5900,,kuka,view,VNC access to smartPAD,,robot
+KUKA,Sunrise Controller,HTTP,80,admin,admin,admin,LBR iiwa collaborative robot,,robot
+Cisco,IE 2000/3000 Switch,SSH,22,cisco,cisco,admin,Industrial Ethernet switch,,switch
+Cisco,IE 2000/3000 Switch,HTTP,80,cisco,cisco,admin,,,switch
+Cisco,IE 4000/5000 Switch,SSH,22,cisco,cisco,admin,,,switch
+Cisco,IC3000 Gateway,SSH,22,admin,admin,admin,Industrial compute gateway,,gateway
+Cisco,IR829/IR1101 Router,SSH,22,cisco,cisco,admin,Industrial router,,router
+Ruggedcom,RX1500/RX5000 Router,SSH,22,admin,admin,admin,,,router
+Ruggedcom,RS900 Switch,HTTP,80,admin,admin,admin,Ruggedized switch,,switch
+Ruggedcom,ROX II,SSH,22,admin,admin,admin,,,router
+Wind River,VxWorks (generic),Telnet,23,admin,admin,admin,RTOS; varies by OEM,,plc
+Wind River,VxWorks Debug,WDB,17185,,,full,WDB debug agent; remote code exec if enabled,,plc
+Digi,TransPort WR Series,HTTP,80,admin,admin,admin,Cellular router,,router
+Digi,TransPort WR Series,SSH,22,admin,admin,admin,,,router
+Digi,Connect ME/SP,Telnet,23,root,dbps,admin,Embedded device server,,serial
+Digi,PortServer TS,Telnet,23,root,dbps,admin,Terminal server,,serial
+Digi,IX20 Router,SSH,22,admin,admin,admin,Industrial router,,router
+OSIsoft,PI Server,PI API,5450,piadmin,,admin,PI Data Archive; no password,,historian
+OSIsoft,PI Server,PI API,5450,piworld,piworld,read,Read-only demo user,,historian
+OSIsoft,PI Web API,HTTPS,443,admin,,admin,,,historian
+AVEVA,InTouch HMI,HTTP,80,admin,admin,admin,Wonderware InTouch,,hmi
+AVEVA,System Platform,HTTP,80,admin,admin,admin,Wonderware,,scada
+AVEVA,Historian,HTTPS,443,admin,admin,admin,Wonderware Historian,,historian
+Inductive Automation,Ignition SCADA,HTTPS,8088,admin,password,admin,Default during initial setup,,scada
+Inductive Automation,Ignition Gateway,HTTPS,8043,admin,password,admin,Gateway commissioning,,gateway
+ICONICS,GENESIS64,HTTP,80,admin,admin,admin,SCADA/BMS platform,,scada
+ICONICS,Hyper Historian,HTTP,80,admin,admin,admin,,,historian
+LS Electric,XGK PLC,HTTP,80,admin,admin,admin,,,plc
+LS Electric,XGT Panel,HTTP,80,admin,admin,admin,,,hmi
+JTEKT,TOYOPUC Series,HTTP,80,admin,admin,admin,Machine control PLC,,plc
+Hitachi,MACH Controller,HTTP,80,admin,admin,admin,,,plc
+Hitachi,Ops Center OT,HTTPS,443,admin,admin,admin,SCADA platform,,scada
+Hollysys,LK Series PLC,HTTP,80,admin,admin,admin,Chinese industrial PLC,,plc
+Hollysys,MACS DCS,HTTP,80,admin,admin,admin,DCS platform,,dcs
+WEG,CFW500 Drive,HTTP,80,admin,admin,admin,Variable frequency drive,,drive
+WEG,Motor Scan,HTTP,80,admin,admin,admin,IoT motor monitor,,iiot
+Grundfos,CIM Module,HTTP,80,admin,admin,admin,Pump communication module,,iiot
+Grundfos,CUE Drive,HTTP,80,admin,admin,admin,,,drive
+SICK,FX0/FLX Series,HTTP,80,admin,admin,admin,Safety controller,,plc
+SICK,Inspector Sensor,HTTP,80,admin,admin,admin,Vision sensor,,iiot
+ProSoft,PLX31 Gateway,HTTP,80,admin,admin,admin,Protocol gateway for Rockwell,,gateway
+ProSoft,ICX35 Gateway,HTTP,80,admin,admin,admin,,,gateway
+PTC,Kepware KEPServerEX,HTTP,80,Administrator,,admin,OPC UA/DA server,,gateway
+Dassault,DelmiaWorks,HTTP,80,admin,admin,admin,MES/MOM system,,scada
+FATEK,FBs Series PLC,Modbus,502,,,full,Taiwanese PLC; no Modbus auth,,plc
+FATEK,FBs Series Web,HTTP,80,admin,admin,admin,,,plc
+Fuji Electric,SPB Controller,HTTP,80,admin,admin,admin,,,plc
+Fuji Electric,FRENIC Drive,HTTP,80,admin,admin,admin,Variable frequency drive,,drive
+Motorola Solutions,ACE3600 RTU,HTTP,80,admin,admin,admin,SCADA RTU,,rtu
+Motorola Solutions,MOSCAD RTU,Telnet,23,admin,admin,admin,,,rtu
+Krohne,OPTIFLUX Flowmeter,HTTP,80,admin,admin,admin,Process instrumentation,,iiot
+Altus,DUO PLC,HTTP,80,admin,admin,admin,Brazilian industrial PLC,,plc
+Altus,Nexto PLC,HTTP,80,admin,admin,admin,,,plc
+Endress+Hauser,Memograph M RSG45,HTTP,80,admin,admin,admin,Graphic data manager,,iiot
+Endress+Hauser,Netilion,HTTPS,443,admin,admin,admin,IIoT cloud edge,,iiot
+Pepperl+Fuchs,FieldConnex,HTTP,80,admin,admin,admin,Fieldbus infrastructure,,gateway
+Turck,TX500 Gateway,HTTP,80,admin,admin,admin,Multiprotocol gateway,,gateway
+Turck,TBEN-S Module,HTTP,80,admin,admin,admin,Compact I/O module,,iiot
+(SNMP),Generic OT Device (RO),SNMP,161,public,,read,Default SNMP v1/v2c read-only community,,snmp
+(SNMP),Generic OT Device (RW),SNMP,161,private,,write,Default SNMP v1/v2c read-write community,,snmp
+(SNMP),Rockwell Undocumented RW,SNMP,161,wheel,,write,Undocumented hardcoded RW community on Rockwell PLCs,,snmp
+(SNMP),Siemens SCALANCE,SNMP,161,public,,read,Default on SCALANCE switches,,snmp
+(SNMP),Moxa EDS,SNMP,161,public,,read,,,snmp
+(SNMP),Generic Trap Target,SNMP,162,public,,trap,Default trap community,,snmp
+(SNMP),Legacy OT Printer/UPS,SNMP,161,internal,,read,Common alternative community,,snmp
+(SNMP),Network Equipment,SNMP,161,cable-docsis,,read,,,snmp
+(SNMP),Cisco IOS Devices,SNMP,161,ILMI,,read,ATM ILMI community,,snmp
+(Protocol),Modbus TCP,Modbus,502,,,full,No auth in protocol spec; any node can R/W,,protocol
+(Protocol),Modbus RTU (Serial),Modbus,0,,,full,Serial bus; broadcast addressing,,protocol
+(Protocol),S7comm,S7comm,102,,,full,No auth in standard mode; PLC memory R/W,,protocol
+(Protocol),S7comm Plus,S7comm+,102,,,varies,"S7-1500; password protection optional, off by default",,protocol
+(Protocol),BACnet/IP,BACnet,47808,,,full,No auth; R/W any object property,,protocol
+(Protocol),BACnet MS/TP,BACnet,0,,,full,Serial bus; no authentication,,protocol
+(Protocol),EtherNet/IP CIP,CIP,44818,,,full,No implicit message auth,,protocol
+(Protocol),DNP3 (pre-SA),DNP3,20000,,,full,Pre-Secure Authentication has no auth; inject commands,,protocol
+(Protocol),IEC 60870-5-104,IEC104,2404,,,full,No auth; STARTDT accepted; telecontrol,,protocol
+(Protocol),IEC 61850 MMS,MMS,102,,,full,Manufacturing Message Specification; substation automation,,protocol
+(Protocol),IEC 61850 GOOSE,GOOSE,0,,,full,Multicast L2; no authentication,,protocol
+(Protocol),OPC DA/Classic,DCOM,135,,,varies,DCOM-based; often misconfigured,,protocol
+(Protocol),OPC UA (anonymous),OPC-UA,4840,,,read,Anonymous access often left enabled,,protocol
+(Protocol),PROFINET IO,PROFINET,34964,,,full,No auth on IO data exchange,,protocol
+(Protocol),PROFIBUS DP,PROFIBUS,0,,,full,Serial fieldbus; no authentication,,protocol
+(Protocol),FINS (Omron),FINS,9600,,,full,No auth on FINS commands,,protocol
+(Protocol),MELSEC (Mitsubishi),MELSEC,5007,,,full,No auth on binary protocol,,protocol
+(Protocol),ADS (Beckhoff),ADS,48898,,,full,No auth; direct PLC memory access,,protocol
+(Protocol),MQTT (unauth),MQTT,1883,,,varies,Often deployed without auth in OT,,protocol
+(Protocol),CoAP,CoAP,5683,,,varies,UDP REST-like; often no auth,,protocol
+(Protocol),GE SRTP,SRTP,18245,,,full,Service Request Transfer Protocol; no auth,,protocol
+(Protocol),TriStation (Schneider),TriStation,1502,,,full,Safety controller protocol; no auth,,protocol
+(Protocol),PCCC (AB DF1),PCCC,2222,,,full,Allen-Bradley DF1/PCCC; no auth,,protocol
+(Protocol),CC-Link IE Field,CC-Link,61450,,,full,No auth on fieldbus,,protocol
+(Protocol),EtherCAT,EtherCAT,0,,,full,Layer 2; no authentication,,protocol
+(Protocol),HART-IP,HART-IP,5094,,,full,Process field instruments; no auth,,protocol
+(Protocol),SECS/GEM (HSMS),HSMS,5000,,,full,Semiconductor equipment; minimal auth,,protocol
+(Protocol),CANopen,CANopen,0,,,full,CAN bus; no authentication,,protocol
+(Protocol),DeviceNet,DeviceNet,0,,,full,CAN-based fieldbus; no auth,,protocol
+(Mirai),root:xc3511,Telnet,23,root,xc3511,admin,Mirai; Xiongmai/HiSilicon IP cameras,,botnet
+(Mirai),root:vizxv,Telnet,23,root,vizxv,admin,Mirai; Dahua DVR,,botnet
+(Mirai),root:admin,Telnet,23,root,admin,admin,Mirai; multiple vendors,,botnet
+(Mirai),admin:admin,Telnet,23,admin,admin,admin,Mirai; generic default,,botnet
+(Mirai),root:888888,Telnet,23,root,888888,admin,Mirai; Dahua cameras,,botnet
+(Mirai),root:xmhdipc,Telnet,23,root,xmhdipc,admin,Mirai; Xiongmai NVR/DVR,,botnet
+(Mirai),root:default,Telnet,23,root,default,admin,Mirai; generic,,botnet
+(Mirai),root:juantech,Telnet,23,root,juantech,admin,Mirai; Guangzhou Juan Optical,,botnet
+(Mirai),root:123456,Telnet,23,root,123456,admin,Mirai; generic,,botnet
+(Mirai),root:54321,Telnet,23,root,54321,admin,Mirai; generic,,botnet
+(Mirai),support:support,Telnet,23,support,support,admin,Mirai; ZyXEL routers,,botnet
+(Mirai),root:(empty),Telnet,23,root,,admin,Mirai; multiple embedded devices,,botnet
+(Mirai),admin:password,Telnet,23,admin,password,admin,Mirai; generic,,botnet
+(Mirai),root:root,Telnet,23,root,root,admin,Mirai; generic,,botnet
+(Mirai),root:12345,Telnet,23,root,12345,admin,Mirai; generic,,botnet
+(Mirai),user:user,Telnet,23,user,user,user,Mirai; generic,,botnet
+(Mirai),admin:(empty),Telnet,23,admin,,admin,Mirai; generic,,botnet
+(Mirai),root:pass,Telnet,23,root,pass,admin,Mirai; generic,,botnet
+(Mirai),admin:admin1234,Telnet,23,admin,admin1234,admin,Mirai; generic,,botnet
+(Mirai),root:1111,Telnet,23,root,1111,admin,Mirai; Unitronics PLCs also,,botnet
+(Mirai),admin:smcadmin,Telnet,23,admin,smcadmin,admin,Mirai; SMC routers,,botnet
+(Mirai),admin:1111,Telnet,23,admin,1111,admin,Mirai; generic / Unitronics,,botnet
+(Mirai),root:666666,Telnet,23,root,666666,admin,Mirai; Dahua cameras,,botnet
+(Mirai),root:password,Telnet,23,root,password,admin,Mirai; generic,,botnet
+(Mirai),root:1234,Telnet,23,root,1234,admin,Mirai; generic,,botnet
+(Mirai),root:klv123,Telnet,23,root,klv123,admin,Mirai; HiSilicon devices,,botnet
+(Mirai),Administrator:admin,Telnet,23,Administrator,admin,admin,Mirai; Windows CE/embedded,,botnet
+(Mirai),service:service,Telnet,23,service,service,service,Mirai; generic service account,,botnet
+(Mirai),supervisor:supervisor,Telnet,23,supervisor,supervisor,admin,Mirai; generic supervisor,,botnet
+(Mirai),guest:guest,Telnet,23,guest,guest,guest,Mirai; generic guest,,botnet
+(Mirai),guest:12345,Telnet,23,guest,12345,guest,Mirai; generic,,botnet
+(Mirai),admin1:password,Telnet,23,admin1,password,admin,Mirai; generic,,botnet
+(Mirai),administrator:1234,Telnet,23,administrator,1234,admin,Mirai; generic,,botnet
+(Mirai),666666:666666,Telnet,23,666666,666666,admin,Mirai; Dahua IP cameras,,botnet
+(Mirai),888888:888888,Telnet,23,888888,888888,admin,Mirai; Dahua cameras,,botnet
+(Mirai),ubnt:ubnt,Telnet,23,ubnt,ubnt,admin,Mirai; Ubiquiti devices,,botnet
+(Mirai),root:klv1234,Telnet,23,root,klv1234,admin,Mirai; HiSilicon DVR,,botnet
+(Mirai),root:Zte521,Telnet,23,root,Zte521,admin,Mirai; ZTE routers,,botnet
+(Mirai),root:hi3518,Telnet,23,root,hi3518,admin,Mirai; HiSilicon Hi3518 SoC cameras,,botnet
+(Mirai),root:jvbzd,Telnet,23,root,jvbzd,admin,Mirai; HiSilicon NVR,,botnet
+(Mirai),root:anko,Telnet,23,root,anko,admin,Mirai; Anko IP cameras,,botnet
+(Mirai),root:zlxx.,Telnet,23,root,zlxx.,admin,Mirai; Chinese IP cameras,,botnet
+(Mirai),root:7ujMko0vizxv,Telnet,23,root,7ujMko0vizxv,admin,Mirai; Dahua cameras (variant),,botnet
+(Mirai),root:7ujMko0admin,Telnet,23,root,7ujMko0admin,admin,Mirai; Dahua cameras (variant),,botnet
+(Mirai),root:system,Telnet,23,root,system,admin,Mirai; IPC/NVR systems,,botnet
+(Mirai),root:ikwb,Telnet,23,root,ikwb,admin,Mirai; Toshiba IP cameras,,botnet
+(Mirai),root:dreambox,Telnet,23,root,dreambox,admin,Mirai; Dreambox receivers,,botnet
+(Mirai),root:user,Telnet,23,root,user,admin,Mirai; generic,,botnet
+(Mirai),root:realtek,Telnet,23,root,realtek,admin,Mirai; Realtek SDK based devices,,botnet
+(Mirai),root:00000000,Telnet,23,root,00000000,admin,Mirai; generic / Advantech ADAM,,botnet
+(Mirai),admin:1111111,Telnet,23,admin,1111111,admin,Mirai; generic,,botnet
+(Mirai),admin:1234,Telnet,23,admin,1234,admin,Mirai; generic,,botnet
+(Mirai),admin:12345,Telnet,23,admin,12345,admin,Mirai; generic,,botnet
+(Mirai),admin:54321,Telnet,23,admin,54321,admin,Mirai; generic,,botnet
+(Mirai),admin:123456,Telnet,23,admin,123456,admin,Mirai; generic,,botnet
+(Mirai),admin:7ujMko0admin,Telnet,23,admin,7ujMko0admin,admin,Mirai; Dahua admin,,botnet
+(Mirai),admin:pass,Telnet,23,admin,pass,admin,Mirai; generic,,botnet
+(Mirai),admin:meinsm,Telnet,23,admin,meinsm,admin,Mirai; Mobotix cameras,,botnet
+(Mirai),tech:tech,Telnet,23,tech,tech,admin,Mirai; Sagem routers,,botnet
+(Mirai),mother:fucker,Telnet,23,mother,fucker,admin,Mirai; ZTE routers (variant),,botnet
+Beckhoff,CX7000 Embedded PC,HTTP,80,Administrator,1,admin,Factory default; infosys.beckhoff.com,,plc
+Beckhoff,CX5000/CX9020,HTTP,80,Administrator,1,admin,Windows IoT default,,plc
+Unitronics,Vision/Samba PLC,TCP,20256,,1111,admin,Default password; CISA AA23-335A,CVE-2023-6448,plc
+Red Lion,CR1000 Crimson HMI,HTTP,80,Admin,password,admin,HMS Networks support (Crimson 3.2),,hmi
+Moxa,NPort 5000 Series,HTTP,80,account,moxa,admin,NPort Manual v5.3; alternate admin account,,serial_device
+Moxa,EDS-510A Managed Switch,HTTP,80,admin,moxa,admin,Managed switch; Moxa Manual v9.6,,switch
+Moxa,EDS-510A Managed Switch,SNMP,161,moxa,,read,SNMP community; MPSA-257315,,switch
+Hirschmann,HiOS Managed Switches,HTTP,80,admin,private,admin,Pre-2020 firmware default; doc.hirschmann.com,,switch
+Advantech,R-SeeNet 2.4.22,HTTP,80,,,admin,Hidden root account (hardcoded),CVE-2023-2611,iiot
+Advantech,EKI-6333AC,HTTP,80,,,admin,Static backup encryption key,CVE-2024-50377,iiot
+Honeywell,ControlEdge,SSH,22,root,,admin,Hardcoded root SSH credential,CVE-2022-30318,dcs
+Emerson,DeltaV Controllers,FTP,21,,,admin,Hardcoded FTP credentials (disabled by default),CVE-2022-29962,dcs
+Emerson,DeltaV Controllers,Telnet,23,,,admin,Hardcoded Telnet credentials,CVE-2022-29963,dcs
+Emerson,DeltaV Controllers,SSH,22,,,admin,Hardcoded SSH credentials,CVE-2022-29964,dcs
+Schneider,Unity/OS Loader,FTP,21,,,admin,Hardcoded FTP credentials,CVE-2020-7498,plc
+Schneider,EcoStruxure Control Expert,TCP,0,,,admin,Hardcoded project encryption key,CVE-2023-6409,ews
+Schneider,Modicon TM221CE16R,TCP,0,,,admin,Project file default key,,plc
+Mitsubishi,GX Works3 Safety CPU,TCP,0,,,admin,Hardcoded project auth key,CVE-2022-29831,ews
+Mitsubishi,iQ-R EtherNet/IP FTP,FTP,21,,,admin,Hardcoded FTP password,CVE-2023-2061,plc
+WAGO,PFC100/PFC200,HTTP,80,root,wago,admin,CODESYS-based; WAGO forum,,plc
+WAGO,PFC100/PFC200,TCP,0,,,admin,Factory reset via iocheckd exploit,CVE-2019-5080,plc
+CODESYS,Control Runtime <4.21,TCP,0,,,read,Exposed password hashes,CVE-2025-41658,plc
+CODESYS,Control Runtime <4.21,TCP,0,,,admin,Crypto material exposure,CVE-2025-41659,plc
+Siemens,SCALANCE M-800/S615,HTTP,443,,,read,Hardcoded backup encryption key,CVE-2023-44318,router
+Rockwell,ControlLogix,EtherNet/IP,44818,,,admin,Trusted Slot key bypass,CVE-2024-6242,plc
+(Protocol),EtherNet/IP CIP,EtherNet/IP,44818,,,full,No auth by default; CIP implicit messaging,,protocol
+(Protocol),Fox (Tridium Niagara),TCP,1911,,,full,No auth by default; building automation,,protocol
+(Protocol),WDBRPC VxWorks Debug,UDP,17185,,,full,VxWorks debug port; full system access,,protocol

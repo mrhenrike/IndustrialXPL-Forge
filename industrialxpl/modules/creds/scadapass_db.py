@@ -2,13 +2,21 @@
 
 Comprehensive database of factory-default credentials for industrial
 control systems, PLCs, RTUs, HMIs, SCADA servers, engineering workstations,
-network switches, and ICS-specific appliances.
+network switches, gateways, IIoT appliances, and OT-adjacent devices.
+
+All credential data is loaded from resources/wordlists/scadapass_full_export.csv
+at import time. No credentials are stored in Python source code.
 
 Sources:
-  - SCADAPASS project (public domain ICS credential lists)
-  - Vendor documentation and security advisories
-  - ICS-CERT advisories on default credentials
+  - SCADAPASS project by SCADA StrangeLove (public domain ICS credential lists)
+  - Vendor documentation, manuals, and security advisories
+  - ICS-CERT / CISA advisories on default credentials
   - CISA ICS-CERT Alert TA17-156A (Default Credentials)
+  - CVE entries with hardcoded/default credential references
+  - Mirai botnet source code (scanner.c credential table)
+  - SecLists project (danielmiessler/SecLists)
+  - Nessus/Tenable ICS default credential plugins
+  - Shodan/Censys ICS exposure research
 
 Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
@@ -18,8 +26,9 @@ from __future__ import annotations
 import csv
 import io
 import logging
-from dataclasses import dataclass, field
-from typing import Optional
+from dataclasses import dataclass
+from enum import Enum
+from pathlib import Path
 
 from industrialxpl.core.exploit import (
     Exploit, OptBool, OptString,
@@ -27,6 +36,38 @@ from industrialxpl.core.exploit import (
 )
 
 log = logging.getLogger(__name__)
+
+_WORDLISTS_DIR = Path(__file__).resolve().parents[2] / "resources" / "wordlists"
+_CSV_FILE = _WORDLISTS_DIR / "scadapass_full_export.csv"
+
+
+class CredCategory(str, Enum):
+    PLC = "plc"
+    RTU = "rtu"
+    DCS = "dcs"
+    HMI = "hmi"
+    SCADA = "scada"
+    EWS = "ews"
+    SWITCH = "switch"
+    ROUTER = "router"
+    GATEWAY = "gateway"
+    FIREWALL_OT = "firewall_ot"
+    IED = "ied"
+    RELAY = "relay"
+    METER = "meter"
+    DRIVE = "drive"
+    ROBOT = "robot"
+    IIOT = "iiot"
+    HISTORIAN = "historian"
+    PROTOCOL = "protocol"
+    SNMP = "snmp"
+    BOTNET = "botnet"
+    BMS = "bms"
+    UPS = "ups"
+    SERIAL = "serial_device"
+    CAMERA = "camera"
+    NAS = "nas"
+    PRINTER = "printer"
 
 
 @dataclass
@@ -42,152 +83,38 @@ class DefaultCredential:
     notes: str = ""
     cve: str = ""
     verified: bool = True
+    category: str = ""
 
 
-# ---------------------------------------------------------------------------
-# Embedded credential database
-# ---------------------------------------------------------------------------
+def _load_csv_db() -> list[DefaultCredential]:
+    """Load the credential database from the CSV file."""
+    if not _CSV_FILE.is_file():
+        log.warning("SCADAPASS CSV not found: %s", _CSV_FILE)
+        return []
+    entries: list[DefaultCredential] = []
+    with open(_CSV_FILE, encoding="utf-8", errors="replace", newline="") as fh:
+        reader = csv.DictReader(fh)
+        for row in reader:
+            try:
+                port = int(row.get("Port", "0") or "0")
+            except ValueError:
+                port = 0
+            entries.append(DefaultCredential(
+                vendor=row.get("Vendor", ""),
+                product=row.get("Product", ""),
+                protocol=row.get("Protocol", ""),
+                port=port,
+                username=row.get("Username", ""),
+                password=row.get("Password", ""),
+                access_level=row.get("Access Level", "admin"),
+                notes=row.get("Notes", ""),
+                cve=row.get("CVE", ""),
+                category=row.get("Category", ""),
+            ))
+    return entries
 
-CREDENTIAL_DB: list[DefaultCredential] = [
-    # Siemens
-    DefaultCredential("Siemens", "S7-300/400", "S7comm", 102, "", "", "full", "No auth by default"),
-    DefaultCredential("Siemens", "S7-1200 Web", "HTTP", 80, "admin", "admin", "admin"),
-    DefaultCredential("Siemens", "S7-1500 Web", "HTTPS", 443, "admin", "", "admin", "Empty password default"),
-    DefaultCredential("Siemens", "WinCC", "HTTP", 80, "administrator", "", "admin"),
-    DefaultCredential("Siemens", "WinCC OA", "HTTP", 4999, "root", "", "admin"),
-    DefaultCredential("Siemens", "SCALANCE X", "HTTP", 80, "admin", "admin", "admin", "Industrial switch"),
-    DefaultCredential("Siemens", "SCALANCE W", "HTTP", 80, "admin", "admin", "admin", "Wireless AP"),
-    DefaultCredential("Siemens", "SINEMA Server", "HTTPS", 443, "admin", "admin", "admin"),
-    DefaultCredential("Siemens", "TIA Portal", "OPC-UA", 4840, "", "", "read", "OPC-UA no auth"),
-    DefaultCredential("Siemens", "LOGO!", "HTTP", 80, "admin", "admin", "admin"),
 
-    # Allen-Bradley / Rockwell
-    DefaultCredential("Rockwell", "ControlLogix", "EtherNet/IP", 44818, "", "", "full", "No auth default"),
-    DefaultCredential("Rockwell", "CompactLogix", "EtherNet/IP", 44818, "", "", "full", "No auth default"),
-    DefaultCredential("Rockwell", "MicroLogix 1100", "HTTP", 80, "admin", "1234", "admin"),
-    DefaultCredential("Rockwell", "PanelView Plus", "HTTP", 80, "admin", "", "admin"),
-    DefaultCredential("Rockwell", "FactoryTalk View SE", "HTTP", 80, "admin", "", "admin"),
-    DefaultCredential("Rockwell", "Stratix 5700", "SSH", 22, "admin", "admin", "admin", "Managed switch"),
-
-    # Schneider Electric
-    DefaultCredential("Schneider", "Modicon M340", "Modbus", 502, "", "", "full", "No Modbus auth"),
-    DefaultCredential("Schneider", "Modicon M580", "Modbus", 502, "", "", "full", "No Modbus auth"),
-    DefaultCredential("Schneider", "Quantum", "Modbus", 502, "", "", "full"),
-    DefaultCredential("Schneider", "Unity Pro", "HTTP", 80, "USER", "USER", "engineer"),
-    DefaultCredential("Schneider", "ClearSCADA", "HTTPS", 443, "admin", "admin", "admin"),
-    DefaultCredential("Schneider", "ION 7650", "HTTP", 80, "ADMIN", "0", "admin", "Power meter"),
-    DefaultCredential("Schneider", "PowerLogic PM800", "HTTP", 80, "admin", "admin", "admin"),
-    DefaultCredential("Schneider", "Magelis HMI", "HTTP", 80, "USER", "USER", "operator"),
-    DefaultCredential("Schneider", "APC UPS (NMC)", "HTTP", 80, "apc", "apc", "admin"),
-
-    # ABB
-    DefaultCredential("ABB", "AC500", "HTTP", 80, "admin", "admin", "admin"),
-    DefaultCredential("ABB", "AC800M", "OPC-UA", 4840, "", "", "read"),
-    DefaultCredential("ABB", "Freelance", "HTTP", 80, "admin", "admin", "admin"),
-    DefaultCredential("ABB", "REF615", "HTTP", 80, "admin", "admin", "admin", "Protection relay"),
-    DefaultCredential("ABB", "RTU560", "HTTP", 80, "admin", "admin", "admin"),
-    DefaultCredential("ABB", "Symphony Plus", "HTTP", 80, "ADMIN", "ADMIN", "admin"),
-
-    # GE
-    DefaultCredential("GE", "Mark VIe", "HTTP", 80, "admin", "admin", "admin", "Turbine control"),
-    DefaultCredential("GE", "PACSystems RX3i", "SRTP", 18245, "", "", "full", "No auth"),
-    DefaultCredential("GE", "Cimplicity", "HTTP", 80, "admin", "", "admin"),
-    DefaultCredential("GE", "iFIX", "HTTP", 80, "admin", "", "admin"),
-    DefaultCredential("GE", "Multilin 850", "HTTP", 80, "admin", "admin", "admin", "Protection relay"),
-
-    # Honeywell
-    DefaultCredential("Honeywell", "Experion PKS", "HTTP", 80, "ADMIN", "ADMIN", "admin"),
-    DefaultCredential("Honeywell", "C300 Controller", "HTTP", 80, "admin", "1234", "admin"),
-
-    # Emerson / Fisher
-    DefaultCredential("Emerson", "DeltaV", "HTTP", 80, "admin", "admin", "admin"),
-    DefaultCredential("Emerson", "DeltaV SIS", "HTTP", 80, "admin", "deltav", "admin"),
-    DefaultCredential("Emerson", "ROC800", "Serial", 0, "LOI", "1000", "engineer"),
-    DefaultCredential("Emerson", "OpenBSI", "HTTP", 80, "admin", "", "admin"),
-
-    # Yokogawa
-    DefaultCredential("Yokogawa", "CENTUM VP", "HTTP", 20171, "admin", "admin", "admin"),
-    DefaultCredential("Yokogawa", "ProSafe-RS", "HTTP", 80, "admin", "admin", "admin"),
-    DefaultCredential("Yokogawa", "STARDOM", "HTTP", 80, "admin", "admin", "admin"),
-
-    # Mitsubishi
-    DefaultCredential("Mitsubishi", "MELSEC-Q", "MELSEC", 5007, "", "", "full", "No auth"),
-    DefaultCredential("Mitsubishi", "MELSEC iQ-R", "MELSEC", 5007, "", "", "full"),
-    DefaultCredential("Mitsubishi", "GOT2000 HMI", "HTTP", 80, "admin", "", "admin"),
-
-    # Omron
-    DefaultCredential("Omron", "CJ2M", "FINS", 9600, "", "", "full", "No FINS auth"),
-    DefaultCredential("Omron", "NJ/NX Series", "HTTP", 80, "admin", "admin", "admin"),
-    DefaultCredential("Omron", "NA Series HMI", "HTTP", 80, "admin", "", "admin"),
-
-    # WAGO
-    DefaultCredential("WAGO", "PFC200", "HTTP", 80, "admin", "wago", "admin"),
-    DefaultCredential("WAGO", "PFC100", "HTTP", 80, "admin", "wago", "admin"),
-
-    # Phoenix Contact
-    DefaultCredential("Phoenix Contact", "ILC 2050", "HTTP", 80, "admin", "admin", "admin"),
-    DefaultCredential("Phoenix Contact", "AXC F 2152", "HTTP", 80, "admin", "", "admin"),
-
-    # Beckhoff
-    DefaultCredential("Beckhoff", "TwinCAT", "ADS", 48898, "", "", "full", "No ADS auth default"),
-    DefaultCredential("Beckhoff", "CX Series", "HTTP", 80, "admin", "1", "admin"),
-
-    # CODESYS
-    DefaultCredential("CODESYS", "Runtime V3", "HTTP", 8080, "admin", "", "admin"),
-    DefaultCredential("CODESYS", "Runtime V2", "TCP", 1200, "", "", "full", "No auth on control port"),
-
-    # Moxa
-    DefaultCredential("Moxa", "NPort", "HTTP", 80, "admin", "", "admin"),
-    DefaultCredential("Moxa", "NPort", "Telnet", 23, "admin", "", "admin"),
-    DefaultCredential("Moxa", "EDS-408A", "HTTP", 80, "admin", "", "admin", "Industrial switch"),
-    DefaultCredential("Moxa", "MGate", "HTTP", 80, "admin", "", "admin", "Protocol gateway"),
-    DefaultCredential("Moxa", "ioLogik E1210", "HTTP", 80, "admin", "", "admin"),
-
-    # Advantech
-    DefaultCredential("Advantech", "WebAccess", "HTTP", 80, "admin", "admin", "admin"),
-    DefaultCredential("Advantech", "ADAM-6000", "HTTP", 80, "admin", "admin", "admin"),
-
-    # Delta Electronics
-    DefaultCredential("Delta", "DVP Series PLC", "Modbus", 502, "", "", "full"),
-    DefaultCredential("Delta", "DOP Series HMI", "HTTP", 80, "admin", "admin", "admin"),
-    DefaultCredential("Delta", "InfraSuite", "HTTP", 80, "admin", "admin", "admin"),
-
-    # Bosch Rexroth
-    DefaultCredential("Bosch Rexroth", "ctrlX CORE", "HTTPS", 443, "boschrexroth", "boschrexroth", "admin"),
-    DefaultCredential("Bosch Rexroth", "IndraControl XM", "HTTP", 80, "admin", "admin", "admin"),
-
-    # FANUC
-    DefaultCredential("FANUC", "R-30iB", "HTTP", 80, "admin", "", "admin", "Robot controller"),
-    DefaultCredential("FANUC", "ROBOGUIDE", "HTTP", 80, "", "", "read"),
-
-    # Protocol-specific (no authentication by design)
-    DefaultCredential("(Protocol)", "Modbus TCP", "Modbus", 502, "", "", "full",
-                      "No auth in protocol spec; any node can R/W"),
-    DefaultCredential("(Protocol)", "S7comm", "S7comm", 102, "", "", "full",
-                      "No auth in standard mode; PLC memory R/W"),
-    DefaultCredential("(Protocol)", "BACnet/IP", "BACnet", 47808, "", "", "full",
-                      "No auth; R/W any object property"),
-    DefaultCredential("(Protocol)", "EtherNet/IP CIP", "CIP", 44818, "", "", "full",
-                      "No implicit message auth"),
-    DefaultCredential("(Protocol)", "DNP3", "DNP3", 20000, "", "", "full",
-                      "Pre-SA has no auth; inject commands"),
-    DefaultCredential("(Protocol)", "IEC 60870-5-104", "IEC104", 2404, "", "", "full",
-                      "No auth; STARTDT accepted"),
-    DefaultCredential("(Protocol)", "OPC DA/Classic", "DCOM", 135, "", "", "varies",
-                      "DCOM-based; often misconfigured"),
-    DefaultCredential("(Protocol)", "PROFINET IO", "PROFINET", 34964, "", "", "full",
-                      "No auth on IO data exchange"),
-    DefaultCredential("(Protocol)", "FINS (Omron)", "FINS", 9600, "", "", "full",
-                      "No auth on FINS commands"),
-    DefaultCredential("(Protocol)", "MELSEC (Mitsubishi)", "MELSEC", 5007, "", "", "full",
-                      "No auth on binary protocol"),
-    DefaultCredential("(Protocol)", "ADS (Beckhoff)", "ADS", 48898, "", "", "full",
-                      "No auth; direct PLC memory access"),
-    DefaultCredential("(Protocol)", "MQTT", "MQTT", 1883, "", "", "varies",
-                      "Often deployed without auth in OT"),
-    DefaultCredential("(Protocol)", "CoAP", "CoAP", 5683, "", "", "varies",
-                      "UDP REST-like; often no auth"),
-]
+CREDENTIAL_DB: list[DefaultCredential] = _load_csv_db()
 
 
 # ---------------------------------------------------------------------------
@@ -217,9 +144,56 @@ def search_by_port(port: int) -> list[DefaultCredential]:
     return [c for c in CREDENTIAL_DB if c.port == port]
 
 
+def search_by_category(category: str) -> list[DefaultCredential]:
+    """Find credentials by device category (plc, rtu, hmi, switch, etc.)."""
+    cat = category.lower()
+    return [c for c in CREDENTIAL_DB if cat in c.category.lower()]
+
+
+def search_by_cve(cve_id: str) -> list[DefaultCredential]:
+    """Find credentials associated with a specific CVE."""
+    cve = cve_id.upper()
+    return [c for c in CREDENTIAL_DB if cve in c.cve.upper()]
+
+
 def get_all_vendors() -> list[str]:
     """Return sorted list of unique vendors."""
     return sorted(set(c.vendor for c in CREDENTIAL_DB))
+
+
+def get_all_categories() -> list[str]:
+    """Return sorted list of unique categories."""
+    return sorted(set(c.category for c in CREDENTIAL_DB if c.category))
+
+
+def get_mirai_wordlist() -> list[tuple[str, str]]:
+    """Return the Mirai botnet credential pairs as (username, password) tuples."""
+    return [(c.username, c.password) for c in CREDENTIAL_DB
+            if c.vendor == "(Mirai)"]
+
+
+def get_snmp_communities() -> list[str]:
+    """Return all SNMP community strings from the database."""
+    return [c.username for c in CREDENTIAL_DB
+            if c.protocol == "SNMP" and c.username]
+
+
+def get_stats() -> dict[str, int]:
+    """Return database statistics."""
+    vendors = set(c.vendor for c in CREDENTIAL_DB
+                  if not c.vendor.startswith("("))
+    return {
+        "total_entries": len(CREDENTIAL_DB),
+        "unique_vendors": len(vendors),
+        "unique_products": len(set(c.product for c in CREDENTIAL_DB)),
+        "protocols_with_no_auth": sum(1 for c in CREDENTIAL_DB
+                                      if c.vendor == "(Protocol)"),
+        "mirai_pairs": sum(1 for c in CREDENTIAL_DB
+                           if c.vendor == "(Mirai)"),
+        "snmp_communities": sum(1 for c in CREDENTIAL_DB
+                                if c.category == "snmp"),
+        "entries_with_cve": sum(1 for c in CREDENTIAL_DB if c.cve),
+    }
 
 
 def export_csv() -> str:
@@ -227,10 +201,12 @@ def export_csv() -> str:
     out = io.StringIO()
     writer = csv.writer(out)
     writer.writerow(["Vendor", "Product", "Protocol", "Port",
-                     "Username", "Password", "Access Level", "Notes", "CVE"])
+                     "Username", "Password", "Access Level", "Notes",
+                     "CVE", "Category"])
     for c in CREDENTIAL_DB:
         writer.writerow([c.vendor, c.product, c.protocol, c.port,
-                         c.username, c.password, c.access_level, c.notes, c.cve])
+                         c.username, c.password, c.access_level, c.notes,
+                         c.cve, c.category])
     return out.getvalue()
 
 
@@ -243,28 +219,56 @@ class SCADAPassDB(Exploit):
 
     __info__ = {
         "name": "SCADAPASS DB",
-        "description": "Default credential database for ICS/SCADA devices and protocols",
+        "description": (
+            "Default credential database for ICS/SCADA/OT devices, protocols, "
+            "SNMP communities, and IoT botnet wordlists (Mirai). "
+            "Covers 60+ manufacturers, 30+ protocols, and 350+ credential entries."
+        ),
         "authors": ["Andre Henrique (@mrhenrike)"],
         "references": [
             "CISA ICS-CERT Alert TA17-156A",
             "ICS-CERT Advisory ICSA-15-258-01",
+            "SCADAPASS project (SCADA StrangeLove)",
+            "CVE-2023-6448 (Unitronics Vision/Samba)",
+            "CVE-2022-31806 (CODESYS V2 no auth)",
+            "CVE-2022-30314 (Honeywell Safety Manager hardcoded)",
+            "CVE-2013-0694 (Emerson ROC800 hardcoded)",
+            "CVE-2016-5645 (Rockwell MicroLogix SNMP)",
+            "Mirai botnet source (scanner.c credential table)",
         ],
+        "mitre_techniques": ["T0812", "T0859", "T0886"],
+        "mitre_tactics": ["Credential Access", "Initial Access"],
     }
 
-    query = OptString("", "Search query (vendor, product, or protocol name)")
-    search_type = OptString("vendor", "Search by: vendor, product, protocol, port, all")
+    query = OptString("", "Search query (vendor, product, protocol, category, or CVE)")
+    search_type = OptString("vendor",
+                            "Search by: vendor, product, protocol, port, category, cve, "
+                            "mirai, snmp, stats, all")
     export = OptBool(False, "Export full database as CSV")
 
     def run(self) -> list[DefaultCredential]:
         if self.export:
             csv_data = export_csv()
-            print_info(f"Exported {len(CREDENTIAL_DB)} entries")
+            stats = get_stats()
+            print_info(f"Exported {stats['total_entries']} entries "
+                       f"({stats['unique_vendors']} vendors)")
             return CREDENTIAL_DB
 
         q = self.query
         stype = self.search_type.lower()
 
-        if stype == "all" or not q:
+        if stype == "stats":
+            stats = get_stats()
+            print_status("SCADAPASS Database Statistics:")
+            for key, val in stats.items():
+                print_info(f"  {key}: {val}")
+            return []
+
+        if stype == "mirai":
+            results = [c for c in CREDENTIAL_DB if c.vendor == "(Mirai)"]
+        elif stype == "snmp":
+            results = [c for c in CREDENTIAL_DB if c.category == "snmp"]
+        elif stype == "all" or not q:
             results = CREDENTIAL_DB
         elif stype == "vendor":
             results = search_by_vendor(q)
@@ -274,6 +278,10 @@ class SCADAPassDB(Exploit):
             results = search_by_protocol(q)
         elif stype == "port":
             results = search_by_port(int(q))
+        elif stype == "category":
+            results = search_by_category(q)
+        elif stype == "cve":
+            results = search_by_cve(q)
         else:
             results = search_by_vendor(q) + search_by_product(q)
 
@@ -281,8 +289,11 @@ class SCADAPassDB(Exploit):
         for c in results:
             user = c.username if c.username else "(empty)"
             pwd = c.password if c.password else "(empty)"
-            print_info(f"  {c.vendor:20s} {c.product:25s} {c.protocol:10s} "
-                       f":{c.port:<6d} {user}:{pwd} [{c.access_level}]")
+            cat = f" ({c.category})" if c.category else ""
+            cve_tag = f" [{c.cve}]" if c.cve else ""
+            print_info(f"  {c.vendor:20s} {c.product:30s} {c.protocol:12s} "
+                       f":{c.port:<6d} {user}:{pwd} [{c.access_level}]"
+                       f"{cat}{cve_tag}")
             if c.notes:
                 print_info(f"    Note: {c.notes}")
 
@@ -293,6 +304,6 @@ MANIFEST = {
     "name": "scadapass_db",
     "category": "creds",
     "entry_count": len(CREDENTIAL_DB),
-    "vendors": len(set(c.vendor for c in CREDENTIAL_DB)),
-    "mitre_ics": ["T0812", "T0859"],
+    "vendors": len(set(c.vendor for c in CREDENTIAL_DB if not c.vendor.startswith("("))),
+    "mitre_ics": ["T0812", "T0859", "T0886"],
 }

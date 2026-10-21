@@ -23,11 +23,9 @@ try:
 except ImportError:
     _HAS_REQUESTS = False
 
-_DEFAULT_CREDS = [
-    ("admin", "admin"), ("admin", "password"), ("admin", ""),
-    ("root", "root"), ("root", ""), ("user", "user"),
-    ("administrator", "administrator"), ("guest", ""),
-]
+from industrialxpl.modules.creds._wordlist_loader import load_credential_pairs
+
+_DEFAULT_CREDS = load_credential_pairs("http_default_credentials.txt")
 
 
 class Exploit(_Exploit):

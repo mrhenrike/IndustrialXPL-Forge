@@ -19,8 +19,7 @@ from __future__ import annotations
 import socket
 from typing import Optional
 
-from embedxpl.core.exploit.base import Base
-from embedxpl.core.exploit.option import OptInt, OptIP
+from industrialxpl.core.exploit import Exploit as Base, OptInteger as OptInt, OptIP
 
 # IEC104 APCI (Application Protocol Control Information) header
 IEC104_STARTDT_ACT = bytes([0x68, 0x04, 0x07, 0x00, 0x00, 0x00])  # STARTDT

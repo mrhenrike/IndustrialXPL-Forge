@@ -60,17 +60,11 @@ from industrialxpl.core.exploit import (
 
 WORDLISTS_DIR = Path(__file__).resolve().parents[4] / "resources" / "wordlists"
 
-_DEFAULT_USERNAMES = [
-    "admin", "root", "user", "operator", "guest", "manager",
-    "supervisor", "service", "tech", "maintenance",
-]
+from industrialxpl.modules.creds._wordlist_loader import load_single_column
 
-_DEFAULT_PASSWORDS = [
-    "admin", "password", "1234", "12345", "123456", "admin123",
-    "", "root", "pass", "operator", "guest", "default",
-    "service", "cisco", "siemens", "schneider", "rockwell",
-    "system", "manager", "supervisor", "letmein", "test",
-]
+_DEFAULT_USERNAMES = load_single_column("ics_telnet_usernames.txt")
+
+_DEFAULT_PASSWORDS = load_single_column("ics_telnet_passwords.txt")
 
 _LOGIN_PROMPTS = [b"login: ", b"Login: ", b"login:", b"Login:", b"Username:", b"username:"]
 _PASSWORD_PROMPTS = [b"Password: ", b"password: ", b"Password:", b"password:"]

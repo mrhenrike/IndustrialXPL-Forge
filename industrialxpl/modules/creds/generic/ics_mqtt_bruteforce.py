@@ -57,26 +57,9 @@ _CONNACK_CODES = {
     0x05: "Not Authorized",
 }
 
-_DEFAULT_CREDENTIALS: list[tuple[str, str]] = [
-    ("admin", "admin"),
-    ("admin", "password"),
-    ("admin", ""),
-    ("", ""),
-    ("guest", "guest"),
-    ("mqtt", "mqtt"),
-    ("user", "user"),
-    ("test", "test"),
-    ("root", "root"),
-    ("root", ""),
-    ("mosquitto", "mosquitto"),
-    ("hivemq", "hivemq"),
-    ("emqx", "emqx"),
-    ("scada", "scada"),
-    ("ics", "ics"),
-    ("operator", "operator"),
-    ("plc", "plc"),
-    ("rtu", "rtu"),
-]
+from industrialxpl.modules.creds._wordlist_loader import load_credential_pairs
+
+_DEFAULT_CREDENTIALS: list[tuple[str, str]] = load_credential_pairs("mqtt_default_credentials.txt")
 
 
 def _encode_string(s: str) -> bytes:

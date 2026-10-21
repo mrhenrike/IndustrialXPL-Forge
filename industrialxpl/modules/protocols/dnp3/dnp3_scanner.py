@@ -20,8 +20,7 @@ import socket
 import struct
 from typing import Optional
 
-from embedxpl.core.exploit.base import Base
-from embedxpl.core.exploit.option import OptInt, OptIP
+from industrialxpl.core.exploit import Exploit as Base, OptInteger as OptInt, OptIP
 
 # DNP3 Link Layer header constants
 DNP3_START_BYTES = b"\x05\x64"

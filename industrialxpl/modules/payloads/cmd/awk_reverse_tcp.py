@@ -1,4 +1,4 @@
-from industrialxpl.core.exploit import *
+from industrialxpl.core.exploit import OptString
 from industrialxpl.core.exploit.payloads import GenericPayload, ReverseTCPPayloadMixin
 
 

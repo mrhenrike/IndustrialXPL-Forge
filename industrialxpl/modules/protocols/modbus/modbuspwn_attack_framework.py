@@ -21,7 +21,14 @@ from __future__ import annotations
 
 import json
 
-from ixf.core.exploit import Base, OptBool, OptInt, OptIP, OptPort, OptString, print_error, print_good, print_status
+from industrialxpl.core.exploit import (
+    Exploit as _Exploit, OptBool, OptInteger, OptIP, OptPort, OptString,
+    print_error, print_success, print_status,
+)
+
+Base = _Exploit
+OptInt = OptInteger
+print_good = print_success
 
 
 class Exploit(Base):
