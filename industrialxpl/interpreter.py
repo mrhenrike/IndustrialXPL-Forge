@@ -229,7 +229,7 @@ class BaseInterpreter:
             readline.set_history_length(1000)
             readline.parse_and_bind("tab: complete")
             readline.set_completer_delims(" \t\n;")
-        except Exception:
+        except (AttributeError, OSError):
             pass
 
     def _bind_completer(self) -> None:
@@ -239,7 +239,7 @@ class BaseInterpreter:
             from industrialxpl.cli.completer import IXFCompleter
             self._completer = IXFCompleter(self)  # type: ignore[arg-type]
             readline.set_completer(self._completer.complete)
-        except Exception:
+        except (ImportError, AttributeError, OSError):
             pass
 
     @property
@@ -279,7 +279,7 @@ class BaseInterpreter:
             handler(args, **kwargs)
         except IXFException as exc:
             print_error(str(exc))
-        except Exception as exc:
+        except (OSError, RuntimeError, TypeError, ValueError) as exc:
             print_error(f"Unexpected error: {exc}")
         return True
 
@@ -333,8 +333,7 @@ class BaseInterpreter:
                 print_info("  'update' -- check details and upgrade interactively")
                 print_info("  'update --silent' -- upgrade without confirmation")
                 print_info("")
-        except Exception:
-            # Update check failures are silent -- never block startup
+        except (OSError, ValueError, KeyError, TimeoutError):
             pass
 
     def start(self, show_banner: bool = True) -> None:
@@ -411,7 +410,7 @@ class IXFInterpreter(
         try:
             from industrialxpl.core.malware.crosscompile import ensure_cross_path_in_env
             ensure_cross_path_in_env()
-        except Exception:
+        except (ImportError, OSError):
             pass
         print_status("Indexing modules…")
         self.modules: list = index_modules()  # type: ignore[type-arg]
@@ -435,7 +434,7 @@ class IXFInterpreter(
                     online, total, pid, r.get("go_cnc_pid", " - "),
                 )
             )
-        except Exception:
+        except (ImportError, OSError, KeyError):
             pass
 
     # -- Global commands ----------------------------------------------------
@@ -503,7 +502,7 @@ class IXFInterpreter(
                     title="Options -- {}".format(info.get("name", term)),
                 )
                 return
-            except Exception:
+            except (ImportError, AttributeError, TypeError, KeyError):
                 pass
             # Search for modules matching the term and show a mini help
             results = [m for m in self.modules if term in m.lower()]
@@ -1351,7 +1350,7 @@ Example:
             release_url = data["info"]["project_urls"].get(
                 "Changelog", "https://github.com/mrhenrike/IndustrialXPL-Forge/releases"
             )
-        except Exception as exc:
+        except (OSError, ValueError, KeyError, TimeoutError) as exc:
             print_error(f"Could not reach PyPI: {exc}")
             print_info("  Manual check: https://pypi.org/project/industrialxpl/")
             return
@@ -1405,7 +1404,7 @@ Example:
                     print_success(f"Upgrade complete. Restart IXF to use v{latest}.")
                 else:
                     print_error(f"pip exited with code {result.returncode}. Check the output above.")
-            except Exception as exc:
+            except (OSError, subprocess.SubprocessError) as exc:
                 print_error(f"Upgrade failed: {exc}")
         else:
             print_info("Upgrade skipped. Run 'update' again when ready.")
@@ -1432,7 +1431,7 @@ Example:
                 if key in self.current_module.options:  # type: ignore[attr-defined]
                     try:
                         setattr(self.current_module, key, val)
-                    except Exception:
+                    except (AttributeError, TypeError, ValueError):
                         pass
             # Explicit globals for targeting (port/transport/unit_id override module defaults)
             for gkey in ("port", "transport", "unit_id"):
@@ -1440,7 +1439,7 @@ Example:
                 if gval and gkey in self.current_module.options:  # type: ignore[attr-defined]
                     try:
                         setattr(self.current_module, gkey, gval)
-                    except Exception:
+                    except (AttributeError, TypeError, ValueError):
                         pass
             # Always propagate target if module has it and global is set
             g_target = self._global_opts.get("target", "")
@@ -1448,7 +1447,7 @@ Example:
                 try:
                     if not getattr(self.current_module, "target", ""):
                         self.current_module.target = g_target  # type: ignore[attr-defined]
-                except Exception:
+                except (AttributeError, TypeError, ValueError):
                     pass
             # Warn if poly language requires external runtime
             info = self.current_module.get_info()  # type: ignore[attr-defined]
@@ -1513,7 +1512,7 @@ Example:
             setattr(self.current_module, key, value)
             self.current_module.exploit_attributes[key][0] = value  # type: ignore[attr-defined]
             print_success(f"{key} => {value}")
-        except Exception as exc:
+        except (AttributeError, TypeError, ValueError) as exc:
             print_error(f"Cannot set '{key}': {exc}")
             omap = self._get_option_help_map()
             if key in omap:
@@ -1617,10 +1616,10 @@ Example:
                 if self.current_module and "port" in self.current_module.options:  # type: ignore[attr-defined]
                     try:
                         self.current_module.port = expr  # type: ignore[attr-defined]
-                    except Exception:
+                    except (AttributeError, TypeError, ValueError):
                         pass
                 return
-            except (ValueError, Exception) as exc:
+            except (ValueError, OSError) as exc:
                 print_error(f"Invalid port expression: {value} ({exc})")
                 self._help_option_port()
                 return
@@ -1637,7 +1636,7 @@ Example:
             if self.current_module and "transport" in self.current_module.options:  # type: ignore[attr-defined]
                 try:
                     self.current_module.transport = lv  # type: ignore[attr-defined]
-                except Exception:
+                except (AttributeError, TypeError, ValueError):
                     pass
             return
 

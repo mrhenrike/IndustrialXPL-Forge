@@ -23,8 +23,7 @@ import socket
 import struct
 from typing import Optional
 
-from embedxpl.core.exploit.base import Base
-from embedxpl.core.exploit.option import OptInt, OptIP
+from industrialxpl.core.exploit import Exploit as Base, OptInteger as OptInt, OptIP
 
 # ISO-TSAP connection request packet
 COTP_CONNECT_REQUEST = bytes([
