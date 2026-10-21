@@ -19,6 +19,8 @@ Install: pip install modbuspwn  (or: pip install pymodbus)
 """
 from __future__ import annotations
 
+import logging
+
 import json
 
 from industrialxpl.core.exploit import (
@@ -138,8 +140,8 @@ class Exploit(Base):
             if not r.isError():
                 results["FC43_device_id"] = str(r.information)
                 print_good(f"  FC43 Device ID: {results['FC43_device_id']}")
-        except (ValueError, KeyError):
-            pass
+        except (ValueError, KeyError) as e:
+            logging.debug("Data error (unexpected format): %s", e)
         return results
 
     def _dump_registers(self, client, fc: str) -> list:

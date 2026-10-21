@@ -1,5 +1,6 @@
 """MitreTacticSweeper - executes IXF modules by MITRE ATT&CK for ICS tactic or technique."""
 
+import logging
 import ipaddress
 import time
 from typing import Optional
@@ -204,6 +205,6 @@ class MitreTacticSweeper:
                 s.connect((str(host), 502))
                 s.close()
                 live.append(str(host))
-            except (ConnectionError, TimeoutError, OSError):
-                pass
+            except (ConnectionError, TimeoutError, OSError) as e:
+                logging.debug("Connection/IO error (non-fatal): %s", e)
         return live

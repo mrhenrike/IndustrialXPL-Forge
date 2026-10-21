@@ -14,6 +14,7 @@ Workflow:
 Platform support: Windows, Linux, macOS.
 """
 
+import logging
 import glob
 import os
 import platform
@@ -79,8 +80,8 @@ class NseManager:
             for line in result.stdout.splitlines():
                 if line.strip().startswith("Nmap version"):
                     return line.strip()
-        except (OSError, subprocess.SubprocessError):
-            pass
+        except (OSError, subprocess.SubprocessError) as e:
+            logging.debug("Connection/IO error (non-fatal): %s", e)
         return None
 
     @staticmethod
@@ -275,8 +276,8 @@ class NseManager:
                 [nmap_bin, "--script-updatedb"],
                 capture_output=True, timeout=30,
             )
-        except (OSError, subprocess.SubprocessError):
-            pass
+        except (OSError, subprocess.SubprocessError) as e:
+            logging.debug("Connection/IO error (non-fatal): %s", e)
 
     # ── Rich output helpers ─────────────────────────────────────────────────
 

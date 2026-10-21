@@ -342,8 +342,8 @@ def scan_s7comm(target: str, port: int = 102, timeout: float = 5.0,
                                                     f"Potential vulnerability: {', '.join(vuln['cves'])}",
                                                     f"{vuln['desc']} (Advisory: {vuln['advisory']})",
                                                     "Update firmware to latest version. Apply Siemens advisory patches."))
-        except (struct.error, IndexError):
-            pass
+        except (struct.error, IndexError) as e:
+            logging.debug("Parse error (malformed packet): %s", e)
 
     # Read SZL 0x001C (Component Identification)
     szl_resp = _s7_request(connected_sock, _s7_read_szl(0x001C))
@@ -370,8 +370,8 @@ def scan_s7comm(target: str, port: int = 102, timeout: float = 5.0,
                 result.issues.append(_issue(SEVERITY_MEDIUM,
                                             f"Component identification: {info_str}",
                                             "SZL 0x001C returned component details."))
-        except (struct.error, IndexError):
-            pass
+        except (struct.error, IndexError) as e:
+            logging.debug("Parse error (malformed packet): %s", e)
 
     connected_sock.close()
     return result
@@ -459,8 +459,8 @@ def scan_dnp3(target: str, port: int = 20000, timeout: float = 5.0,
                                                     "DNP3 Class 0 data readable",
                                                     f"Read request returned {len(data)} bytes of process data.",
                                                     "Restrict read access via ICS firewall or enable SA."))
-                except socket.timeout:
-                    pass
+                except socket.timeout as e:
+                    logging.debug("Connection/IO error (non-fatal): %s", e)
 
     except (socket.error, OSError):
         return None
@@ -545,8 +545,8 @@ def scan_bacnet(target: str, port: int = 47808, timeout: float = 5.0,
                                 result.issues.append(_issue(SEVERITY_INFO,
                                                             f"BACnet device instance: {instance}",
                                                             "Extracted from I-Am response."))
-                        except (struct.error, IndexError):
-                            pass
+                        except (struct.error, IndexError) as e:
+                            logging.debug("Parse error (malformed packet): %s", e)
 
     except (socket.error, OSError):
         return None
@@ -621,8 +621,8 @@ def scan_enip(target: str, port: int = 44818, timeout: float = 5.0,
                                                     f"Device identity exposed: {name} v{major}.{minor}",
                                                     f"Vendor={vendor}, Type={device_type}, Serial=0x{serial:08x}",
                                                     "Restrict ListIdentity via ICS firewall."))
-                except (struct.error, IndexError):
-                    pass
+                except (struct.error, IndexError) as e:
+                    logging.debug("Parse error (malformed packet): %s", e)
 
             result.issues.append(_issue(SEVERITY_HIGH,
                                         "EtherNet/IP CIP accessible without authentication",
@@ -768,8 +768,8 @@ def scan_mqtt(target: str, port: int = 1883, timeout: float = 5.0,
                                                     "Subscribed to '#' (all topics). "
                                                     "Full message interception is possible.",
                                                     "Restrict topic ACLs. Require TLS client certificates."))
-                except socket.timeout:
-                    pass
+                except socket.timeout as e:
+                    logging.debug("Connection/IO error (non-fatal): %s", e)
 
     except (socket.error, OSError):
         return None

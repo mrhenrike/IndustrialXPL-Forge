@@ -1,5 +1,6 @@
 """Generic FTP Default Credentials bruteforce for OT/ICS devices."""
 
+import logging
 import ftplib
 import socket
 
@@ -118,8 +119,8 @@ class Exploit(_Exploit):
                         print_info(f"    Directory listing ({len(listing)} entries)")
                         for line in listing[:5]:
                             print_info(f"      {line}")
-                except (KeyError, TypeError, ValueError):
-                    pass
+                except (KeyError, TypeError, ValueError) as e:
+                    logging.debug("Data error (unexpected format): %s", e)
                 ftp.quit()
             except ftplib.error_perm:
                 print_info(f"  FAIL: {u_display}:{p_display}")

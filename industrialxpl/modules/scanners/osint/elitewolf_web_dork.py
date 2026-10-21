@@ -8,6 +8,7 @@ and Siemens.
 Source: NSA ELITEWOLF project / ICS-Security OSINT
 """
 
+import logging
 import socket
 import urllib.request
 import urllib.error
@@ -165,8 +166,8 @@ class Exploit(Exploit):
                     if e.code in (401, 403):
                         found.append((vendor[:20], path[:40], str(e.code)))
                         print_info(f"[ELITEWOLF] {vendor} - HTTP {e.code} {url}")
-                except (ValueError, OSError):
-                    pass
+                except (ValueError, OSError) as e:
+                    logging.debug("Connection/IO error (non-fatal): %s", e)
 
         if found:
             print_table(["Vendor", "Path", "HTTP Status"], found,

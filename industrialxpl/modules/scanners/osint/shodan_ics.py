@@ -9,6 +9,7 @@ Requires a Shodan API key (free: https://account.shodan.io/)
 In simulate mode: prints the queries without calling Shodan API.
 """
 
+import logging
 import json
 from pathlib import Path
 
@@ -40,8 +41,8 @@ def _load_dorks() -> dict:
     if _DORKS_PATH.exists():
         try:
             return json.loads(_DORKS_PATH.read_text(encoding="utf-8"))
-        except (ValueError, KeyError):
-            pass
+        except (ValueError, KeyError) as e:
+            logging.debug("Data error (unexpected format): %s", e)
     return {}
 
 

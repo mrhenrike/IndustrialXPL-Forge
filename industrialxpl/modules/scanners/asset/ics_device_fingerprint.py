@@ -15,6 +15,7 @@ References:
 Version: 1.0.0
 """
 
+import logging
 import socket
 import struct
 import time
@@ -285,8 +286,8 @@ class Exploit(Exploit):
                         result["module_info"] = parts[:3]
 
             sock.close()
-        except OSError:
-            pass
+        except OSError as e:
+            logging.debug("Connection/IO error (non-fatal): %s", e)
 
         return result
 
@@ -375,8 +376,8 @@ class Exploit(Exploit):
                 sock.recvfrom(64)
                 sock.close()
                 return True
-            except (TimeoutError, OSError):
-                pass
+            except (TimeoutError, OSError) as e:
+                logging.debug("Connection/IO error (non-fatal): %s", e)
         return False
 
     @multi

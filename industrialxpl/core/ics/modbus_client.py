@@ -58,8 +58,8 @@ class ModbusClient:
         if self._sock:
             try:
                 self._sock.close()
-            except OSError:
-                pass
+            except OSError as e:
+                logging.debug("Connection/IO error (non-fatal): %s", e)
             self._sock = None
 
     def __enter__(self) -> "ModbusClient":
@@ -303,6 +303,6 @@ class ModbusClient:
                 elif obj_id == 0x02:
                     result["version"] = obj_val
                 offset += 2 + obj_len
-        except KeyError:
-            pass
+        except KeyError as e:
+            logging.debug("Data error (unexpected format): %s", e)
         return result or None

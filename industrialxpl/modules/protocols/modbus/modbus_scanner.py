@@ -252,8 +252,8 @@ class ModbusScanner:
                 except OSError:
                     break
             s.close()
-        except (ConnectionError, TimeoutError, OSError):
-            pass
+        except (ConnectionError, TimeoutError, OSError) as e:
+            logging.debug("Connection/IO error (non-fatal): %s", e)
         return count
 
 

@@ -8,6 +8,7 @@ CVSS: 9.8 (CRITICAL)
 CWE: CWE-122
 Port: 4840 (OPC-UA default)
 """
+import logging
 import socket
 import struct
 
@@ -159,5 +160,5 @@ class Exploit(Exploit):
         finally:
             try:
                 sock.close()
-            except OSError:
-                pass
+            except OSError as e:
+                logging.debug("Connection/IO error (non-fatal): %s", e)

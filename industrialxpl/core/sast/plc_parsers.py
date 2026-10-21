@@ -20,6 +20,7 @@ Design principle: send only security-relevant structural information to LLM,
 not entire source code. This minimizes token cost and protects sensitive data.
 """
 
+import logging
 import os
 import re
 from dataclasses import dataclass, field
@@ -366,8 +367,8 @@ def detect_language(file_path: str) -> str:
             return "Ladder Diagram (LD)"
         if re.search(r'<FBD|FunctionBlockDiagram', head, re.I):
             return "Function Block Diagram (FBD)"
-    except (ValueError, OSError):
-        pass
+    except (ValueError, OSError) as e:
+        logging.debug("Connection/IO error (non-fatal): %s", e)
     return "Unknown"
 
 

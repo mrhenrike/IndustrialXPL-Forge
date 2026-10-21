@@ -33,6 +33,7 @@ References:
 Version: 1.0.0
 """
 
+import logging
 import os
 import socket
 import struct
@@ -110,8 +111,8 @@ def _get_mac_via_arp(target_ip: str, iface: str, timeout: float = 3.0) -> bytes 
             except TimeoutError:
                 break
         sock.close()
-    except (OSError, struct.error):
-        pass
+    except (OSError, struct.error) as e:
+        logging.debug("Connection/IO error (non-fatal): %s", e)
     return None
 
 
@@ -193,8 +194,8 @@ def _restore_ip_forward(prev: str | None) -> None:
         with open(fwd_path, "w") as f:
             f.write(prev)
         print_status(f"[ARP MITM] IP forwarding restored to {prev}.")
-    except (ValueError, OSError):
-        pass
+    except (ValueError, OSError) as e:
+        logging.debug("Connection/IO error (non-fatal): %s", e)
 
 
 class Exploit(_Exploit):
@@ -335,8 +336,8 @@ class Exploit(_Exploit):
             sock1 = socket.create_connection((self.host1, 502), timeout=2)
             sock1.close()
             return True
-        except (ConnectionError, TimeoutError, OSError):
-            pass
+        except (ConnectionError, TimeoutError, OSError) as e:
+            logging.debug("Connection/IO error (non-fatal): %s", e)
         try:
             socket.create_connection((self.host1, 80), timeout=2).close()
             return True

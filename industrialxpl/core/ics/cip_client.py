@@ -96,12 +96,12 @@ class CIPClient:
                 try:
                     req = struct.pack("<HHIIQII", ENIP_UNREGISTER_SESSION, 0, self._session, 0, 0, 0, 0)
                     self._sock.sendall(req)
-                except OSError:
-                    pass
+                except OSError as e:
+                    logging.debug("Connection/IO error (non-fatal): %s", e)
             try:
                 self._sock.close()
-            except OSError:
-                pass
+            except OSError as e:
+                logging.debug("Connection/IO error (non-fatal): %s", e)
             self._sock = None
             self._session = 0
 
@@ -240,8 +240,8 @@ class CIPClient:
                     "product_name": name,
                 }
                 offset += item_len
-        except (struct.error, UnicodeDecodeError):
-            pass
+        except (struct.error, UnicodeDecodeError) as e:
+            logging.debug("Parse error (malformed packet): %s", e)
         return result
 
     # ------------------------------------------------------------------ #

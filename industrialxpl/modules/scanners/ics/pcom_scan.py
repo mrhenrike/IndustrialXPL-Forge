@@ -24,6 +24,7 @@ References:
 Version: 1.0.0
 """
 
+import logging
 import socket
 import struct
 from typing import Optional
@@ -116,8 +117,8 @@ def _parse_pcom_identity(resp: bytes) -> dict | None:
             result["OSRelease"] = payload[2]
         if len(payload) >= 8:
             result["PLCName"] = payload[3:8].rstrip(b"\x00").decode("ascii", errors="replace")
-    except KeyError:
-        pass
+    except KeyError as e:
+        logging.debug("Data error (unexpected format): %s", e)
 
     return result
 

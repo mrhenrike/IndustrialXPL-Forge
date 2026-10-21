@@ -37,6 +37,7 @@ References:
   - MITRE ATT&CK ICS: T0890 (Exploitation for Privilege Escalation)
 """
 
+import logging
 import socket
 
 from industrialxpl.core.exploit import (
@@ -160,8 +161,8 @@ class Exploit(Exploit):
                         findings.append(f"RTK NTRIP correction server accessible on {self.target}:{port}")
                     else:
                         print_info(f"  Port {self.target}:{port} OPEN")
-                except (ConnectionError, TimeoutError, OSError):
-                    pass
+                except (ConnectionError, TimeoutError, OSError) as e:
+                    logging.debug("Connection/IO error (non-fatal): %s", e)
 
             # GPS-over-IP (gpsd)
             for port in _GPS_OVER_IP_PORTS:
@@ -174,8 +175,8 @@ class Exploit(Exploit):
                         findings.append(f"GPS-over-IP (gpsd) exposed on port {port}")
                     else:
                         print_info(f"  Port {self.target}:{port} open -- not gpsd")
-                except (ConnectionError, TimeoutError, OSError):
-                    pass
+                except (ConnectionError, TimeoutError, OSError) as e:
+                    logging.debug("Connection/IO error (non-fatal): %s", e)
 
         # Checklist
         print_info("")

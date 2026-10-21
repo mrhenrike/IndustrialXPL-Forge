@@ -15,6 +15,7 @@ Options are case-insensitive: 'set TARGET', 'set target', and 'set Target' all w
 
 
 
+import logging
 from industrialxpl.core.exploit.exploit import Exploit
 from industrialxpl.core.exploit.option import (
     OptIP, OptString, OptInteger, OptBool, OptTransport,
@@ -151,15 +152,15 @@ class ModbusBaseExploit(Exploit):
         if max_r is not None:
             try:
                 profile = dataclasses.replace(profile, retries=max(1, int(max_r)))
-            except (ValueError, TypeError):
-                pass
+            except (ValueError, TypeError) as e:
+                logging.debug("Data error (unexpected format): %s", e)
         if delay is not None:
             try:
                 profile = dataclasses.replace(
                     profile, inter_request_delay=float(delay) / 1000.0
                 )
-            except (ValueError, TypeError):
-                pass
+            except (ValueError, TypeError) as e:
+                logging.debug("Data error (unexpected format): %s", e)
 
         return profile
 
