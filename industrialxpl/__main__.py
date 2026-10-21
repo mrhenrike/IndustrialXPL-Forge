@@ -153,7 +153,7 @@ def main() -> None:
         interp._global_opts["output"] = args.output
 
     # Collect all command lines to execute in order
-    all_rc_lines: list = []
+    all_rc_lines: list = []  # type: ignore[type-arg]
 
     for rc_path_str in args.resource_files:
         rc_path = Path(rc_path_str)

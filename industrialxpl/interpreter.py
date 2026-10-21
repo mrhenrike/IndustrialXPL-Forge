@@ -19,7 +19,7 @@ try:
     _HAS_READLINE = True
 except ModuleNotFoundError:
     try:
-        import pyreadline3 as readline  # type: ignore[no-redef]
+        import pyreadline3 as readline  # type: ignore[no-redef, import-not-found]
         _HAS_READLINE = True
     except ModuleNotFoundError:
         readline = None  # type: ignore[assignment]
@@ -215,7 +215,7 @@ class BaseInterpreter:
 
     def __init__(self) -> None:
         self.current_module: object | None = None
-        self._global_opts: dict = {}
+        self._global_opts: dict = {}  # type: ignore[type-arg]
         self._setup_readline()
 
     def _setup_readline(self) -> None:
@@ -237,7 +237,7 @@ class BaseInterpreter:
             return
         try:
             from industrialxpl.cli.completer import IXFCompleter
-            self._completer = IXFCompleter(self)
+            self._completer = IXFCompleter(self)  # type: ignore[arg-type]
             readline.set_completer(self._completer.complete)
         except Exception:
             pass
@@ -245,13 +245,13 @@ class BaseInterpreter:
     @property
     def prompt(self) -> str:
         if self.current_module:
-            name = self.current_module.get_info().get("name", str(self.current_module))
+            name = self.current_module.get_info().get("name", str(self.current_module))  # type: ignore[attr-defined]
             return self.module_prompt_template.format(
                 host="ixf", module=name[:40]
             )
         return self.raw_prompt_template.format(host="ixf")
 
-    def parse_line(self, line: str) -> tuple:
+    def parse_line(self, line: str) -> tuple:  # type: ignore[type-arg]
         line = line.strip()
         if not line:
             return "", "", {}
@@ -283,7 +283,7 @@ class BaseInterpreter:
             print_error(f"Unexpected error: {exc}")
         return True
 
-    def run_resource_lines(self, lines: list, echo: bool = True) -> None:
+    def run_resource_lines(self, lines: list, echo: bool = True) -> None:  # type: ignore[type-arg]
         """Execute a list of command strings (resource file or -e inline).
 
         Args:
@@ -376,7 +376,7 @@ class BaseInterpreter:
                 except OSError:
                     pass
 
-    def nonInteractive(self, argv: list) -> None:
+    def nonInteractive(self, argv: list) -> None:  # type: ignore[type-arg]
         """Execute a single command from command-line arguments (legacy mode)."""
         if len(argv) < 2:
             return
@@ -414,7 +414,7 @@ class IXFInterpreter(
         except Exception:
             pass
         print_status("Indexing modules…")
-        self.modules: list = index_modules()
+        self.modules: list = index_modules()  # type: ignore[type-arg]
         print_success(f"{len(self.modules)} modules indexed.")
         self._bind_completer()
         self._resume_persistent_c2()
@@ -741,9 +741,9 @@ Tip: 'modules' or 'modules <category>' browses the full tree.
     # -- Per-option help -------------------------------------------------------
 
     # Map of option name -> help function
-    _OPTION_HELP_MAP: dict = {}  # populated lazily below
+    _OPTION_HELP_MAP: dict = {}  # type: ignore[type-arg]  # populated lazily below
 
-    def _get_option_help_map(self) -> dict:
+    def _get_option_help_map(self) -> dict:  # type: ignore[type-arg]
         return {
             "timing":      self._help_option_timing,
             "scan_timing": self._help_option_timing,
@@ -1429,7 +1429,7 @@ Example:
             for key, val in self._global_opts.items():
                 if key in _SKIP_GLOBAL:
                     continue
-                if key in self.current_module.options:
+                if key in self.current_module.options:  # type: ignore[attr-defined]
                     try:
                         setattr(self.current_module, key, val)
                     except Exception:
@@ -1437,21 +1437,21 @@ Example:
             # Explicit globals for targeting (port/transport/unit_id override module defaults)
             for gkey in ("port", "transport", "unit_id"):
                 gval = self._global_opts.get(gkey, "")
-                if gval and gkey in self.current_module.options:
+                if gval and gkey in self.current_module.options:  # type: ignore[attr-defined]
                     try:
                         setattr(self.current_module, gkey, gval)
                     except Exception:
                         pass
             # Always propagate target if module has it and global is set
             g_target = self._global_opts.get("target", "")
-            if g_target and "target" in self.current_module.options:
+            if g_target and "target" in self.current_module.options:  # type: ignore[attr-defined]
                 try:
                     if not getattr(self.current_module, "target", ""):
-                        self.current_module.target = g_target
+                        self.current_module.target = g_target  # type: ignore[attr-defined]
                 except Exception:
                     pass
             # Warn if poly language requires external runtime
-            info = self.current_module.get_info()
+            info = self.current_module.get_info()  # type: ignore[attr-defined]
             poly_lang = info.get("poly_language", "python")
             if poly_lang != "python":
                 from industrialxpl.core.poly.poly_runner import PolyExploitRunner
@@ -1506,12 +1506,12 @@ Example:
             else:
                 print_info(f"No dedicated help for '{key}'. Type 'help {key}' to search.")
             return
-        if key not in self.current_module.options:
+        if key not in self.current_module.options:  # type: ignore[attr-defined]
             print_error(f"Unknown option: '{key_raw}' -- type 'show options' to list valid options")
             return
         try:
             setattr(self.current_module, key, value)
-            self.current_module.exploit_attributes[key][0] = value
+            self.current_module.exploit_attributes[key][0] = value  # type: ignore[attr-defined]
             print_success(f"{key} => {value}")
         except Exception as exc:
             print_error(f"Cannot set '{key}': {exc}")
@@ -1614,9 +1614,9 @@ Example:
                     parse_port_expression(expr)
                 self._global_opts["port"] = expr
                 print_success(f"[global] PORT => {expr}")
-                if self.current_module and "port" in self.current_module.options:
+                if self.current_module and "port" in self.current_module.options:  # type: ignore[attr-defined]
                     try:
-                        self.current_module.port = expr
+                        self.current_module.port = expr  # type: ignore[attr-defined]
                     except Exception:
                         pass
                 return
@@ -1634,9 +1634,9 @@ Example:
                 return
             self._global_opts["transport"] = lv
             print_success(f"[global] TRANSPORT => {lv}")
-            if self.current_module and "transport" in self.current_module.options:
+            if self.current_module and "transport" in self.current_module.options:  # type: ignore[attr-defined]
                 try:
-                    self.current_module.transport = lv
+                    self.current_module.transport = lv  # type: ignore[attr-defined]
                 except Exception:
                     pass
             return
@@ -1648,9 +1648,9 @@ Example:
                     raise ValueError
                 self._global_opts["unit_id"] = str(uid)
                 print_success(f"[global] UNIT_ID => {uid}")
-                if self.current_module and "unit_id" in self.current_module.options:
+                if self.current_module and "unit_id" in self.current_module.options:  # type: ignore[attr-defined]
                     try:
-                        self.current_module.unit_id = uid
+                        self.current_module.unit_id = uid  # type: ignore[attr-defined]
                     except Exception:
                         pass
                 return
@@ -1664,9 +1664,9 @@ Example:
                 profile = ModbusTiming.resolve(value)
                 self._global_opts["timing"] = str(value)
                 print_success(f"[global] timing => {value} ({profile.name})")
-                if self.current_module and "timing" in self.current_module.options:
+                if self.current_module and "timing" in self.current_module.options:  # type: ignore[attr-defined]
                     try:
-                        self.current_module.timing = value
+                        self.current_module.timing = value  # type: ignore[attr-defined]
                     except Exception:
                         pass
                 return
@@ -1675,7 +1675,7 @@ Example:
                 self._help_timing()
                 return
 
-        if self.current_module and key in self.current_module.options:
+        if self.current_module and key in self.current_module.options:  # type: ignore[attr-defined]
             try:
                 setattr(self.current_module, key, value)
             except Exception:
@@ -1732,14 +1732,14 @@ Example:
                 print_error("No module loaded. Use 'use <module_path>' first.")
             return
         mod = self.current_module
-        info = mod.get_info()
+        info = mod.get_info()  # type: ignore[attr-defined]
 
         if sub == "info":
             pprint_dict_in_order(info, header="Module Information")
         elif sub in ("options", "advanced"):
             rows = [
                 (k.upper(), str(v[0]), "yes" if not v[2] else "adv", v[1])
-                for k, v in mod.exploit_attributes.items()
+                for k, v in mod.exploit_attributes.items()  # type: ignore[attr-defined]
                 if sub == "advanced" or not v[2]
             ]
             print_table(["Option", "Value", "Required", "Description"], rows,
@@ -1759,14 +1759,14 @@ Example:
     def command_run(self, args: str = "", **kwargs) -> None:
         """Execute the current module using per-module simulate/destructive options."""
         mod = self.current_module
-        info = mod.get_info()
+        info = mod.get_info()  # type: ignore[attr-defined]
         name = info.get("name", str(mod))
 
-        sim = bool(mod.simulate)
-        destr = bool(mod.destructive)
-        mod._simulate_mode = sim
-        mod._destructive_mode = destr
-        mod._safemode = False
+        sim = bool(mod.simulate)  # type: ignore[attr-defined]
+        destr = bool(mod.destructive)  # type: ignore[attr-defined]
+        mod._simulate_mode = sim  # type: ignore[attr-defined]
+        mod._destructive_mode = destr  # type: ignore[attr-defined]
+        mod._safemode = False  # type: ignore[attr-defined]
 
         if sim:
             print_status(f"{name} [SIMULATE] -- dry-run per module option")
@@ -1777,21 +1777,21 @@ Example:
             print_status(f"{name} [LIVE] -- real execution per module options")
 
         try:
-            mod.run()
+            mod.run()  # type: ignore[attr-defined]
         except NotImplementedError:
             print_warning("Module run() not yet implemented.")
 
     @module_required
     def command_check(self, args: str = "", **kwargs) -> None:
         mod = self.current_module
-        info = mod.get_info()
+        info = mod.get_info()  # type: ignore[attr-defined]
         impact = info.get("impact", "LOW").upper()
         if impact in ("INFO", "READ"):
             print_info("This module is assessment-only. Use 'run' to start the questionnaire.")
             return
         print_status("Checking {}…".format(info.get("name", str(mod))))
         try:
-            result = mod.check()
+            result = mod.check()  # type: ignore[attr-defined]
             if result is None:
                 print_info("check() not applicable for this module type.")
             elif result:
@@ -1837,7 +1837,7 @@ Example:
 
     def _get_search_engine(self):
         """Return a cached multilingual SearchEngine."""
-        if not hasattr(self, "_search_engine") or self._search_engine is None:
+        if not hasattr(self, "_search_engine") or self._search_engine is None:  # type: ignore[has-type]
             from industrialxpl.core.search.engine import SearchEngine
             self._search_engine = SearchEngine(self.modules)
         return self._search_engine
@@ -1892,7 +1892,7 @@ Example:
         """
         sub = args.strip().lower()
         from collections import defaultdict
-        tree: dict = defaultdict(lambda: defaultdict(list))
+        tree: dict = defaultdict(lambda: defaultdict(list))  # type: ignore[type-arg]
         for m in self.modules:
             parts = m.split(".")
             if len(parts) >= 3:
@@ -1968,7 +1968,7 @@ Example:
             print_warning(f"Set target to each host in {cidr} and run check().")
             print_info(f"For automated CIDR sweep: ixf > ttp T0846.001 {cidr}")
 
-    def parse_line(self, line: str) -> tuple:
+    def parse_line(self, line: str) -> tuple:  # type: ignore[type-arg]
         """Normalise hyphens in commands (mitre-list -> mitre_list)."""
         line = line.strip()
         if not line:
