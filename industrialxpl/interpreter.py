@@ -411,8 +411,8 @@ class IXFInterpreter(
         try:
             from industrialxpl.core.malware.crosscompile import ensure_cross_path_in_env
             ensure_cross_path_in_env()
-        except (ImportError, OSError):
-            pass
+        except (ImportError, OSError) as e:
+            logging.debug("cross-compile env setup skipped: %s", e)
         print_status("Indexing modules…")
         self.modules: list = index_modules()  # type: ignore[type-arg]
         print_success(f"{len(self.modules)} modules indexed.")
@@ -435,8 +435,8 @@ class IXFInterpreter(
                     online, total, pid, r.get("go_cnc_pid", " - "),
                 )
             )
-        except (ImportError, OSError, KeyError):
-            pass
+        except (ImportError, OSError, KeyError) as e:
+            logging.debug("C2 resume skipped: %s", e)
 
     # -- Global commands ----------------------------------------------------
 
