@@ -836,12 +836,11 @@ class TestIXFInterpreterCommands:
         """Globals like loglevel should NOT be applied to module options."""
         interp = _make_interp({"loglevel": "debug"})
         fm = FakeModule()
-        fm.options.append("loglevel")
+        fm.exploit_attributes["loglevel"] = ["", "Log level", False]
         fake_cls = MagicMock(return_value=fm)
         with patch("industrialxpl.interpreter.import_exploit", return_value=fake_cls), \
              patch("industrialxpl.interpreter.print_success"):
             interp.command_use("scanners/ics/modbus_detect")
-        # loglevel should not have been set on the module
         assert not hasattr(fm, "loglevel") or getattr(fm, "loglevel", None) != "debug"
 
     def test_command_back(self):
@@ -1566,7 +1565,7 @@ class TestIXFInterpreterCommands:
         fake_resp.__exit__ = MagicMock(return_value=False)
         with patch("urllib.request.urlopen", return_value=fake_resp), \
              patch("builtins.input", return_value="y"), \
-             patch("subprocess.run", side_effect=Exception("pip boom")), \
+             patch("subprocess.run", side_effect=OSError("pip boom")), \
              patch("industrialxpl.interpreter.print_status"), \
              patch("industrialxpl.interpreter.print_info"), \
              patch("industrialxpl.interpreter.print_warning"), \
@@ -1575,7 +1574,7 @@ class TestIXFInterpreterCommands:
 
     def test_command_update_network_error(self):
         interp = _make_interp()
-        with patch("urllib.request.urlopen", side_effect=Exception("net")), \
+        with patch("urllib.request.urlopen", side_effect=OSError("net")), \
              patch("industrialxpl.interpreter.print_status"), \
              patch("industrialxpl.interpreter.print_info"), \
              patch("industrialxpl.interpreter.print_error"):
@@ -1625,7 +1624,7 @@ class TestIXFInterpreterCommands:
     def test_resume_persistent_c2_exception(self):
         interp = _make_interp()
         with patch("industrialxpl.core.malware.c2_server.resume_on_startup",
-                    side_effect=Exception("no c2")):
+                    side_effect=ImportError("no c2")):
             interp._resume_persistent_c2()  # should not crash
 
 
@@ -3520,3 +3519,333 @@ class TestSectorAliases:
     def test_get_global_unknown(self):
         interp = _make_interp()
         assert interp._get_global("nonexistent_key") == ""
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 15. Malware dispatch coverage (via command_malware)
+# ═══════════════════════════════════════════════════════════════════════════
+
+class TestMalwareDispatch:
+    """Cover sub-dispatch lines in command_malware that go through 'if sub == ...'."""
+
+    def _base_patches(self):
+        return [
+            patch("industrialxpl.core.malware.MalwareCatalog"),
+            patch("industrialxpl.core.malware.MalwareOrchestrator"),
+            patch("industrialxpl.core.malware.MalwareCompiler"),
+            patch("industrialxpl.core.malware.BuildProfile"),
+            patch("industrialxpl.core.malware.lab_ops.deploy_to_target"),
+            patch("industrialxpl.core.malware.lab_ops.execute_artifact"),
+            patch("industrialxpl.core.malware.lab_ops.firmware_replace_plan"),
+            patch("industrialxpl.core.malware.lab_ops.interactive_shell_session"),
+        ]
+
+    def test_dispatch_db(self):
+        interp = _make_interp()
+        interp.global_variables = {}
+        with patch("industrialxpl.core.malware.db_init.bootstrap_lab_dbs",
+                    return_value={"success": True, "target": "/tmp", "files": []}), \
+             patch("industrialxpl.cli.commands_malware.print_success"), \
+             patch("industrialxpl.cli.commands_malware.print_info"):
+            for p in self._base_patches():
+                p.start()
+            try:
+                interp.command_malware("db bootstrap")
+            finally:
+                patch.stopall()
+
+    def test_dispatch_c2(self):
+        interp = _make_interp()
+        interp.global_variables = {"LHOST": "0.0.0.0", "LPORT": "48101"}
+        mgr = MagicMock()
+        mgr.stop.return_value = {}
+        with patch("industrialxpl.core.malware.c2_server.MiraiC2Manager", return_value=mgr), \
+             patch("industrialxpl.core.malware.MalwareCompiler"), \
+             patch("industrialxpl.core.malware.BuildProfile"), \
+             patch("industrialxpl.core.malware.crosscompile.RELEASE_DIR", Path("/tmp")), \
+             patch("industrialxpl.cli.commands_malware.print_success"):
+            for p in self._base_patches():
+                p.start()
+            try:
+                interp.command_malware("c2 stop")
+            finally:
+                patch.stopall()
+
+    def test_dispatch_docker(self):
+        interp = _make_interp()
+        interp.global_variables = {}
+        mgr = MagicMock()
+        mgr.status.return_value = {"stdout": "running"}
+        with patch("industrialxpl.core.lab.docker_stack.DockerStackManager", return_value=mgr), \
+             patch("industrialxpl.cli.commands_malware.print_info"):
+            for p in self._base_patches():
+                p.start()
+            try:
+                interp.command_malware("docker lisa status")
+            finally:
+                patch.stopall()
+
+    def test_dispatch_crosscompile(self):
+        interp = _make_interp()
+        interp.global_variables = {"LHOST": "", "LPORT": "0"}
+        xc = MagicMock()
+        xc.detect_toolchains.return_value = []
+        xc.list_artifacts.return_value = []
+        with patch("industrialxpl.core.malware.crosscompile.MiraiCrossCompiler", return_value=xc), \
+             patch("industrialxpl.core.malware.crosscompile.ensure_cross_path_in_env"), \
+             patch("industrialxpl.core.malware.BuildProfile"), \
+             patch("industrialxpl.cli.commands_malware.print_table"), \
+             patch("industrialxpl.cli.commands_malware.print_info"):
+            for p in self._base_patches():
+                p.start()
+            try:
+                interp.command_malware("crosscompile list")
+            finally:
+                patch.stopall()
+
+    def test_dispatch_propagate(self):
+        interp = _make_interp()
+        interp.global_variables = {"LHOST": "10.0.0.1", "LPORT": "48101", "LAB_WHITELIST": "", "MALWARE_ARTIFACT": "", "SIMULATE": "true"}
+        prop = MagicMock()
+        prop.propagate.return_value = {"simulate": True, "open_services": 0, "would_deploy_to": []}
+        with patch("industrialxpl.core.malware.crosscompile.RELEASE_DIR", Path("/tmp")), \
+             patch("industrialxpl.core.malware.propagator.BotnetPropagator", return_value=prop), \
+             patch("industrialxpl.cli.commands_malware.print_warning"), \
+             patch("industrialxpl.cli.commands_malware.print_info"):
+            for p in self._base_patches():
+                p.start()
+            try:
+                interp.command_malware("propagate 10.0.0.0/24")
+            finally:
+                patch.stopall()
+
+    def test_dispatch_compile(self):
+        interp = _make_interp()
+        interp.global_variables = {}
+        compiler = MagicMock()
+        compiler.compile.return_value = {"success": True, "output": "/tmp/bot", "size": 1024}
+        with patch("industrialxpl.core.malware.MalwareCompiler", return_value=compiler), \
+             patch("industrialxpl.cli.commands_malware.print_success"):
+            for p in self._base_patches():
+                p.start()
+            try:
+                interp.command_malware("compile mirai_bot")
+            finally:
+                patch.stopall()
+
+    def test_c2_start_auto_crosscompile(self):
+        """Cover the c2 start branch that auto-crosscompiles."""
+        interp = _make_interp()
+        interp.global_variables = {"LHOST": "10.0.0.1", "LPORT": "48101", "C2_PERSIST": "false", "C2_BACKEND": "go", "C2_DSN": ""}
+        mgr = MagicMock()
+        mgr.start.return_value = {"mode": "go", "pid": 123, "go_cnc_pid": 456}
+        profile = MagicMock()
+        profile.effective_cnc_host.return_value = "10.0.0.1"
+        xc_result = {"built": [{"path": "/tmp/bot.mips", "arch": "mips"}], "release_dir": "/tmp"}
+        with patch("industrialxpl.core.malware.c2_server.MiraiC2Manager", return_value=mgr), \
+             patch("industrialxpl.core.malware.MalwareCompiler"), \
+             patch("industrialxpl.core.malware.BuildProfile", return_value=profile), \
+             patch("industrialxpl.core.malware.crosscompile.RELEASE_DIR", Path("/tmp/nonexistent")), \
+             patch("industrialxpl.core.malware.crosscompile.MiraiCrossCompiler") as xc_cls, \
+             patch("industrialxpl.cli.commands_malware.print_success"):
+            xc_cls.return_value.compile_all.return_value = xc_result
+            for p in self._base_patches():
+                p.start()
+            try:
+                interp._malware_c2(["c2", "start"])
+            finally:
+                patch.stopall()
+
+    def test_c2_start_fallback_debug_compile(self):
+        """Cover the c2 start branch that falls back to debug bot compile."""
+        interp = _make_interp()
+        interp.global_variables = {"LHOST": "10.0.0.1", "LPORT": "48101", "C2_PERSIST": "false", "C2_BACKEND": "go", "C2_DSN": ""}
+        mgr = MagicMock()
+        mgr.start.return_value = {"mode": "go", "pid": 123, "go_cnc_pid": 456}
+        profile = MagicMock()
+        profile.effective_cnc_host.return_value = "10.0.0.1"
+        xc_result = {"built": [], "release_dir": ""}
+        compile_result = {"success": True, "output": "/tmp/bot_debug"}
+        compiler = MagicMock()
+        compiler.compile.return_value = compile_result
+        with patch("industrialxpl.core.malware.c2_server.MiraiC2Manager", return_value=mgr), \
+             patch("industrialxpl.core.malware.MalwareCompiler", return_value=compiler), \
+             patch("industrialxpl.core.malware.BuildProfile", return_value=profile), \
+             patch("industrialxpl.core.malware.crosscompile.RELEASE_DIR", Path("/tmp/nonexistent")), \
+             patch("industrialxpl.core.malware.crosscompile.MiraiCrossCompiler") as xc_cls, \
+             patch("industrialxpl.cli.commands_malware.print_success"):
+            xc_cls.return_value.compile_all.return_value = xc_result
+            for p in self._base_patches():
+                p.start()
+            try:
+                interp._malware_c2(["c2", "start"])
+            finally:
+                patch.stopall()
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 16. Interpreter parse_line override and additional branches
+# ═══════════════════════════════════════════════════════════════════════════
+
+class TestInterpreterExtraBranches:
+    def test_parse_line_ixf_override(self):
+        """IXFInterpreter.parse_line normalizes aliases."""
+        interp = _make_interp()
+        cmd, args, kw = interp.parse_line("ics-tools list")
+        assert cmd == "ics_tools"
+        assert args == "list"
+
+    def test_command_set_simulate_bool(self):
+        interp = _make_interp()
+        mod = FakeModule()
+        interp.current_module = mod
+        with patch("industrialxpl.interpreter.print_success"):
+            interp.command_set("simulate true")
+        assert interp.current_module.simulate is True or interp.current_module.simulate == "true"
+
+    def test_command_set_destructive_bool(self):
+        interp = _make_interp()
+        mod = FakeModule()
+        interp.current_module = mod
+        with patch("industrialxpl.interpreter.print_success"):
+            interp.command_set("destructive true")
+
+    def test_command_set_with_equals(self):
+        """set option=value shorthand."""
+        interp = _make_interp()
+        mod = FakeModule()
+        interp.current_module = mod
+        with patch("industrialxpl.interpreter.print_success"):
+            interp.command_set("target=10.0.0.1")
+
+    def test_command_run_with_output(self):
+        interp = _make_interp({"output": "/tmp/out.txt"})
+        mod = FakeModule()
+        mod.simulate = False
+        mod.destructive = False
+        interp.current_module = mod
+        with patch("industrialxpl.interpreter.print_status"):
+            interp.command_run()
+
+    def test_command_run_safemode_global(self):
+        interp = _make_interp({"safemode": "true"})
+        mod = FakeModule()
+        mod.simulate = False
+        mod.destructive = False
+        interp.current_module = mod
+        with patch("industrialxpl.interpreter.print_status"), \
+             patch("industrialxpl.interpreter.print_warning"):
+            interp.command_run()
+
+    def test_command_show_module_default(self):
+        """show with empty args and module loaded."""
+        interp = _make_interp()
+        interp.current_module = FakeModule()
+        with patch("industrialxpl.interpreter.pprint_dict_in_order"), \
+             patch("industrialxpl.interpreter.print_table"), \
+             patch("industrialxpl.interpreter.print_info"):
+            interp.command_show("")
+
+    def test_setg_log_level_underscore(self):
+        """Test log_level alias."""
+        interp = _make_interp()
+        with patch("industrialxpl.interpreter.set_log_level"), \
+             patch("industrialxpl.interpreter.print_success"):
+            interp.command_setg("log_level warning")
+
+    def test_command_help_energy_search(self):
+        """'help energy' falls through to module search matching."""
+        interp = _make_interp()
+        with patch("industrialxpl.interpreter.import_exploit", side_effect=ImportError("no")), \
+             patch("industrialxpl.interpreter.print_info"):
+            interp.command_help("energy")
+
+    def test_readline_setup_with_readline(self):
+        interp = _make_interp()
+        rl_mock = MagicMock()
+        with patch("industrialxpl.interpreter._HAS_READLINE", True), \
+             patch("industrialxpl.interpreter.readline", rl_mock):
+            interp._setup_readline()
+
+    def test_bind_completer_with_readline(self):
+        interp = _make_interp()
+        rl_mock = MagicMock()
+        with patch("industrialxpl.interpreter._HAS_READLINE", True), \
+             patch("industrialxpl.interpreter.readline", rl_mock):
+            interp._bind_completer()
+            rl_mock.set_completer.assert_called()
+
+    def test_command_modules_tree_full(self):
+        """modules with no filter should show the full tree."""
+        interp = _make_interp()
+        with patch("industrialxpl.interpreter.print_success"), \
+             patch("industrialxpl.interpreter.print_info"):
+            interp.command_modules("")
+
+    def test_command_setg_no_value(self):
+        interp = _make_interp()
+        with patch("industrialxpl.interpreter.print_error"), \
+             patch("industrialxpl.interpreter.print_table"), \
+             patch("industrialxpl.interpreter.print_info"):
+            interp.command_setg("target")
+
+    def test_command_show_module_with_sub(self):
+        """show <sub> with module loaded."""
+        interp = _make_interp()
+        interp.current_module = FakeModule()
+        for sub in ("info", "options", "advanced", "devices", "all"):
+            with patch("industrialxpl.interpreter.pprint_dict_in_order"), \
+                 patch("industrialxpl.interpreter.print_table"), \
+                 patch("industrialxpl.interpreter.print_info"):
+                interp.command_show(sub)
+
+    def test_dispatch_runtime_error_in_handler(self):
+        interp = _make_interp()
+        with patch.object(interp, "command_help", side_effect=RuntimeError("boom")):
+            with patch("industrialxpl.interpreter.print_error"):
+                result = interp._dispatch("help")
+                assert result is True
+
+    def test_dispatch_value_error_in_handler(self):
+        interp = _make_interp()
+        with patch.object(interp, "command_help", side_effect=ValueError("bad")):
+            with patch("industrialxpl.interpreter.print_error"):
+                result = interp._dispatch("help")
+                assert result is True
+
+    def test_nonInteractive_with_args(self):
+        interp = _make_interp()
+        with patch.object(interp, "command_search") as ms:
+            interp.nonInteractive(["ixf", "search", "modbus"])
+            ms.assert_called_once_with("modbus")
+
+    def test_command_setg_question_mark(self):
+        interp = _make_interp()
+        with patch("industrialxpl.interpreter.print_info"):
+            interp.command_setg("timing ?")
+
+    def test_completer_complete_module_with_paths(self):
+        from industrialxpl.cli.completer import IXFCompleter
+        interp_mock = MagicMock()
+        mod1 = MagicMock()
+        mod1.path = "scanners/ics/modbus_detect"
+        mod2 = MagicMock()
+        mod2.path = "scanners/ics/modbus_scanner"
+        mod3 = MagicMock()
+        mod3.path = "exploits/protocols/modbus/modbus_write"
+        interp_mock.modules = [mod1, mod2, mod3]
+        interp_mock.current_module = None
+        c = IXFCompleter(interp_mock)
+        matches = c._complete_module("scanners/")
+        assert len(matches) > 0
+
+    def test_completer_complete_module_full_match(self):
+        from industrialxpl.cli.completer import IXFCompleter
+        interp_mock = MagicMock()
+        mod1 = MagicMock()
+        mod1.path = "scanners/ics/modbus_detect"
+        interp_mock.modules = [mod1]
+        interp_mock.current_module = None
+        c = IXFCompleter(interp_mock)
+        matches = c._complete_module("scanners/ics/modbus_detect")
+        assert any("modbus_detect" in m for m in matches)
