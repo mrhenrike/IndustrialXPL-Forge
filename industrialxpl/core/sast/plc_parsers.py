@@ -515,17 +515,26 @@ def summarize_project(project: PLCProject) -> str:
     for pf in project.files[:50]:
         name = Path(pf.path).name
         lines.append(f"  [{pf.language}] {name}")
-        if pf.functions:        lines.append(f"    Functions: {', '.join(pf.functions[:5])}")
-        if pf.function_blocks:  lines.append(f"    FBs: {', '.join(pf.function_blocks[:5])}")
-        if pf.programs:         lines.append(f"    Programs: {', '.join(pf.programs[:5])}")
+        if pf.functions:
+            lines.append(f"    Functions: {', '.join(pf.functions[:5])}")
+        if pf.function_blocks:
+            lines.append(f"    FBs: {', '.join(pf.function_blocks[:5])}")
+        if pf.programs:
+            lines.append(f"    Programs: {', '.join(pf.programs[:5])}")
         if pf.setpoints:
             lines.append(f"    Setpoints ({len(pf.setpoints)}):")
             for sp in pf.setpoints[:5]:
                 lines.append(f"      {sp['name']} = {sp['value']}")
-        if pf.safety_functions: lines.append(f"    Safety: {', '.join(pf.safety_functions[:5])}")
-        if pf.watchdog_refs:    lines.append(f"    Watchdog: {', '.join(pf.watchdog_refs[:3])}")
-        if pf.hardcoded_values: lines.append(f"    ALERT: {len(pf.hardcoded_values)} hardcoded credential(s)")
-        if pf.critical_comments: lines.append(f"    Critical comments: {len(pf.critical_comments)}")
-        if pf.network_access:   lines.append(f"    Network: {', '.join(pf.network_access)}")
-        if pf.redactions:       lines.append(f"    Redacted: {'; '.join(pf.redactions)}")
+        if pf.safety_functions:
+            lines.append(f"    Safety: {', '.join(pf.safety_functions[:5])}")
+        if pf.watchdog_refs:
+            lines.append(f"    Watchdog: {', '.join(pf.watchdog_refs[:3])}")
+        if pf.hardcoded_values:
+            lines.append(f"    ALERT: {len(pf.hardcoded_values)} hardcoded credential(s)")
+        if pf.critical_comments:
+            lines.append(f"    Critical comments: {len(pf.critical_comments)}")
+        if pf.network_access:
+            lines.append(f"    Network: {', '.join(pf.network_access)}")
+        if pf.redactions:
+            lines.append(f"    Redacted: {'; '.join(pf.redactions)}")
     return "\n".join(lines)
